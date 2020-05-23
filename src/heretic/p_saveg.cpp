@@ -45,9 +45,8 @@ char *SV_Filename(int slot)
     size_t filename_len;
 
     filename_len = strlen(savegamedir) + strlen(SAVEGAMENAME) + 8;
-    filename = malloc(filename_len);
-    M_snprintf(filename, filename_len,
-               "%s" SAVEGAMENAME "%d.hsg", savegamedir, slot);
+    filename = static_cast<char *>(malloc(filename_len));
+    M_snprintf(filename, filename_len, "%s" SAVEGAMENAME "%d.hsg", savegamedir, slot);
 
     return filename;
 }
@@ -355,7 +354,7 @@ static void saveg_read_player_t(player_t *str)
     str->mo = NULL;
 
     // playerstate_t playerstate;
-    str->playerstate = SV_ReadLong();
+    str->playerstate = static_cast<playerstate_t>(SV_ReadLong());
 
     // ticcmd_t cmd;
     saveg_read_ticcmd_t(&str->cmd);
@@ -395,7 +394,7 @@ static void saveg_read_player_t(player_t *str)
     }
 
     // artitype_t readyArtifact;
-    str->readyArtifact = SV_ReadLong();
+    str->readyArtifact = static_cast<artitype_t>(SV_ReadLong());
 
     // int artifactCount;
     str->artifactCount = SV_ReadLong();
@@ -425,10 +424,10 @@ static void saveg_read_player_t(player_t *str)
     }
 
     // weapontype_t readyweapon;
-    str->readyweapon = SV_ReadLong();
+    str->readyweapon = static_cast<weapontype_t>(SV_ReadLong());
 
     // weapontype_t pendingweapon;
-    str->pendingweapon = SV_ReadLong();
+    str->pendingweapon = static_cast<weapontype_t>(SV_ReadLong());
 
     // boolean weaponowned[NUMWEAPONS];
     for (i=0; i<NUMWEAPONS; ++i)
@@ -741,7 +740,7 @@ static void saveg_write_thinker_t(thinker_t *str)
     SV_WritePtr(str->next);
 
     // think_t function;
-    SV_WritePtr(str->function);
+    SV_WritePtr(reinterpret_cast<const void*>(str->function));
 }
 
 
@@ -792,7 +791,7 @@ static void saveg_read_mobj_t(mobj_t *str)
     str->angle = SV_ReadLong();
 
     // spritenum_t sprite;
-    str->sprite = SV_ReadLong();
+    str->sprite = static_cast<spritenum_t>(SV_ReadLong());
 
     // int frame;
     str->frame = SV_ReadLong();
@@ -824,13 +823,14 @@ static void saveg_read_mobj_t(mobj_t *str)
     str->validcount = SV_ReadLong();
 
     // mobjtype_t type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<mobjtype_t>(SV_ReadLong());
 
     // An extra thing type was added for v1.0 HHE compatibility.
     // Map from the v1.3 thing type index to the internal one.
     if (str->type >= MT_PHOENIXFX_REMOVED)
     {
-        ++str->type;
+        //++str->type;
+        str->type = static_cast<mobjtype_t>(static_cast<int>(str->type) + 1);
     }
 
     // mobjinfo_t *info;
@@ -1060,7 +1060,7 @@ static void saveg_read_ceiling_t(ceiling_t *str)
     saveg_read_thinker_t(&str->thinker);
 
     // ceiling_e type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<ceiling_e>(SV_ReadLong());
 
     // sector_t *sector;
     i = SV_ReadLong();
@@ -1130,7 +1130,7 @@ static void saveg_read_vldoor_t(vldoor_t *str)
     saveg_read_thinker_t(&str->thinker);
 
     // vldoor_e type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<vldoor_e>(SV_ReadLong());
 
     // sector_t *sector;
     i = SV_ReadLong();
@@ -1192,7 +1192,7 @@ static void saveg_read_floormove_t(floormove_t *str)
     saveg_read_thinker_t(&str->thinker);
 
     // floor_e type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<floor_e>(SV_ReadLong());
 
     // boolean crush;
     str->crush = SV_ReadLong();
@@ -1279,10 +1279,10 @@ static void saveg_read_plat_t(plat_t *str)
     str->count = SV_ReadLong();
 
     // plat_e status;
-    str->status = SV_ReadLong();
+    str->status = static_cast<plat_e>(SV_ReadLong());
 
     // plat_e oldstatus;
-    str->oldstatus = SV_ReadLong();
+    str->oldstatus = static_cast<plat_e>(SV_ReadLong());
 
     // boolean crush;
     str->crush = SV_ReadLong();
@@ -1291,7 +1291,7 @@ static void saveg_read_plat_t(plat_t *str)
     str->tag = SV_ReadLong();
 
     // plattype_e type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<plattype_e>(SV_ReadLong());
 }
 
 static void saveg_write_plat_t(plat_t *str)
@@ -1662,7 +1662,7 @@ void P_ArchiveThinkers(void)
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
-        if (th->function == P_MobjThinker)
+        if (th->function == reinterpret_cast<think_t>(P_MobjThinker))
         {
             SV_WriteByte(tc_mobj);
             saveg_write_mobj_t((mobj_t *) th);
@@ -1695,7 +1695,7 @@ void P_UnArchiveThinkers(void)
     while (currentthinker != &thinkercap)
     {
         next = currentthinker->next;
-        if (currentthinker->function == P_MobjThinker)
+        if (currentthinker->function == reinterpret_cast<think_t>(P_MobjThinker))
             P_RemoveMobj((mobj_t *) currentthinker);
         else
             Z_Free(currentthinker);
@@ -1713,14 +1713,14 @@ void P_UnArchiveThinkers(void)
                 return;         // end of list
 
             case tc_mobj:
-                mobj = Z_Malloc(sizeof(*mobj), PU_LEVEL, NULL);
+                mobj = static_cast<mobj_t *>(Z_Malloc(sizeof(*mobj), PU_LEVEL, NULL));
                 saveg_read_mobj_t(mobj);
                 mobj->target = NULL;
                 P_SetThingPosition(mobj);
                 mobj->info = &mobjinfo[mobj->type];
                 mobj->floorz = mobj->subsector->sector->floorheight;
                 mobj->ceilingz = mobj->subsector->sector->ceilingheight;
-                mobj->thinker.function = P_MobjThinker;
+                mobj->thinker.function = reinterpret_cast<think_t>(P_MobjThinker);
                 P_AddThinker(&mobj->thinker);
                 break;
 
@@ -1770,17 +1770,17 @@ void P_ArchiveSpecials(void)
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
-        if (th->function == T_MoveCeiling)
+        if (th->function == reinterpret_cast<think_t>(T_MoveCeiling))
         {
             SV_WriteByte(tc_ceiling);
             saveg_write_ceiling_t((ceiling_t *) th);
         }
-        else if (th->function == T_VerticalDoor)
+        else if (th->function == reinterpret_cast<think_t>(T_VerticalDoor))
         {
             SV_WriteByte(tc_door);
             saveg_write_vldoor_t((vldoor_t *) th);
         }
-        else if (th->function == T_MoveFloor)
+        else if (th->function == reinterpret_cast<think_t>(T_MoveFloor))
         {
             SV_WriteByte(tc_floor);
             saveg_write_floormove_t((floormove_t *) th);

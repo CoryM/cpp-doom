@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deh_defs.hpp"
+#include "../deh_defs.hpp"
 #include "deh_main.hpp"
 #include "deh_htic.hpp"
 #include "info.hpp"
@@ -80,7 +80,7 @@ static void SetHHEVersionByName(char *name)
     {
         if (!strcmp(hhe_versions[i], name))
         {
-            deh_hhe_version = i;
+            deh_hhe_version = static_cast<deh_hhe_version_t>(i);
             return;
         }
     }

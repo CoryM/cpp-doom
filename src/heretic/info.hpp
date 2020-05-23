@@ -1541,7 +1541,8 @@ typedef enum
     MT_AMBLSRHEFTY,
     MT_SOUNDWIND,
     MT_SOUNDWATERFALL,
-    NUMMOBJTYPES
+    NUMMOBJTYPES,
+    MT_STOP = -1
 } mobjtype_t;
 
 typedef struct

@@ -19,7 +19,7 @@
 
 #include <stdlib.h>
 
-#include "i_system.hpp"
+#include "../i_system.hpp"
 #include "i_timer.hpp"
 #include "i_video.hpp"
 #include "doomdef.hpp"
@@ -111,7 +111,7 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     ticdup = settings->ticdup;
     startepisode = settings->episode;
     startmap = settings->map;
-    startskill = settings->skill;
+    startskill = static_cast<skill_t>(settings->skill);
     // TODO startloadgame = settings->loadgame;
     lowres_turn = settings->lowres_turn;
     nomonsters = settings->nomonsters;

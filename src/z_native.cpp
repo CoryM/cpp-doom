@@ -143,12 +143,12 @@ void Z_Free(void *ptr)
     {
         I_Error("Z_Free: freed a pointer without ZONEID");
     }
-
-    if (block->tag != PU_FREE && block->user != NULL)
+		
+    if (block->tag != PU_FREE && block->user != nullptr)
     {
         // clear the user's mark
 
-        *block->user = NULL;
+        *block->user = nullptr;
     }
 
     Z_RemoveBlock(block);
@@ -240,7 +240,7 @@ void *Z_Malloc(int size, int tag, void *user)
             tag);
     }
 
-    if (user == NULL && tag >= PU_PURGELEVEL)
+    if (user == nullptr && tag >= PU_PURGELEVEL)
     {
         I_Error("Z_Malloc: an owner is required for purgable blocks");
     }
@@ -266,8 +266,8 @@ void *Z_Malloc(int size, int tag, void *user)
 
     // Hook into the linked list for this tag type
 
-    newblock->id   = ZONEID;
-    newblock->user = user;
+    newblock->id = ZONEID;
+    newblock->user = &user;
     newblock->size = size;
 
     Z_InsertBlock(newblock);
@@ -275,7 +275,7 @@ void *Z_Malloc(int size, int tag, void *user)
     data   = (unsigned char *)newblock;
     result = data + sizeof(memblock_t);
 
-    if (user != NULL)
+    if (user != nullptr)
     {
         *newblock->user = result;
     }

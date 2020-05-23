@@ -30,6 +30,8 @@
 #include "doomkeys.hpp"
 #include "v_video.hpp"
 
+#include "../utils/lump.hpp"
+
 vertex_t KeyPoints[NUMKEYS];
 
 #define NUMALIAS 3              // Number of antialiased lines.
@@ -375,7 +377,7 @@ void AM_initVariables(void)
         for (think = thinkercap.next; think != &thinkercap;
              think = think->next)
         {
-            if (think->function != P_MobjThinker)
+            if (think->function != reinterpret_cast<think_t>(P_MobjThinker))
             {                   //not a mobj
                 continue;
             }
@@ -411,7 +413,7 @@ void AM_loadPics(void)
     M_snprintf(namebuf, sizeof(namebuf), "AMMNUM%d", i);
     marknums[i] = W_CacheLumpName(namebuf, PU_STATIC);
   }*/
-    maplump = cache_lump_name<patch_t *>(DEH_String("AUTOPAGE"), PU_STATIC);
+    maplump = reinterpret_cast<byte *>(cache_lump_name<patch_t *>(DEH_String("AUTOPAGE"), PU_STATIC));
 }
 
 /*void AM_unloadPics(void)

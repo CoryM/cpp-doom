@@ -19,8 +19,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "txt_main.hpp"
-#include "txt_io.hpp"
+#include "../../textscreen/txt_main.hpp"
+#include "../../textscreen/txt_io.hpp"
 
 #include "net_client.hpp"
 
@@ -45,6 +45,8 @@
 #include "s_sound.hpp"
 #include "w_main.hpp"
 #include "v_video.hpp"
+
+#include "../utils/lump.hpp"
 
 #define CT_KEY_GREEN    'g'
 #define CT_KEY_YELLOW   'y'
@@ -147,7 +149,7 @@ static void CrispyDrawStats (void)
     if (!height || !coord_x)
     {
 	const int FontABaseLump = W_GetNumForName(DEH_String("FONTA_S")) + 1;
-	const patch_t *const p = W_CacheLumpNum(FontABaseLump + 'A' - 33, PU_CACHE);
+	const patch_t *const p = static_cast<patch_t *>(W_CacheLumpNum(FontABaseLump + 'A' - 33, PU_CACHE));
 
 	height = SHORT(p->height) + 1;
 	coord_x = ORIGWIDTH - 7 * SHORT(p->width);
@@ -351,7 +353,7 @@ void D_PageTicker(void)
 
 void D_PageDrawer(void)
 {
-    V_DrawRawScreen(W_CacheLumpName(pagename, PU_CACHE));
+    V_DrawRawScreen(static_cast<pixel_t *>(W_CacheLumpName(pagename, PU_CACHE)));
     if (demosequence == 1)
     {
         V_DrawPatch(4, 160, cache_lump_name<patch_t *>(DEH_String("ADVISOR"), PU_CACHE));
@@ -636,7 +638,7 @@ void initStartup(void)
 
     // Blit main screen
     textScreen = TXT_GetScreenData();
-    loading = cache_lump_name<patch_t *>(DEH_String("LOADING"), PU_CACHE);
+    loading = reinterpret_cast<byte *>(cache_lump_name<patch_t *>(DEH_String("LOADING"), PU_CACHE));
     memcpy(textScreen, loading, 4000);
 
     // Print version string
@@ -769,7 +771,7 @@ static void D_Endoom(void)
         return;
     }
 
-    endoom_data = cache_lump_name<patch_t *>(DEH_String("ENDTEXT"), PU_STATIC);
+    endoom_data = reinterpret_cast<byte *>(cache_lump_name<patch_t *>(DEH_String("ENDTEXT"), PU_STATIC));
 
     I_Endoom(endoom_data);
 }
@@ -860,7 +862,7 @@ void D_DoomMain(void)
     p = M_CheckParmWithArgs("-skill", 1);
     if (p)
     {
-        startskill = myargv[p + 1][0] - '1';
+        startskill = static_cast<skill_t>(myargv[p + 1][0] - '1');
         autostart = true;
     }
 

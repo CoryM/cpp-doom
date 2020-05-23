@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "doomtype.hpp"
+#include "../doomtype.hpp"
 #include "info.hpp"
 
 #include "deh_defs.hpp"
@@ -232,7 +232,7 @@ static boolean GetActionPointerForOffset(int offset, void **result)
     {
         if (action_pointers[i].offsets[deh_hhe_version] == offset)
         {
-            *result = action_pointers[i].func;
+            *result = reinterpret_cast<void *>(action_pointers[i].func);
             return true;
         }
     }
@@ -254,7 +254,7 @@ static void SuggestOtherVersions(unsigned int offset)
         {
             if (action_pointers[i].offsets[v] == offset)
             {
-                DEH_SuggestHereticVersion(v);
+                DEH_SuggestHereticVersion(static_cast<deh_hhe_version_t>(v));
             }
         }
     }
@@ -298,7 +298,7 @@ static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
             return;
         }
 
-        state->action = func;
+        state->action = reinterpret_cast<void(*)()>(func);
     }
     else
     {
