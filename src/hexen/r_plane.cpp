@@ -20,6 +20,7 @@
 #include "h2def.hpp"
 #include "i_system.hpp"
 #include "r_local.hpp"
+#include "../utils/lump.hpp"
 
 // MACROS ------------------------------------------------------------------
 
@@ -140,7 +141,7 @@ void R_MapPlane(int y, int x1, int x2)
     unsigned index;
 
 #ifdef RANGECHECK
-    if (x2 < x1 || x1 < 0 || x2 >= viewwidth || (unsigned) y > viewheight)
+    if (x2 < x1 || x1 < 0 || x2 >= viewwidth || (unsigned) y > (unsigned) viewheight)
     {
         I_Error("R_MapPlane: %i, %i at %i", x1, x2, y);
     }
@@ -498,8 +499,7 @@ void R_DrawPlanes(void)
             }
         }
         // Regular flat
-        tempSource = W_CacheLumpNum(firstflat +
-                                    flattranslation[pl->picnum], PU_STATIC);
+        tempSource = cache_lump_num<byte *>(firstflat + flattranslation[pl->picnum], PU_STATIC);
         scrollOffset = leveltime >> 1 & 63;
         switch (pl->special)
         {                       // Handle scrolling flats

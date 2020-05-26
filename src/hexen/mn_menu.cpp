@@ -31,6 +31,8 @@
 #include "s_sound.hpp"
 #include "v_video.hpp"
 
+#include "../utils/lump.hpp"
+
 // MACROS ------------------------------------------------------------------
 
 #define LEFT_DIR 0
@@ -357,7 +359,7 @@ void MN_DrTextA(const char *text, int x, int y)
         }
         else
         {
-            p = W_CacheLumpNum(FontABaseLump + c - 33, PU_CACHE);
+            p = cache_lump_num<patch_t *>(FontABaseLump + c - 33, PU_CACHE);
             V_DrawPatch(x, y, p);
             x += SHORT(p->width) - 1;
         }
@@ -383,7 +385,7 @@ void MN_DrTextAYellow(const char *text, int x, int y)
         }
         else
         {
-            p = W_CacheLumpNum(FontAYellowBaseLump + c - 33, PU_CACHE);
+            p = cache_lump_num<patch_t *>(FontAYellowBaseLump + c - 33, PU_CACHE);
             V_DrawPatch(x, y, p);
             x += SHORT(p->width) - 1;
         }
@@ -413,7 +415,7 @@ int MN_TextAWidth(const char *text)
         }
         else
         {
-            p = W_CacheLumpNum(FontABaseLump + c - 33, PU_CACHE);
+            p = cache_lump_num<patch_t *>(FontABaseLump + c - 33, PU_CACHE);
             width += SHORT(p->width) - 1;
         }
     }
@@ -441,7 +443,7 @@ void MN_DrTextB(const char *text, int x, int y)
         }
         else
         {
-            p = W_CacheLumpNum(FontBBaseLump + c - 33, PU_CACHE);
+            p = cache_lump_num<patch_t *>(FontBBaseLump + c - 33, PU_CACHE);
             V_DrawPatch(x, y, p);
             x += SHORT(p->width) - 1;
         }
@@ -471,7 +473,7 @@ int MN_TextBWidth(const char *text)
         }
         else
         {
-            p = W_CacheLumpNum(FontBBaseLump + c - 33, PU_CACHE);
+            p = cache_lump_num<patch_t *>(FontBBaseLump + c - 33, PU_CACHE);
             width += SHORT(p->width) - 1;
         }
     }
@@ -570,7 +572,7 @@ void MN_Drawer(void)
         y = CurrentMenu->y + (CurrentItPos * ITEM_HEIGHT) + SELECTOR_YOFFSET;
         selName = MenuTime & 16 ? "M_SLCTR1" : "M_SLCTR2";
         V_DrawPatch(x + SELECTOR_XOFFSET, y,
-                    W_CacheLumpName(selName, PU_CACHE));
+                    cache_lump_name<patch_t *>(selName, PU_CACHE));
     }
 }
 
@@ -587,9 +589,9 @@ static void DrawMainMenu(void)
     frame = (MenuTime / 5) % 7;
     V_DrawPatch(88, 0, cache_lump_name<patch_t *>("M_HTIC", PU_CACHE));
 // Old Gold skull positions: (40, 10) and (232, 10)
-    V_DrawPatch(37, 80, W_CacheLumpNum(MauloBaseLump + (frame + 2) % 7,
+    V_DrawPatch(37, 80, cache_lump_num<patch_t *>(MauloBaseLump + (frame + 2) % 7,
                                        PU_CACHE));
-    V_DrawPatch(278, 80, W_CacheLumpNum(MauloBaseLump + frame, PU_CACHE));
+    V_DrawPatch(278, 80, cache_lump_num<patch_t *>(MauloBaseLump + frame, PU_CACHE));
 }
 
 //==========================================================================
@@ -600,7 +602,7 @@ static void DrawMainMenu(void)
 
 static void DrawClassMenu(void)
 {
-    pclass_t class;
+    pclass_t pclass;
     static const char *boxLumpName[3] = {
         "m_fbox",
         "m_cbox",
@@ -613,10 +615,10 @@ static void DrawClassMenu(void)
     };
 
     MN_DrTextB("CHOOSE CLASS:", 34, 24);
-    class = (pclass_t) CurrentMenu->items[CurrentItPos].option;
-    V_DrawPatch(174, 8, W_CacheLumpName(boxLumpName[class], PU_CACHE));
+    pclass = (pclass_t) CurrentMenu->items[CurrentItPos].option;
+    V_DrawPatch(174, 8, cache_lump_name<patch_t *>(boxLumpName[pclass], PU_CACHE));
     V_DrawPatch(174 + 24, 8 + 12,
-                W_CacheLumpNum(W_GetNumForName(walkLumpName[class])
+                cache_lump_num<patch_t *>(W_GetNumForName(walkLumpName[pclass])
                                + ((MenuTime >> 3) & 3), PU_CACHE));
 }
 
@@ -1030,8 +1032,8 @@ static void SCSkill(int option)
         demoextend = false;
     }
 
-    PlayerClass[consoleplayer] = MenuPClass;
-    G_DeferredNewGame(option);
+    PlayerClass[consoleplayer] = static_cast<pclass_t>(MenuPClass);
+    G_DeferredNewGame(static_cast<skill_t>(option));
     SB_SetClassData();
     SB_state = -1;
     MN_DeactivateMenu();
@@ -1267,7 +1269,7 @@ boolean MN_Responder(event_t * event)
                     askforquit = false;
                     typeofask = 0;
                     paused = false;
-                    I_SetPalette(cache_lump_name<patch_t *>("PLAYPAL", PU_CACHE));
+                    I_SetPalette(cache_lump_name<byte *>("PLAYPAL", PU_CACHE));
                     H2_StartTitle();    // go to intro/demo mode.
                     return false;
                 case 3:
@@ -1779,7 +1781,7 @@ void MN_DeactivateMenu(void)
 
 void MN_DrawInfo(void)
 {
-    I_SetPalette(cache_lump_name<patch_t *>("PLAYPAL", PU_CACHE));
+    I_SetPalette(cache_lump_name<byte *>("PLAYPAL", PU_CACHE));
     V_CopyScaledBuffer(I_VideoBuffer,
            (byte *) W_CacheLumpNum(W_GetNumForName("TITLE") + InfoType,
                                    PU_CACHE), ORIGWIDTH * ORIGHEIGHT);
@@ -1807,7 +1809,7 @@ static void SetMenu(MenuType_t menu)
 //
 //---------------------------------------------------------------------------
 
-static void DrawSlider(Menu_t * menu, int item, int width, int slot)
+static void DrawSlider(Menu_t *menu, int item, int width, int slot)
 {
     int x;
     int y;
@@ -1819,10 +1821,9 @@ static void DrawSlider(Menu_t * menu, int item, int width, int slot)
     V_DrawPatch(x - 32, y, cache_lump_name<patch_t *>("M_SLDLT", PU_CACHE));
     for (x2 = x, count = width; count--; x2 += 8)
     {
-        V_DrawPatch(x2, y, W_CacheLumpName(count & 1 ? "M_SLDMD1"
-                                           : "M_SLDMD2", PU_CACHE));
+        V_DrawPatch(x2, y, cache_lump_name<patch_t *>(count & 1 ? "M_SLDMD1" : "M_SLDMD2", PU_CACHE));
     }
     V_DrawPatch(x2, y, cache_lump_name<patch_t *>("M_SLDRT", PU_CACHE));
     V_DrawPatch(x + 4 + slot * 8, y + 7,
-                cache_lump_name<patch_t *>("M_SLDKB", PU_CACHE));
+        cache_lump_name<patch_t *>("M_SLDKB", PU_CACHE));
 }

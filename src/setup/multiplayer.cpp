@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "doomtype.hpp"
+#include "../doomtype.hpp"
 
 #include "textscreen.hpp"
 
@@ -565,14 +565,14 @@ static txt_widget_t *IWADSelector(void)
 
     num_iwads = 0;
 
-    for (i=0; found_iwads[i] != NULL; ++i)
+    for (int i=0; found_iwads[i] != NULL; ++i)
     {
          ++num_iwads;
     }
 
-    iwad_labels = malloc(sizeof(*iwad_labels) * num_iwads);
+    iwad_labels = (const char **) malloc(sizeof(*iwad_labels) * num_iwads);
 
-    for (i=0; i < num_iwads; ++i)
+    for (int i=0; i < num_iwads; ++i)
     {
         iwad_labels[i] = found_iwads[i]->description;
     }
@@ -900,17 +900,14 @@ static void SelectQueryAddress(TXT_UNCAST_ARG(button),
         if (found_iwads[i] == NULL)
         {
             TXT_MessageBox(NULL,
-                           "The game on this server seems to be:\n"
-                           "\n"
-                           "   %s\n"
-                           "\n"
+                           "The game on this server seems to be:\n\n   %s\n\n"
                            "but the IWAD file %s is not found!\n"
                            "Without the required IWAD file, it may not be\n"
                            "possible to join this game.",
-                           D_SuggestGameName(querydata->gamemission,
-                                             querydata->gamemode),
-                           D_SuggestIWADName(querydata->gamemission,
-                                             querydata->gamemode));
+                           D_SuggestGameName(static_cast<GameMission_t>(querydata->gamemission), 
+                                             static_cast<GameMode_t>(querydata->gamemode)),
+                           D_SuggestIWADName(static_cast<GameMission_t>(querydata->gamemission), 
+                                             static_cast<GameMode_t>(querydata->gamemode)));
         }
     }
 

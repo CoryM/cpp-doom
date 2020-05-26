@@ -18,7 +18,7 @@
 #ifndef __R_LOCAL__
 #define __R_LOCAL__
 
-#include "i_video.hpp"
+#include "../i_video.hpp"
 #include "v_patch.hpp"
 
 #define	ANGLETOSKYSHIFT		22      // sky map is 256*128*4 maps
@@ -30,7 +30,10 @@
 
 #define	PI					3.141592657
 
+// multiple definitions! Define if needed.
+#ifndef CENTERY
 #define	CENTERY				(SCREENHEIGHT/2)
+#endif
 
 #define	MINZ			(FRACUNIT*4)
 

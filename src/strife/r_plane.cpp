@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "i_system.hpp"
+#include "../i_system.hpp"
 #include "z_zone.hpp"
 #include "w_wad.hpp"
 
@@ -32,7 +32,7 @@
 #include "r_local.hpp"
 #include "r_sky.hpp"
 
-
+#include "../utils/lump.hpp"
 
 planefunction_t		floorfunc;
 planefunction_t		ceilingfunc;
@@ -416,7 +416,7 @@ void R_DrawPlanes (void)
 	
 	// regular flat
         lumpnum = firstflat + flattranslation[pl->picnum];
-	ds_source = W_CacheLumpNum(lumpnum, PU_STATIC);
+	ds_source = cache_lump_num<byte *>(lumpnum, PU_STATIC);
 	
 	planeheight = abs(pl->height-viewz);
 	light = (pl->lightlevel >> LIGHTSEGSHIFT)+extralight;

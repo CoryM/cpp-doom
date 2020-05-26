@@ -24,7 +24,7 @@
 #include <ctype.h>
 
 // Functions.
-#include "deh_main.hpp"
+#include "../deh_main.hpp"
 #include "i_system.hpp"
 #include "i_swap.hpp"
 #include "z_zone.hpp"
@@ -41,6 +41,8 @@
 #include "r_state.hpp"
 
 #include "p_dialog.hpp" // [STRIFE]
+
+#include "../utils/lump.hpp"
 
 typedef enum
 {
@@ -178,7 +180,7 @@ void F_StartFinale (void)
     gamestate = GS_FINALE;
     viewactive = false;
     automapactive = false;
-    wipegamestate = -1; // [STRIFE]
+    wipegamestate = static_cast<gamestate_t>(-1); // [STRIFE]
 
     // [STRIFE] Setup the slide show
     slideshow_panel = DEH_String("PANEL0");
@@ -271,7 +273,7 @@ void F_WaitTicker(void)
     if(++finalecount >= 250)
     {
         gamestate   = GS_FINALE;
-        finalestage = 0;
+        finalestage = static_cast<finalestage_t>(0);
         finalecount = 0;
     }
 }
@@ -432,7 +434,7 @@ static void F_DoSlideShow(void)
     case SLIDE_EXIT: // state -1: proceed to next finale stage
         finalecount = 0;
         finalestage = F_STAGE_ARTSCREEN;
-        wipegamestate = -1;
+        wipegamestate = static_cast<gamestate_t>(-1);
         S_StartMusic(mus_fast);
         // haleyjd 20130301: The ONLY glitch fixed in 1.31 of Strife
         // *would* be something this insignificant, of course!
@@ -451,8 +453,8 @@ static void F_DoSlideShow(void)
         // wipegamestate if menuactive is true.
         finalecount = 0;
         finalestage = F_STAGE_ARTSCREEN;
-        if(menuactive)
-            wipegamestate = -1;
+        if(menuactive){
+            wipegamestate = static_cast<gamestate_t>(-1);}
         S_StartMusic(mus_fast);
         slideshow_state = SLIDE_CHOCO; // remain here.
         break;
@@ -463,7 +465,7 @@ static void F_DoSlideShow(void)
     finalecount = 0;
     if(gameversion != exe_strife_1_31) // See above. This was removed in 1.31.
     {
-       patch = (patch_t *)cache_lump_name<patch_t *>(DEH_String("PANEL0"), PU_CACHE);
+       patch = cache_lump_name<patch_t *>(DEH_String("PANEL0"), PU_CACHE);
        V_DrawPatch(0, 0, patch);
     }
 }
@@ -654,7 +656,7 @@ void F_StartCast (void)
     casttics = caststate->tics;
     if(casttics > 50)
         casttics = 50;
-    wipegamestate = -1;             // force a screen wipe
+    wipegamestate = static_cast<gamestate_t>(-1);             // force a screen wipe
     castdeath = false;
     finalestage = F_STAGE_CAST;
     castframes = 0;
@@ -1026,7 +1028,7 @@ void F_Drawer (void)
     case F_STAGE_TEXT:
         // Draw slideshow panel
         {
-            patch_t *slide = W_CacheLumpName(slideshow_panel, PU_CACHE);
+            patch_t *slide = cache_lump_name<patch_t *>(slideshow_panel, PU_CACHE);
             V_DrawPatch(0, 0, slide);
         }
         break;

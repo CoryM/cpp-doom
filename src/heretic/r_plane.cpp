@@ -21,6 +21,8 @@
 #include "i_system.hpp"
 #include "r_local.hpp"
 
+#include "../utils/lump.hpp"
+
 planefunction_t floorfunc, ceilingfunc;
 
 //
@@ -219,7 +221,7 @@ static void R_RaiseVisplanes (visplane_t** vp)
 	visplane_t* visplanes_old = visplanes;
 
 	numvisplanes = numvisplanes ? 2 * numvisplanes : MAXVISPLANES;
-	visplanes = I_Realloc(visplanes, numvisplanes * sizeof(*visplanes));
+	visplanes = i_realloc<visplane_t *>(visplanes, numvisplanes * sizeof(*visplanes));
 	memset(visplanes + numvisplanes_old, 0, (numvisplanes - numvisplanes_old) * sizeof(*visplanes));
 
 	lastvisplane = visplanes + numvisplanes_old;
@@ -476,7 +478,7 @@ void R_DrawPlanes(void)
         //
         lumpnum = firstflat + flattranslation[pl->picnum];
 
-        tempSource = W_CacheLumpNum(lumpnum, PU_STATIC);
+        tempSource = cache_lump_num<byte *>(lumpnum, PU_STATIC);
 
         switch (pl->special)
         {

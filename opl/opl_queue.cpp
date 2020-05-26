@@ -115,8 +115,6 @@ int OPL_Queue_Pop(opl_callback_queue_t *queue,
                   opl_callback_t *callback, void **data)
 {
     opl_queue_entry_t *entry;
-    int child1, child2;
-    int i, next_i;
 
     // Empty?
 
@@ -138,12 +136,13 @@ int OPL_Queue_Pop(opl_callback_queue_t *queue,
 
     // Percolate down.
 
-    i = 0;
+    int i = 0;
+    int next_i;
 
     for (;;)
     {
-        child1 = i * 2 + 1;
-        child2 = i * 2 + 2;
+        unsigned int child1 = i * 2 + 1;
+        unsigned int child2 = i * 2 + 2;
 
         if (child1 < queue->num_entries
          && queue->entries[child1].time < entry->time)
@@ -205,9 +204,8 @@ void OPL_Queue_AdjustCallbacks(opl_callback_queue_t *queue,
                                uint64_t time, float factor)
 {
     int64_t offset;
-    int i;
-
-    for (i = 0; i < queue->num_entries; ++i)
+    
+    for (unsigned int i = 0; i < queue->num_entries; ++i)
     {
         offset = queue->entries[i].time - time;
         queue->entries[i].time = time + (uint64_t) (offset / factor);

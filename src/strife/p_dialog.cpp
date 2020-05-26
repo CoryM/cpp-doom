@@ -18,11 +18,12 @@
 //
 // Dialog Engine for Strife
 //
+#include "p_dialog.hpp"
 
 #include <stdlib.h>
 
-#include "z_zone.hpp"
-#include "w_wad.hpp"
+#include "../z_zone.hpp"
+#include "../w_wad.hpp"
 #include "deh_str.hpp"
 #include "d_main.hpp"
 #include "d_mode.hpp"
@@ -35,10 +36,11 @@
 #include "v_video.hpp"
 #include "p_local.hpp"
 #include "sounds.hpp"
-#include "p_dialog.hpp"
 #include "s_sound.hpp"
 #include "p_local.hpp"
 #include "p_inter.hpp"
+
+#include "../utils/lump.hpp"
 
 //
 // Defines and Macros
@@ -392,16 +394,14 @@ static const char *dialogtext;
 // dialogs from the dialog lump rather than reading them raw from the lump 
 // pointer. This avoids problems with structure packing.
 //
-static void P_ParseDialogLump(byte *lump, mapdialog_t **dialogs, 
-                              int numdialogs, int tag)
+static void P_ParseDialogLump(byte *lump, mapdialog_t **dialogs, int numdialogs, int tag)
 {
     int i;
     byte *rover = lump;
 
-    *dialogs = Z_Malloc(numdialogs * sizeof(mapdialog_t), tag, NULL);
+    *dialogs = z_malloc<mapdialog_t *>(numdialogs * sizeof(mapdialog_t), tag, NULL);
 
-    for(i = 0; i < numdialogs; i++)
-    {
+    for(i = 0; i < numdialogs; i++) {
         int j;
         mapdialog_t *curdialog = &((*dialogs)[i]);
 
@@ -454,7 +454,7 @@ void P_DialogLoad(void)
         numleveldialogs = 0;
     else
     {
-        byte *leveldialogptr = W_CacheLumpNum(lumpnum, PU_STATIC);
+        byte *leveldialogptr = cache_lump_num<byte *>(lumpnum, PU_STATIC);
         numleveldialogs = W_LumpLength(lumpnum) / ORIG_MAPDIALOG_SIZE;
         P_ParseDialogLump(leveldialogptr, &leveldialogs, numleveldialogs, 
                           PU_LEVEL);
@@ -469,7 +469,7 @@ void P_DialogLoad(void)
         script0loaded = true; 
         // BUG: Rogue should have used W_GetNumForName here...
         lumpnum = W_CheckNumForName(DEH_String("script00")); 
-        script0ptr = W_CacheLumpNum(lumpnum, PU_STATIC);
+        script0ptr = cache_lump_num<byte *>(lumpnum, PU_STATIC);
         numscript0dialogs = W_LumpLength(lumpnum) / ORIG_MAPDIALOG_SIZE;
         P_ParseDialogLump(script0ptr, &script0dialogs, numscript0dialogs,
                           PU_STATIC);
@@ -613,7 +613,7 @@ boolean P_GiveInventoryItem(player_t *player, int sprnum, mobjtype_t type)
     int curinv = 0;
     int i;
     boolean ok = false;
-    mobjtype_t item = 0;
+    mobjtype_t item = static_cast<mobjtype_t>(0);
     inventory_t* invtail;
 
     // repaint the status bar due to inventory changing
@@ -625,7 +625,7 @@ boolean P_GiveInventoryItem(player_t *player, int sprnum, mobjtype_t type)
         if(curinv > player->numinventory)
             return true;
 
-        item = player->inventory[curinv].type;
+        item = static_cast<mobjtype_t>(player->inventory[curinv].type);
         if(type < item)
         {
             if(curinv != MAXINVENTORYSLOTS)
@@ -703,7 +703,7 @@ boolean P_GiveItemToPlayer(player_t *player, int sprnum, mobjtype_t type)
     // check for keys
     if(type >= MT_KEY_BASE && type <= MT_NEWKEY5)
     {
-        P_GiveCard(player, type - MT_KEY_BASE);
+        P_GiveCard(player, static_cast<card_t>(type - MT_KEY_BASE));
         return true;
     }
 
@@ -835,7 +835,7 @@ boolean P_GiveItemToPlayer(player_t *player, int sprnum, mobjtype_t type)
             player->backpack = true;
         }
         for(i = 0; i < NUMAMMO; i++)
-            P_GiveAmmo(player, i, 1);
+            P_GiveAmmo(player, static_cast<ammotype_t>(i), 1);
         break;
 
     case SPR_RIFL: // Assault Rifle
@@ -1081,7 +1081,7 @@ static void P_DialogDrawer(void)
     // draw background
     if(dialogbgpiclumpnum != -1)
     {
-        patch_t *patch = W_CacheLumpNum(dialogbgpiclumpnum, PU_CACHE);
+        auto patch = cache_lump_num<patch_t *>(dialogbgpiclumpnum, PU_CACHE);
         V_DrawPatchDirect(0, 0, patch);
     }
 
@@ -1165,7 +1165,7 @@ void P_DialogDoChoice(int choice)
     // villsa 09/08/10: converted into for loop
     for(i = 0; i < MDLG_MAXITEMS; i++)
     {
-        if(P_PlayerHasItem(dialogplayer, currentchoice->needitems[i]) <
+        if(P_PlayerHasItem(dialogplayer, static_cast<mobjtype_t>(currentchoice->needitems[i])) <
                                          currentchoice->needamounts[i])
         {
             candochoice = false; // nope, missing something
@@ -1184,7 +1184,7 @@ void P_DialogDoChoice(int choice)
         if(item < 0 || 
            P_GiveItemToPlayer(dialogplayer, 
                               states[mobjinfo[item].spawnstate].sprite, 
-                              item))
+                              static_cast<mobjtype_t>(item)))
         {
             // if successful, take needed items
             int count = 0;
@@ -1215,12 +1215,11 @@ void P_DialogDoChoice(int choice)
     if(choice != dialogmenu.numitems - 1)
     {
         int objective;
-        char *objlump;
 
         if((objective = currentchoice->objective))
         {
             DEH_snprintf(mission_objective, OBJECTIVE_LEN, "log%i", objective);
-            objlump = W_CacheLumpName(mission_objective, PU_CACHE);
+            auto objlump = cache_lump_name<char *>(mission_objective, PU_CACHE);
             M_StringCopy(mission_objective, objlump, OBJECTIVE_LEN);
         }
         // haleyjd 20130301: v1.31 hack: if first char of message is a period,
@@ -1324,7 +1323,7 @@ void P_DialogStart(player_t *player)
             // if the item is non-zero, the player must have at least one in his
             // or her inventory
             if(currentdialog->checkitem[i] != 0 &&
-                P_PlayerHasItem(dialogplayer, currentdialog->checkitem[i]) < 1)
+                P_PlayerHasItem(dialogplayer, static_cast<mobjtype_t>(currentdialog->checkitem[i])) < 1)
                 break;
         }
 
@@ -1384,7 +1383,7 @@ void P_DialogStart(player_t *player)
     pic = W_CheckNumForName(currentdialog->backpic);
     dialogbgpiclumpnum = pic;
     if(pic != -1)
-        V_DrawPatchDirect(0, 0, W_CacheLumpNum(pic, PU_CACHE));
+        V_DrawPatchDirect(0, 0, cache_lump_num<patch_t *>(pic, PU_CACHE));
 
     // get voice
     I_StartVoice(currentdialog->voice);

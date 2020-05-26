@@ -18,8 +18,8 @@
 
 #include <string.h>
 
-#include "z_zone.hpp"
-#include "i_video.hpp"
+#include "../z_zone.hpp"
+#include "../i_video.hpp"
 #include "v_video.hpp"
 #include "m_random.hpp"
 
@@ -227,7 +227,7 @@ wipe_StartScreen
   int	width,
   int	height )
 {
-    wipe_scr_start = Z_Malloc(SCREENWIDTH * SCREENHEIGHT, PU_STATIC, NULL);
+    wipe_scr_start = z_malloc<byte *>(SCREENWIDTH * SCREENHEIGHT, PU_STATIC, NULL);
     I_ReadScreen(wipe_scr_start);
     return 0;
 }
@@ -240,7 +240,7 @@ wipe_EndScreen
   int	width,
   int	height )
 {
-    wipe_scr_end = Z_Malloc(SCREENWIDTH * SCREENHEIGHT, PU_STATIC, NULL);
+    wipe_scr_end = z_malloc<byte *>(SCREENWIDTH * SCREENHEIGHT, PU_STATIC, NULL);
     I_ReadScreen(wipe_scr_end);
     V_DrawBlock(x, y, width, height, wipe_scr_start); // restore start scr.
     return 0;

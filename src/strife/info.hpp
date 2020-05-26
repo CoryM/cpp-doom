@@ -2210,7 +2210,7 @@ typedef struct
     int     mass;
     int     damage;
     int     activesound;
-    int     flags;
+    long    flags;
     const char *name;
 } mobjinfo_t;
 

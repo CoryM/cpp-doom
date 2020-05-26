@@ -26,6 +26,8 @@
 #include "v_video.hpp"
 #include "i_swap.hpp"
 
+#include "../utils/lump.hpp"
+
 // MACROS ------------------------------------------------------------------
 
 #define	TEXTSPEED	3
@@ -170,7 +172,7 @@ static void TextWrite(void)
     int cx, cy;
     patch_t *w;
 
-    V_CopyScaledBuffer(I_VideoBuffer, W_CacheLumpNum(FinaleLumpNum, PU_CACHE),
+    V_CopyScaledBuffer(I_VideoBuffer, cache_lump_num<pixel_t *>(FinaleLumpNum, PU_CACHE),
            ORIGWIDTH * ORIGHEIGHT);
     if (FinaleStage == 5)
     {                           // Chess pic, draw the correct character graphic
@@ -180,9 +182,7 @@ static void TextWrite(void)
         }
         else if (PlayerClass[consoleplayer])
         {
-            V_DrawPatch(60, 0, W_CacheLumpNum(W_GetNumForName("chessc")
-                                              + PlayerClass[consoleplayer] -
-                                              1, PU_CACHE));
+            V_DrawPatch(60, 0, cache_lump_num<patch_t *>(W_GetNumForName("chessc") + PlayerClass[consoleplayer] - 1, PU_CACHE));
         }
     }
     // Draw the actual text
@@ -224,7 +224,7 @@ static void TextWrite(void)
             cx += 5;
             continue;
         }
-        w = W_CacheLumpNum(FontABaseLump + c - 33, PU_CACHE);
+        w = cache_lump_num<patch_t *>(FontABaseLump + c - 33, PU_CACHE);
         if (cx + SHORT(w->width) > SCREENWIDTH)
         {
             break;
@@ -244,9 +244,9 @@ static void InitializeFade(boolean fadeIn)
 {
     unsigned i;
 
-    Palette = Z_Malloc(768 * sizeof(fixed_t), PU_STATIC, 0);
-    PaletteDelta = Z_Malloc(768 * sizeof(fixed_t), PU_STATIC, 0);
-    RealPalette = Z_Malloc(768 * sizeof(byte), PU_STATIC, 0);
+    Palette      = z_malloc<fixed_t *>(768 * sizeof(fixed_t), PU_STATIC, 0);
+    PaletteDelta = z_malloc<fixed_t *>(768 * sizeof(fixed_t), PU_STATIC, 0);
+    RealPalette  = z_malloc<byte *>(768 * sizeof(byte), PU_STATIC, 0);
 
     if (fadeIn)
     {
@@ -311,8 +311,7 @@ static void FadePic(void)
 
 static void DrawPic(void)
 {
-    V_CopyScaledBuffer(I_VideoBuffer, W_CacheLumpNum(FinaleLumpNum, PU_CACHE),
-           ORIGWIDTH * ORIGHEIGHT);
+    V_CopyScaledBuffer(I_VideoBuffer, cache_lump_num<pixel_t *>(FinaleLumpNum, PU_CACHE), ORIGWIDTH * ORIGHEIGHT);
     if (FinaleStage == 4 || FinaleStage == 5)
     {                           // Chess pic, draw the correct character graphic
         if (netgame)
@@ -321,9 +320,7 @@ static void DrawPic(void)
         }
         else if (PlayerClass[consoleplayer])
         {
-            V_DrawPatch(60, 0, W_CacheLumpNum(W_GetNumForName("chessc")
-                                              + PlayerClass[consoleplayer] -
-                                              1, PU_CACHE));
+            V_DrawPatch(60, 0, cache_lump_num<patch_t *>(W_GetNumForName("chessc") + PlayerClass[consoleplayer] - 1, PU_CACHE));
         }
     }
 }

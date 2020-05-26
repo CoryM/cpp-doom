@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "config.h"
+//#include "config.h"
 
 #include "h2def.hpp"
 #include "ct_chat.hpp"
@@ -41,6 +41,8 @@
 #include "p_local.hpp"
 #include "v_video.hpp"
 #include "w_main.hpp"
+
+#include "../utils/lump.hpp"
 
 // MACROS ------------------------------------------------------------------
 
@@ -193,7 +195,7 @@ static void D_SetDefaultSavePath(void)
             // Windows and not using a config dir), behave like Vanilla Hexen
             // and use hexndata/:
 
-            SavePath = malloc(10);
+            SavePath = static_cast<char *>(malloc(10));
             M_snprintf(SavePath, 10, "hexndata%c", DIR_SEPARATOR);
         }
         else
@@ -666,7 +668,7 @@ static void HandleArgs(void)
 
     if (p)
     {
-        startskill = myargv[p+1][0] - '1';
+        startskill = static_cast<skill_t>(myargv[p+1][0] - '1');
         autostart = true;
     }
 
@@ -983,7 +985,7 @@ void H2_PageTicker(void)
 
 static void PageDrawer(void)
 {
-    V_DrawRawScreen(W_CacheLumpName(pagename, PU_CACHE));
+    V_DrawRawScreen(cache_lump_name<pixel_t *>(pagename, PU_CACHE));
     if (demosequence == 1)
     {
         V_DrawPatch(4, 160, cache_lump_name<patch_t *>("ADVISOR", PU_CACHE));

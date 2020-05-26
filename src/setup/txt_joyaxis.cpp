@@ -16,15 +16,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #include "joystick.hpp"
-#include "i_joystick.hpp"
-#include "i_system.hpp"
+#include "../i_joystick.hpp"
+#include "../i_system.hpp"
 #include "m_controls.hpp"
 #include "m_misc.hpp"
 
-#include "textscreen.hpp"
+#include "../textscreen/textscreen.hpp"
 #include "txt_gui.hpp"
 #include "txt_io.hpp"
 #include "txt_joyaxis.hpp"
@@ -226,9 +226,7 @@ static void IdentifyBadAxes(txt_joystick_axis_t *joystick_axis)
 
     free(joystick_axis->bad_axis);
 
-    joystick_axis->bad_axis
-        = calloc(SDL_JoystickNumAxes(joystick_axis->joystick),
-                                     sizeof(boolean));
+    joystick_axis->bad_axis = static_cast<bool *>(calloc(SDL_JoystickNumAxes(joystick_axis->joystick), sizeof(boolean)));
 
     // Look for uncentered axes.
 
@@ -319,7 +317,7 @@ static int EventCallback(SDL_Event *event, TXT_UNCAST_ARG(joystick_axis))
 
         if (advance)
         {
-            joystick_axis->config_stage = NextCalibrateStage(joystick_axis);
+            joystick_axis->config_stage = static_cast<txt_joystick_axis_stage_t>(NextCalibrateStage(joystick_axis));
             SetCalibrationLabel(joystick_axis);
 
             // Finished?
@@ -518,7 +516,7 @@ txt_joystick_axis_t *TXT_NewJoystickAxis(int *axis, int *invert,
 {
     txt_joystick_axis_t *joystick_axis;
 
-    joystick_axis = malloc(sizeof(txt_joystick_axis_t));
+    joystick_axis = static_cast<txt_joystick_axis_t *>(malloc(sizeof(txt_joystick_axis_t)));
 
     TXT_InitWidget(joystick_axis, &txt_joystick_axis_class);
     joystick_axis->axis = axis;

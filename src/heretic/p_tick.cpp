@@ -125,7 +125,7 @@ void P_RunThinkers(void)
         else
         {
             if (currentthinker->function)
-                currentthinker->function(currentthinker);
+                reinterpret_cast<void(*)(thinker_t *)>(currentthinker->function)(currentthinker);
             nextthinker = currentthinker->next;
         }
         currentthinker = nextthinker;

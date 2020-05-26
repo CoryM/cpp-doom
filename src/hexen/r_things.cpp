@@ -22,6 +22,8 @@
 #include "i_swap.hpp"
 #include "r_local.hpp"
 
+#include "../utils/lump.hpp"
+
 //void R_DrawTranslatedAltTLColumn(void);
 
 typedef struct
@@ -159,7 +161,7 @@ void R_InitSpriteDefs(const char **namelist)
     if (!numsprites)
         return;
 
-    sprites = Z_Malloc(numsprites * sizeof(*sprites), PU_STATIC, NULL);
+    sprites = z_malloc<spritedef_t *>(numsprites * sizeof(*sprites), PU_STATIC, NULL);
 
     start = firstspritelump - 1;
     end = lastspritelump + 1;
@@ -228,10 +230,8 @@ void R_InitSpriteDefs(const char **namelist)
         // allocate space for the frames present and copy sprtemp to it
         //
         sprites[i].numframes = maxframe;
-        sprites[i].spriteframes =
-            Z_Malloc(maxframe * sizeof(spriteframe_t), PU_STATIC, NULL);
-        memcpy(sprites[i].spriteframes, sprtemp,
-               maxframe * sizeof(spriteframe_t));
+        sprites[i].spriteframes = z_malloc<spriteframe_t *>(maxframe * sizeof(spriteframe_t), PU_STATIC, NULL);
+        memcpy(sprites[i].spriteframes, sprtemp, maxframe * sizeof(spriteframe_t));
     }
 
 }
@@ -375,7 +375,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
     fixed_t baseclip;
 
 
-    patch = W_CacheLumpNum(vis->patch + firstspritelump, PU_CACHE);
+    patch = cache_lump_num<patch_t *>(vis->patch + firstspritelump, PU_CACHE);
 
     dc_colormap = vis->colormap;
 
@@ -388,7 +388,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
         {
             colfunc = R_DrawTranslatedTLColumn;
             dc_translation = translationtables - 256
-                + vis->class * ((maxplayers - 1) * 256) +
+                + vis->pclass * ((maxplayers - 1) * 256) +
                 ((vis->mobjflags & MF_TRANSLATION) >> (MF_TRANSSHIFT - 8));
         }
         else if (vis->mobjflags & MF_SHADOW)
@@ -405,7 +405,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
         // Draw using translated column function
         colfunc = R_DrawTranslatedColumn;
         dc_translation = translationtables - 256
-            + vis->class * ((maxplayers - 1) * 256) +
+            + vis->pclass * ((maxplayers - 1) * 256) +
             ((vis->mobjflags & MF_TRANSLATION) >> (MF_TRANSSHIFT - 8));
     }
 
@@ -465,7 +465,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
 
 void R_ProjectSprite(mobj_t * thing)
 {
-    fixed_t trx, try;
+    fixed_t tr_x, tr_y;
     fixed_t gxt, gyt;
     fixed_t tx, tz;
     fixed_t xscale;
@@ -488,19 +488,19 @@ void R_ProjectSprite(mobj_t * thing)
 //
 // transform the origin point
 //
-    trx = thing->x - viewx;
-    try = thing->y - viewy;
+    tr_x = thing->x - viewx;
+    tr_y = thing->y - viewy;
 
-    gxt = FixedMul(trx, viewcos);
-    gyt = -FixedMul(try, viewsin);
+    gxt = FixedMul(tr_x, viewcos);
+    gyt = -FixedMul(tr_y, viewsin);
     tz = gxt - gyt;
 
     if (tz < MINZ)
         return;                 // thing is behind view plane
     xscale = FixedDiv(projection, tz);
 
-    gxt = -FixedMul(trx, viewsin);
-    gyt = FixedMul(try, viewcos);
+    gxt = -FixedMul(tr_x, viewsin);
+    gyt = FixedMul(tr_y, viewcos);
     tx = -(gyt + gxt);
 
     if (abs(tx) > (tz << 2))
@@ -562,15 +562,15 @@ void R_ProjectSprite(mobj_t * thing)
     {
         if (thing->player)
         {
-            vis->class = thing->player->class;
+            vis->pclass = thing->player->pclass;
         }
         else
         {
-            vis->class = thing->special1.i;
+            vis->pclass = thing->special1.i;
         }
-        if (vis->class > 2)
+        if (vis->pclass > 2)
         {
-            vis->class = 0;
+            vis->pclass = 0;
         }
     }
     // foot clipping
@@ -725,14 +725,14 @@ void R_DrawPSprite(pspdef_t * psp)
 //
     vis = &avis;
     vis->mobjflags = 0;
-    vis->class = 0;
+    vis->pclass = 0;
     vis->psprite = true;
     vis->floorclip = 0;
     vis->texturemid = (BASEYCENTER << FRACBITS) /* + FRACUNIT / 2 */
         - (psp->sy - spritetopoffset[lump]);
     if (viewheight == SCREENHEIGHT)
     {
-        vis->texturemid -= PSpriteSY[viewplayer->class]
+        vis->texturemid -= PSpriteSY[viewplayer->pclass]
             [players[consoleplayer].readyweapon];
     }
     vis->x1 = x1 < 0 ? 0 : x1;
@@ -752,7 +752,7 @@ void R_DrawPSprite(pspdef_t * psp)
         vis->startfrac += vis->xiscale * (vis->x1 - x1);
     vis->patch = lump;
 
-    if (viewplayer->powers[pw_invulnerability] && viewplayer->class
+    if (viewplayer->powers[pw_invulnerability] && viewplayer->pclass
         == PCLASS_CLERIC)
     {
         vis->colormap = spritelights[MAXLIGHTSCALE - 1];

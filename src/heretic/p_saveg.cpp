@@ -1785,22 +1785,22 @@ void P_ArchiveSpecials(void)
             SV_WriteByte(tc_floor);
             saveg_write_floormove_t((floormove_t *) th);
         }
-        else if (th->function == T_PlatRaise)
+        else if (th->function == reinterpret_cast<think_t>(T_PlatRaise))
         {
             SV_WriteByte(tc_plat);
             saveg_write_plat_t((plat_t *) th);
         }
-        else if (th->function == T_LightFlash)
+        else if (th->function == reinterpret_cast<think_t>(T_LightFlash))
         {
             SV_WriteByte(tc_flash);
             saveg_write_lightflash_t((lightflash_t *) th);
         }
-        else if (th->function == T_StrobeFlash)
+        else if (th->function == reinterpret_cast<think_t>(T_StrobeFlash))
         {
             SV_WriteByte(tc_strobe);
             saveg_write_strobe_t((strobe_t *) th);
         }
-        else if (th->function == T_Glow)
+        else if (th->function == reinterpret_cast<think_t>(T_Glow))
         {
             SV_WriteByte(tc_glow);
             saveg_write_glow_t((glow_t *) th);
@@ -1840,63 +1840,63 @@ void P_UnArchiveSpecials(void)
                 return;         // end of list
 
             case tc_ceiling:
-                ceiling = Z_Malloc(sizeof(*ceiling), PU_LEVEL, NULL);
+                ceiling = static_cast<ceiling_t *>(Z_Malloc(sizeof(*ceiling), PU_LEVEL, NULL));
                 saveg_read_ceiling_t(ceiling);
-                ceiling->sector->specialdata = T_MoveCeiling;  // ???
-                ceiling->thinker.function = T_MoveCeiling;
+                ceiling->sector->specialdata = reinterpret_cast<void *>(T_MoveCeiling);  // ???
+                ceiling->thinker.function = reinterpret_cast<think_t>(T_MoveCeiling);
                 P_AddThinker(&ceiling->thinker);
                 P_AddActiveCeiling(ceiling);
                 break;
 
             case tc_door:
-                door = Z_Malloc(sizeof(*door), PU_LEVEL, NULL);
+                door = static_cast<vldoor_t *>(Z_Malloc(sizeof(*door), PU_LEVEL, NULL));
                 saveg_read_vldoor_t(door);
                 door->sector->specialdata = door;
-                door->thinker.function = T_VerticalDoor;
+                door->thinker.function = reinterpret_cast<think_t>(T_VerticalDoor);
                 P_AddThinker(&door->thinker);
                 break;
 
             case tc_floor:
-                floor = Z_Malloc(sizeof(*floor), PU_LEVEL, NULL);
+                floor = static_cast<floormove_t *>(Z_Malloc(sizeof(*floor), PU_LEVEL, NULL));
                 saveg_read_floormove_t(floor);
-                floor->sector->specialdata = T_MoveFloor;
-                floor->thinker.function = T_MoveFloor;
+                floor->sector->specialdata = reinterpret_cast<void *>(T_MoveFloor);
+                floor->thinker.function = reinterpret_cast<think_t>(T_MoveFloor);
                 P_AddThinker(&floor->thinker);
                 break;
 
             case tc_plat:
-                plat = Z_Malloc(sizeof(*plat), PU_LEVEL, NULL);
+                plat = static_cast<plat_t *>(Z_Malloc(sizeof(*plat), PU_LEVEL, NULL));
                 saveg_read_plat_t(plat);
-                plat->sector->specialdata = T_PlatRaise;
+                plat->sector->specialdata = reinterpret_cast<void *>(T_PlatRaise);
                 // In the original Heretic code this was a conditional "fix"
                 // of the thinker function, but the save code (above) decides
                 // whether to save a T_PlatRaise based on thinker function
                 // anyway, so it can't be NULL. Having the conditional causes
                 // a bug, as our saveg_read_thinker_t sets these to NULL.
                 // if (plat->thinker.function)
-                plat->thinker.function = T_PlatRaise;
+                plat->thinker.function = reinterpret_cast<think_t>(T_PlatRaise);
                 P_AddThinker(&plat->thinker);
                 P_AddActivePlat(plat);
                 break;
 
             case tc_flash:
-                flash = Z_Malloc(sizeof(*flash), PU_LEVEL, NULL);
+                flash = static_cast<lightflash_t *>(Z_Malloc(sizeof(*flash), PU_LEVEL, NULL));
                 saveg_read_lightflash_t(flash);
-                flash->thinker.function = T_LightFlash;
+                flash->thinker.function = reinterpret_cast<think_t>(T_LightFlash);
                 P_AddThinker(&flash->thinker);
                 break;
 
             case tc_strobe:
-                strobe = Z_Malloc(sizeof(*strobe), PU_LEVEL, NULL);
+                strobe = static_cast<strobe_t *>(Z_Malloc(sizeof(*strobe), PU_LEVEL, NULL));
                 saveg_read_strobe_t(strobe);
-                strobe->thinker.function = T_StrobeFlash;
+                strobe->thinker.function = reinterpret_cast<think_t>(T_StrobeFlash);
                 P_AddThinker(&strobe->thinker);
                 break;
 
             case tc_glow:
-                glow = Z_Malloc(sizeof(*glow), PU_LEVEL, NULL);
+                glow = static_cast<glow_t *>(Z_Malloc(sizeof(*glow), PU_LEVEL, NULL));
                 saveg_read_glow_t(glow);
-                glow->thinker.function = T_Glow;
+                glow->thinker.function = reinterpret_cast<think_t>(T_Glow);
                 P_AddThinker(&glow->thinker);
                 break;
 

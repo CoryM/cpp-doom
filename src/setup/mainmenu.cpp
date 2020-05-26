@@ -16,8 +16,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
-#include "textscreen.hpp"
+//#include "config.h"
+#include "../../textscreen/textscreen.hpp"
 
 #include "execute.hpp"
 
@@ -27,7 +27,7 @@
 #include "m_misc.hpp"
 #include "z_zone.hpp"
 
-#include "setup_icon.c"
+#include "setup_icon.cpp"
 #include "mode.hpp"
 
 #include "compatibility.hpp"
@@ -82,7 +82,7 @@ static void SensibleDefaults(void)
     key_multi_msgplayer[7] = 'm';
     mousebprevweapon = 4;           // Scroll wheel = weapon cycle
     mousebnextweapon = 3;
-    snd_musicdevice = 3;
+    snd_musicdevice = static_cast<snddevice_t>(3);
     joybspeed = 29;                 // Always run
     vanilla_savegame_limit = 0;
     vanilla_keyboard_mapping = 0;
@@ -143,7 +143,7 @@ static void QuitConfirm(void *unused1, void *unused2)
     TXT_AddWidgets(window, 
                    label = TXT_NewLabel("Exiting setup.\nSave settings?"),
                    TXT_NewStrut(24, 0),
-                   yes_button = TXT_NewButton2("  Yes  ", DoQuit, DoQuit),
+                   yes_button = TXT_NewButton2("  Yes  ", DoQuit, reinterpret_cast<void(*)>(DoQuit)),
                    no_button = TXT_NewButton2("  No   ", DoQuit, NULL),
                    NULL);
 

@@ -22,6 +22,8 @@
 #include "i_system.hpp"
 #include "r_local.hpp"
 
+#include "../utils/lump.hpp"
+
 typedef struct
 {
     int x1, x2;
@@ -156,7 +158,7 @@ void R_InitSpriteDefs(const char **namelist)
     if (!numsprites)
         return;
 
-    sprites = Z_Malloc(numsprites * sizeof(*sprites), PU_STATIC, NULL);
+    sprites = z_malloc<spritedef_t *>(numsprites * sizeof(*sprites), PU_STATIC, NULL);
 
     start = firstspritelump - 1;
     end = lastspritelump + 1;
@@ -225,8 +227,7 @@ void R_InitSpriteDefs(const char **namelist)
         // allocate space for the frames present and copy sprtemp to it
         //
         sprites[i].numframes = maxframe;
-        sprites[i].spriteframes =
-            Z_Malloc(maxframe * sizeof(spriteframe_t), PU_STATIC, NULL);
+        sprites[i].spriteframes = z_malloc<spriteframe_t *>(maxframe * sizeof(spriteframe_t), PU_STATIC, NULL);
         memcpy(sprites[i].spriteframes, sprtemp,
                maxframe * sizeof(spriteframe_t));
     }
@@ -313,7 +314,7 @@ vissprite_t *R_NewVisSprite(void)
         return &overflowsprite;
 
 	numvissprites = numvissprites ? 2 * numvissprites : MAXVISSPRITES;
-	vissprites = I_Realloc(vissprites, numvissprites * sizeof(*vissprites));
+	vissprites = i_realloc<vissprite_t *>(vissprites, numvissprites * sizeof(*vissprites));
 	memset(vissprites + numvissprites_old, 0, (numvissprites - numvissprites_old) * sizeof(*vissprites));
 
 	vissprite_p = vissprites + numvissprites_old;
@@ -397,7 +398,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
     fixed_t baseclip;
 
 
-    patch = W_CacheLumpNum(vis->patch + firstspritelump, PU_CACHE);
+    patch = cache_lump_num<patch_t *>(vis->patch + firstspritelump, PU_CACHE);
 
     dc_colormap = vis->colormap;
 
@@ -481,7 +482,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
 
 void R_ProjectSprite(mobj_t * thing)
 {
-    fixed_t trx, try;
+    fixed_t tr_x, tr_y;
     fixed_t gxt, gyt;
     fixed_t tx, tz;
     fixed_t xscale;
@@ -504,19 +505,19 @@ void R_ProjectSprite(mobj_t * thing)
 //
 // transform the origin point
 //
-    trx = thing->x - viewx;
-    try = thing->y - viewy;
+    tr_x = thing->x - viewx;
+    tr_y = thing->y - viewy;
 
-    gxt = FixedMul(trx, viewcos);
-    gyt = -FixedMul(try, viewsin);
+    gxt = FixedMul(tr_x, viewcos);
+    gyt = -FixedMul(tr_y, viewsin);
     tz = gxt - gyt;
 
     if (tz < MINZ)
         return;                 // thing is behind view plane
     xscale = FixedDiv(projection, tz);
 
-    gxt = -FixedMul(trx, viewsin);
-    gyt = FixedMul(try, viewcos);
+    gxt = -FixedMul(tr_x, viewsin);
+    gyt = FixedMul(tr_y, viewcos);
     tx = -(gyt + gxt);
 
     if (abs(tx) > (tz << 2))

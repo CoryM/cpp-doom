@@ -19,8 +19,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "i_sound.hpp"
-#include "i_system.hpp"
+#include "../i_sound.hpp"
+#include "../i_system.hpp"
 
 #include "deh_str.hpp"
 
@@ -147,7 +147,7 @@ void S_Init(int sfxVolume, int musicVolume, int voiceVolume)
     // Allocating the internal channels for mixing
     // (the maximum numer of sounds rendered
     // simultaneously) within zone memory.
-    channels = Z_Malloc(snd_channels*sizeof(channel_t), PU_STATIC, 0);
+    channels = z_malloc<channel_t *>(snd_channels*sizeof(channel_t), PU_STATIC, 0);
 
     // Free all channels for use
     for (i=0 ; i<snd_channels ; i++)
@@ -552,7 +552,7 @@ static voiceinfo_t *S_getVoice(const char *name, int lumpnum)
 
     if(!voice)
     {
-        voice = calloc(1, sizeof(voiceinfo_t));
+        voice = static_cast<voiceinfo_t *>(calloc(1, sizeof(voiceinfo_t)));
 
         M_StringCopy(voice->sfx.name, name, sizeof(voice->sfx.name));
         voice->sfx.priority = INT_MIN; // make highest possible priority

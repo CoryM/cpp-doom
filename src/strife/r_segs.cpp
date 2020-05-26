@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "i_system.hpp"
+#include "../i_system.hpp"
 
 #include "doomdef.hpp"
 #include "doomstat.hpp"
@@ -407,7 +407,7 @@ R_StoreWallRange
     
     // calculate rw_distance for scale calculation
     rw_normalangle = curline->angle + ANG90;
-    offsetangle = abs(rw_normalangle-rw_angle1);
+    offsetangle = abs(static_cast<int>(rw_normalangle-rw_angle1));
     
     if (offsetangle > ANG90)
 	offsetangle = ANG90;

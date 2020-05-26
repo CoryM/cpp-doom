@@ -61,6 +61,11 @@ void         Z_ChangeUser(void *ptr, void **user);
 int          Z_FreeMemory(void);
 unsigned int Z_ZoneSize(void);
 
+template <typename DataType>
+auto z_malloc(int size, int tag, void *ptr) {
+  return static_cast<DataType>(Z_Malloc(size, tag, ptr));
+}
+
 //
 // This is used to get the local FILE:LINE info from CPP
 // prior to really call the function in question.

@@ -498,7 +498,7 @@ char *M_StringReplace(const char *haystack, const char *needle,
 // Safe string copy function that works like OpenBSD's strlcpy().
 // Returns true if the string was not truncated.
 
-boolean M_StringCopy(char *dest, const char *src, size_t dest_size)
+bool M_StringCopy(char *dest, const char *src, size_t dest_size)
 {
     size_t len;
 

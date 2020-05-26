@@ -19,7 +19,7 @@
 
 #include <stdio.h>
 
-#include "deh_main.hpp"
+#include "../deh_main.hpp"
 
 #include "z_zone.hpp"
 #include "doomkeys.hpp"
@@ -45,6 +45,8 @@
 #include "dstrings.hpp"
 
 #include "am_map.hpp"
+
+#include "../utils/lump.hpp"
 
 
 // Automap colors
@@ -466,7 +468,7 @@ void AM_loadPics(void)
     for (i=0;i<10;i++)
     {
         DEH_snprintf(namebuf, 9, "PLMNUM%d", i);
-        marknums[i] = W_CacheLumpName(namebuf, PU_STATIC);
+        marknums[i] = cache_lump_name<patch_t *>(namebuf, PU_STATIC);
     }
 
 }
@@ -514,14 +516,9 @@ void AM_LevelInit(void)
 }
 
 
-
-
-//
-//
-//
 void AM_Stop (void)
 {
-    static event_t st_notify = { 0, ev_keyup, AM_MSGEXITED, 0 };
+    static event_t st_notify = { ev_keyup, AM_MSGEXITED };
 
     AM_unloadPics();
     automapactive = false;

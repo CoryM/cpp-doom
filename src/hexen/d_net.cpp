@@ -19,7 +19,7 @@
 
 #include <stdlib.h>
 
-#include "m_argv.hpp"
+#include "../m_argv.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "i_video.hpp"
@@ -70,11 +70,10 @@ static void PlayerQuitGame(player_t *player)
 static void RunTic(ticcmd_t *cmds, boolean *ingame)
 {
     extern boolean advancedemo;
-    unsigned int i;
 
     // Check for player quits.
 
-    for (i = 0; i < maxplayers; ++i)
+    for (int i = 0; i < maxplayers; ++i)
     {
         if (!demoplayback && playeringame[i] && !ingame[i])
         {
@@ -112,7 +111,7 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     ticdup = settings->ticdup;
     startepisode = settings->episode;
     startmap = settings->map;
-    startskill = settings->skill;
+    startskill = static_cast<skill_t>(settings->skill);
     // TODO startloadgame = settings->loadgame;
     lowres_turn = settings->lowres_turn;
     nomonsters = settings->nomonsters;
@@ -125,10 +124,10 @@ static void LoadGameSettings(net_gamesettings_t *settings)
                "because there is a client recording a Vanilla demo.\n");
     }
 
-    for (i=0; i<maxplayers; ++i)
+    for (i=0; i < maxplayers; ++i)
     {
-        playeringame[i] = i < settings->num_players;
-        PlayerClass[i] = settings->player_classes[i];
+        playeringame[i] = i < static_cast<int>(settings->num_players);
+        PlayerClass[i] = static_cast<pclass_t>(settings->player_classes[i]);
 
         if (PlayerClass[i] >= NUMCLASSES)
         {

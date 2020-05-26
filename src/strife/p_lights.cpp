@@ -19,7 +19,7 @@
 
 
 
-#include "z_zone.hpp"
+#include "../z_zone.hpp"
 #include "m_random.hpp"
 
 #include "doomdef.hpp"
@@ -73,7 +73,7 @@ void P_SpawnFireFlicker (sector_t*      sector)
     // Nothing special about it during gameplay.
     sector->special = 0; 
 
-    flick = Z_Malloc ( sizeof(*flick), PU_LEVSPEC, 0);
+    flick = z_malloc<fireflicker_t *>( sizeof(*flick), PU_LEVSPEC, 0);
 
     P_AddThinker (&flick->thinker);
 
@@ -131,7 +131,7 @@ void P_SpawnLightFlash (sector_t*	sector)
     // nothing special about it during gameplay
     sector->special = 0;
 
-    flash = Z_Malloc ( sizeof(*flash), PU_LEVSPEC, 0);
+    flash = z_malloc<lightflash_t *>( sizeof(*flash), PU_LEVSPEC, 0);
 
     P_AddThinker (&flash->thinker);
 
@@ -191,7 +191,7 @@ P_SpawnStrobeFlash
 {
     strobe_t*   flash;
 
-    flash = Z_Malloc ( sizeof(*flash), PU_LEVSPEC, 0);
+    flash = z_malloc<strobe_t *>( sizeof(*flash), PU_LEVSPEC, 0);
 
     P_AddThinker (&flash->thinker);
 
@@ -357,7 +357,7 @@ void P_SpawnGlowingLight(sector_t*	sector)
 {
     glow_t*	g;
 
-    g = Z_Malloc( sizeof(*g), PU_LEVSPEC, 0);
+    g = z_malloc<glow_t *>( sizeof(*g), PU_LEVSPEC, 0);
 
     P_AddThinker(&g->thinker);
 
