@@ -17,17 +17,17 @@
 //
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
 
-#include "SDL.h"
-#include "SDL_mixer.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_mixer.h"
 
 #include "i_midipipe.hpp"
 
-#include "config.h"
+#include "config.hpp"
 #include "doomtype.hpp"
 #include "memio.hpp"
 #include "mus2mid.hpp"

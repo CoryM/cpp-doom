@@ -21,7 +21,8 @@
 
 #include <stdio.h>
 
-#include "i_swap.hpp" // [crispy] SHORT()
+#include "../config.hpp"
+#include "../i_swap.hpp" // [crispy] SHORT()
 #include "i_system.hpp"
 #include "i_video.hpp"
 #include "z_zone.hpp"

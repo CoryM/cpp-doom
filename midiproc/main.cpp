@@ -37,7 +37,7 @@
 #include "buffer.hpp"
 #include "proto.hpp"
 
-#include "config.h"
+#include "../src/config.hpp"
 #include "doomtype.hpp"
 
 static HANDLE    midi_process_in;  // Standard In.

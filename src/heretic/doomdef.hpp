@@ -16,12 +16,12 @@
 
 // DoomDef.h
 
-#ifndef __DOOMDEF__
-#define __DOOMDEF__
-#include <stdio.h>
-#include <string.h>
+#ifndef __DOOMDEF_HPP__
+#define __DOOMDEF_HPP__
+#include <cstdio>
+#include <cstring>
 //haleyjd: removed WATCOMC
-#include <limits.h>
+#include <climits>
 
 #define HERETIC_VERSION 130
 #define HERETIC_VERSION_TEXT "v1.3"
@@ -31,6 +31,7 @@
 //#define RANGECHECK
 
 // all external data is defined here
+#include "../doomtype.hpp"
 #include "doomdata.hpp"
 
 // all important printed strings
@@ -40,24 +41,24 @@
 #include "info.hpp"
 
 // WAD file access
-#include "w_wad.hpp"
+#include "../w_wad.hpp"
 
 // fixed_t
-#include "m_fixed.hpp"
+#include "../m_fixed.hpp"
 
 // angle_t 
-#include "tables.hpp"
+#include "../tables.hpp"
 
 // events
-#include "d_event.hpp"
+#include "../d_event.hpp"
 
 // gamemode/mission
-#include "d_mode.hpp"
+#include "../d_mode.hpp"
 
 // ticcmd_t
-#include "d_ticcmd.hpp"
+#include "../d_ticcmd.hpp"
 
-#include "d_loop.hpp"
+#include "../d_loop.hpp"
 
 #define	SAVEGAMENAME "hticsav"
 
@@ -148,14 +149,14 @@ typedef struct mobj_s
 {
     thinker_t thinker;          // thinker links
 
-// info for drawing
+    // info for drawing
     fixed_t x, y, z;
     struct mobj_s *snext, *sprev;       // links in sector (if needed)
     angle_t angle;
     spritenum_t sprite;         // used to find patch_t and flip value
     int frame;                  // might be ord with FF_FULLBRIGHT
 
-// interaction info
+    // interaction info
     struct mobj_s *bnext, *bprev;       // links in blocks (if needed)
     struct subsector_s *subsector;
     fixed_t floorz, ceilingz;   // closest together of contacted secs
@@ -581,7 +582,7 @@ extern int vanilla_demo_limit;
 ===============================================================================
 */
 
-#include "z_zone.hpp"
+#include "../z_zone.hpp"
 
 //----------
 //BASE LEVEL

@@ -20,12 +20,12 @@
 //
 
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-//#include "config.h"
+#include "../config.hpp"
 #include "../deh_main.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp"
@@ -1472,7 +1472,6 @@ static void G_CheckDemoStatusAtExit (void)
 //
 void D_DoomMain (void)
 {
-    int             p;
     char            file[256];
     char            demolumpname[9];
 
@@ -1486,8 +1485,9 @@ void D_DoomMain (void)
     // Disable graphical introduction sequence
     //
 
-    if (M_ParmExists("-nograph"))
+    if (M_ParmExists("-nograph")) {
         showintro = false;
+    }
 
     // Undocumented:
     // Invoked by setup to test the controls.
@@ -1551,7 +1551,7 @@ void D_DoomMain (void)
     // address.
     //
 
-    p = M_CheckParmWithArgs("-query", 1);
+    auto p = M_CheckParmWithArgs("-query", 1);
 
     if (p)
     {
@@ -1628,8 +1628,9 @@ void D_DoomMain (void)
     I_DisplayFPSDots(devparm);
 
     // haleyjd 20110206 [STRIFE]: -devparm implies -nograph
-    if(devparm)
+    if(devparm) {
         showintro = false;
+    };
 
     // Note: Vanilla Strife does not understand the -deathmatch command
     // line parameter. deathmatch=1 is the default behavior when
@@ -1643,11 +1644,13 @@ void D_DoomMain (void)
     // all items respawn after 30 seconds.
     //
 
-    if (M_CheckParm ("-altdeath"))
+    if (M_CheckParm ("-altdeath")) {
         deathmatch = 2;
+    };
 
-    if (devparm)
+    if (devparm) {
         DEH_printf(D_DEVSTR);
+    };
     
     // find which dir to use for config files
 
@@ -1723,7 +1726,7 @@ void D_DoomMain (void)
     iwadfile = D_FindIWAD(IWAD_MASK_STRIFE, &gamemission);
 
     // None found?
-    if (iwadfile == NULL)
+    if (iwadfile == nullptr)
     {
         I_Error("Game mode indeterminate.  No IWAD file was found.  Try\n"
                 "specifying one with the '-iwad' command line parameter.\n");

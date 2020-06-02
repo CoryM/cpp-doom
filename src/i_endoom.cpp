@@ -15,14 +15,14 @@
 //    Exit text-mode ENDOOM screen.
 //
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
-#include "config.h"
+#include "config.hpp"
 #include "doomtype.hpp"
 #include "i_video.hpp"
 
-#include "txt_main.hpp"
+#include "../textscreen/txt_main.hpp"
 
 #define ENDOOM_W 80
 #define ENDOOM_H 25

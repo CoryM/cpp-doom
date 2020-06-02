@@ -26,8 +26,8 @@
 #include <string.h>
 #include <time.h> // [crispy] time_t, time(), struct tm, localtime()
 
-#include "config.h"
-#include "deh_main.hpp"
+#include "../config.hpp"
+#include "../deh_main.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp"
 
@@ -1330,7 +1330,6 @@ static void LoadIwadDeh(void)
 // [crispy] support loading SIGIL.WAD (and SIGIL_SHREDS.WAD) alongside DOOM.WAD
 static void LoadSigilWad(void)
 {
-    int i;
 
     static constexpr struct {
         const char *name;
@@ -1355,7 +1354,7 @@ static void LoadSigilWad(void)
     };
 
     // [crispy] don't load SIGIL.wad if another PWAD already provides E5M1
-    i = W_CheckNumForName("E5M1");
+    int i = W_CheckNumForName("E5M1");
     if (i != -1)
     {
         return;
@@ -1388,11 +1387,10 @@ static void LoadSigilWad(void)
             "SIGIL_v1_2.wad",
             "SIGIL.wad"
         };
-        char *sigil_wad = NULL, *sigil_shreds = NULL;
-        char *dirname;
+        char *sigil_wad = nullptr, *sigil_shreds = nullptr;
 
-        dirname      = M_DirName(iwadfile);
-        sigil_shreds = M_StringJoin(dirname, DIR_SEPARATOR_S, "SIGIL_SHREDS.wad", NULL);
+        char *dirname = M_DirName(iwadfile);
+        sigil_shreds  = M_StringJoin(dirname, DIR_SEPARATOR_S, "SIGIL_SHREDS.wad", NULL);
 
         // [crispy] load SIGIL.WAD
         for (i = 0; i < arrlen(sigil_wads); i++)
@@ -1414,7 +1412,7 @@ static void LoadSigilWad(void)
         }
         free(dirname);
 
-        if (sigil_wad == NULL)
+        if (sigil_wad == nullptr)
         {
             free(sigil_shreds);
             return;
@@ -1441,15 +1439,13 @@ static void LoadSigilWad(void)
         // [crispy] rename intrusive SIGIL_SHREDS.wad music lumps out of the way
         for (i = 0; i < arrlen(sigil_lumps); i++)
         {
-            int j;
-
             // [crispy] skip non-music lumps
             if (strncasecmp(sigil_lumps[i].name, "D_", 2))
             {
                 continue;
             }
 
-            j = W_CheckNumForName(sigil_lumps[i].name);
+            int j = W_CheckNumForName(sigil_lumps[i].name);
 
             if (j != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL_SHREDS", 12))
             {
@@ -1460,9 +1456,7 @@ static void LoadSigilWad(void)
         // [crispy] rename intrusive SIGIL.wad graphics, demos and music lumps out of the way
         for (i = 0; i < arrlen(sigil_lumps); i++)
         {
-            int j;
-
-            j = W_CheckNumForName(sigil_lumps[i].name);
+            int j = W_CheckNumForName(sigil_lumps[i].name);
 
             if (j != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL", 5))
             {

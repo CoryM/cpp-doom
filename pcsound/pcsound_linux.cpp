@@ -15,7 +15,7 @@
 //    PC speaker driver for Linux.
 //
 
-#include "config.h"
+#include "../src/config.hpp"
 
 #ifdef HAVE_LINUX_KD_H
 

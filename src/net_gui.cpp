@@ -17,11 +17,11 @@
 //    start the game.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cctype>
 
-#include "config.h"
+#include "config.hpp"
 #include "doomkeys.hpp"
 
 #include "i_system.hpp"
@@ -35,7 +35,7 @@
 #include "net_query.hpp"
 #include "net_server.hpp"
 
-#include "textscreen.hpp"
+#include "../textscreen/textscreen.hpp"
 
 static txt_window_t *window;
 static int           old_max_players;

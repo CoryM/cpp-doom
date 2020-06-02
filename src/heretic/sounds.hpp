@@ -19,7 +19,7 @@
 #ifndef __SOUNDSH__
 #define __SOUNDSH__
 
-#include "i_sound.hpp"
+#include "../i_sound.hpp"
 
 #define MAX_SND_DIST 	1600
 #define MAX_CHANNELS	16

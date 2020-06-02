@@ -12,13 +12,13 @@
 // GNU General Public License for more details.
 //
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
-#include "doomtype.hpp"
+#include "../doomtype.hpp"
 
-#include "config.h"
-#include "textscreen.hpp"
+#include "../config.hpp"
+#include "../../textscreen/textscreen.hpp"
 
 #include "doomtype.hpp"
 #include "d_mode.hpp"

@@ -16,7 +16,7 @@
 //	WAD I/O functions.
 //
 
-#include "config.h"
+#include "config.hpp"
 
 #ifdef HAVE_MMAP
 

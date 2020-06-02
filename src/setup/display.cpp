@@ -12,21 +12,21 @@
 // GNU General Public License for more details.
 //
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
 
-#include "textscreen.hpp"
+#include "../../textscreen/textscreen.hpp"
 #include "m_config.hpp"
 #include "m_misc.hpp"
 #include "mode.hpp"
 
 #include "display.hpp"
-#include "config.h"
+#include "../config.hpp"
 
 #define WINDOW_HELP_URL "https://www.chocolate-doom.org/setup-display"
 

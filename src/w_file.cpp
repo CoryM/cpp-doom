@@ -16,9 +16,9 @@
 //	WAD I/O functions.
 //
 
-#include <stdio.h>
+#include <cstdio>
 
-#include "config.h"
+#include "config.hpp"
 
 #include "doomtype.hpp"
 #include "m_argv.hpp"

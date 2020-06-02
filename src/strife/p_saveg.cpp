@@ -1986,7 +1986,7 @@ enum
     tc_slidingdoor, // [STRIFE]
     tc_endspecials
 
-} specials_e;
+};// specials_e;
 
 
 

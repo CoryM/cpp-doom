@@ -19,7 +19,7 @@
 #include <stdio.h>
 
 #include "doomdef.hpp"
-#include "deh_str.hpp"
+#include "../deh_str.hpp"
 #include "i_timer.hpp"
 #include "i_video.hpp"
 #include "m_controls.hpp"
@@ -29,6 +29,7 @@
 
 #include "doomkeys.hpp"
 #include "v_video.hpp"
+#include "doomdata.hpp"
 
 #include "../utils/lump.hpp"
 

@@ -15,12 +15,12 @@
 // DESCRIPTION:  none
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-#include "SDL_mixer.h"
+#include "SDL2/SDL_mixer.h"
 
-#include "config.h"
+#include "config.hpp"
 #include "doomtype.hpp"
 
 #include "gusconf.hpp"

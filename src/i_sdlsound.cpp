@@ -17,14 +17,14 @@
 //	System interface for sound.
 //
 
-#include "config.h"
+#include "config.hpp"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include "SDL.h"
-#include "SDL_mixer.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cassert>
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_mixer.h"
 #include <vector>
 
 #ifdef HAVE_LIBSAMPLERATE

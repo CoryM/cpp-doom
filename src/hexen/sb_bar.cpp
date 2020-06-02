@@ -1483,7 +1483,7 @@ boolean SB_Responder(event_t * event)
 static boolean HandleCheats(byte key)
 {
     int i;
-    boolean eat;
+    bool eat = false;
 
     if (gameskill == sk_nightmare)
     {                           // Can't cheat in nightmare mode
@@ -1491,7 +1491,7 @@ static boolean HandleCheats(byte key)
     }
     else if (netgame)
     {                           // change CD track is the only cheat available in deathmatch
-        eat = false;
+        //eat = false;
         if (cdmusic)
         {
             if (CheatAddKey(&Cheats[0], key, &eat))
@@ -1511,8 +1511,8 @@ static boolean HandleCheats(byte key)
     {                           // Dead players can't cheat
         return (false);
     }
-    eat = false;
-    for (i = 0; i<arrlen(Cheats); ++i)
+    
+    for (i = 0; i < arrlen(Cheats); ++i)
     {
         if (CheatAddKey(&Cheats[i], key, &eat))
         {
@@ -1520,7 +1520,7 @@ static boolean HandleCheats(byte key)
             S_StartSound(NULL, SFX_PLATFORM_STOP);
         }
     }
-    return (eat);
+    return eat;
 }
 
 //==========================================================================

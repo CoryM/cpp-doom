@@ -14,12 +14,12 @@
 // Network client code
 //
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include "config.h"
+#include "config.hpp"
 #include "doomtype.hpp"
 #include "deh_main.hpp"
 #include "deh_str.hpp"

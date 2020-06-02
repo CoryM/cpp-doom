@@ -15,15 +15,15 @@
 //     OPL SDL interface.
 //
 
-#include "config.h"
+#include "../src/config.hpp"
 
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <assert.h>
 
-#include "SDL.h"
-#include "SDL_mixer.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_mixer.h"
 
 #include "opl3.hpp"
 
@@ -160,7 +160,7 @@ static void FillBuffer(uint8_t *buffer, unsigned int nsamples)
     // This seems like a reasonable assumption.  mix_buffer is
     // 1 second long, which should always be much longer than the
     // SDL mix buffer.
-    assert(nsamples < mixing_freq);
+    assert(static_cast<int>(nsamples) < mixing_freq);
 
     // OPL output is generated into temporary buffer and then mixed
     // (to avoid overflows etc.)

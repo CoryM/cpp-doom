@@ -29,9 +29,9 @@
 #include <unistd.h>
 #endif
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
-#include "config.h"
+#include "config.hpp"
 
 #include "deh_str.hpp"
 #include "doomtype.hpp"

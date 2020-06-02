@@ -17,8 +17,8 @@
 //
 
 
-#include "SDL.h"
-#include "SDL_opengl.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_opengl.h"
 
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -32,7 +32,7 @@
 #include "crispy.hpp"
 
 #include "../utils/lump.hpp"
-#include "config.h"
+#include "config.hpp"
 #include "d_loop.hpp"
 #include "deh_str.hpp"
 #include "doomtype.hpp"

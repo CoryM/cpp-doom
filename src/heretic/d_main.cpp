@@ -16,15 +16,15 @@
 
 // D_main.c
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "../../textscreen/txt_main.hpp"
 #include "../../textscreen/txt_io.hpp"
 
 #include "net_client.hpp"
 
-#include "config.h"
+#include "config.hpp"
 #include "ct_chat.hpp"
 #include "doomdef.hpp"
 #include "deh_main.hpp"

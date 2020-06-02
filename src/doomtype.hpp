@@ -18,10 +18,10 @@
 //
 
 
-#ifndef __DOOMTYPE__
-#define __DOOMTYPE__
+#ifndef __DOOMTYPE_HPP__
+#define __DOOMTYPE_HPP__
 
-#include "config.h"
+#include "config.hpp"
 
 #if defined(_MSC_VER) && !defined(__cplusplus)
 #define inline __inline
@@ -30,20 +30,16 @@
 // #define macros to provide functions missing in Windows.
 // Outside Windows, we use strings.h for str[n]casecmp.
 
+#include <cstring>
 
 #if !HAVE_DECL_STRCASECMP || !HAVE_DECL_STRNCASECMP
 
-#include <string.h>
 #if !HAVE_DECL_STRCASECMP
-#define strcasecmp stricmp
+#define strcasecmp std::strcmp
 #endif
 #if !HAVE_DECL_STRNCASECMP
-#define strncasecmp strnicmp
+#define strncasecmp std::strncmp
 #endif
-
-#else
-
-#include <strings.h>
 
 #endif
 
@@ -142,5 +138,6 @@ typedef int64_t  dpixel_t;
 #endif
 
 #define arrlen(array) (sizeof(array) / sizeof(*array))
+//auto arrlen = [](auto &array) { return (sizeof(array) / sizeof(*array)); };
 
 #endif

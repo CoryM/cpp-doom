@@ -18,9 +18,9 @@
 
 // HEADER FILES ------------------------------------------------------------
 
-#include <stdarg.h>
+#include <cstdarg>
 
-#include "config.h"
+#include "../config.hpp"
 
 #include "h2def.hpp"
 #include "i_system.hpp"

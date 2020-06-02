@@ -22,13 +22,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "SDL.h"
-#include "SDL_mixer.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_mixer.h"
 
 #include "i_glob.hpp"
 #include "i_midipipe.hpp"
 
-#include "config.h"
+#include "config.hpp"
 #include "doomtype.hpp"
 #include "memio.hpp"
 #include "mus2mid.hpp"

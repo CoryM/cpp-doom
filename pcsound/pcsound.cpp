@@ -15,11 +15,11 @@
 //    PC speaker interface.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include "config.h"
+#include "../src/config.hpp"
 #include "pcsound.hpp"
 #include "pcsound_internal.hpp"
 

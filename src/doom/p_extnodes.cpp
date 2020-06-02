@@ -18,7 +18,7 @@
 // 	format or DeePBSP format and/or LINEDEFS and THINGS lumps in Hexen format
 //
 
-#include "m_bbox.hpp"
+#include "../m_bbox.hpp"
 #include "p_local.hpp"
 #include "i_swap.hpp"
 #include "i_system.hpp"
@@ -26,7 +26,7 @@
 #include "z_zone.hpp"
 
 // [crispy] support maps with compressed ZDBSP nodes
-#include "config.h"
+#include "config.hpp"
 #ifdef HAVE_LIBZ
 #include <zlib.h>
 #endif

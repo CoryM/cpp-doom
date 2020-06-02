@@ -17,11 +17,11 @@
 //	[crispy] Archiving: Extended SaveGame I/O.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "../../utils/memory.hpp"
-#include "config.h"
+#include "../config.hpp"
 #include "doomstat.hpp"
 #include "doomtype.hpp"
 #include "m_misc.hpp"

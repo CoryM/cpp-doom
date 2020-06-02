@@ -16,7 +16,7 @@
 //    (Should be NetBSD as well, but untested).
 //
 
-#include "config.h"
+#include "../src/config.hpp"
 
 // OpenBSD/NetBSD:
 

@@ -15,7 +15,7 @@
 //     OPL Linux interface.
 //
 
-#include "config.h"
+#include "../src/config.hpp"
 
 #if (defined(__i386__) || defined(__x86_64__)) && defined(HAVE_IOPERM)
 

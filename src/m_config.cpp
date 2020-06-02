@@ -18,16 +18,16 @@
 //
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <errno.h>
-#include <assert.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <cerrno>
+#include <cassert>
 
-#include "SDL_filesystem.h"
+#include "SDL2/SDL_filesystem.h"
 
-#include "config.h"
+#include "config.hpp"
 
 #include "doomtype.hpp"
 #include "doomkeys.hpp"

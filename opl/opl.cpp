@@ -15,12 +15,12 @@
 //     OPL interface.
 //
 
-#include "config.h"
+#include "../src/config.hpp"
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #include "opl.hpp"
 #include "opl_internal.hpp"

@@ -21,7 +21,7 @@
 #ifndef __DOOMDATA__
 #define __DOOMDATA__
 
-#include "doomtype.hpp"
+#include "../doomtype.hpp"
 
 /*
 ===============================================================================

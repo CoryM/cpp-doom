@@ -15,7 +15,7 @@
 // Text mode emulation in SDL
 //
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #include <cstdint>
 #include <ctype.h>
@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "doomkeys.hpp"
+#include "../src/doomkeys.hpp"
 
 #include "txt_main.hpp"
 #include "txt_sdl.hpp"
@@ -497,7 +497,9 @@ void TXT_GetMousePosition(int *x, int *y)
 //
 
 // XXX: duplicate from doomtype.h
+#ifndef arrlen
 #define arrlen(array) (sizeof(array) / sizeof(*array))
+#endif
 
 static int TranslateScancode(SDL_Scancode scancode)
 {

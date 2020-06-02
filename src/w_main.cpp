@@ -18,7 +18,7 @@
 
 #include <stdlib.h>
 
-#include "config.h"
+#include "config.hpp"
 #include "d_iwad.hpp"
 #include "i_glob.hpp"
 #include "i_system.hpp"
@@ -240,26 +240,21 @@ static const struct
 
 void W_CheckCorrectIWAD(GameMission_t mission)
 {
-    int         i;
-    lumpindex_t lumpnum;
 
-    for (i = 0; i < arrlen(unique_lumps); ++i)
+    for (size_t i = 0; i < arrlen(unique_lumps); ++i)
     {
         if (mission != unique_lumps[i].mission)
         {
-            lumpnum = W_CheckNumForName(unique_lumps[i].lumpname);
+            auto lumpnum = W_CheckNumForName(unique_lumps[i].lumpname);
 
             if (lumpnum >= 0)
             {
-                I_Error("\nYou are trying to use a %s IWAD file with "
-                        "the %s%s binary.\nThis isn't going to work.\n"
-                        "You probably want to use the %s%s binary.",
-                    D_SuggestGameName(unique_lumps[i].mission,
-                        indetermined),
-                    PROGRAM_PREFIX,
-                    D_GameMissionString(mission),
-                    PROGRAM_PREFIX,
-                    D_GameMissionString(unique_lumps[i].mission));
+                I_Error("\nYou are trying to use a %s IWAD file with the %s%s binary.\n"
+                        "This isn't going to work.\n"
+                        "You probably want to use the %s%s binary.\n",
+                    D_SuggestGameName(unique_lumps[i].mission, indetermined),
+                    PROGRAM_PREFIX, D_GameMissionString(mission),
+                    PROGRAM_PREFIX, D_GameMissionString(unique_lumps[i].mission));
             }
         }
     }

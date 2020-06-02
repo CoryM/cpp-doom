@@ -19,12 +19,12 @@
 //	Functions to blit a block to the screen.
 //
 
-#include "SDL_version.h" // [crispy]
+#include "SDL2/SDL_version.h" // [crispy]
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
 
 #include "i_system.hpp"
 
@@ -46,7 +46,7 @@
 
 #include "../utils/lump.hpp"
 #include "../utils/memory.hpp"
-#include "config.h"
+#include "config.hpp"
 #ifdef HAVE_LIBPNG
 #include <png.h>
 #endif

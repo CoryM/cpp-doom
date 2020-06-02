@@ -58,23 +58,20 @@ int dccount;                    // just for profiling
 
 void R_DrawColumn(void)
 {
-    int count;
-    byte *dest;
-    fixed_t frac, fracstep;
-
-    count = dc_yh - dc_yl;
-    if (count < 0)
+    int count = dc_yh - dc_yl;
+    if (count < 0) {
         return;
+    };
 
 #ifdef RANGECHECK
-    if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
+    if ( dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT )
         I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
 #endif
 
-    dest = ylookup[dc_yl] + columnofs[dc_x];
+    byte *dest = ylookup[dc_yl] + columnofs[dc_x];
 
-    fracstep = dc_iscale;
-    frac = dc_texturemid + (dc_yl - centery) * fracstep;
+    fixed_t fracstep = dc_iscale;
+    fixed_t frac = dc_texturemid + (dc_yl - centery) * fracstep;
 
     do
     {
@@ -87,24 +84,21 @@ void R_DrawColumn(void)
 
 void R_DrawColumnLow(void)
 {
-    int count;
-    byte *dest;
-    fixed_t frac, fracstep;
-
-    count = dc_yh - dc_yl;
-    if (count < 0)
-        return;
+    int count = dc_yh - dc_yl;
+    if (count < 0) {
+        return; 
+    }
 
 #ifdef RANGECHECK
-    if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
+    if (dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT) {
         I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
-//      dccount++;
+    };
 #endif
 
-    dest = ylookup[dc_yl] + columnofs[dc_x];
+    byte *dest = ylookup[dc_yl] + columnofs[dc_x];
 
-    fracstep = dc_iscale;
-    frac = dc_texturemid + (dc_yl - centery) * fracstep;
+    fixed_t fracstep = dc_iscale;
+    fixed_t frac = dc_texturemid + (dc_yl - centery) * fracstep;
 
     do
     {
@@ -131,8 +125,9 @@ void R_DrawTLColumn(void)
         return;
 
 #ifdef RANGECHECK
-    if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
+    if (dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT) {
         I_Error("R_DrawTLColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+    };
 #endif
 
     dest = ylookup[dc_yl] + columnofs[dc_x];
@@ -173,8 +168,9 @@ void R_DrawAltTLColumn(void)
         return;
 
 #ifdef RANGECHECK
-    if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
+    if (dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT) {
         I_Error("R_DrawAltTLColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+    };
 #endif
 
     dest = ylookup[dc_yl] + columnofs[dc_x];
@@ -214,8 +210,9 @@ void R_DrawTranslatedColumn(void)
         return;
 
 #ifdef RANGECHECK
-    if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
+    if (dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT) {
         I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+    };
 #endif
 
     dest = ylookup[dc_yl] + columnofs[dc_x];
@@ -249,8 +246,9 @@ void R_DrawTranslatedTLColumn(void)
         return;
 
 #ifdef RANGECHECK
-    if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
+    if ( dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT) {
         I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+    };
 #endif
 
     dest = ylookup[dc_yl] + columnofs[dc_x];
@@ -360,10 +358,9 @@ void R_DrawSpan(void)
     int count, spot;
 
 #ifdef RANGECHECK
-    if (ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH
-        || (unsigned) ds_y > SCREENHEIGHT)
+    if (ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH || ds_y > SCREENHEIGHT) {
         I_Error("R_DrawSpan: %i to %i at %i", ds_x1, ds_x2, ds_y);
-//      dscount++;
+    }
 #endif
 
     xfrac = ds_xfrac;
@@ -388,10 +385,9 @@ void R_DrawSpanLow(void)
     int count, spot;
 
 #ifdef RANGECHECK
-    if (ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH
-        || (unsigned) ds_y > SCREENHEIGHT)
+    if (ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH || ds_y > SCREENHEIGHT) {
         I_Error("R_DrawSpan: %i to %i at %i", ds_x1, ds_x2, ds_y);
-//      dscount++;
+    };
 #endif
 
     xfrac = ds_xfrac;
