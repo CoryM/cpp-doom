@@ -17,8 +17,8 @@
 //
 
 
-#include <stdio.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cctype>
 
 #include "../deh_main.hpp"
 #include "doomdef.hpp"

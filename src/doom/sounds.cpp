@@ -18,10 +18,10 @@
 //
 
 
-#include <stdlib.h>
+#include <cstdlib>
 
 
-#include "doomtype.hpp"
+#include "../doomtype.hpp"
 #include "sounds.hpp"
 
 //

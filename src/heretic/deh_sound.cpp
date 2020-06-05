@@ -15,16 +15,16 @@
 // Parses "Sound" sections in dehacked files
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-#include "doomtype.hpp"
-#include "deh_defs.hpp"
-#include "deh_main.hpp"
-#include "deh_mapping.hpp"
+#include "../doomtype.hpp"
+#include "../deh_defs.hpp"
+#include "../deh_main.hpp"
+#include "../deh_mapping.hpp"
 
 #include "doomdef.hpp"
-#include "i_sound.hpp"
+#include "../i_sound.hpp"
 
 #include "sounds.hpp"
 

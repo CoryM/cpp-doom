@@ -15,12 +15,12 @@
 //
 // F_finale.c
 
-#include <ctype.h>
+#include <cctype>
 
 #include "doomdef.hpp"
-#include "deh_str.hpp"
-#include "i_swap.hpp"
-#include "i_video.hpp"
+#include "../deh_str.hpp"
+#include "../i_swap.hpp"
+#include "../i_video.hpp"
 #include "s_sound.hpp"
 #include "v_video.hpp"
 

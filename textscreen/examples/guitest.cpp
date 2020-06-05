@@ -18,9 +18,9 @@
 // a simple textscreen program can be written.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "textscreen.hpp"
 

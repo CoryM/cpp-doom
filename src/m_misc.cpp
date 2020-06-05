@@ -18,11 +18,11 @@
 //
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <errno.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <cerrno>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN

@@ -16,9 +16,9 @@
 //     can always get the first callback.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "../utils/memory.hpp"
 #include "opl_queue.hpp"
@@ -214,7 +214,7 @@ void OPL_Queue_AdjustCallbacks(opl_callback_queue_t *queue,
 
 #ifdef TEST
 
-#include <assert.h>
+#include <cassert>
 
 static void PrintQueueNode(opl_callback_queue_t *queue, int node, int depth)
 {

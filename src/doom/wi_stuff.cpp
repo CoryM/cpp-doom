@@ -17,11 +17,11 @@
 //
 
 
-#include <stdio.h>
+#include <cstdio>
 
-#include "z_zone.hpp"
+#include "../z_zone.hpp"
 
-#include "m_misc.hpp"
+#include "../m_misc.hpp"
 #include "m_random.hpp"
 
 #include "deh_main.hpp"

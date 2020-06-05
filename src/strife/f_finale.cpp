@@ -20,8 +20,8 @@
 //
 
 
-#include <stdio.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cctype>
 
 // Functions.
 #include "../deh_main.hpp"

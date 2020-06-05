@@ -17,7 +17,7 @@
 //
 
 
-#include <time.h>
+#include <ctime>
 
 #include "m_random.hpp"
 

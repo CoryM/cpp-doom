@@ -16,9 +16,9 @@
 // Hexen CD interface.
 //
 
-#include <stdio.h>
+#include <cstdio>
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #include "doomtype.hpp"
 

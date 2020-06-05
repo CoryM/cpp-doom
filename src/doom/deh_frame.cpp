@@ -15,10 +15,10 @@
 // Parses "Frame" sections in dehacked files
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-#include "doomtype.hpp"
+#include "../doomtype.hpp"
 #include "d_items.hpp"
 #include "info.hpp"
 

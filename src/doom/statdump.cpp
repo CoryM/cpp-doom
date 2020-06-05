@@ -19,9 +19,9 @@
 
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "d_player.hpp"
 #include "d_mode.hpp"

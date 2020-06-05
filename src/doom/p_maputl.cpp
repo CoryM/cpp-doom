@@ -21,7 +21,7 @@
 //
 
 
-#include <stdlib.h>
+#include <cstdlib>
 
 
 #include "i_system.hpp" // [crispy] I_Realloc()

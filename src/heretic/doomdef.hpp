@@ -145,7 +145,7 @@ typedef union
 
 struct player_s;
 
-typedef struct mobj_s
+struct mobj_t
 {
     thinker_t thinker;          // thinker links
 
@@ -188,14 +188,14 @@ typedef struct mobj_s
     int lastlook;               // player number last looked for
 
     mapthing_t spawnpoint;      // for nightmare respawn
-} mobj_t;
+} mobj_s;
 
 // each sector has a degenmobj_t in it's center for sound origin purposes
-typedef struct
+struct degenmobj_t
 {
     thinker_t thinker;          // not used for anything
     fixed_t x, y, z;
-} degenmobj_t;
+};
 
 //
 // frame flags

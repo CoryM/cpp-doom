@@ -15,13 +15,13 @@
 // DESCRIPTION:  none
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-#include "i_sound.hpp"
-#include "i_system.hpp"
+#include "../i_sound.hpp"
+#include "../i_system.hpp"
 
-#include "deh_str.hpp"
+#include "../deh_str.hpp"
 
 #include "doomstat.hpp"
 #include "doomtype.hpp"

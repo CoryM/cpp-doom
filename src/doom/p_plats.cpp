@@ -16,10 +16,10 @@
 //	Plats (i.e. elevator platforms) code, raising/lowering.
 //
 
-#include <stdio.h>
+#include <cstdio>
 
-#include "i_system.hpp"
-#include "z_zone.hpp"
+#include "../i_system.hpp"
+#include "../z_zone.hpp"
 #include "m_random.hpp"
 
 #include "doomdef.hpp"

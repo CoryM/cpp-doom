@@ -16,12 +16,12 @@
 //
 
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include "SDL_stdinc.h"
+#include "SDL2/SDL_stdinc.h"
 
 #include "doomtype.hpp"
 #include "d_iwad.hpp"

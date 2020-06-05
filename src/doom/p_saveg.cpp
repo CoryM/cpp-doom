@@ -17,13 +17,13 @@
 //
 
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "dstrings.hpp"
-#include "deh_main.hpp"
-#include "i_system.hpp"
-#include "z_zone.hpp"
+#include "../deh_main.hpp"
+#include "../i_system.hpp"
+#include "../z_zone.hpp"
 #include "p_local.hpp"
 #include "p_saveg.hpp"
 

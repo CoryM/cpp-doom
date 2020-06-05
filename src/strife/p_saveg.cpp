@@ -17,8 +17,8 @@
 //
 
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "dstrings.hpp"
 #include "../deh_main.hpp"

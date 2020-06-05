@@ -28,11 +28,11 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-#include "SDL.h"
-#include "SDL_mixer.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_mixer.h"
 
 #include "buffer.hpp"
 #include "proto.hpp"

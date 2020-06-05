@@ -18,7 +18,7 @@
 
 // haleyjd 08/23/2010: There is no intermission in Strife
 #if 0
-#include <stdio.h>
+#include <cstdio>
 
 #include "z_zone.hpp"
 

@@ -43,9 +43,9 @@
 
 #ifndef NO_OBSD_DRIVER
 
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
 #include <unistd.h>
 
 #include "opl.hpp"

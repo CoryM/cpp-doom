@@ -16,13 +16,13 @@
 
 // AM_map.c
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "doomdef.hpp"
 #include "../deh_str.hpp"
-#include "i_timer.hpp"
-#include "i_video.hpp"
-#include "m_controls.hpp"
+#include "../i_timer.hpp"
+#include "../i_video.hpp"
+#include "../m_controls.hpp"
 #include "p_local.hpp"
 #include "am_map.hpp"
 #include "am_data.hpp"
@@ -1454,7 +1454,7 @@ void AM_drawThings(int colors, int colorrange)
             AM_drawLineCharacter(thintriangle_guy, NUMTHINTRIANGLEGUYLINES,
                                  16 << FRACBITS, t->angle, colors + lightlev,
                                  t->x, t->y);
-            t = t->snext;
+            t = reinterpret_cast<mobj_t *>(t->snext);
         }
     }
 }

@@ -19,17 +19,17 @@
 // Strife Hub Saving Code
 //
 
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdarg>
+#include <cstdlib>
+#include <cstring>
 
-#include "z_zone.hpp"
-#include "i_glob.hpp"
-#include "i_system.hpp"
+#include "../z_zone.hpp"
+#include "../i_glob.hpp"
+#include "../i_system.hpp"
+#include "../deh_str.hpp"
+#include "../m_misc.hpp"
 #include "d_player.hpp"
-#include "deh_str.hpp"
 #include "doomstat.hpp"
-#include "m_misc.hpp"
 #include "m_saves.hpp"
 #include "p_dialog.hpp"
 

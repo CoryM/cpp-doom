@@ -17,10 +17,10 @@
 //	Switches, buttons. Two-state animation. Exits.
 //
 
-#include <stdio.h>
+#include <cstdio>
 
-#include "i_system.hpp"
-#include "deh_main.hpp"
+#include "../i_system.hpp"
+#include "../deh_main.hpp"
 #include "doomdef.hpp"
 #include "p_local.hpp"
 #include "i_swap.hpp" // [crispy] SHORT()

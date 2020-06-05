@@ -15,9 +15,9 @@
 // Routines for selecting files.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "doomkeys.hpp"
 
@@ -45,7 +45,7 @@ const char *TXT_DIRECTORY[] = { "__directory__", NULL };
 
 #include <fcntl.h>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 #include <sys/wait.h>
 
 static char *ExecReadOutput(char **argv)

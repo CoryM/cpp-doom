@@ -16,8 +16,8 @@
 
 // P_main.c
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 
 #include "doomdef.hpp"
 #include "i_swap.hpp"

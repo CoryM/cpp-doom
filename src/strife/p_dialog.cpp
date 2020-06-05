@@ -20,7 +20,7 @@
 //
 #include "p_dialog.hpp"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "../z_zone.hpp"
 #include "../w_wad.hpp"

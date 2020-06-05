@@ -17,14 +17,14 @@
 //
 
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 
-#include "deh_main.hpp"
+#include "../deh_main.hpp"
 #include "doomdef.hpp"
 
-#include "i_swap.hpp"
+#include "../i_swap.hpp"
 #include "i_system.hpp"
 #include "z_zone.hpp"
 #include "w_wad.hpp"

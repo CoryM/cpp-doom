@@ -17,16 +17,16 @@
 // Chat mode
 //
 
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <cctype>
 
 #include "doomdef.hpp"
-#include "doomkeys.hpp"
+#include "../doomkeys.hpp"
 
-#include "deh_str.hpp"
-#include "i_input.hpp"
-#include "m_controls.hpp"
-#include "m_misc.hpp"
+#include "../deh_str.hpp"
+#include "../i_input.hpp"
+#include "../m_controls.hpp"
+#include "../m_misc.hpp"
 #include "p_local.hpp"
 #include "s_sound.hpp"
 #include "v_video.hpp"

@@ -15,14 +15,14 @@
 // Parses "Cheat" sections in dehacked files
 //
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
-#include "doomtype.hpp"
+#include "../doomtype.hpp"
 
-#include "deh_defs.hpp"
-#include "deh_io.hpp"
-#include "deh_main.hpp"
+#include "../deh_defs.hpp"
+#include "../deh_io.hpp"
+#include "../deh_main.hpp"
 #include "am_map.hpp"
 #include "st_stuff.hpp"
 

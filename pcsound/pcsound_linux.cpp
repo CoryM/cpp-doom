@@ -19,10 +19,10 @@
 
 #ifdef HAVE_LINUX_KD_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cerrno>
 #include <linux/kd.h>
 #include <sys/ioctl.h>
 #include <unistd.h>

@@ -16,9 +16,9 @@
 //	Put all global tate variables here.
 //
 
-#include <stdio.h>
+#include <cstdio>
 
-#include "doomstat.hpp"
+#include "../doomstat.hpp"
 
 
 // Game Mode - identify IWAD as shareware, retail etc.

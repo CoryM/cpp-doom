@@ -20,7 +20,7 @@
 
 
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "../i_system.hpp"
 #include "../i_video.hpp"

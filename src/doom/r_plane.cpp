@@ -19,12 +19,12 @@
 //
 
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-#include "i_system.hpp"
-#include "z_zone.hpp"
-#include "w_wad.hpp"
+#include "../i_system.hpp"
+#include "../z_zone.hpp"
+#include "../w_wad.hpp"
 
 #include "doomdef.hpp"
 #include "doomstat.hpp"

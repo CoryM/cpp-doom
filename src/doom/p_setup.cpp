@@ -18,12 +18,12 @@
 //
 
 
-#include <math.h>
+#include <cmath>
 
-#include "z_zone.hpp"
+#include "../z_zone.hpp"
 
-#include "deh_main.hpp"
-#include "i_swap.hpp"
+#include "../deh_main.hpp"
+#include "../i_swap.hpp"
 #include "m_argv.hpp"
 #include "m_bbox.hpp"
 #include "m_misc.hpp" // [crispy] M_StringJoin()

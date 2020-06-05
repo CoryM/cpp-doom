@@ -16,12 +16,12 @@
 //
 
 
-#include "SDL.h"
-#include "SDL_joystick.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_joystick.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 
 #include "doomtype.hpp"
 #include "d_event.hpp"

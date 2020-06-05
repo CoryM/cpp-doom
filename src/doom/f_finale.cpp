@@ -17,16 +17,16 @@
 //
 
 
-#include <stdio.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cctype>
 
 // Functions.
-#include "deh_main.hpp"
-#include "i_system.hpp"
-#include "i_swap.hpp"
-#include "z_zone.hpp"
-#include "v_video.hpp"
-#include "w_wad.hpp"
+#include "../deh_main.hpp"
+#include "../i_system.hpp"
+#include "../i_swap.hpp"
+#include "../z_zone.hpp"
+#include "../v_video.hpp"
+#include "../w_wad.hpp"
 #include "s_sound.hpp"
 
 // Data.

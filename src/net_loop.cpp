@@ -15,8 +15,8 @@
 //      Loopback network module for server compiled into the client
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "doomtype.hpp"
 #include "i_system.hpp"

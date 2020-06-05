@@ -48,26 +48,26 @@ enum
 };
 
 
-typedef PACKED_STRUCT (
+struct mapvertex_t
 {
     short x, y;
-}) mapvertex_t;
+};
 
-typedef PACKED_STRUCT (
+struct mapsidedef_t
 {
     short textureoffset;
     short rowoffset;
     char toptexture[8], bottomtexture[8], midtexture[8];
     short sector;               // on viewer's side
-}) mapsidedef_t;
+};
 
-typedef PACKED_STRUCT (
+struct maplinedef_t
 {
     short v1, v2;
     short flags;
     short special, tag;
     short sidenum[2];           // sidenum[1] will be -1 if one sided
-}) maplinedef_t;
+};
 
 #define	ML_BLOCKING			1
 #define	ML_BLOCKMONSTERS	2
@@ -88,43 +88,43 @@ typedef PACKED_STRUCT (
 #define	ML_MAPPED			256     // set if allready drawn in automap
 
 
-typedef PACKED_STRUCT (
+struct mapsector_t
 {
     short floorheight, ceilingheight;
     char floorpic[8], ceilingpic[8];
     short lightlevel;
     short special, tag;
-}) mapsector_t;
+};
 
-typedef PACKED_STRUCT (
+struct mapsubsector_t
 {
     short numsegs;
     short firstseg;             // segs are stored sequentially
-}) mapsubsector_t;
+};
 
-typedef PACKED_STRUCT (
+struct mapseg_t
 {
     short v1, v2;
     short angle;
     short linedef, side;
     short offset;
-}) mapseg_t;
+};
 
 #define	NF_SUBSECTOR	0x8000
-typedef PACKED_STRUCT (
+struct mapnode_t
 {
     short x, y, dx, dy;         // partition line
     short bbox[2][4];           // bounding box for each child
     unsigned short children[2]; // if NF_SUBSECTOR its a subsector
-}) mapnode_t;
+};
 
-typedef PACKED_STRUCT (
+struct mapthing_t
 {
     short x, y;
     short angle;
     short type;
     short options;
-}) mapthing_t;
+};
 
 #define	MTF_EASY		1
 #define	MTF_NORMAL		2
@@ -139,16 +139,16 @@ typedef PACKED_STRUCT (
 ===============================================================================
 */
 
-typedef PACKED_STRUCT (
+struct mappatch_t
 {
     short originx;
     short originy;
     short patch;
     short stepdir;
     short colormap;
-}) mappatch_t;
+};
 
-typedef PACKED_STRUCT (
+struct maptexture_t
 {
     char name[8];
     boolean masked;
@@ -157,7 +157,7 @@ typedef PACKED_STRUCT (
     int obsolete;
     short patchcount;
     mappatch_t patches[1];
-}) maptexture_t;
+};
 
 
 /*

@@ -17,11 +17,11 @@
 //	generation of lookups, caching, retrieval by name.
 //
 
-#include <stdio.h>
-#include <stdlib.h> // [crispy] calloc()
+#include <cstdio>
+#include <cstdlib> // [crispy] calloc()
 
-#include "deh_main.hpp"
-#include "i_swap.hpp"
+#include "../deh_main.hpp"
+#include "../i_swap.hpp"
 #include "i_system.hpp"
 #include "z_zone.hpp"
 

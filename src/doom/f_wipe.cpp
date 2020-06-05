@@ -16,11 +16,11 @@
 //	Mission begin melt/wipe screen special effect.
 //
 
-#include <string.h>
+#include <cstring>
 
-#include "z_zone.hpp"
-#include "i_video.hpp"
-#include "v_video.hpp"
+#include "../z_zone.hpp"
+#include "../i_video.hpp"
+#include "../v_video.hpp"
 #include "m_random.hpp"
 
 #include "doomtype.hpp"

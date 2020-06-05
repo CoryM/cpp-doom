@@ -17,10 +17,10 @@
 
 #include "../src/config.hpp"
 
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <assert.h>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <cassert>
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_mixer.h"

@@ -15,15 +15,15 @@
 // Top-level dehacked definitions for Heretic dehacked (HHE).
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "../deh_defs.hpp"
-#include "deh_main.hpp"
+#include "../deh_main.hpp"
 #include "deh_htic.hpp"
 #include "info.hpp"
-#include "m_argv.hpp"
+#include "../m_argv.hpp"
 
 const char *deh_signatures[] =
 {

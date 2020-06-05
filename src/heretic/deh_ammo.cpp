@@ -15,15 +15,15 @@
 // Parses "Ammo" sections in dehacked files
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "doomdef.hpp"
-#include "doomtype.hpp"
-#include "deh_defs.hpp"
-#include "deh_io.hpp"
-#include "deh_main.hpp"
+#include "../doomtype.hpp"
+#include "../deh_defs.hpp"
+#include "../deh_io.hpp"
+#include "../deh_main.hpp"
 #include "p_local.hpp"
 
 static void *DEH_AmmoStart(deh_context_t *context, char *line)
