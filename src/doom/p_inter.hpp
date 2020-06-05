@@ -22,8 +22,9 @@
 
 
 #include "dstrings.hpp"
+#include "d_player.hpp"
 
-boolean P_GivePower(player_t *, int);
+bool P_GivePower(player_t *, int);
 
 // [crispy] show weapon pickup messages in multiplayer games
 static constexpr const char *const WeaponPickupMessages[NUMWEAPONS] = {

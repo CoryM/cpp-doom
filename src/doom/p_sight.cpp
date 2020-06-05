@@ -42,9 +42,9 @@ int sightcounts[2];
 
 // PTR_SightTraverse() for Doom 1.2 sight calculations
 // taken from prboom-plus/src/p_sight.c:69-102
-boolean PTR_SightTraverse(intercept_t *in)
+bool PTR_SightTraverse(intercept_t *in)
 {
-    line_t *li;
+    line_s *li;
     fixed_t slope;
 
     li = in->d.line;
@@ -159,10 +159,10 @@ fixed_t
 // Returns true
 //  if strace crosses the given subsector successfully.
 //
-boolean P_CrossSubsector(int num)
+bool P_CrossSubsector(int num)
 {
     seg_t *      seg;
-    line_t *     line;
+    line_s *     line;
     int          s1;
     int          s2;
     int          count;
@@ -288,7 +288,7 @@ boolean P_CrossSubsector(int num)
 // Returns true
 //  if strace crosses the given node successfully.
 //
-boolean P_CrossBSPNode(int bspnum)
+bool P_CrossBSPNode(int bspnum)
 {
     node_t *bsp;
     int     side;
@@ -330,7 +330,7 @@ boolean P_CrossBSPNode(int bspnum)
 //  if a straight line between t1 and t2 is unobstructed.
 // Uses REJECT.
 //
-boolean
+bool
     P_CheckSight(mobj_t *t1,
         mobj_t *         t2)
 {

@@ -16,9 +16,9 @@
 //
 
 
-#include "z_zone.hpp"
+#include "../z_zone.hpp"
 #include "doomdef.hpp"
-#include "deh_main.hpp"
+#include "../deh_main.hpp"
 #include "p_local.hpp"
 #include "i_system.hpp"
 
@@ -203,7 +203,7 @@ void T_VerticalDoor(vldoor_t *door)
 // Move a locked door up/down
 //
 
-int EV_DoLockedDoor(line_t *line,
+int EV_DoLockedDoor(line_s *line,
     vldoor_e                type,
     mobj_t *                thing)
 {
@@ -257,7 +257,7 @@ int EV_DoLockedDoor(line_t *line,
 }
 
 
-int EV_DoDoor(line_t *line,
+int EV_DoDoor(line_s *line,
     vldoor_e          type)
 {
     int       secnum, rtn;
@@ -345,7 +345,7 @@ int EV_DoDoor(line_t *line,
 //
 // EV_VerticalDoor : open a door manually, no tag value
 //
-void EV_VerticalDoor(line_t *line,
+void EV_VerticalDoor(line_s *line,
     mobj_t *                 thing)
 {
     player_t *player;
@@ -649,7 +649,7 @@ void P_InitSlidingDoorFrames(void)
 // Return index into "slideFrames" array
 // for which door type to use
 //
-int P_FindSlidingDoorType(line_t*	line)
+int P_FindSlidingDoorType(line_s*	line)
 {
     int		i;
     int		val;
@@ -753,7 +753,7 @@ void T_SlidingDoor (slidedoor_t*	door)
 
 void
 EV_SlidingDoor
-( line_t*	line,
+( line_s*	line,
   mobj_t*	thing )
 {
     sector_t*		sec;

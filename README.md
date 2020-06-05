@@ -1,4 +1,6 @@
-# Crispy Doom
+# CPP Doom
+This is a stripped down version of Crispy Doom.  Removing Heteric, Hexen, and Strife variants.  The Builds have also been focused on Linux by removing WIN32 and OSx checks and builds.  The primary language has also been changed from C to C++20.
+
 [![Crispy Doom Icon](https://www.chocolate-doom.org/wiki/images/b/be/Crispy-doom.png)](https://github.com/fabiangreffrath/crispy-doom)
 
 [![Top Language](https://img.shields.io/github/languages/top/fabiangreffrath/crispy-doom.svg?style=flat)](https://github.com/fabiangreffrath/crispy-doom)

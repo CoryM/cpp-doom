@@ -100,7 +100,7 @@
 
 // Use builtin bool type with C++.
 
-typedef bool boolean;
+[[deprecated("boolean unneeded typedef use bool")]] typedef bool boolean;
 
 #else
 
@@ -108,7 +108,7 @@ typedef enum
 {
     false,
     true
-} boolean;
+} bool;
 
 #endif
 

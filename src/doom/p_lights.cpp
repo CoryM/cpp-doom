@@ -18,7 +18,7 @@
 //
 
 
-#include "z_zone.hpp"
+#include "../z_zone.hpp"
 #include "m_random.hpp"
 
 #include "doomdef.hpp"
@@ -195,7 +195,7 @@ void P_SpawnStrobeFlash(sector_t *sector,
 //
 // Start strobing lights (usually from a trigger)
 //
-void EV_StartLightStrobing(line_t *line)
+void EV_StartLightStrobing(line_s *line)
 {
     int       secnum;
     sector_t *sec;
@@ -215,14 +215,14 @@ void EV_StartLightStrobing(line_t *line)
 //
 // TURN LINE'S TAG LIGHTS OFF
 //
-void EV_TurnTagLightsOff(line_t *line)
+void EV_TurnTagLightsOff(line_s *line)
 {
     int       i;
     int       j;
     int       min;
     sector_t *sector;
     sector_t *tsec;
-    line_t *  templine;
+    line_s *  templine;
 
     sector = sectors;
 
@@ -249,14 +249,14 @@ void EV_TurnTagLightsOff(line_t *line)
 //
 // TURN LINE'S TAG LIGHTS ON
 //
-void EV_LightTurnOn(line_t *line,
+void EV_LightTurnOn(line_s *line,
     int                     bright)
 {
     int       i;
     int       j;
     sector_t *sector;
     sector_t *temp;
-    line_t *  templine;
+    line_s *  templine;
 
     sector = sectors;
 

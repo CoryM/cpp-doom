@@ -21,7 +21,7 @@
 #define __M_MENU__
 
 
-#include "d_event.hpp"
+#include "../d_event.hpp"
 
 //
 // MENUS
@@ -31,7 +31,7 @@
 // Even when the menu is not displayed,
 // this can resize the view and change game parameters.
 // Does all the real work of the menu interaction.
-boolean M_Responder(event_t *ev);
+bool M_Responder(event_t *ev);
 
 
 // Called by main loop,

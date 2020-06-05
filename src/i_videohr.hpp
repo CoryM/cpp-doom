@@ -19,7 +19,9 @@
 #ifndef I_VIDEOHR_H
 #define I_VIDEOHR_H
 
-boolean I_SetVideoModeHR(void);
+#include "doomtype.hpp"
+
+bool I_SetVideoModeHR(void);
 void    I_UnsetVideoModeHR(void);
 void    I_SetWindowTitleHR(const char *title);
 void    I_ClearScreenHR(void);
@@ -29,6 +31,6 @@ void    I_InitPaletteHR(void);
 void    I_SetPaletteHR(const byte *palette);
 void    I_FadeToPaletteHR(const byte *palette);
 void    I_BlackPaletteHR(void);
-boolean I_CheckAbortHR(void);
+bool I_CheckAbortHR(void);
 
 #endif /* #ifndef I_VIDEOHR_H */

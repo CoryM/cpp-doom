@@ -68,7 +68,7 @@ int     numnodes;
 node_t *nodes;
 
 int     numlines;
-line_t *lines;
+line_s *lines;
 
 int     numsides;
 side_t *sides;
@@ -111,7 +111,7 @@ byte *rejectmatrix;
 mapthing_t  deathmatchstarts[MAX_DEATHMATCH_STARTS];
 mapthing_t *deathmatch_p;
 mapthing_t  playerstarts[MAXPLAYERS];
-boolean     playerstartsingame[MAXPLAYERS];
+bool     playerstartsingame[MAXPLAYERS];
 
 // [crispy] recalculate seg offsets
 // adapted from prboom-plus/src/p_setup.c:474-482
@@ -173,7 +173,7 @@ void P_LoadVertexes(int lump)
 //
 sector_t *GetSectorAtNullAddress(void)
 {
-    static boolean  null_sector_is_initialized = false;
+    static bool  null_sector_is_initialized = false;
     static sector_t null_sector;
 
     if (!null_sector_is_initialized)
@@ -196,7 +196,7 @@ void P_LoadSegs(int lump)
     int       i;
     mapseg_t *ml;
     seg_t *   li;
-    line_t *  ldef;
+    line_s *  ldef;
     int       linedef;
     int       side;
     int       sidenum;
@@ -270,7 +270,7 @@ void P_LoadSegs(int lump)
 }
 
 // [crispy] fix long wall wobble
-void P_SegLengths(boolean contrast_only)
+void P_SegLengths(bool contrast_only)
 {
     int       i;
     const int rightangle = abs(finesine[(ANG60 / 2) >> ANGLETOFINESHIFT]);
@@ -462,7 +462,7 @@ void P_LoadThings(int lump)
     mapthing_t *mt;
     mapthing_t  spawnthing;
     int         numthings;
-    boolean     spawn;
+    bool     spawn;
 
     data      = cache_lump_num<byte *>(lump, PU_STATIC);
     numthings = W_LumpLength(lump) / sizeof(mapthing_t);
@@ -529,14 +529,14 @@ void P_LoadLineDefs(int lump)
     byte *        data;
     int           i;
     maplinedef_t *mld;
-    line_t *      ld;
+    line_s *      ld;
     vertex_t *    v1;
     vertex_t *    v2;
     int           warn, warn2; // [crispy] warn about invalid linedefs
 
     numlines = W_LumpLength(lump) / sizeof(maplinedef_t);
-    lines    = zmalloc<decltype(lines)>(numlines * sizeof(line_t), PU_LEVEL, 0);
-    memset(lines, 0, numlines * sizeof(line_t));
+    lines    = zmalloc<decltype(lines)>(numlines * sizeof(line_s), PU_LEVEL, 0);
+    memset(lines, 0, numlines * sizeof(line_s));
     data = cache_lump_num<byte *>(lump, PU_STATIC);
 
     mld  = (maplinedef_t *)data;
@@ -702,7 +702,7 @@ void P_LoadSideDefs(int lump)
 //
 // P_LoadBlockMap
 //
-boolean P_LoadBlockMap(int lump)
+bool P_LoadBlockMap(int lump)
 {
     int    i;
     int    count;
@@ -763,10 +763,10 @@ boolean P_LoadBlockMap(int lump)
 //
 void P_GroupLines(void)
 {
-    line_t **    linebuffer;
+    line_s **    linebuffer;
     int          i;
     int          j;
-    line_t *     li;
+    line_s *     li;
     sector_t *   sector;
     subsector_t *ss;
     seg_t *      seg;
@@ -797,7 +797,7 @@ void P_GroupLines(void)
     }
 
     // build line tables for each sector
-    linebuffer = zmalloc<decltype(linebuffer)>(totallines * sizeof(line_t *), PU_LEVEL, 0);
+    linebuffer = zmalloc<decltype(linebuffer)>(totallines * sizeof(line_s *), PU_LEVEL, 0);
 
     for (i = 0; i < numsectors; ++i)
     {
@@ -885,7 +885,7 @@ static void P_RemoveSlimeTrails(void)
 
     for (i = 0; i < numsegs; i++)
     {
-        const line_t *l = segs[i].linedef;
+        const line_s *l = segs[i].linedef;
         vertex_t *    v = segs[i].v1;
 
         // [crispy] ignore exactly vertical or horizontal linedefs
@@ -1020,7 +1020,7 @@ const char *skilltable[] = {
 };
 
 // [crispy] factor out map lump name and number finding into a separate function
-int P_GetNumForMap(int episode, int map, boolean critical)
+int P_GetNumForMap(int episode, int map, bool critical)
 {
     char lumpname[9];
     int  lumpnum;
@@ -1070,7 +1070,7 @@ void P_SetupLevel(int episode,
     int         i;
     char        lumpname[9];
     int         lumpnum;
-    boolean     crispy_validblockmap;
+    bool     crispy_validblockmap;
     mapformat_t crispy_mapformat;
 
     totalkills = totalitems = totalsecret = wminfo.maxfrags = 0;

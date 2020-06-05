@@ -86,7 +86,7 @@ void I_ShutdownJoystick(void)
     }
 }
 
-static boolean IsValidAxis(int axis)
+static bool IsValidAxis(int axis)
 {
     int num_axes;
 
@@ -202,7 +202,7 @@ void I_InitJoystick(void)
     I_AtExit(I_ShutdownJoystick, true);
 }
 
-static boolean IsAxisButton(int physbutton)
+static bool IsAxisButton(int physbutton)
 {
     if (IS_BUTTON_AXIS(joystick_x_axis))
     {

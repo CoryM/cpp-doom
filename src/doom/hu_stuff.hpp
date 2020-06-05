@@ -18,7 +18,7 @@
 #ifndef __HU_STUFF_H__
 #define __HU_STUFF_H__
 
-#include "d_event.hpp"
+#include "../d_event.hpp"
 
 
 //
@@ -46,7 +46,7 @@
 void HU_Init(void);
 void HU_Start(void);
 
-boolean HU_Responder(event_t *ev);
+bool HU_Responder(event_t *ev);
 
 void HU_Ticker(void);
 void HU_Drawer(void);

@@ -97,7 +97,7 @@ void P_LoadSegs_DeePBSP(int lump)
         seg_t *           li = segs + i;
         mapseg_deepbsp_t *ml = data + i;
         int               side, linedef;
-        line_t *          ldef;
+        line_s *          ldef;
 
         li->v1 = &vertexes[ml->v1];
         li->v2 = &vertexes[ml->v2];
@@ -222,7 +222,7 @@ void P_LoadNodes_DeePBSP(int lump)
 // - inlined P_LoadZSegs()
 // - added support for compressed ZDBSP nodes
 // - added support for flipped levels
-void P_LoadNodes_ZDBSP(int lump, boolean compressed)
+void P_LoadNodes_ZDBSP(int lump, bool compressed)
 {
     unsigned int i;
 #ifdef HAVE_LIBZ
@@ -377,7 +377,7 @@ void P_LoadNodes_ZDBSP(int lump, boolean compressed)
 
     for (i = 0; i < numsegs; i++)
     {
-        line_t *        ldef;
+        line_s *        ldef;
         unsigned int    linedef;
         unsigned char   side;
         seg_t *         li = segs + i;
@@ -505,13 +505,13 @@ void P_LoadLineDefs_Hexen(int lump)
 {
     int                 i;
     maplinedef_hexen_t *mld;
-    line_t *            ld;
+    line_s *            ld;
     vertex_t *          v1, *v2;
     int                 warn; // [crispy] warn about unknown linedef types
 
     numlines = W_LumpLength(lump) / sizeof(maplinedef_hexen_t);
-    lines    = zmalloc<decltype(lines)>(numlines * sizeof(line_t), PU_LEVEL, 0);
-    memset(lines, 0, numlines * sizeof(line_t));
+    lines    = zmalloc<decltype(lines)>(numlines * sizeof(line_s), PU_LEVEL, 0);
+    memset(lines, 0, numlines * sizeof(line_s));
     auto *data = cache_lump_num<byte *>(lump, PU_STATIC);
 
     mld  = (maplinedef_hexen_t *)data;

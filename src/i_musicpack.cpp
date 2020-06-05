@@ -85,7 +85,7 @@ typedef struct
 // Structure containing parsed metadata read from a digital music track:
 typedef struct
 {
-    boolean      valid;
+    bool      valid;
     unsigned int samplerate_hz;
     int          start_time, end_time;
 } file_metadata_t;
@@ -93,12 +93,12 @@ typedef struct
 static subst_music_t *subst_music     = NULL;
 static unsigned int   subst_music_len = 0;
 
-static boolean music_initialized = false;
+static bool music_initialized = false;
 
 // If this is true, this module initialized SDL sound and has the
 // responsibility to shut it down
 
-static boolean sdl_was_initialized = false;
+static bool sdl_was_initialized = false;
 
 char *music_pack_path = "";
 
@@ -114,7 +114,7 @@ static unsigned int current_track_pos;
 static Mix_Music *current_track_music = NULL;
 
 // If true, the currently playing track is being played on loop.
-static boolean current_track_loop;
+static bool current_track_loop;
 
 // Table of known hashes and filenames to look up for them. This allows
 // users to drop in a set of files without having to also provide a
@@ -473,7 +473,7 @@ static void ParseFlacFile(file_metadata_t *metadata, FILE *fs)
     byte         header[4];
     unsigned int block_type;
     size_t       block_len;
-    boolean      last_block;
+    bool      last_block;
 
     for (;;)
     {
@@ -864,7 +864,7 @@ static const char *ParseSubstituteLine(char *musicdir, char *line)
 
 // Read a substitute music configuration file.
 
-static boolean ReadSubstituteConfig(char *musicdir, const char *filename)
+static bool ReadSubstituteConfig(char *musicdir, const char *filename)
 {
     char *buffer;
     char *line;
@@ -984,10 +984,10 @@ static void LoadSubstituteConfigs(void)
 // Identifying music lumps by name is not feasible; some games (eg.
 // Heretic, Hexen) don't have a common naming pattern for music lumps.
 
-static boolean IsMusicLump(int lumpnum)
+static bool IsMusicLump(int lumpnum)
 {
     byte *  data;
-    boolean result;
+    bool result;
 
     if (W_LumpLength(lumpnum) < 4)
     {
@@ -1079,7 +1079,7 @@ static void I_MP_ShutdownMusic(void)
     }
 }
 
-static boolean SDLIsInitialized(void)
+static bool SDLIsInitialized(void)
 {
     int    freq, channels;
     Uint16 format;
@@ -1095,7 +1095,7 @@ void TrackPositionCallback(int chan, void *stream, int len, void *udata)
 }
 
 // Initialize music subsystem
-static boolean I_MP_InitMusic(void)
+static bool I_MP_InitMusic(void)
 {
     int i;
 
@@ -1165,7 +1165,7 @@ static void I_MP_SetMusicVolume(int volume)
 
 // Start playing a mid
 
-static void I_MP_PlaySong(void *handle, boolean looping)
+static void I_MP_PlaySong(void *handle, bool looping)
 {
     int loops;
 
@@ -1290,7 +1290,7 @@ static void *I_MP_RegisterSong(void *data, int len)
 }
 
 // Is the song playing?
-static boolean I_MP_MusicIsPlaying(void)
+static bool I_MP_MusicIsPlaying(void)
 {
     if (!music_initialized)
     {

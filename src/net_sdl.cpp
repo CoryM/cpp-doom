@@ -39,7 +39,7 @@
 
 #define DEFAULT_PORT 2342
 
-static boolean    initted = false;
+static bool    initted = false;
 static int        port    = DEFAULT_PORT;
 static UDPsocket  udpsocket;
 static UDPpacket *recvpacket;
@@ -64,7 +64,7 @@ static void NET_SDL_InitAddrTable(void)
     memset(addr_table, 0, sizeof(addrpair_t *) * addr_table_size);
 }
 
-static boolean AddressesEqual(IPaddress *a, IPaddress *b)
+static bool AddressesEqual(IPaddress *a, IPaddress *b)
 {
     return a->host == b->host
            && a->port == b->port;
@@ -155,7 +155,7 @@ static void NET_SDL_FreeAddress(net_addr_t *addr)
     I_Error("NET_SDL_FreeAddress: Attempted to remove an unused address!");
 }
 
-static boolean NET_SDL_InitClient(void)
+static bool NET_SDL_InitClient(void)
 {
     int p;
 
@@ -194,7 +194,7 @@ static boolean NET_SDL_InitClient(void)
     return true;
 }
 
-static boolean NET_SDL_InitServer(void)
+static bool NET_SDL_InitServer(void)
 {
     int p;
 
@@ -272,7 +272,7 @@ static void NET_SDL_SendPacket(net_addr_t *addr, net_packet_t *packet)
     }
 }
 
-static boolean NET_SDL_RecvPacket(net_addr_t **addr, net_packet_t **packet)
+static bool NET_SDL_RecvPacket(net_addr_t **addr, net_packet_t **packet)
 {
     int result;
 

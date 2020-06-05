@@ -19,8 +19,8 @@
 #ifndef __AMMAP_H__
 #define __AMMAP_H__
 
-#include "d_event.hpp"
-#include "m_cheat.hpp"
+#include "../d_event.hpp"
+#include "../m_cheat.hpp"
 
 // Used by ST StatusBar stuff.
 #define AM_MSGHEADER  (('a' << 24) + ('m' << 16))
@@ -29,7 +29,7 @@
 
 
 // Called by main loop.
-boolean AM_Responder(event_t *ev);
+bool AM_Responder(event_t *ev);
 
 // Called by main loop.
 void AM_Ticker(void);

@@ -405,7 +405,7 @@ void WI_slamBackground(void)
 
 // The ticker is used to detect keys
 //  because of timing issues in netgames.
-boolean WI_Responder(event_t *ev)
+bool WI_Responder(event_t *ev)
 {
     return false;
 }
@@ -487,7 +487,7 @@ void WI_drawOnLnode(int n,
     int     top;
     int     right;
     int     bottom;
-    boolean fits = false;
+    bool fits = false;
 
     i = 0;
     do
@@ -710,7 +710,7 @@ void WI_drawPercent(int x,
 void WI_drawTime(int x,
     int              y,
     int              t,
-    boolean          suck)
+    bool          suck)
 {
 
     int div;
@@ -778,7 +778,7 @@ void WI_updateNoState(void)
     }
 }
 
-static boolean snl_pointeron = false;
+static bool snl_pointeron = false;
 
 
 void WI_initShowNextLoc(void)
@@ -812,7 +812,7 @@ void WI_drawShowNextLoc(void)
 
     int            i;
     int            last;
-    extern boolean secretexit; // [crispy] Master Level support
+    extern bool secretexit; // [crispy] Master Level support
 
     WI_slamBackground();
 
@@ -926,7 +926,7 @@ void WI_updateDeathmatchStats(void)
     int i;
     int j;
 
-    boolean stillticking;
+    bool stillticking;
 
     WI_updateAnimatedBack();
 
@@ -1141,7 +1141,7 @@ void WI_updateNetgameStats(void)
     int i;
     int fsum;
 
-    boolean stillticking;
+    bool stillticking;
 
     WI_updateAnimatedBack();
 
@@ -1466,11 +1466,11 @@ void WI_updateStats(void)
 }
 
 // [crispy] conditionally draw par times on intermission screen
-static boolean WI_drawParTime(void)
+static bool WI_drawParTime(void)
 {
     extern lumpinfo_t *maplumpinfo;
 
-    boolean result = true;
+    bool result = true;
 
     // [crispy] PWADs have no par times (including The Master Levels)
     if (!W_IsIWADLump(maplumpinfo))
@@ -1567,7 +1567,7 @@ void WI_drawStats(void)
     if (sp_state > 8)
     {
         const int     ttime = wbs->totaltimes / TICRATE;
-        const boolean wide  = (ttime > 61 * 59) || (SP_TIMEX + SHORT(total->width) >= ORIGWIDTH / 4);
+        const bool wide  = (ttime > 61 * 59) || (SP_TIMEX + SHORT(total->width) >= ORIGWIDTH / 4);
 
         V_DrawPatch(SP_TIMEX, SP_TIMEY + 16, total);
         // [crispy] choose x-position depending on width of time string

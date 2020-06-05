@@ -104,7 +104,7 @@ struct crispy_t {
 extern crispy_t *const crispy;
 extern const crispy_t *critical;
 
-extern void CheckCrispySingleplayer(boolean singleplayer);
+extern void CheckCrispySingleplayer(bool singleplayer);
 
 enum
 {

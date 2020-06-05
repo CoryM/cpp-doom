@@ -238,7 +238,7 @@ static void P_ReadOldSpecial(const char *key)
 
 // buttonlist[]
 
-extern void P_StartButton(line_t *line, bwhere_e w, int texture, int time);
+extern void P_StartButton(line_s *line, bwhere_e w, int texture, int time);
 
 static void P_WriteButton(const char *key)
 {

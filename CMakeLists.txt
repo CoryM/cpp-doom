@@ -1,7 +1,7 @@
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 cmake_minimum_required(VERSION 3.7.2)
-project("Crispy Doom" VERSION 5.7.2 LANGUAGES CXX)
+project("Cpp Doom" VERSION 5.7.2 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 # Autotools variables
@@ -10,7 +10,7 @@ set(top_builddir ${CMAKE_CURRENT_BINARY_DIR})
 
 # AC_INIT variables
 set(PACKAGE_NAME "${PROJECT_NAME}")
-set(PACKAGE_TARNAME "crispy-doom")
+set(PACKAGE_TARNAME "cpp-doom")
 set(PACKAGE_VERSION "${PROJECT_VERSION}")
 set(PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")
 set(PACKAGE_BUGREPORT "https://github.com/fabiangreffrath/crispy-doom/issues")
@@ -21,13 +21,7 @@ set(PACKAGE_LICENSE "GNU General Public License, version 2")
 
 # Any settings that should apply to all targets in this directory and all
 # subdirectories should go here.  Use judiciously.
-if(MSVC)
-    add_definitions("/D_CRT_SECURE_NO_WARNINGS" "/D_CRT_SECURE_NO_DEPRECATE"
-                    "/D_CRT_NONSTDC_NO_DEPRECATE")
-else()
-    add_compile_options("-Wall" "-Wdeclaration-after-statement"
-                        "-Wredundant-decls")
-endif()
+add_compile_options("-Wall" "-Wdeclaration-after-statement" "-Wredundant-decls")
 
 find_package(SDL2 2.0.1)
 find_package(SDL2_mixer 2.0.0)

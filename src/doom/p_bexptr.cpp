@@ -25,7 +25,7 @@
 extern void A_Explode(mobj_t *thingy);
 extern void A_FaceTarget(mobj_t *thingy);
 
-extern boolean P_CheckMeleeRange(mobj_t *actor);
+extern bool P_CheckMeleeRange(mobj_t *actor);
 extern void    P_Thrust(player_t *player, angle_t angle, fixed_t move);
 
 // killough 11/98: kill an object
@@ -169,7 +169,7 @@ void A_LineEffect(mobj_t *mo)
 {
     //if (!(mo->intflags & MIF_LINEDONE))                // Unless already used up
     {
-        line_t junk = *lines;                         // Fake linedef set to 1st
+        line_s junk = *lines;                         // Fake linedef set to 1st
         if ((junk.special = (short)mo->state->misc1)) // Linedef type
         {
             player_t player, *oldplayer = mo->player; // Remember player status

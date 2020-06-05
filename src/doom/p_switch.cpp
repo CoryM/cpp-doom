@@ -111,7 +111,7 @@ void P_InitSwitchList(void)
 
     // [crispy] add support for SWITCHES lumps
     switchlist_t *alphSwitchList;
-    boolean       from_lump;
+    bool       from_lump;
 
     if ((from_lump = (W_CheckNumForName("SWITCHES") != -1)))
     {
@@ -197,7 +197,7 @@ void P_InitSwitchList(void)
 //
 // Start a button counting down till it turns off.
 //
-void P_StartButton(line_t *line,
+void P_StartButton(line_s *line,
     bwhere_e               w,
     int                    texture,
     int                    time)
@@ -249,7 +249,7 @@ void P_StartButton(line_t *line,
 // Function that changes wall texture.
 // Tell it if switch is ok to use again (1=yes, it's a button).
 //
-void P_ChangeSwitchTexture(line_t *line,
+void P_ChangeSwitchTexture(line_s *line,
     int                            useAgain)
 {
     int     texTop;
@@ -257,7 +257,7 @@ void P_ChangeSwitchTexture(line_t *line,
     int     texBot;
     int     i;
     int     sound;
-    boolean playsound = false;
+    bool playsound = false;
 
     if (!useAgain)
         line->special = 0;
@@ -330,9 +330,9 @@ void P_ChangeSwitchTexture(line_t *line,
 // Called when a thing uses a special line.
 // Only the front sides of lines are usable.
 //
-boolean
+bool
     P_UseSpecialLine(mobj_t *thing,
-        line_t *             line,
+        line_s *             line,
         int                  side)
 {
 

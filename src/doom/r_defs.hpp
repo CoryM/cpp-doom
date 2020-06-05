@@ -26,7 +26,7 @@
 
 // Some more or less basic data types
 // we depend on.
-#include "m_fixed.hpp"
+#include "../m_fixed.hpp"
 
 // We rely on the thinker data struct
 // to handle sound origins in sectors.
@@ -70,7 +70,7 @@ typedef struct
     // using the law of cosines in p_setup.c:P_RemoveSlimeTrails();
     fixed_t r_x;
     fixed_t r_y;
-    boolean moved;
+    bool moved;
 } vertex_t;
 
 
@@ -237,7 +237,7 @@ typedef struct line_s {
 
     // [crispy] calculate sound origin of line to be its midpoint
     degenmobj_t soundorg;
-} line_t;
+} line_s;
 
 
 //
@@ -268,7 +268,7 @@ typedef struct
     angle_t angle;
 
     side_t *sidedef;
-    line_t *linedef;
+    line_s *linedef;
 
     // Sector references.
     // Could be retrieved from linedef, too.

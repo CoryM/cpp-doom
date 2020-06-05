@@ -17,7 +17,7 @@
 //
 
 
-#include "z_zone.hpp"
+#include "../z_zone.hpp"
 #include "doomdef.hpp"
 #include "p_local.hpp"
 
@@ -44,11 +44,11 @@ result_e
     T_MovePlane(sector_t *sector,
         fixed_t           speed,
         fixed_t           dest,
-        boolean           crush,
+        bool           crush,
         int               floorOrCeiling,
         int               direction)
 {
-    boolean flag;
+    bool flag;
     fixed_t lastpos;
 
     // [AM] Store old sector heights for interpolation.
@@ -317,7 +317,7 @@ void EV_DoGoobers(void)
 //
 // HANDLE FLOOR TYPES
 //
-int EV_DoFloor(line_t *line,
+int EV_DoFloor(line_s *line,
     floor_e            floortype)
 {
     int          secnum;
@@ -499,7 +499,7 @@ int EV_DoFloor(line_t *line,
 //
 // BUILD A STAIRCASE!
 //
-int EV_BuildStairs(line_t *line,
+int EV_BuildStairs(line_s *line,
     stair_e                type)
 {
     int secnum;

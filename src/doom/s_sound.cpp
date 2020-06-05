@@ -98,7 +98,7 @@ static int snd_SfxVolume;
 
 // Whether songs are mus_paused
 
-static boolean mus_paused;
+static bool mus_paused;
 
 // Music currently being played
 
@@ -563,7 +563,7 @@ static int S_AdjustSoundParams(mobj_t *listener, mobj_t *source,
     angle_t angle;
 
     // [crispy] proper sound clipping in Doom 2 MAP08 and The Ultimate Doom E4M8 / Sigil E5M8
-    const boolean doom1map8 = (gamemap == 8 && ((gamemode != commercial && gameepisode < 4) || !crispy->soundfix));
+    const bool doom1map8 = (gamemap == 8 && ((gamemode != commercial && gameepisode < 4) || !crispy->soundfix));
 
     // calculate the distance to sound origin
     //  and clip it if necessary
@@ -1047,7 +1047,7 @@ void S_ChangeMusInfoMusic(int lumpnum, int looping)
     musinfo.current_item = lumpnum;
 }
 
-boolean S_MusicPlaying(void)
+bool S_MusicPlaying(void)
 {
     return I_MusicIsPlaying();
 }

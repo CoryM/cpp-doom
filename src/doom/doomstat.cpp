@@ -29,4 +29,4 @@ GameVariant_t gamevariant = vanilla;
 const char *  gamedescription;
 
 // Set if homebrew PWAD stuff has been added.
-boolean modifiedgame;
+bool modifiedgame;

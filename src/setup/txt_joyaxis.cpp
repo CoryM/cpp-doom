@@ -21,10 +21,10 @@
 #include "joystick.hpp"
 #include "../i_joystick.hpp"
 #include "../i_system.hpp"
-#include "m_controls.hpp"
-#include "m_misc.hpp"
+#include "../m_controls.hpp"
+#include "../m_misc.hpp"
 
-#include "../textscreen/textscreen.hpp"
+#include "../../textscreen/textscreen.hpp"
 #include "txt_gui.hpp"
 #include "txt_io.hpp"
 #include "txt_joyaxis.hpp"
@@ -132,7 +132,7 @@ static int FindUncenteredHat(SDL_Joystick *joystick, int *axis_invert)
     return -1;
 }
 
-static boolean CalibrateAxis(txt_joystick_axis_t *joystick_axis)
+static bool CalibrateAxis(txt_joystick_axis_t *joystick_axis)
 {
     int best_axis;
     int best_value;
@@ -205,7 +205,7 @@ static boolean CalibrateAxis(txt_joystick_axis_t *joystick_axis)
     return false;
 }
 
-static boolean SetButtonAxisPositive(txt_joystick_axis_t *joystick_axis)
+static bool SetButtonAxisPositive(txt_joystick_axis_t *joystick_axis)
 {
     int button;
 
@@ -226,7 +226,7 @@ static void IdentifyBadAxes(txt_joystick_axis_t *joystick_axis)
 
     free(joystick_axis->bad_axis);
 
-    joystick_axis->bad_axis = static_cast<bool *>(calloc(SDL_JoystickNumAxes(joystick_axis->joystick), sizeof(boolean)));
+    joystick_axis->bad_axis = static_cast<bool *>(calloc(SDL_JoystickNumAxes(joystick_axis->joystick), sizeof(bool)));
 
     // Look for uncentered axes.
 
@@ -273,7 +273,7 @@ static int NextCalibrateStage(txt_joystick_axis_t *joystick_axis)
 static int EventCallback(SDL_Event *event, TXT_UNCAST_ARG(joystick_axis))
 {
     TXT_CAST_ARG(txt_joystick_axis_t, joystick_axis);
-    boolean advance;
+    bool advance;
 
     if (event->type != SDL_JOYBUTTONDOWN)
     {

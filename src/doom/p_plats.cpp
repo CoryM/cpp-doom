@@ -124,7 +124,7 @@ void T_PlatRaise(plat_t *plat)
 // Do Platforms
 //  "amount" is only used for SOME platforms.
 //
-int EV_DoPlat(line_t *line,
+int EV_DoPlat(line_s *line,
     plattype_e        type,
     int               amount)
 {
@@ -255,7 +255,7 @@ void P_ActivateInStasis(int tag)
         }
 }
 
-void EV_StopPlat(line_t *line)
+void EV_StopPlat(line_s *line)
 {
     int j;
 

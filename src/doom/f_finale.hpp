@@ -21,14 +21,14 @@
 #define __F_FINALE__
 
 
-#include "doomtype.hpp"
-#include "d_event.hpp"
+#include "../doomtype.hpp"
+#include "../d_event.hpp"
 //
 // FINALE
 //
 
 // Called by main loop.
-boolean F_Responder(event_t *ev);
+bool F_Responder(event_t *ev);
 
 // Called by main loop.
 void F_Ticker(void);

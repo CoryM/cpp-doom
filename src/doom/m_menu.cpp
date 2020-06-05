@@ -21,16 +21,15 @@
 #include <cstdlib>
 #include <cctype>
 
-
 #include "doomdef.hpp"
-#include "doomkeys.hpp"
+#include "../doomkeys.hpp"
 #include "dstrings.hpp"
 
 #include "d_main.hpp"
-#include "deh_main.hpp"
+#include "../deh_main.hpp"
 
-#include "i_input.hpp"
-#include "i_swap.hpp"
+#include "../i_input.hpp"
+#include "../i_swap.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "i_video.hpp"
@@ -66,9 +65,9 @@
 #include "v_trans.hpp" // [crispy] colored "invert mouse" message
 
 extern patch_t *hu_font[HU_FONTSIZE];
-extern boolean  message_dontfuckwithme;
+extern bool  message_dontfuckwithme;
 
-extern boolean chat_on; // in heads-up code
+extern bool chat_on; // in heads-up code
 
 //
 // defaulted values
@@ -103,7 +102,7 @@ int messy;
 int messageLastMenuActive;
 
 // timed message = no input from user
-boolean messageNeedsInput;
+bool messageNeedsInput;
 
 void (*messageRoutine)(int response);
 
@@ -124,25 +123,25 @@ char gammamsg[5 + 4][26 + 2] = {
 int            saveStringEnter;
 int            saveSlot;           // which slot to save in
 int            saveCharIndex;      // which char we're editing
-static boolean joypadSave = false; // was the save action initiated by joypad?
+static bool joypadSave = false; // was the save action initiated by joypad?
 // old save description before edit
 char saveOldString[SAVESTRINGSIZE];
 
-boolean inhelpscreens;
-boolean menuactive;
+bool inhelpscreens;
+bool menuactive;
 
 #define SKULLXOFF         -32
 #define LINEHEIGHT        16
 #define CRISPY_LINEHEIGHT 10 // [crispy] Crispness menu
 
-extern boolean sendpause;
+extern bool sendpause;
 char           savegamestrings[10][SAVESTRINGSIZE];
 
 char endstring[160];
 
-static boolean opldev;
+static bool opldev;
 
-extern boolean speedkeydown(void);
+extern bool speedkeydown(void);
 
 //
 // MENU TYPEDEFS
@@ -237,7 +236,7 @@ static void M_DrawThermo(int x, int y, int thermWidth, int thermDot);
 static void M_WriteText(int x, int y, const char *string);
 int         M_StringWidth(const char *string); // [crispy] un-static
 static int  M_StringHeight(const char *string);
-static void M_StartMessage(const char *string, void (*routine)(int), boolean input);
+static void M_StartMessage(const char *string, void (*routine)(int), bool input);
 static void M_ClearMenus(void);
 
 // [crispy] Crispness menu
@@ -956,7 +955,7 @@ static void SetDefaultSaveName(int slot)
 }
 
 // [crispy] override savegame name if it already starts with a map identifier
-static boolean StartsWithMapIdentifier(char *str)
+static bool StartsWithMapIdentifier(char *str)
 {
     M_ForceUppercase(str);
 
@@ -1416,7 +1415,7 @@ static void M_DrawCrispnessSeparator(int y, char *item)
     M_WriteText(currentMenu->x - 8, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
-static void M_DrawCrispnessItem(int y, char *item, int feat, boolean cond)
+static void M_DrawCrispnessItem(int y, char *item, int feat, bool cond)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
         "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item,
@@ -1425,7 +1424,7 @@ static void M_DrawCrispnessItem(int y, char *item, int feat, boolean cond)
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
-static void M_DrawCrispnessMultiItem(int y, char *item, multiitem_t *multiitem, int feat, boolean cond)
+static void M_DrawCrispnessMultiItem(int y, char *item, multiitem_t *multiitem, int feat, bool cond)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
         "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item,
@@ -1899,7 +1898,7 @@ void M_DrawThermo(int x,
 
 void M_StartMessage(const char *string,
     void (*routine)(int),
-    boolean input)
+    bool input)
 {
     messageLastMenuActive = menuactive;
     messageToPrint        = 1;
@@ -2024,7 +2023,7 @@ void M_WriteText(int x,
 // These keys evaluate to a "null" key in Vanilla Doom that allows weird
 // jumping in the menus. Preserve this behavior for accuracy.
 
-static boolean IsNullKey(int key)
+static bool IsNullKey(int key)
 {
     return key == KEY_PAUSE || key == KEY_CAPSLOCK
            || key == KEY_SCRLCK || key == KEY_NUMLOCK;
@@ -2161,7 +2160,7 @@ static int G_GotoNextLevel(void)
 //
 // M_Responder
 //
-boolean M_Responder(event_t *ev)
+bool M_Responder(event_t *ev)
 {
     int        ch;
     int        key;
@@ -2852,7 +2851,7 @@ void M_Drawer(void)
         y     = ORIGHEIGHT / 2 - M_StringHeight(messageString) / 2;
         while (messageString[start] != '\0')
         {
-            boolean foundnewline = false;
+            bool foundnewline = false;
 
             for (i = 0; messageString[start + i] != '\0'; i++)
             {

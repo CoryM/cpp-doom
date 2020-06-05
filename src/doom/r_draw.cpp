@@ -20,11 +20,11 @@
 
 
 #include "doomdef.hpp"
-#include "deh_main.hpp"
+#include "../deh_main.hpp"
 
-#include "i_system.hpp"
-#include "z_zone.hpp"
-#include "w_wad.hpp"
+#include "../i_system.hpp"
+#include "../z_zone.hpp"
+#include "../w_wad.hpp"
 
 #include "r_local.hpp"
 
@@ -367,7 +367,7 @@ void R_DrawFuzzColumn(void)
     pixel_t *dest;
     fixed_t  frac;
     fixed_t  fracstep;
-    boolean  cutoff = false;
+    bool  cutoff = false;
 
     // Adjust borders. Low...
     if (!dc_yl)
@@ -447,7 +447,7 @@ void R_DrawFuzzColumnLow(void)
     fixed_t  frac;
     fixed_t  fracstep;
     int      x;
-    boolean  cutoff = false;
+    bool  cutoff = false;
 
     // Adjust borders. Low...
     if (!dc_yl)

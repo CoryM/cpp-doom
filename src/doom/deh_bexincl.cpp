@@ -21,17 +21,16 @@
 #include <cstring>
 #include <string>
 
-#include "m_misc.hpp"
+#include "../m_misc.hpp"
+#include "../deh_io.hpp"
+#include "../deh_main.hpp"
 
-#include "deh_io.hpp"
-#include "deh_main.hpp"
-
-static boolean bex_nested = false;
+static bool bex_nested = false;
 
 static void *DEH_BEXInclStart(deh_context_t *context, char *line)
 {
     char *         deh_file;
-    extern boolean bex_notext;
+    extern bool bex_notext;
 
     if (!DEH_FileName(context))
     {

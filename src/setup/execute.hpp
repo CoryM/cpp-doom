@@ -15,8 +15,8 @@
 #ifndef TESTCONFIG_H
 #define TESTCONFIG_H
 
-#include "doomtype.hpp"
-#include "textscreen.hpp"
+#include "../doomtype.hpp"
+#include "../../textscreen/textscreen.hpp"
 
 typedef struct execute_context_s execute_context_t;
 
@@ -32,7 +32,7 @@ void AddCmdLineParameter(execute_context_t *context, const char *s, ...) PRINTF_
 void PassThroughArguments(execute_context_t *context);
 int ExecuteDoom(execute_context_t *context);
 int FindInstalledIWADs(void);
-boolean OpenFolder(const char *path);
+bool OpenFolder(const char *path);
 
 txt_window_action_t *TestConfigAction(void);
 

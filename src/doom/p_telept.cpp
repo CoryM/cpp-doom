@@ -35,7 +35,7 @@
 //
 // TELEPORTATION
 //
-int EV_Teleport(line_t *line,
+int EV_Teleport(line_s *line,
     int                 side,
     mobj_t *            thing)
 {

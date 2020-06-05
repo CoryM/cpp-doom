@@ -19,9 +19,9 @@
 
 #include "doomdef.hpp"
 
-#include "m_bbox.hpp"
+#include "../m_bbox.hpp"
 
-#include "i_system.hpp"
+#include "../i_system.hpp"
 
 #include "r_main.hpp"
 #include "r_plane.hpp"
@@ -36,7 +36,7 @@
 
 seg_t *   curline;
 side_t *  sidedef;
-line_t *  linedef;
+line_s *  linedef;
 sector_t *frontsector;
 sector_t *backsector;
 
@@ -391,7 +391,7 @@ int checkcoord[12][4] = {
 };
 
 
-boolean R_CheckBBox(fixed_t *bspcoord)
+bool R_CheckBBox(fixed_t *bspcoord)
 {
     int boxx;
     int boxy;
