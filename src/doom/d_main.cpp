@@ -26,6 +26,10 @@
 #include <cstring>
 #include <ctime> // [crispy] time_t, time(), struct tm, localtime()
 
+#include <array>
+#include <string_view>
+#include <vector>
+
 #include "../config.hpp"
 #include "../deh_main.hpp"
 #include "doomdef.hpp"
@@ -1330,28 +1334,30 @@ static void LoadIwadDeh(void)
 // [crispy] support loading SIGIL.WAD (and SIGIL_SHREDS.WAD) alongside DOOM.WAD
 static void LoadSigilWad(void)
 {
-
-    static constexpr struct {
-        const char *name;
-        const char  new_name[9];
-    } sigil_lumps[] = {
-        { "CREDIT", "SIGCREDI" },
-        { "HELP1", "SIGHELP1" },
-        { "TITLEPIC", "SIGTITLE" },
-        { "DEHACKED", "SIG_DEH" },
-        { "DEMO1", "SIGDEMO1" },
-        { "DEMO2", "SIGDEMO2" },
-        { "DEMO3", "SIGDEMO3" },
-        { "DEMO4", "SIGDEMO4" },
-        { "D_INTER", "D_SIGINT" },
-        { "D_INTRO", "D_SIGTIT" },
+    struct s_sigilLumps {
+        const std::string_view name;
+        const std::string_view new_name;
     };
 
-    const char *const texture_files[] = {
+    constexpr auto a_sigilLumps = std::to_array< s_sigilLumps >({ 
+        {"CREDIT",  "SIGCREDI"},
+        {"HELP1",   "SIGHELP1"},
+        {"TITLEPIC","SIGTITLE"},
+        {"DEHACKED","SIG_DEH" },
+        {"DEMO1",   "SIGDEMO1"},
+        {"DEMO2",   "SIGDEMO2"},
+        {"DEMO3",   "SIGDEMO3"},
+        {"DEMO4",   "SIGDEMO4"},
+        {"D_INTER", "D_SIGINT"},
+        {"D_INTRO", "D_SIGTIT"}
+    });
+
+    constexpr auto a_textureFiles = std::to_array<const char * const>({
         "PNAMES",
         "TEXTURE1",
-        "TEXTURE2",
-    };
+        "TEXTURE2"
+    });
+    
 
     // [crispy] don't load SIGIL.wad if another PWAD already provides E5M1
     int i = W_CheckNumForName("E5M1");
@@ -1368,11 +1374,9 @@ static void LoadSigilWad(void)
     }
 
     // [crispy] don't load SIGIL.wad if another PWAD already modifies the texture files
-    for (i = 0; i < arrlen(texture_files); i++)
+    for (auto &textureFile : a_textureFiles)
     {
-        int j;
-
-        j = W_CheckNumForName(texture_files[i]);
+        int j = W_CheckNumForName(textureFile);
 
         if (j != -1 && !W_IsIWADLump(lumpinfo[j]))
         {
@@ -1382,45 +1386,46 @@ static void LoadSigilWad(void)
 
     if (gameversion == exe_ultimate)
     {
-        const char *const sigil_wads[] = {
+        constexpr auto a_sigilWads = std::to_array<const char * const>({
             "SIGIL_v1_21.wad",
             "SIGIL_v1_2.wad",
             "SIGIL.wad"
-        };
-        char *sigil_wad = nullptr, *sigil_shreds = nullptr;
+        });
+        char *sigil_wad_file = nullptr, *sigil_shreds = nullptr;
 
         char *dirname = M_DirName(iwadfile);
         sigil_shreds  = M_StringJoin(dirname, DIR_SEPARATOR_S, "SIGIL_SHREDS.wad", NULL);
 
         // [crispy] load SIGIL.WAD
-        for (i = 0; i < arrlen(sigil_wads); i++)
+        for ( auto &sigilWad : a_sigilWads)
         {
-            sigil_wad = M_StringJoin(dirname, DIR_SEPARATOR_S, sigil_wads[i], NULL);
+            sigil_wad_file = M_StringJoin(dirname, DIR_SEPARATOR_S, sigilWad, NULL);
 
-            if (M_FileExists(sigil_wad))
+            if (M_FileExists(sigil_wad_file))
             {
                 break;
             }
 
-            free(sigil_wad);
-            sigil_wad = D_FindWADByName(sigil_wads[i]);
+            free(sigil_wad_file);
 
-            if (sigil_wad)
+            sigil_wad_file = D_FindWADByName(sigilWad);
+
+            if (sigil_wad_file)
             {
                 break;
             }
         }
         free(dirname);
 
-        if (sigil_wad == nullptr)
+        if (sigil_wad_file == nullptr)
         {
             free(sigil_shreds);
             return;
         }
 
         printf(" [expansion]");
-        D_AddFile(sigil_wad);
-        free(sigil_wad);
+        D_AddFile(sigil_wad_file);
+        free(sigil_wad_file);
 
         // [crispy] load SIGIL_SHREDS.WAD
         if (!M_FileExists(sigil_shreds))
@@ -1437,30 +1442,30 @@ static void LoadSigilWad(void)
         }
 
         // [crispy] rename intrusive SIGIL_SHREDS.wad music lumps out of the way
-        for (i = 0; i < arrlen(sigil_lumps); i++)
+        for (auto &sigilLump : a_sigilLumps)
         {
             // [crispy] skip non-music lumps
-            if (strncasecmp(sigil_lumps[i].name, "D_", 2))
+            if (strncasecmp(sigilLump.name.data(), "D_", 2))
             {
                 continue;
             }
 
-            int j = W_CheckNumForName(sigil_lumps[i].name);
+            int j = W_CheckNumForName(sigilLump.name.data());
 
             if (j != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL_SHREDS", 12))
             {
-                memcpy(lumpinfo[j]->name, sigil_lumps[i].new_name, 8);
+                memcpy(lumpinfo[j]->name, sigilLump.new_name.data(), 8);
             }
         }
 
         // [crispy] rename intrusive SIGIL.wad graphics, demos and music lumps out of the way
-        for (i = 0; i < arrlen(sigil_lumps); i++)
+        for (auto &sigilLump : a_sigilLumps)
         {
-            int j = W_CheckNumForName(sigil_lumps[i].name);
+            int j = W_CheckNumForName(sigilLump.name.data());
 
             if (j != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL", 5))
             {
-                memcpy(lumpinfo[j]->name, sigil_lumps[i].new_name, 8);
+                memcpy(lumpinfo[j]->name, sigilLump.new_name.data(), 8);
             }
         }
 
