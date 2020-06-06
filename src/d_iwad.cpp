@@ -52,7 +52,7 @@ static const auto a_iwads = std::to_array<iwad_t>({
     { "heretic.wad", heretic, retail, "Heretic" },
     { "heretic1.wad", heretic, shareware, "Heretic Shareware" },
     { "hexen.wad", hexen, commercial, "Hexen" },
-    { "strife1.wad", strife, commercial, "Strife" },
+    { "strife1.wad", strife, commercial, "Strife" }
 });
 
 // Helper function to get Enviroment Varibles into a string_view
@@ -65,28 +65,14 @@ auto env_view = [](const auto *envVar){
         return std::string_view();
 };
 
-bool D_IsIWADName(const char *name)
-{
-    for (const auto &i : a_iwads)
-    {
-        if (!strcasecmp(name, i.name))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
 
 // Array of locations to search for IWAD files
 //
-
 static bool iwad_dirs_built = false;
 auto v_iwadDirs = std::vector<std::string>();
 
 // Returns true if the specified path is a path to a file
 // of the specified name.
-
 static bool DirIsFile(const char *path, const char *filename)
 {
     return strchr(path, DIR_SEPARATOR) != NULL
@@ -96,7 +82,6 @@ static bool DirIsFile(const char *path, const char *filename)
 // Check if the specified directory contains the specified IWAD
 // file, returning the full path to the IWAD if found, or NULL
 // if not found.
-
 static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
 {
     char *filename;
