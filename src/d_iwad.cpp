@@ -56,15 +56,14 @@ static const auto a_iwads = std::to_array<iwad_t>({
 });
 
 // Helper function to get Enviroment Varibles into a string_view
-auto env_view = [](const auto *envVar){
+std::string_view env_view(const char *envVar){
         const auto envCharStar = getenv(envVar);
         // Creating a string view with a nullprt is undefined behavour.
         if (envCharStar != nullptr) {
             return std::string_view(envCharStar);
         } 
         return std::string_view();
-};
-
+}
 
 // Array of locations to search for IWAD files
 //

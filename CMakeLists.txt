@@ -21,7 +21,7 @@ set(PACKAGE_LICENSE "GNU General Public License, version 2")
 
 # Any settings that should apply to all targets in this directory and all
 # subdirectories should go here.  Use judiciously.
-add_compile_options("-Wall" "-Wextra" "-pedantic")
+add_compile_options("-Wall" "-Wextra" "-pedantic" "-pthread")
 
 find_package(SDL2 2.0.1)
 find_package(SDL2_mixer 2.0.0)

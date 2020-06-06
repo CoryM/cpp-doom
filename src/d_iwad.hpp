@@ -19,6 +19,7 @@
 #ifndef __D_IWAD__
 #define __D_IWAD__
 
+#include <string_view>
 #include "d_mode.hpp"
 
 #define IWAD_MASK_DOOM ((1 << doom)        \
@@ -46,5 +47,8 @@ const iwad_t **D_FindAllIWADs(int mask);
 const char *   D_SaveGameIWADName(GameMission_t gamemission);
 const char *   D_SuggestIWADName(GameMission_t mission, GameMode_t mode);
 const char *   D_SuggestGameName(GameMission_t mission, GameMode_t mode);
+
+// Helper function to get Enviroment Varibles into a string_view
+std::string_view env_view(const char *envVar);
 
 #endif

@@ -34,7 +34,7 @@
 #include "../utils/lump.hpp"
 #include "../utils/memory.hpp"
 #include "midifile.hpp"
-#include "opl.hpp"
+#include "../opl/opl.hpp"
 
 // #define OPL_MIDI_DEBUG
 

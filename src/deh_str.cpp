@@ -80,7 +80,6 @@ static deh_substitution_t *SubstitutionForString(const char *s)
 
 // Look up a string to see if it has been replaced with something else
 // This will be used throughout the program to substitute text
-
 const char *DEH_String(const char *s)
 {
     deh_substitution_t *subst;

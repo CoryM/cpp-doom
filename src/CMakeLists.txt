@@ -167,8 +167,9 @@ target_link_libraries(mus2mid SDL2::SDL2main SDL2::SDL2)
 
 set(TEST_FILES 
     test_main.cpp
+    test/test-all.hpp
 )
-
-add_executable("${PROGRAM_PREFIX}test" ${TEST_FILES} )
+list(REMOVE_ITEM SOURCE_FILES_WITH_DEH i_main.cpp)
+add_executable("${PROGRAM_PREFIX}test" ${TEST_FILES} ${SOURCE_FILES_WITH_DEH} )
 target_include_directories("${PROGRAM_PREFIX}test" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
-target_link_libraries("${PROGRAM_PREFIX}test" test GTest::gtest GTest::gtest_main)
+target_link_libraries("${PROGRAM_PREFIX}test" test doom GTest::gtest ${EXTRA_LIBS})
