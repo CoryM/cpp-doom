@@ -86,7 +86,6 @@ bool M_FileExists(const char *filename)
 
 // Check if a file exists by probing for common case variation of its filename.
 // Returns a newly allocated string that the caller is responsible for freeing.
-
 char *M_FileCaseExists(const char *path)
 {
     char *path_dup, *filename, *ext;
@@ -414,7 +413,6 @@ const char *M_StrCaseStr(const char *haystack, const char *needle)
 // Safe version of strdup() that checks the string was successfully
 // allocated.
 //
-
 char *M_StringDuplicate(const char *orig)
 {
     char *result;
@@ -598,13 +596,6 @@ char *M_StringJoin(const char *s, ...)
 
     return result;
 }
-
-// On Windows, vsnprintf() is _vsnprintf().
-#ifdef _WIN32
-#if _MSC_VER < 1400 /* not needed for Visual Studio 2008 */
-#define vsnprintf _vsnprintf
-#endif
-#endif
 
 // Safe, portable vsnprintf().
 int M_vsnprintf(char *buf, size_t buf_len, const char *s, va_list args)

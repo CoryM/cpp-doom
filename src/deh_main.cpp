@@ -37,19 +37,15 @@ extern const char *   deh_signatures[];
 static bool deh_initialized = false;
 
 // If true, we can parse [STRINGS] sections in BEX format.
-
 bool deh_allow_extended_strings = true; // [crispy] always allow
 
 // If true, we can do long string replacements.
-
 bool deh_allow_long_strings = true; // [crispy] always allow
 
 // If true, we can do cheat replacements longer than the originals.
-
 bool deh_allow_long_cheats = true; // [crispy] always allow
 
 // If false, dehacked cheat replacements are ignored.
-
 bool deh_apply_cheats = true;
 
 void DEH_Checksum(sha1_digest_t digest)
@@ -71,7 +67,6 @@ void DEH_Checksum(sha1_digest_t digest)
 }
 
 // Called on startup to call the Init functions
-
 static void InitializeSections(void)
 {
     unsigned int i;
@@ -105,7 +100,6 @@ static void DEH_Init(void)
 }
 
 // Given a section name, get the section structure which corresponds
-
 static deh_section_t *GetSectionByName(char *name)
 {
     unsigned int i;
@@ -130,7 +124,6 @@ static deh_section_t *GetSectionByName(char *name)
 }
 
 // Is the string passed just whitespace?
-
 static bool IsWhitespace(char *s)
 {
     for (; *s; ++s)
@@ -143,7 +136,6 @@ static bool IsWhitespace(char *s)
 }
 
 // Strip whitespace from the start and end of a string
-
 static char *CleanString(char *s)
 {
     char *strending;
@@ -175,7 +167,6 @@ static char *CleanString(char *s)
 // The string is split on the '=', essentially.
 //
 // Returns true if read correctly
-
 bool DEH_ParseAssignment(char *line, char **variable_name, char **value)
 {
     char *p;
@@ -191,7 +182,6 @@ bool DEH_ParseAssignment(char *line, char **variable_name, char **value)
 
     // variable name at the start
     // turn the '=' into a \0 to terminate the string here
-
     *p             = '\0';
     *variable_name = CleanString(line);
 
@@ -240,7 +230,6 @@ static bool CheckSignatures(deh_context_t *context)
 }
 
 // Parses a comment string in a dehacked file.
-
 static void DEH_ParseComment(char *comment)
 {
     //
@@ -289,7 +278,6 @@ static void DEH_ParseComment(char *comment)
 }
 
 // Parses a dehacked file by reading from the context
-
 static void DEH_ParseContext(deh_context_t *context)
 {
     deh_section_t *current_section = NULL;
@@ -300,7 +288,6 @@ static void DEH_ParseContext(deh_context_t *context)
     char *         line;
 
     // Read the header and check it matches the signature
-
     if (!CheckSignatures(context))
     {
         // [crispy] make non-fatal
@@ -308,7 +295,6 @@ static void DEH_ParseContext(deh_context_t *context)
     }
 
     // Read the file
-
     while (!DEH_HadError(context))
     {
         // Read the next line. We only allow the special extended parsing
@@ -320,7 +306,6 @@ static void DEH_ParseContext(deh_context_t *context)
         line = DEH_ReadLine(context, extended);
 
         // end of file?
-
         if (line == NULL)
         {
             return;
@@ -342,7 +327,6 @@ static void DEH_ParseContext(deh_context_t *context)
             if (current_section != NULL)
             {
                 // end of section
-
                 if (current_section->end != NULL)
                 {
                     current_section->end(context, tag);
@@ -401,7 +385,6 @@ static void DEH_ParseContext(deh_context_t *context)
 }
 
 // Parses a dehacked file
-
 int DEH_LoadFile(const char *filename)
 {
     deh_context_t *context;
@@ -467,8 +450,7 @@ void DEH_AutoLoadPatches(const char *path)
 
 // Load dehacked file from WAD lump.
 // If allow_long is set, allow long strings and cheats just for this lump.
-
-int DEH_LoadLump(int lumpnum, bool allow_long, bool allow_error)
+int DEH_LoadLump(int lumpnum, [[maybe_unused]] bool allow_long, bool allow_error)
 {
     deh_context_t *context;
 
