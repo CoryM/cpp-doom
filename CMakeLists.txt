@@ -26,6 +26,7 @@ add_compile_options("-Wall" "-Wextra" "-pedantic")
 find_package(SDL2 2.0.1)
 find_package(SDL2_mixer 2.0.0)
 find_package(SDL2_net 2.0.0)
+find_package(GTest)
 
 # Check for libsamplerate.
 find_package(samplerate)

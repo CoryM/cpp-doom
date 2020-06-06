@@ -1,0 +1,1 @@
+// Use GTest::gtest-main instead in the link-library

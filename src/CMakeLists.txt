@@ -1,4 +1,4 @@
-foreach(SUBDIR doom setup)
+foreach(SUBDIR doom setup test)
     add_subdirectory("${SUBDIR}")
 endforeach()
 
@@ -160,3 +160,15 @@ add_executable(mus2mid mus2mid.cpp memio.cpp z_native.cpp i_system.cpp m_argv.cp
 target_compile_definitions(mus2mid PRIVATE "-DSTANDALONE")
 target_include_directories(mus2mid PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
 target_link_libraries(mus2mid SDL2::SDL2main SDL2::SDL2)
+
+
+
+#Setup the test executable using GTest (Google Test Framework)
+
+set(TEST_FILES 
+    test_main.cpp
+)
+
+add_executable("${PROGRAM_PREFIX}test" ${TEST_FILES} )
+target_include_directories("${PROGRAM_PREFIX}test" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
+target_link_libraries("${PROGRAM_PREFIX}test" test GTest::gtest GTest::gtest_main)
