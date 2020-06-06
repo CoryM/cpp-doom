@@ -20,9 +20,12 @@
 #include <cstdlib>
 #include <cctype>
 #include <cstring>
+
+#include <array>
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include "../utils/memory.hpp"
 #include "d_iwad.hpp"
@@ -78,27 +81,9 @@ bool D_IsIWADName(const char *name)
 
 // Array of locations to search for IWAD files
 //
-// "128 IWAD search directories should be enough for anybody".
-
-#define MAX_IWAD_DIRS 128
 
 static bool iwad_dirs_built = false;
-static const char *  iwad_dirs[MAX_IWAD_DIRS];
-static int     num_iwad_dirs = 0;
-
-static void AddIWADDir(const char *dir)
-{
-    if (num_iwad_dirs < MAX_IWAD_DIRS)
-    {
-        iwad_dirs[num_iwad_dirs] = dir;
-        ++num_iwad_dirs;
-    }
-}
-
-// This is Windows-specific code that automatically finds the location
-// of installed IWAD files.  The registry is inspected to find special
-// keys installed by the Windows installers for various CD versions
-// of Doom.  From these keys we can deduce where to find an IWAD.
+auto v_iwadDirs = std::vector<std::string>();
 
 // Returns true if the specified path is a path to a file
 // of the specified name.
@@ -231,7 +216,7 @@ static void AddIWADPath(const char *path, const char *suffix)
             // as another iwad dir
             *p = '\0';
 
-            AddIWADDir(M_StringJoin(left, suffix, NULL));
+            v_iwadDirs.push_back(M_StringJoin(left, suffix, NULL));
             left = p + 1;
         }
         else
@@ -240,7 +225,7 @@ static void AddIWADPath(const char *path, const char *suffix)
         }
     }
 
-    AddIWADDir(M_StringJoin(left, suffix, NULL));
+    v_iwadDirs.push_back(M_StringJoin(left, suffix, NULL));
 
     free(dup_path);
 }
@@ -278,7 +263,7 @@ static void AddXdgDirs(void)
     // We support $XDG_DATA_HOME/games/doom (which will usually be
     // ~/.local/share/games/doom) as a user-writeable extension to
     // the usual /usr/share/games/doom location.
-    AddIWADDir(M_StringJoin(env.data(), "/games/doom", NULL));
+    v_iwadDirs.push_back(M_StringJoin(env.data(), "/games/doom", NULL));
     free(tmp_env);
 
     // Quote:
@@ -350,18 +335,17 @@ static void BuildIWADDirList(void)
     }
 
     // Look in the current directory.  Doom always does this.
-    auto currentDir = std::string_view(".");
-    AddIWADDir(currentDir.data());
+    v_iwadDirs.push_back(".");
 
     // Next check the directory where the executable is located. This might
     // be different from the current directory.
-    AddIWADDir(M_DirName(myargv[0]));
+    v_iwadDirs.push_back(M_DirName(myargv[0]));
 
     // Add DOOMWADDIR if it is in the environment
     env = getenv("DOOMWADDIR");
-    if (env != NULL)
+    if (env != nullptr)
     {
-        AddIWADDir(env);
+        v_iwadDirs.push_back(env);
     }
 
     // Add dirs from DOOMWADPATH:
@@ -371,28 +355,10 @@ static void BuildIWADDirList(void)
         AddIWADPath(env, "");
     }
 
-#ifdef _WIN32
-
-    // Search the registry and find where IWADs have been installed.
-
-    CheckUninstallStrings();
-    CheckInstallRootPaths();
-    CheckSteamEdition();
-    CheckDOSDefaults();
-
-    // Check for GUS patches installed with the BFG edition!
-
-    CheckSteamGUSPatches();
-
-#else
     AddXdgDirs();
-#ifndef __MACOSX__
     AddSteamDirs();
-#endif
-#endif
 
     // Don't run this function again.
-
     iwad_dirs_built = true;
 }
 
@@ -404,7 +370,6 @@ char *D_FindWADByName(const char *name)
 {
     char *path;
     char *probe;
-    int   i;
 
     // Absolute path?
 
@@ -418,14 +383,14 @@ char *D_FindWADByName(const char *name)
 
     // Search through all IWAD paths for a file with the given name.
 
-    for (i = 0; i < num_iwad_dirs; ++i)
+    for (auto &iwadDir : v_iwadDirs)
     {
         // As a special case, if this is in DOOMWADDIR or DOOMWADPATH,
         // the "directory" may actually refer directly to an IWAD
         // file.
 
-        probe = M_FileCaseExists(iwad_dirs[i]);
-        if (DirIsFile(iwad_dirs[i], name) && probe != NULL)
+        probe = M_FileCaseExists(iwadDir.c_str());
+        if (DirIsFile(iwadDir.c_str(), name) && probe != NULL)
         {
             return probe;
         }
@@ -433,7 +398,7 @@ char *D_FindWADByName(const char *name)
 
         // Construct a string for the full path
 
-        path = M_StringJoin(iwad_dirs[i], DIR_SEPARATOR_S, name, NULL);
+        path = M_StringJoin(iwadDir.c_str(), DIR_SEPARATOR_S, name, NULL);
 
         probe = M_FileCaseExists(path);
         if (probe != NULL)
@@ -484,7 +449,6 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
     char *result;
     char *iwadfile;
     int   iwadparm;
-    int   i;
 
     // Check for the -iwad parameter
 
@@ -519,9 +483,10 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
 
         BuildIWADDirList();
 
-        for (i = 0; result == NULL && i < num_iwad_dirs; ++i)
+        for (auto &iwadDir : v_iwadDirs)
         {
-            result = SearchDirectoryForIWAD(iwad_dirs[i], mask, mission);
+            result = SearchDirectoryForIWAD(iwadDir.c_str(), mask, mission);
+            if (result) {break;}
         }
     }
 
