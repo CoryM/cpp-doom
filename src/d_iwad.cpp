@@ -24,11 +24,11 @@
 #include <array>
 #include <iostream>
 #include <string>
-#include <string_view>
 #include <vector>
 
-#include "../utils/memory.hpp"
 #include "d_iwad.hpp"
+
+#include "../utils/memory.hpp"
 #include "deh_str.hpp"
 #include "doomkeys.hpp"
 #include "i_system.hpp"
@@ -38,7 +38,7 @@
 #include "w_wad.hpp"
 #include "z_zone.hpp"
 
-static const auto a_iwads = std::to_array<iwad_t>({
+static const auto a_iwads = std::to_array<iwad_t>({ 
     { "doom2.wad", doom2, commercial, "Doom II" },
     { "plutonia.wad", pack_plut, commercial, "Final Doom: Plutonia Experiment" },
     { "tnt.wad", pack_tnt, commercial, "Final Doom: TNT: Evilution" },
@@ -52,26 +52,32 @@ static const auto a_iwads = std::to_array<iwad_t>({
     { "heretic.wad", heretic, retail, "Heretic" },
     { "heretic1.wad", heretic, shareware, "Heretic Shareware" },
     { "hexen.wad", hexen, commercial, "Hexen" },
-    { "strife1.wad", strife, commercial, "Strife" }
-});
+    { "strife1.wad", strife, commercial, "Strife" } });
 
 // Helper function to get Enviroment Varibles into a string_view
-std::string_view env_view(const char *envVar){
-        const auto envCharStar = getenv(envVar);
-        // Creating a string view with a nullprt is undefined behavour.
-        if (envCharStar != nullptr) {
-            return std::string_view(envCharStar);
-        } 
-        return std::string_view();
+std::string_view env_view(const char *envVar)
+{
+    const auto envCharStar = getenv(envVar);
+    // Creating a string view with a nullprt is undefined behavour.
+    if (envCharStar != nullptr)
+    {
+        return std::string_view(envCharStar);
+    }
+    return std::string_view();
 }
+
 
 // Array of locations to search for IWAD files
 //
-static bool iwad_dirs_built = false;
-auto v_iwadDirs = std::vector<std::string>();
+// DefinedIn: d_iwad.cpp
+// UsedIn:    d_iwad.cpp
+auto        v_iwadDirs      = std::vector<std::string>();
+
 
 // Returns true if the specified path is a path to a file
 // of the specified name.
+// UsedIn:    d_iwad.cpp
+// DefinedIn: d_iwad.cpp
 static bool DirIsFile(const char *path, const char *filename)
 {
     return strchr(path, DIR_SEPARATOR) != NULL
@@ -81,6 +87,8 @@ static bool DirIsFile(const char *path, const char *filename)
 // Check if the specified directory contains the specified IWAD
 // file, returning the full path to the IWAD if found, or NULL
 // if not found.
+// UsedIn:    d_iwad.cpp
+// DefinedIn: d_iwad.cpp
 static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
 {
     char *filename;
@@ -120,10 +128,11 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
 
 // Search a directory to try to find an IWAD
 // Returns the location of the IWAD if found, otherwise NULL.
-
+// UsedIn:    d_iwad.cpp
+// DefinedIn: d_iwad.cpp
 static char *SearchDirectoryForIWAD(const char *dir, int mask, GameMission_t *mission)
 {
-    char * filename;
+    char *filename;
 
     for (const auto &i : a_iwads)
     {
@@ -147,7 +156,8 @@ static char *SearchDirectoryForIWAD(const char *dir, int mask, GameMission_t *mi
 
 // When given an IWAD with the '-iwad' parameter,
 // attempt to identify it by its name.
-
+// UsedIn:    d_iwad.cpp
+// DefinedIn: d_iwad.cpp
 static GameMission_t IdentifyIWADByName(const char *name, int mask)
 {
     GameMission_t mission;
@@ -179,6 +189,8 @@ static GameMission_t IdentifyIWADByName(const char *name, int mask)
 // Add IWAD directories parsed from splitting a path string containing
 // paths separated by PATH_SEPARATOR. 'suffix' is a string to concatenate
 // to the end of the paths before adding them.
+// UsedIn:    d_iwad.cpp
+// DefinedIn: d_iwad.cpp
 static void AddIWADPath(const char *path, const char *suffix)
 {
     char *left, *p, *dup_path;
@@ -216,6 +228,8 @@ static void AddIWADPath(const char *path, const char *suffix)
 // using standard environment variables. See the XDG Base Directory
 // Specification:
 // <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>
+// UsedIn:    d_iwad.cpp
+// DefinedIn: d_iwad.cpp
 static void AddXdgDirs(void)
 {
     // Quote:
@@ -223,7 +237,7 @@ static void AddXdgDirs(void)
     // > user specific data files should be stored. If $XDG_DATA_HOME
     // > is either not set or empty, a default equal to
     // > $HOME/.local/share should be used.
-        
+
     auto env = env_view("XDG_DATA_HOME");
 
     char *tmp_env = nullptr;
@@ -278,6 +292,8 @@ static void AddXdgDirs(void)
 // could parse *.vdf files to more accurately detect installation
 // locations, but the defaults are likely to be good enough for just
 // about everyone.
+// UsedIn:    d_iwad.cpp
+// DefinedIn: d_iwad.cpp
 static void AddSteamDirs(void)
 {
     char *steampath;
@@ -302,13 +318,14 @@ static void AddSteamDirs(void)
 }
 
 
-//
 // Build a list of IWAD files
 //
-
+// UsedIn:    d_iwad.cpp
+// DefinedIn: d_iwad.cpp
 static void BuildIWADDirList(void)
 {
-    char *env;
+    // Has BuildIWADDirList been run yet (False/No, True/Yes)
+    static bool iwad_dirs_built = false;
 
     if (iwad_dirs_built)
     {
@@ -323,7 +340,7 @@ static void BuildIWADDirList(void)
     v_iwadDirs.push_back(M_DirName(myargv[0]));
 
     // Add DOOMWADDIR if it is in the environment
-    env = getenv("DOOMWADDIR");
+    char *env = getenv("DOOMWADDIR");
     if (env != nullptr)
     {
         v_iwadDirs.push_back(env);
@@ -346,7 +363,9 @@ static void BuildIWADDirList(void)
 //
 // Searches WAD search paths for an WAD with a specific filename.
 //
-
+// DefinedIn: d_iwad.cpp
+// UsedIn:    d_iwad.cpp / d_iwad.hpp
+//            doom/d_main.cpp
 char *D_FindWADByName(const char *name)
 {
     char *path;
@@ -401,7 +420,9 @@ char *D_FindWADByName(const char *name)
 // Searches for a WAD by its filename, or returns a copy of the filename
 // if not found.
 //
-
+// DefinedIn: d_iwad.cpp  d_iwad.hpp
+// UsedIn:    deh_main.cpp
+//            w_main.cpp
 char *D_TryFindWADByName(const char *filename)
 {
     char *result;
@@ -424,7 +445,8 @@ char *D_TryFindWADByName(const char *filename)
 // to determine whether registered/commercial features
 // should be executed (notably loading PWADs).
 //
-
+// DefinedIn: d_iwad.cpp  d_iwad.hpp
+// UsedIn:    doom/d_main.cpp
 char *D_FindIWAD(int mask, GameMission_t *mission)
 {
     char *result;
@@ -467,7 +489,7 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
         for (auto &iwadDir : v_iwadDirs)
         {
             result = SearchDirectoryForIWAD(iwadDir.c_str(), mask, mission);
-            if (result) {break;}
+            if (result) { break; }
         }
     }
 
@@ -475,7 +497,9 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
 }
 
 // Find all IWADs in the IWAD search path matching the given mask.
-
+//
+// DefinedIn: d_iwad.cpp  d_iwad.hpp
+// UsedIn:    setup/mode.cpp
 const iwad_t **D_FindAllIWADs(int mask)
 {
     int   result_len;
@@ -513,7 +537,8 @@ const iwad_t **D_FindAllIWADs(int mask)
 //
 // Get the IWAD name used for savegames.
 //
-
+// DefinedIn: d_iwad.cpp  d_iwad.hpp
+// UsedIn:    doom/d_main.cpp
 const char *D_SaveGameIWADName(GameMission_t gamemission)
 {
     // Determine the IWAD name to use for savegames.
@@ -536,6 +561,10 @@ const char *D_SaveGameIWADName(GameMission_t gamemission)
     return "unknown.wad";
 }
 
+// D_SuggestIWADName
+//
+// DefinedIn: d_iwad.cpp  d_iwad.hpp
+// UsedIn:    setup/multiplayer.cpp
 const char *D_SuggestIWADName(GameMission_t mission, GameMode_t mode)
 {
     for (const auto &i : a_iwads)
@@ -549,6 +578,11 @@ const char *D_SuggestIWADName(GameMission_t mission, GameMode_t mode)
     return "unknown.wad";
 }
 
+// D_SuggestGameName
+//
+// DefinedIn: d_iwad.cpp  d_iwad.hpp
+// UsedIn:    setup/multiplayer.cpp
+//            w_main.cpp
 const char *D_SuggestGameName(GameMission_t mission, GameMode_t mode)
 {
     for (const auto &i : a_iwads)
