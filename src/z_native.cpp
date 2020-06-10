@@ -327,7 +327,7 @@ void Z_FreeTags(int lowtag, int hightag)
 //
 // Z_DumpHeap
 //
-void Z_DumpHeap(int lowtag, int hightag)
+void Z_DumpHeap(int lowtag [[maybe_unused]], int hightag [[maybe_unused]])
 {
     // broken
 
@@ -368,7 +368,7 @@ void Z_DumpHeap(int lowtag, int hightag)
 //
 // Z_FileDumpHeap
 //
-void Z_FileDumpHeap(FILE *f)
+void Z_FileDumpHeap(FILE *f [[maybe_unused]])
 {
     // broken
 #if 0

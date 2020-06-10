@@ -171,7 +171,7 @@ static void FillBuffer(uint8_t *buffer, unsigned int nsamples)
 
 // Callback function to fill a new sound buffer:
 
-static void OPL_Mix_Callback(void *udata, Uint8 *buffer, int len)
+static void OPL_Mix_Callback(void *udata [[maybe_unused]], Uint8 *buffer, int len)
 {
     unsigned int filled, buffer_samples;
 
@@ -279,7 +279,7 @@ static unsigned int GetSliceSize(void)
     return 1024;
 }
 
-static int OPL_SDL_Init(unsigned int port_base)
+static int OPL_SDL_Init(unsigned int port_base [[maybe_unused]])
 {
     // Check if SDL_mixer has been opened already
     // If not, we must initialize it now

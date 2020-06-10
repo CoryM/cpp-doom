@@ -37,7 +37,7 @@ static void *DEH_BEXParsStart(deh_context_t *context, char *line)
     return NULL;
 }
 
-static void DEH_BEXParsParseLine(deh_context_t *context, char *line, void *tag)
+static void DEH_BEXParsParseLine(deh_context_t *context, char *line, void *tag [[maybe_unused]])
 {
     int episode, map, partime;
 

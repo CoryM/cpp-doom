@@ -261,7 +261,7 @@ enum
     readthis,
     quitdoom,
     main_end
-} main_e;
+} main_e  [[maybe_unused]];
 
 menuitem_t MainMenu[] = {
     { 1, "M_NGAME", M_NewGame, 'n' },
@@ -294,7 +294,7 @@ enum
     ep4,
     ep5, // [crispy] Sigil
     ep_end
-} episodes_e;
+} episodes_e  [[maybe_unused]];
 
 menuitem_t EpisodeMenu[] = {
     { 1, "M_EPI1", M_Episode, 'k' },
@@ -320,7 +320,7 @@ enum
     ex1,
     ex2,
     ex_end
-} expansions_e;
+} expansions_e  [[maybe_unused]];
 
 static menuitem_t ExpansionMenu[] = {
     { 1, "M_EPI1", M_Expansion, 'h' },
@@ -347,7 +347,7 @@ enum
     violence,
     nightmare,
     newg_end
-} newgame_e;
+} newgame_e  [[maybe_unused]];
 
 menuitem_t NewGameMenu[] = {
     { 1, "M_JKILL", M_ChooseSkill, 'i' },
@@ -381,7 +381,7 @@ enum
     soundvol,
     crispness, // [crispy] Crispness menu
     opt_end
-} options_e;
+} options_e  [[maybe_unused]];
 
 menuitem_t OptionsMenu[] = {
     { 1, "M_ENDGAM", M_EndGame, 'e', "End Game" },
@@ -414,7 +414,7 @@ enum
     mouse_empty3,
     mouse_invert,
     mouse_end
-} mouse_e;
+} mouse_e  [[maybe_unused]];
 
 static menuitem_t MouseMenu[] = {
     { 2, "", M_ChangeSensitivity, 'h' },
@@ -458,7 +458,7 @@ enum
     crispness1_next,
     crispness1_prev,
     crispness1_end
-} crispness1_e;
+} crispness1_e [[maybe_unused]];
 
 static menuitem_t Crispness1Menu[] = {
     { -1, "", 0, '\0' },
@@ -509,7 +509,7 @@ enum
     crispness2_next,
     crispness2_prev,
     crispness2_end
-} crispness2_e;
+} crispness2_e  [[maybe_unused]];
 
 static menuitem_t Crispness2Menu[] = {
     { -1, "", 0, '\0' },
@@ -560,7 +560,7 @@ enum
     crispness3_next,
     crispness3_prev,
     crispness3_end
-} crispness3_e;
+} crispness3_e  [[maybe_unused]];
 
 static menuitem_t Crispness3Menu[] = {
     { -1, "", 0, '\0' },
@@ -609,7 +609,7 @@ enum
     crispness4_next,
     crispness4_prev,
     crispness4_end
-} crispness4_e;
+} crispness4_e  [[maybe_unused]];
 
 
 static menuitem_t Crispness4Menu[] = {
@@ -653,7 +653,7 @@ enum
 {
     rdthsempty1,
     read1_end
-} read_e;
+} read_e  [[maybe_unused]];
 
 menuitem_t ReadMenu1[] = {
     { 1, "", M_ReadThis2, 0 }
@@ -672,7 +672,7 @@ enum
 {
     rdthsempty2,
     read2_end
-} read_e2;
+} read_e2 [[maybe_unused]];
 
 menuitem_t ReadMenu2[] = {
     { 1, "", M_FinishReadThis, 0 }
@@ -697,7 +697,7 @@ enum
     music_vol,
     sfx_empty2,
     sound_end
-} sound_e;
+} sound_e [[maybe_unused]];
 
 menuitem_t SoundMenu[] = {
     { 2, "M_SFXVOL", M_SfxVol, 's' },
@@ -729,7 +729,7 @@ enum
     load7, // [crispy] up to 8 savegames
     load8, // [crispy] up to 8 savegames
     load_end
-} load_e;
+} load_e [[maybe_unused]];
 
 menuitem_t LoadMenu[] = {
     { 1, "", M_LoadSelect, '1' },
@@ -874,7 +874,7 @@ void M_LoadSelect(int choice)
 //
 // Selected from DOOM menu
 //
-void M_LoadGame(int choice)
+void M_LoadGame(int choice [[maybe_unused]])
 {
     // [crispy] allow loading game while multiplayer demo playback
     if (netgame && !demoplayback)
@@ -927,7 +927,7 @@ void M_DoSave(int slot)
 // Generate a default save slot name when the user saves to
 // an empty slot via the joypad.
 //
-static void SetDefaultSaveName(int slot)
+static void SetDefaultSaveName(int slot [[maybe_unused]])
 {
     // map from IWAD or PWAD?
     if (W_IsIWADLump(maplumpinfo) && strcmp(savegamedir, ""))
@@ -1009,7 +1009,7 @@ void M_SaveSelect(int choice)
 //
 // Selected from DOOM menu
 //
-void M_SaveGame(int choice)
+void M_SaveGame(int choice [[maybe_unused]])
 {
     if (!usergame)
     {
@@ -1164,7 +1164,7 @@ void M_DrawSound(void)
         16, musicVolume);
 }
 
-void M_Sound(int choice)
+void M_Sound(int choice [[maybe_unused]])
 {
     M_SetupNextMenu(&SoundDef);
 }
@@ -1223,7 +1223,7 @@ void M_DrawNewGame(void)
     V_DrawPatchDirect(54, 38, cache_lump_name<patch_t *>(DEH_String("M_SKILL"), PU_CACHE));
 }
 
-void M_NewGame(int choice)
+void M_NewGame(int choice [[maybe_unused]])
 {
     // [crispy] forbid New Game while recording a demo
     if (demorecording)
@@ -1547,13 +1547,13 @@ static void M_DrawCrispness4(void)
     dp_translation = NULL;
 }
 
-void M_Options(int choice)
+void M_Options(int choice [[maybe_unused]])
 {
     M_SetupNextMenu(&OptionsDef);
 }
 
 // [crispy] correctly handle inverted y-axis
-static void M_Mouse(int choice)
+static void M_Mouse(int choice [[maybe_unused]])
 {
     if (mouseSensitivity_y < 0)
     {
@@ -1570,12 +1570,12 @@ static void M_Mouse(int choice)
     M_SetupNextMenu(&MouseDef);
 }
 
-static void M_CrispnessCur(int choice)
+static void M_CrispnessCur(int choice [[maybe_unused]])
 {
     M_SetupNextMenu(CrispnessMenus[crispness_cur]);
 }
 
-static void M_CrispnessNext(int choice)
+static void M_CrispnessNext(int choice [[maybe_unused]])
 {
     if (++crispness_cur > arrlen(CrispnessMenus) - 1)
     {
@@ -1585,7 +1585,7 @@ static void M_CrispnessNext(int choice)
     M_CrispnessCur(0);
 }
 
-static void M_CrispnessPrev(int choice)
+static void M_CrispnessPrev(int choice [[maybe_unused]])
 {
     if (--crispness_cur < 0)
     {
@@ -1599,7 +1599,7 @@ static void M_CrispnessPrev(int choice)
 //
 //      Toggle messages on/off
 //
-void M_ChangeMessages(int choice)
+void M_ChangeMessages(int choice [[maybe_unused]])
 {
     // warning: unused parameter `int choice'
     choice       = 0;
@@ -1633,7 +1633,7 @@ void M_EndGameResponse(int key)
     D_StartTitle();
 }
 
-void M_EndGame(int choice)
+void M_EndGame(int choice [[maybe_unused]])
 {
     choice = 0;
     if (!usergame)
@@ -1655,19 +1655,19 @@ void M_EndGame(int choice)
 //
 // M_ReadThis
 //
-void M_ReadThis(int choice)
+void M_ReadThis(int choice [[maybe_unused]])
 {
     choice = 0;
     M_SetupNextMenu(&ReadDef1);
 }
 
-void M_ReadThis2(int choice)
+void M_ReadThis2(int choice [[maybe_unused]])
 {
     choice = 0;
     M_SetupNextMenu(&ReadDef2);
 }
 
-void M_FinishReadThis(int choice)
+void M_FinishReadThis(int choice [[maybe_unused]])
 {
     choice = 0;
     M_SetupNextMenu(&MainDef);
@@ -1741,7 +1741,7 @@ static const char *M_SelectEndMessage(void)
 }
 
 
-void M_QuitDOOM(int choice)
+void M_QuitDOOM(int choice [[maybe_unused]])
 {
     // [crispy] fast exit if "run" key is held down
     if (speedkeydown())

@@ -129,7 +129,7 @@ static uint64_t GetNextTime(void)
     return next_time;
 }
 
-static int ThreadFunction(void *unused)
+static int ThreadFunction(void *unused [[maybe_unused]])
 {
     uint64_t next_time;
     uint64_t now;
