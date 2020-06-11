@@ -35,70 +35,70 @@
 
 struct crispy_t {
 	// [crispy] "crispness" config variables
-	int automapoverlay;
-	int automaprotate;
-	int automapstats;
-	int bobfactor;
-	int brightmaps;
-	int centerweapon;
-	int coloredblood;
-	int coloredhud;
-	int crosshair;
-	int crosshairhealth;
-	int crosshairtarget;
-	int crosshairtype;
-	int demotimer;
-	int demotimerdir;
-	int demobar;
-	int extautomap;
-	int extsaveg;
-	int flipcorpses;
-	int freeaim;
-	int freelook;
-	int hires;
-	int jump;
-	int leveltime;
-	int mouselook;
-	int neghealth;
-	int overunder;
-	int pitch;
-	int playercoords;
-	int recoil;
-	int secretmessage;
-	int smoothlight;
-	int smoothscaling;
-	int soundfix;
-	int soundfull;
-	int soundmono;
-	int translucency;
+	int automapoverlay  = 0;
+	int automaprotate   = 0;
+	int automapstats    = 0;
+	int bobfactor       = 0;
+	int brightmaps      = 0;
+	int centerweapon    = 0;
+	int coloredblood    = 0;
+	int coloredhud      = 0;
+	int crosshair       = 0;
+	int crosshairhealth = 0;
+	int crosshairtarget = 0;
+	int crosshairtype   = 0;
+	int demotimer       = 0;
+	int demotimerdir    = 0;
+	int demobar         = 0;
+	int extautomap      = 0;
+	int extsaveg        = 0;
+	int flipcorpses     = 0;
+	int freeaim         = 0;
+	int freelook        = 0;
+	int hires           = 0;
+	int jump            = 0;
+	int leveltime       = 0;
+	int mouselook       = 0;
+	int neghealth       = 0;
+	int overunder       = 0;
+	int pitch           = 0;
+	int playercoords    = 0;
+	int recoil          = 0;
+	int secretmessage   = 0;
+	int smoothlight     = 0;
+	int smoothscaling   = 0;
+	int soundfix        = 0;
+	int soundfull       = 0;
+	int soundmono       = 0;
+	int translucency    = 0;
 #if CRISPY_TRUECOLOR
     int truecolor;
 #endif
-	int uncapped;
-	int vsync;
-	int weaponsquat;
-	int widescreen;
+	int uncapped        = 0;
+	int vsync           = 0;
+	int weaponsquat     = 0;
+	int widescreen      = 0;
 
 	// [crispy] in-game switches and variables
-	int screenshotmsg;
-	int cleanscreenshot;
-	int demowarp;
-	int fps;
+	int screenshotmsg   = 0;
+	int cleanscreenshot = 0;
+	int demowarp        = 0;
+	int fps             = 0;
 
-	bool flashinghom;
-	bool fliplevels;
-	bool flipweapons;
-	bool haved1e5;
-	bool havee1m10;
-	bool havemap33;
-	bool havessg;
-	bool singleplayer;
-	bool stretchsky;
+	bool flashinghom    = false;
+	bool fliplevels     = false;
+	bool flipweapons    = false;
+	bool haved1e5       = false;
+	bool havee1m10      = false;
+	bool havemap33      = false;
+	bool havessg        = false;
+	bool singleplayer   = false;
+	bool stretchsky     = false;
 
-	const char *sdlversion;
-	const char *platform;
+	const char *sdlversion = nullptr;
+	const char *platform   = nullptr;
 
-	void (*post_rendering_hook) (void);
+	void (*post_rendering_hook) (void) = nullptr;
 };
 
 extern crispy_t *const crispy;

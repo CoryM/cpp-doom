@@ -429,7 +429,7 @@ static void NET_Query_GetResponse(net_query_callback_t callback,
 static void SendOneQuery(void)
 {
     unsigned int now;
-    unsigned int i;
+    int i;
 
     now = I_GetTimeMS();
 
@@ -488,12 +488,9 @@ static void SendOneQuery(void)
 
 static void CheckTargetTimeouts(void)
 {
-    unsigned int i;
-    unsigned int now;
+    auto now = I_GetTimeMS();
 
-    now = I_GetTimeMS();
-
-    for (i = 0; i < num_targets; ++i)
+    for (int i = 0; i < num_targets; ++i)
     {
         /*
         printf("target %i: state %i, queries %i, query time %i\n",
@@ -524,9 +521,7 @@ static void CheckTargetTimeouts(void)
 
 static bool AllTargetsDone(void)
 {
-    unsigned int i;
-
-    for (i = 0; i < num_targets; ++i)
+    for (int i = 0; i < num_targets; ++i)
     {
         if (targets[i].state != QUERY_TARGET_RESPONDED
             && targets[i].state != QUERY_TARGET_NO_RESPONSE)
@@ -597,9 +592,8 @@ void NET_Query_Init(void)
 }
 
 // Callback that exits the query loop when the first server is found.
-
-static void NET_Query_ExitCallback(net_addr_t *addr, net_querydata_t *data,
-    unsigned int ping_time, void *user_data)
+static void NET_Query_ExitCallback(net_addr_t *addr  [[maybe_unused]], net_querydata_t *data  [[maybe_unused]],
+    unsigned int ping_time [[maybe_unused]], void *user_data [[maybe_unused]])
 {
     NET_Query_ExitLoop();
 }
@@ -609,9 +603,7 @@ static void NET_Query_ExitCallback(net_addr_t *addr, net_querydata_t *data,
 
 static query_target_t *FindFirstResponder(void)
 {
-    unsigned int i;
-
-    for (i = 0; i < num_targets; ++i)
+    for (int i = 0; i < num_targets; ++i)
     {
         if (targets[i].type == QUERY_TARGET_SERVER
             && targets[i].state == QUERY_TARGET_RESPONDED)
@@ -627,12 +619,9 @@ static query_target_t *FindFirstResponder(void)
 
 static int GetNumResponses(void)
 {
-    unsigned int i;
-    int          result;
+    int result = 0;
 
-    result = 0;
-
-    for (i = 0; i < num_targets; ++i)
+    for (int i = 0; i < num_targets; ++i)
     {
         if (targets[i].type == QUERY_TARGET_SERVER
             && targets[i].state == QUERY_TARGET_RESPONDED)
@@ -754,7 +743,7 @@ static void PrintHeader(void)
 static void NET_QueryPrintCallback(net_addr_t *addr,
     net_querydata_t *                          data,
     unsigned int                               ping_time,
-    void *                                     user_data)
+    void *                                     user_data [[maybe_unused]])
 {
     // If this is the first server, print the header.
 
@@ -893,7 +882,7 @@ static net_packet_t *BlockForPacket(net_addr_t *addr, unsigned int packet_type,
 
     start_time = I_GetTimeMS();
 
-    while (I_GetTimeMS() < start_time + timeout_ms)
+    while (I_GetTimeMS() < static_cast<int>(start_time + timeout_ms))
     {
         if (!NET_RecvPacket(query_context, &packet_src, &packet))
         {

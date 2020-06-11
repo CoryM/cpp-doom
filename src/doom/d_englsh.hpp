@@ -20,6 +20,8 @@
 #ifndef __D_ENGLSH__
 #define __D_ENGLSH__
 
+#include <string_view>
+
 //
 //	Printed strings for translation
 //
@@ -88,7 +90,7 @@
 #define GOTMEDIKIT  "Picked up a medikit."
 #define GOTSUPER    "Supercharge!"
 
-#define GOTBLUECARD "Picked up a blue keycard."
+constexpr auto GOTBLUECARD = std::string_view("Picked up a blue keycard.");
 #define GOTYELWCARD "Picked up a yellow keycard."
 #define GOTREDCARD  "Picked up a red keycard."
 #define GOTBLUESKUL "Picked up a blue skull key."
@@ -334,16 +336,16 @@
 #define MHUSTR_20 "level 20: The Express Elevator To Hell"
 #define MHUSTR_21 "level 21: Bad Dream"
 
-#define HUSTR_CHATMACRO1 "I'm ready to kick butt!"
-#define HUSTR_CHATMACRO2 "I'm OK."
-#define HUSTR_CHATMACRO3 "I'm not looking too good!"
-#define HUSTR_CHATMACRO4 "Help!"
-#define HUSTR_CHATMACRO5 "You suck!"
-#define HUSTR_CHATMACRO6 "Next time, scumbag..."
-#define HUSTR_CHATMACRO7 "Come here!"
-#define HUSTR_CHATMACRO8 "I'll take care of it."
-#define HUSTR_CHATMACRO9 "Yes"
-#define HUSTR_CHATMACRO0 "No"
+constexpr auto HUSTR_CHATMACRO1 = std::string_view("I'm ready to kick butt!");
+constexpr auto HUSTR_CHATMACRO2 = std::string_view("I'm OK.");
+constexpr auto HUSTR_CHATMACRO3 = std::string_view("I'm not looking too good!");
+constexpr auto HUSTR_CHATMACRO4 = std::string_view("Help!");
+constexpr auto HUSTR_CHATMACRO5 = std::string_view("You suck!");
+constexpr auto HUSTR_CHATMACRO6 = std::string_view("Next time, scumbag...");
+constexpr auto HUSTR_CHATMACRO7 = std::string_view("Come here!");
+constexpr auto HUSTR_CHATMACRO8 = std::string_view("I'll take care of it.");
+constexpr auto HUSTR_CHATMACRO9 = std::string_view("Yes");
+constexpr auto HUSTR_CHATMACRO0 = std::string_view("No");
 
 #define HUSTR_TALKTOSELF1 "You mumble to yourself"
 #define HUSTR_TALKTOSELF2 "Who's there?"

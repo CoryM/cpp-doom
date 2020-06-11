@@ -68,7 +68,7 @@ static const bex_string_t bex_stringtable[] = {
     { "GOTMEDINEED", GOTMEDINEED },
     { "GOTMEDIKIT", GOTMEDIKIT },
     { "GOTSUPER", GOTSUPER },
-    { "GOTBLUECARD", GOTBLUECARD },
+    { "GOTBLUECARD", GOTBLUECARD.data() },
     { "GOTYELWCARD", GOTYELWCARD },
     { "GOTREDCARD", GOTREDCARD },
     { "GOTBLUESKUL", GOTBLUESKUL },
@@ -107,16 +107,16 @@ static const bex_string_t bex_stringtable[] = {
     // part 4 - multiplayer messaging
     { "HUSTR_MSGU", HUSTR_MSGU },
     { "HUSTR_MESSAGESENT", HUSTR_MESSAGESENT },
-    { "HUSTR_CHATMACRO0", HUSTR_CHATMACRO0 },
-    { "HUSTR_CHATMACRO1", HUSTR_CHATMACRO1 },
-    { "HUSTR_CHATMACRO2", HUSTR_CHATMACRO2 },
-    { "HUSTR_CHATMACRO3", HUSTR_CHATMACRO3 },
-    { "HUSTR_CHATMACRO4", HUSTR_CHATMACRO4 },
-    { "HUSTR_CHATMACRO5", HUSTR_CHATMACRO5 },
-    { "HUSTR_CHATMACRO6", HUSTR_CHATMACRO6 },
-    { "HUSTR_CHATMACRO7", HUSTR_CHATMACRO7 },
-    { "HUSTR_CHATMACRO8", HUSTR_CHATMACRO8 },
-    { "HUSTR_CHATMACRO9", HUSTR_CHATMACRO9 },
+    { "HUSTR_CHATMACRO0", HUSTR_CHATMACRO0.data() },
+    { "HUSTR_CHATMACRO1", HUSTR_CHATMACRO1.data() },
+    { "HUSTR_CHATMACRO2", HUSTR_CHATMACRO2.data() },
+    { "HUSTR_CHATMACRO3", HUSTR_CHATMACRO3.data() },
+    { "HUSTR_CHATMACRO4", HUSTR_CHATMACRO4.data() },
+    { "HUSTR_CHATMACRO5", HUSTR_CHATMACRO5.data() },
+    { "HUSTR_CHATMACRO6", HUSTR_CHATMACRO6.data() },
+    { "HUSTR_CHATMACRO7", HUSTR_CHATMACRO7.data() },
+    { "HUSTR_CHATMACRO8", HUSTR_CHATMACRO8.data() },
+    { "HUSTR_CHATMACRO9", HUSTR_CHATMACRO9.data() },
     { "HUSTR_TALKTOSELF1", HUSTR_TALKTOSELF1 },
     { "HUSTR_TALKTOSELF2", HUSTR_TALKTOSELF2 },
     { "HUSTR_TALKTOSELF3", HUSTR_TALKTOSELF3 },
@@ -348,7 +348,6 @@ static void *DEH_BEXStrStart(deh_context_t *context, char *line)
 static void DEH_BEXStrParseLine(deh_context_t *context, char *line, void *tag [[maybe_unused]])
 {
     char *variable_name, *value;
-    int   i;
 
     if (!DEH_ParseAssignment(line, &variable_name, &value))
     {
@@ -356,7 +355,7 @@ static void DEH_BEXStrParseLine(deh_context_t *context, char *line, void *tag [[
         return;
     }
 
-    for (i = 0; i < arrlen(bex_stringtable); i++)
+    for (size_t i = 0; i < arrlen(bex_stringtable); i++)
     {
         if (!strcasecmp(bex_stringtable[i].macro, variable_name))
         {

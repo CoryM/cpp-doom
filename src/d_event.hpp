@@ -71,7 +71,11 @@ typedef enum
 struct event_t {
     evtype_t type;
     // Event-specific data; see the descriptions given above.
-    int data1, data2, data3, data4, data5;
+    int data1 = 0;
+    int data2 = 0;
+    int data3 = 0;
+    int data4 = 0;
+    int data5 = 0;
 } ;
 
 

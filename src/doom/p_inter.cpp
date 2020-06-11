@@ -417,7 +417,7 @@ void P_TouchSpecialThing(mobj_t *special,
         // leave cards for everyone
     case SPR_BKEY:
         if (!player->cards[it_bluecard])
-            player->message = DEH_String(GOTBLUECARD);
+            player->message = DEH_String(GOTBLUECARD.data());
         P_GiveCard(player, it_bluecard);
         if (!netgame)
             break;

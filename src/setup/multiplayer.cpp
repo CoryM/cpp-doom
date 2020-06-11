@@ -555,7 +555,6 @@ static txt_widget_t *IWADSelector(void)
     txt_dropdown_list_t *dropdown;
     txt_widget_t *result;
     int num_iwads;
-    unsigned int i;
 
     // Find out what WADs are installed
 
@@ -804,17 +803,17 @@ static void StartGameMenu(const char *window_title, int multiplayer)
     UpdateWarpButton();
 }
 
-void StartMultiGame(TXT_UNCAST_ARG(widget), void *user_data)
+void StartMultiGame(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
 {
     StartGameMenu("Start multiplayer game", 1);
 }
 
-void WarpMenu(TXT_UNCAST_ARG(widget), void *user_data)
+void WarpMenu(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
 {
     StartGameMenu("Level Warp", 0);
 }
 
-static void DoJoinGame(void *unused1, void *unused2)
+static void DoJoinGame(void *unused1, void *unused2  [[maybe_unused]])
 {
     execute_context_t *exec;
 
@@ -982,7 +981,7 @@ static void QueryPeriodicCallback(TXT_UNCAST_ARG(results_table))
     }
 }
 
-static void QueryWindowClosed(TXT_UNCAST_ARG(window), void *unused)
+static void QueryWindowClosed(TXT_UNCAST_ARG(window), void *unused [[maybe_unused]])
 {
     TXT_SetPeriodicCallback(NULL, NULL, 0);
 }
@@ -1019,7 +1018,7 @@ static void FindLANServer(TXT_UNCAST_ARG(widget),
     ServerQueryWindow("Find LAN server");
 }
 
-void JoinMultiGame(TXT_UNCAST_ARG(widget), void *user_data)
+void JoinMultiGame(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
 {
     txt_window_t *window;
     txt_inputbox_t *address_box;
@@ -1072,16 +1071,16 @@ void SetChatMacroDefaults(void)
     int i;
     const char *const defaults[] =
     {
-        HUSTR_CHATMACRO0,
-        HUSTR_CHATMACRO1,
-        HUSTR_CHATMACRO2,
-        HUSTR_CHATMACRO3,
-        HUSTR_CHATMACRO4,
-        HUSTR_CHATMACRO5,
-        HUSTR_CHATMACRO6,
-        HUSTR_CHATMACRO7,
-        HUSTR_CHATMACRO8,
-        HUSTR_CHATMACRO9,
+        HUSTR_CHATMACRO0.data(),
+        HUSTR_CHATMACRO1.data(),
+        HUSTR_CHATMACRO2.data(),
+        HUSTR_CHATMACRO3.data(),
+        HUSTR_CHATMACRO4.data(),
+        HUSTR_CHATMACRO5.data(),
+        HUSTR_CHATMACRO6.data(),
+        HUSTR_CHATMACRO7.data(),
+        HUSTR_CHATMACRO8.data(),
+        HUSTR_CHATMACRO9.data()
     };
     
     // If the chat macros have not been set, initialize with defaults.
@@ -1103,7 +1102,7 @@ void SetPlayerNameDefault(void)
     }
 }
 
-void MultiplayerConfig(TXT_UNCAST_ARG(widget), void *user_data)
+void MultiplayerConfig(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
 {
     txt_window_t *window;
     txt_label_t *label;

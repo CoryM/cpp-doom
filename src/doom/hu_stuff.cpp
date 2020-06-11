@@ -72,16 +72,16 @@
 
 
 char *chat_macros[10] = {
-    HUSTR_CHATMACRO0,
-    HUSTR_CHATMACRO1,
-    HUSTR_CHATMACRO2,
-    HUSTR_CHATMACRO3,
-    HUSTR_CHATMACRO4,
-    HUSTR_CHATMACRO5,
-    HUSTR_CHATMACRO6,
-    HUSTR_CHATMACRO7,
-    HUSTR_CHATMACRO8,
-    HUSTR_CHATMACRO9
+    const_cast<char *>(HUSTR_CHATMACRO0.data()),
+    const_cast<char *>(HUSTR_CHATMACRO1.data()),
+    const_cast<char *>(HUSTR_CHATMACRO2.data()),
+    const_cast<char *>(HUSTR_CHATMACRO3.data()),
+    const_cast<char *>(HUSTR_CHATMACRO4.data()),
+    const_cast<char *>(HUSTR_CHATMACRO5.data()),
+    const_cast<char *>(HUSTR_CHATMACRO6.data()),
+    const_cast<char *>(HUSTR_CHATMACRO7.data()),
+    const_cast<char *>(HUSTR_CHATMACRO8.data()),
+    const_cast<char *>(HUSTR_CHATMACRO9.data())
 };
 
 const char *player_names[] = {
@@ -406,7 +406,7 @@ const char *mapnames_commercial[] = {
     MHUSTR_21
 };
 
-static void CrispyReplaceColor(char *str, const int cr, const char *col)
+static void CrispyReplaceColor(const char *str, const int cr, const char *col)
 {
     char *str_replace, col_replace[16];
 
@@ -494,7 +494,7 @@ void HU_Init(void)
     if (!M_ParmExists("-nodeh"))
     {
         // [crispy] colorize keycard and skull key messages
-        CrispyReplaceColor(GOTBLUECARD, CR_BLUE, " blue ");
+        CrispyReplaceColor(GOTBLUECARD.data(), CR_BLUE, " blue ");
         CrispyReplaceColor(GOTBLUESKUL, CR_BLUE, " blue ");
         CrispyReplaceColor(PD_BLUEO, CR_BLUE, " blue ");
         CrispyReplaceColor(PD_BLUEK, CR_BLUE, " blue ");
@@ -570,9 +570,7 @@ static const speciallevel_t speciallevels[] = {
 
 static void HU_SetSpecialLevelName(const char *wad, const char **name)
 {
-    int i;
-
-    for (i = 0; i < arrlen(speciallevels); i++)
+    for (size_t i = 0; i < arrlen(speciallevels); i++)
     {
         const speciallevel_t speciallevel = speciallevels[i];
 
