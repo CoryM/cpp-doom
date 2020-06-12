@@ -147,7 +147,7 @@ extern bool speedkeydown(void);
 //
 // MENU TYPEDEFS
 //
-typedef struct
+struct menuitem_t
 {
     // 0 = no cursor here, 1 = ok, 2 = arrows ok
     short status;
@@ -161,8 +161,8 @@ typedef struct
 
     // hotkey in menu
     char  alphaKey;
-    char *alttext; // [crispy] alternative text for the Options menu
-} menuitem_t;
+    std::string_view alttext = std::string_view(); // [crispy] alternative text for the Options menu
+};
 
 
 typedef struct menu_s {
@@ -1402,42 +1402,42 @@ static void M_DrawCrispnessBackground(void)
 
 static char crispy_menu_text[48];
 
-static void M_DrawCrispnessHeader(char *item)
+static void M_DrawCrispnessHeader(const std::string_view item)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-        "%s%s", crstr[CR_GOLD], item);
-    M_WriteText(ORIGWIDTH / 2 - M_StringWidth(item) / 2, 12, crispy_menu_text);
+        "%s%s", crstr[CR_GOLD], item.data());
+    M_WriteText(ORIGWIDTH / 2 - M_StringWidth(item.data()) / 2, 12, crispy_menu_text);
 }
 
-static void M_DrawCrispnessSeparator(int y, char *item)
+static void M_DrawCrispnessSeparator(int y, const std::string_view item)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-        "%s%s", crstr[CR_GOLD], item);
+        "%s%s", crstr[CR_GOLD], item.data());
     M_WriteText(currentMenu->x - 8, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
-static void M_DrawCrispnessItem(int y, char *item, int feat, bool cond)
+static void M_DrawCrispnessItem(int y, const std::string_view item, int feat, bool cond)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-        "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item,
+        "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item.data(),
         cond ? (feat ? crstr[CR_GREEN] : crstr[CR_DARK]) : crstr[CR_DARK],
         cond && feat ? "On" : "Off");
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
-static void M_DrawCrispnessMultiItem(int y, char *item, multiitem_t *multiitem, int feat, bool cond)
+static void M_DrawCrispnessMultiItem(int y, const std::string_view item, multiitem_t *multiitem, int feat, bool cond)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-        "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item,
+        "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item.data(),
         cond ? (feat ? crstr[CR_GREEN] : crstr[CR_DARK]) : crstr[CR_DARK],
-        cond && feat ? multiitem[feat].name : multiitem[0].name);
+        cond && feat ? multiitem[feat].name.data() : multiitem[0].name.data());
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
-static void M_DrawCrispnessGoto(int y, char *item)
+static void M_DrawCrispnessGoto(int y, const std::string_view item)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-        "%s%s", crstr[CR_GOLD], item);
+        "%s%s", crstr[CR_GOLD], item.data());
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
@@ -1578,7 +1578,7 @@ static void M_CrispnessCur(int choice [[maybe_unused]])
 
 static void M_CrispnessNext(int choice [[maybe_unused]])
 {
-    if (++crispness_cur > std::size(CrispnessMenus) - 1)
+    if (++crispness_cur > std::ssize(CrispnessMenus) - 1)
     {
         crispness_cur = 0;
     }
@@ -1800,14 +1800,14 @@ static void M_ChangeSensitivity_y(int choice)
     }
 }
 
-static void M_MouseInvert(int choice)
+static void M_MouseInvert(int choice [[maybe_unused]])
 {
     choice         = 0;
     mouse_y_invert = !mouse_y_invert;
 }
 
 
-void M_ChangeDetail(int choice)
+void M_ChangeDetail(int choice [[maybe_unused]])
 {
     choice      = 0;
     detailLevel = 1 - detailLevel;
@@ -2913,10 +2913,10 @@ void M_Drawer(void)
 
             if (currentMenu == &OptionsDef)
             {
-                char *alttext = currentMenu->menuitems[i].alttext;
+                auto alttext = currentMenu->menuitems[i].alttext;
 
-                if (alttext)
-                    M_WriteText(x, y + 8 - (M_StringHeight(alttext) / 2), alttext);
+                if (alttext.data())
+                    M_WriteText(x, y + 8 - (M_StringHeight(alttext.data()) / 2), alttext.data());
             }
             else if (W_CheckNumForName(name) > 0) // [crispy] ...here
                 V_DrawPatchDirect(x, y, cache_lump_name<patch_t *>(name, PU_CACHE));

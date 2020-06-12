@@ -20,11 +20,12 @@
 #ifndef __M_CRISPY__
 #define __M_CRISPY__
 
-typedef struct
+#include <string_view>
+struct multiitem_t
 {
     int   value;
-    char *name;
-} multiitem_t;
+    std::string_view name;
+};
 
 extern multiitem_t multiitem_bobfactor[NUM_BOBFACTORS];
 extern multiitem_t multiitem_brightmaps[NUM_BRIGHTMAPS];
