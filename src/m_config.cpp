@@ -2353,16 +2353,21 @@ static void SaveDefaultCollection(default_collection_t *collection)
 }
 
 // Parses integer values in the configuration file
-
 static int ParseIntParameter(const char *strparm)
 {
     int parm;
 
+    // Check for HEX value
     if (strparm[0] == '0' && strparm[1] == 'x')
-        sscanf(strparm + 2, "%x", &parm);
+    {
+        unsigned int unsigned_parm = 0;
+        sscanf(strparm + 2, "%x", &unsigned_parm);
+        parm = static_cast<int>(unsigned_parm);    // possible narrowing conversion
+    }
     else
+    {
         sscanf(strparm, "%i", &parm);
-
+    }
     return parm;
 }
 
@@ -2872,7 +2877,7 @@ char *M_GetAutoloadDir(const char *iwadname)
 {
     char *result;
 
-    if (autoload_path == NULL || strlen(autoload_path) == 0)
+    if (autoload_path == nullptr || strlen(autoload_path) == 0)
     {
         char *prefdir;
         prefdir       = SDL_GetPrefPath("", PACKAGE_TARNAME);
