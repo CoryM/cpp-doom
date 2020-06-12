@@ -48,9 +48,6 @@ static wad_file_class_t *wad_file_classes[] = {
 
 wad_file_t *W_OpenFile(const char *path)
 {
-    wad_file_t *result;
-    int         i;
-
     //!
     // @category obscure
     //
@@ -65,9 +62,9 @@ wad_file_t *W_OpenFile(const char *path)
 
     // Try all classes in order until we find one that works
 
-    result = NULL;
+    wad_file_t *result = nullptr;
 
-    for (i = 0; i < std::size(wad_file_classes); ++i)
+    for (size_t i = 0; i < std::size(wad_file_classes); ++i)
     {
         result = wad_file_classes[i]->OpenFile(path);
 

@@ -292,10 +292,8 @@ static bool WeaponSelectable(weapontype_t weapon)
 static int G_NextWeapon(int direction)
 {
     weapontype_t weapon;
-    int          start_i, i;
 
     // Find index in the table.
-
     if (players[consoleplayer].pendingweapon == wp_nochange)
     {
         weapon = players[consoleplayer].readyweapon;
@@ -305,6 +303,7 @@ static int G_NextWeapon(int direction)
         weapon = players[consoleplayer].pendingweapon;
     }
 
+    size_t i;
     for (i = 0; i < std::size(weapon_order_table); ++i)
     {
         if (weapon_order_table[i].weapon == weapon)
@@ -314,7 +313,7 @@ static int G_NextWeapon(int direction)
     }
 
     // Switch weapon. Don't loop forever.
-    start_i = i;
+    auto start_i = i;
     do
     {
         i += direction;
@@ -339,7 +338,6 @@ bool speedkeydown(void)
 //
 void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
 {
-    int             i;
     bool         strafe;
     bool         bstrafe;
     int             speed;
@@ -587,15 +585,14 @@ void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
 
     if (gamestate == GS_LEVEL && next_weapon != 0)
     {
-        i = G_NextWeapon(next_weapon);
         cmd->buttons |= BT_CHANGE;
-        cmd->buttons |= i << BT_WEAPONSHIFT;
+        cmd->buttons |= G_NextWeapon(next_weapon) << BT_WEAPONSHIFT;
     }
     else
     {
         // Check weapon keys.
 
-        for (i = 0; i < std::size(weapon_keys); ++i)
+        for (size_t i = 0; i < std::size(weapon_keys); ++i)
         {
             int key = *weapon_keys[i];
 
@@ -1310,11 +1307,13 @@ void G_PlayerFinishLevel(int player)
     p->damagecount   = 0;                      // no palette changes
     p->bonuscount    = 0;
     // [crispy] reset additional player properties
-    p->lookdir = p->oldlookdir =
-        p->centering =
-            p->jumpTics =
-                p->recoilpitch    = p->oldrecoilpitch =
-                    p->psp_dy_max = 0;
+    p->lookdir        = 0;
+    p->oldlookdir     = 0;
+    p->centering      = false;
+    p->jumpTics       = 0;
+    p->recoilpitch    = 0;
+    p->oldrecoilpitch = 0;
+    p->psp_dy_max     = 0;
 }
 
 
@@ -1881,8 +1880,8 @@ void G_WorldDone(void)
         switch (gamemap)
         {
         case 20:
-            if (secretexit)
-                break;
+            if (secretexit) { break; }
+            [[fallthrough]];
         case 21:
             F_StartFinale();
             break;
@@ -1893,12 +1892,17 @@ void G_WorldDone(void)
         switch (gamemap)
         {
         case 15:
+        [[fallthrough]];
         case 31:
-            if (!secretexit)
-                break;
+            if (!secretexit){
+                break;}
+        [[fallthrough]];
         case 6:
+        [[fallthrough]];
         case 11:
+        [[fallthrough]];
         case 20:
+        [[fallthrough]];
         case 30:
             F_StartFinale();
             break;

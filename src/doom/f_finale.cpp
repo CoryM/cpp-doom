@@ -486,9 +486,8 @@ static int F_SoundForState(int st)
     }
     else
     {
-        int i;
-
-        for (i = 0; i < std::size(actionsounds); i++)
+        
+        for (size_t i = 0; i < std::size(actionsounds); i++)
         {
             const actionsound_t *const as = &actionsounds[i];
 

@@ -61,7 +61,7 @@ void wipe_shittyColMajorXform(dpixel_t *array,
 
 int wipe_initColorXForm(int width,
     int                     height,
-    int                     ticks)
+    int                     ticks [[maybe_unused]])
 {
     memcpy(wipe_scr, wipe_scr_start, width * height * sizeof(*wipe_scr));
     return 0;
@@ -110,9 +110,9 @@ int wipe_doColorXForm(int width,
     return !changed;
 }
 
-int wipe_exitColorXForm(int width,
-    int                     height,
-    int                     ticks)
+int wipe_exitColorXForm(int width [[maybe_unused]],
+    int                     height [[maybe_unused]],
+    int                     ticks [[maybe_unused]])
 {
     return 0;
 }
@@ -122,7 +122,7 @@ static int *y;
 
 int wipe_initMelt(int width,
     int               height,
-    int               ticks)
+    int               ticks [[maybe_unused]])
 {
     int i, r;
 
@@ -204,9 +204,9 @@ int wipe_doMelt(int width,
     return done;
 }
 
-int wipe_exitMelt(int width,
-    int               height,
-    int               ticks)
+int wipe_exitMelt(int width [[maybe_unused]],
+    int               height [[maybe_unused]],
+    int               ticks [[maybe_unused]])
 {
     Z_Free(y);
     Z_Free(wipe_scr_start);
@@ -214,10 +214,10 @@ int wipe_exitMelt(int width,
     return 0;
 }
 
-int wipe_StartScreen(int x,
-    int                  y,
-    int                  width,
-    int                  height)
+int wipe_StartScreen(int x [[maybe_unused]],
+    int                  y [[maybe_unused]],
+    int                  width [[maybe_unused]],
+    int                  height [[maybe_unused]])
 {
     wipe_scr_start = zmalloc<decltype(wipe_scr_start)>(SCREENWIDTH * SCREENHEIGHT * sizeof(*wipe_scr_start), PU_STATIC, NULL);
     I_ReadScreen(wipe_scr_start);
@@ -236,8 +236,8 @@ int wipe_EndScreen(int x,
 }
 
 int wipe_ScreenWipe(int wipeno,
-    int                 x,
-    int                 y,
+    int                 x [[maybe_unused]],
+    int                 y [[maybe_unused]],
     int                 width,
     int                 height,
     int                 ticks)
