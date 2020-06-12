@@ -17,6 +17,8 @@
 //   mode.
 //
 
+#include <string_view>
+
 #include "doomtype.hpp"
 #include "d_mode.hpp"
 
@@ -51,7 +53,7 @@ static struct
 
 bool D_ValidGameMode(int mission, int mode)
 {
-    for (size_t i = 0; i < arrlen(valid_modes); ++i)
+    for (size_t i = 0; i < std::size(valid_modes); ++i)
     {
         if (valid_modes[i].mode == mode && valid_modes[i].mission == mission)
         {
@@ -81,7 +83,7 @@ bool D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode,
 
     // Find the table entry for this mission/mode combination.
 
-    for (size_t i = 0; i < arrlen(valid_modes); ++i)
+    for (size_t i = 0; i < std::size(valid_modes); ++i)
     {
         if (mission == valid_modes[i].mission
             && mode == valid_modes[i].mode)
@@ -145,7 +147,7 @@ bool D_ValidGameVersion(GameMission_t mission, GameVersion_t version)
         mission = doom;
     }
 
-    for (size_t i = 0; i < arrlen(valid_versions); ++i)
+    for (size_t i = 0; i < std::size(valid_versions); ++i)
     {
         if (valid_versions[i].mission == mission
             && valid_versions[i].version == version)

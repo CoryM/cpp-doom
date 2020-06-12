@@ -20,6 +20,7 @@
 
 #include <cstdlib>
 #include <cctype>
+#include <string_view>
 
 #include "doomdef.hpp"
 #include "../doomkeys.hpp"
@@ -1577,7 +1578,7 @@ static void M_CrispnessCur(int choice [[maybe_unused]])
 
 static void M_CrispnessNext(int choice [[maybe_unused]])
 {
-    if (++crispness_cur > arrlen(CrispnessMenus) - 1)
+    if (++crispness_cur > std::size(CrispnessMenus) - 1)
     {
         crispness_cur = 0;
     }
@@ -1589,7 +1590,7 @@ static void M_CrispnessPrev(int choice [[maybe_unused]])
 {
     if (--crispness_cur < 0)
     {
-        crispness_cur = arrlen(CrispnessMenus) - 1;
+        crispness_cur = std::size(CrispnessMenus) - 1;
     }
 
     M_CrispnessCur(0);

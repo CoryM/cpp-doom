@@ -788,7 +788,7 @@ static const char *GetGameName(const char *gamename)
     size_t      i;
     const char *deh_sub;
 
-    for (i = 0; i < arrlen(banners); ++i)
+    for (i = 0; i < std::size(banners); ++i)
     {
         // Has the banner been replaced?
 
@@ -1047,7 +1047,7 @@ void PrintDehackedBanners(void)
 {
     size_t i;
 
-    for (i = 0; i < arrlen(copyright_banners); ++i)
+    for (i = 0; i < std::size(copyright_banners); ++i)
     {
         const char *deh_s;
 
@@ -1339,7 +1339,7 @@ static void LoadSigilWad(void)
         const std::string_view new_name;
     };
 
-    constexpr auto a_sigilLumps = std::to_array< s_sigilLumps >({ 
+    constexpr auto a_sigilLumps = std::array< s_sigilLumps, 10 >({ 
         {"CREDIT",  "SIGCREDI"},
         {"HELP1",   "SIGHELP1"},
         {"TITLEPIC","SIGTITLE"},
@@ -1352,7 +1352,7 @@ static void LoadSigilWad(void)
         {"D_INTRO", "D_SIGTIT"}
     });
 
-    constexpr auto a_textureFiles = std::to_array<const char * const>({
+    constexpr auto a_textureFiles = std::array<const char * const, 3>({
         "PNAMES",
         "TEXTURE1",
         "TEXTURE2"
@@ -1560,7 +1560,6 @@ void D_DoomMain(void)
     int  p;
     char file[256];
     char demolumpname[9];
-    int  numiwadlumps;
 
     I_AtExit(D_Endoom, false);
 
@@ -1702,28 +1701,8 @@ void D_DoomMain(void)
 
         // find which dir to use for config files
 
-#ifdef _WIN32
-
-    //!
-    // @category obscure
-    // @platform windows
-    // @vanilla
-    //
-    // Save configuration data and savegames in c:\doomdata,
-    // allowing play from CD.
-    //
-
-    if (M_ParmExists("-cdrom"))
-    {
-        printf(D_CDROM);
-
-        M_SetConfigDir("c:\\doomdata\\");
-    }
-    else
-#endif
     {
         // Auto-detect the configuration dir.
-
         M_SetConfigDir(NULL);
     }
 
@@ -1783,7 +1762,7 @@ void D_DoomMain(void)
 
     DEH_printf("W_Init: Init WADfiles.\n");
     D_AddFile(iwadfile);
-    numiwadlumps = numlumps;
+    auto numiwadlumps = numlumps;
 
     W_CheckCorrectIWAD(doom);
 
@@ -2059,9 +2038,9 @@ void D_DoomMain(void)
     // [crispy] load DEHACKED lumps by default, but allow overriding
     if (!M_ParmExists("-nodehlump") && !M_ParmExists("-nodeh"))
     {
-        int i, loaded = 0;
+        int loaded = 0;
 
-        for (i = numiwadlumps; i < numlumps; ++i)
+        for (auto i = numiwadlumps; i < numlumps; ++i)
         {
             if (!strncmp(lumpinfo[i]->name, "DEHACKED", 8))
             {

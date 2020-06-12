@@ -19,6 +19,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <string_view>
 
 #include "../../utils/memory.hpp"
 #include "../config.hpp"
@@ -458,7 +459,7 @@ void P_WriteExtendedSaveGameData(void)
 
     line = static_cast<char *>(malloc(MAX_LINE_LEN));
 
-    for (i = 0; i < arrlen(extsavegdata); i++)
+    for (i = 0; i < std::size(extsavegdata); i++)
     {
         extsavegdata[i].extsavegwritefn(extsavegdata[i].key);
     }
@@ -474,7 +475,7 @@ static void P_ReadKeyValuePairs(int pass)
         {
             int i;
 
-            for (i = 1; i < arrlen(extsavegdata); i++)
+            for (i = 1; i < std::size(extsavegdata); i++)
             {
                 if (extsavegdata[i].extsavegreadfn && extsavegdata[i].pass == pass && !strncmp(string, extsavegdata[i].key, MAX_STRING_LEN))
                 {

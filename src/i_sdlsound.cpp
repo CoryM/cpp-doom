@@ -23,9 +23,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <cassert>
+#include <vector>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_mixer.h"
-#include <vector>
+
 
 #ifdef HAVE_LIBSAMPLERATE
 #include <samplerate.h>
@@ -1221,7 +1222,7 @@ static snddevice_t sound_sdl_devices[] = {
 
 sound_module_t sound_sdl_module = {
     sound_sdl_devices,
-    arrlen(sound_sdl_devices),
+    std::size(sound_sdl_devices),
     I_SDL_InitSound,
     I_SDL_ShutdownSound,
     I_SDL_GetSfxLumpNum,

@@ -17,6 +17,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <string_view>
 
 #include "doomtype.hpp"
 #include "i_system.hpp"
@@ -566,7 +567,7 @@ void NET_WritePRNGSeed(net_packet_t *packet, prng_seed_t seed)
 
 static net_protocol_t ParseProtocolName(const char *name)
 {
-    for (size_t i = 0; i < arrlen(protocol_names); ++i)
+    for (size_t i = 0; i < std::size(protocol_names); ++i)
     {
         if (!strcmp(protocol_names[i].name, name))
         {
@@ -597,7 +598,7 @@ net_protocol_t NET_ReadProtocol(net_packet_t *packet)
 void NET_WriteProtocol(net_packet_t *packet, net_protocol_t protocol)
 {
 
-    for (size_t i = 0; i < arrlen(protocol_names); ++i)
+    for (size_t i = 0; i < std::size(protocol_names); ++i)
     {
         if (protocol_names[i].protocol == protocol)
         {

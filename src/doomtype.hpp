@@ -23,26 +23,13 @@
 
 #include "config.hpp"
 
-#if defined(_MSC_VER) && !defined(__cplusplus)
-#define inline __inline
-#endif
-
 // #define macros to provide functions missing in Windows.
 // Outside Windows, we use strings.h for str[n]casecmp.
 
+#include <cinttypes>
+#include <climits>
 #include <cstring>
-
-#if !HAVE_DECL_STRCASECMP || !HAVE_DECL_STRNCASECMP
-
-#if !HAVE_DECL_STRCASECMP
-#define strcasecmp std::strcmp
-#endif
-#if !HAVE_DECL_STRNCASECMP
-#define strncasecmp std::strncmp
-#endif
-
-#endif
-
+#include <string_view>
 
 //
 // The packed attribute forces structures to be packed into the minimum
@@ -53,36 +40,13 @@
 // to disk.
 //
 
-#ifdef __GNUC__
-
-#if defined(_WIN32) && !defined(__clang__)
-#define PACKEDATTR __attribute__((packed, gcc_struct))
-#else
 #define PACKEDATTR __attribute__((packed))
-#endif
 
 #define PRINTF_ATTR(fmt, first) __attribute__((format(printf, fmt, first)))
 #define PRINTF_ARG_ATTR(x)      __attribute__((format_arg(x)))
 #define NORETURN                __attribute__((noreturn))
 
-#else
-#if defined(_MSC_VER)
-#define PACKEDATTR __pragma(pack(pop))
-#else
-#define PACKEDATTR
-#endif
-#define PRINTF_ATTR(fmt, first)
-#define PRINTF_ARG_ATTR(x)
-#define NORETURN
-#endif
-
-#ifdef __WATCOMC__
-#define PACKEDPREFIX _Packed
-#elif defined(_MSC_VER)
-#define PACKEDPREFIX __pragma(pack(push, 1))
-#else
 #define PACKEDPREFIX
-#endif
 
 #define PACKED_STRUCT(...) PACKEDPREFIX struct __VA_ARGS__ PACKEDATTR
 
@@ -94,23 +58,6 @@
 // pre-standardisation version).  inttypes.h is also in the C99
 // standard and defined to include stdint.h, so include this.
 
-#include <cinttypes>
-
-#if defined(__cplusplus) || defined(__bool_true_false_are_defined)
-
-// Use builtin bool type with C++.
-
-[[deprecated("boolean unneeded typedef use bool")]] typedef bool boolean;
-
-#else
-
-typedef enum
-{
-    false,
-    true
-} bool;
-
-#endif
 
 typedef uint8_t byte;
 #ifndef CRISPY_TRUECOLOR
@@ -121,23 +68,8 @@ typedef uint32_t pixel_t;
 typedef int64_t  dpixel_t;
 #endif
 
-#include <climits>
-
-#ifdef _WIN32
-
-#define DIR_SEPARATOR   '\\'
-#define DIR_SEPARATOR_S "\\"
-#define PATH_SEPARATOR  ';'
-
-#else
-
 #define DIR_SEPARATOR   '/'
 #define DIR_SEPARATOR_S "/"
 #define PATH_SEPARATOR  ':'
 
-#endif
-
-#define arrlen(array) (sizeof(array) / sizeof(*array))
-//auto arrlen = [](auto &array) { return (sizeof(array) / sizeof(*array)); };
-
-#endif
+#endif // __DOOMTYPE_HPP__

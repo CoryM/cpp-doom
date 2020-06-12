@@ -17,6 +17,7 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <string_view>
 #include "doomtype.hpp"
 #include "m_misc.hpp"
 
@@ -111,8 +112,8 @@ char *NET_GetRandomPetName()
     const char *a, *n;
 
     InitPetName();
-    a = adjectives[rand() % arrlen(adjectives)];
-    n = nouns[rand() % arrlen(nouns)];
+    a = adjectives[rand() % std::size(adjectives)];
+    n = nouns[rand() % std::size(nouns)];
 
     return M_StringJoin(a, " ", n, NULL);
 }

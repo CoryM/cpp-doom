@@ -20,6 +20,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <string_view>
+
 #include "info.hpp"
 
 #include "deh_io.hpp"
@@ -140,9 +142,8 @@ static void *DEH_BEXPtrStart(deh_context_t *context, char *line)
 
 static void DEH_BEXPtrParseLine(deh_context_t *context, char *line, void *tag [[maybe_unused]])
 {
-    state_t *state;
     char *   variable_name, *value, frame_str[6];
-    int      frame_number, i;
+    int      frame_number;
 
     // parse "FRAME nn = mnemonic", where
     // variable_name = "FRAME nn" and value = "mnemonic"
@@ -165,9 +166,10 @@ static void DEH_BEXPtrParseLine(deh_context_t *context, char *line, void *tag [[
         return;
     }
 
-    state = (state_t *)&states[frame_number];
+    //auto state = (state_t *)&states[frame_number];
+    auto state = &states[frame_number];
 
-    for (i = 0; i < arrlen(bex_codeptrtable); i++)
+    for (std::size_t i = 0; i < std::size(bex_codeptrtable); i++)
     {
         if (!strcasecmp(bex_codeptrtable[i].mnemonic, value))
         {

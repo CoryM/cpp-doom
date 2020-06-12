@@ -18,6 +18,7 @@
 //	Brightmaps for wall textures
 //	Adapted from doomretro/src/r_data.c:97-209
 //
+#include <string_view>
 
 #include "../doomtype.hpp"
 #include "doomstat.hpp"
@@ -3877,7 +3878,7 @@ static byte *R_BrightmapForTexName_Doom(const char *texname)
 {
     int i;
 
-    for (i = 0; i < arrlen(fullbright_doom); i++)
+    for (i = 0; i < std::size(fullbright_doom); i++)
     {
         const fullbright_t *fullbright = &fullbright_doom[i];
 
@@ -3901,7 +3902,7 @@ static byte *R_BrightmapForTexName_Chex(const char *texname)
 {
     int i;
 
-    for (i = 0; i < arrlen(fullbright_chex); i++)
+    for (i = 0; i < std::size(fullbright_chex); i++)
     {
         const fullbright_t *fullbright = &fullbright_chex[i];
 
@@ -3923,7 +3924,7 @@ static byte *R_BrightmapForTexName_Hacx(const char *texname)
 {
     int i;
 
-    for (i = 0; i < arrlen(fullbright_hacx); i++)
+    for (i = 0; i < std::size(fullbright_hacx); i++)
     {
         const fullbright_t *fullbright = &fullbright_hacx[i];
 

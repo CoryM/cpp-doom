@@ -17,6 +17,7 @@
 //
 
 #include <cstdlib>
+#include <string_view>
 
 #include "config.hpp"
 #include "d_iwad.hpp"
@@ -241,7 +242,7 @@ static const struct
 void W_CheckCorrectIWAD(GameMission_t mission)
 {
 
-    for (size_t i = 0; i < arrlen(unique_lumps); ++i)
+    for (size_t i = 0; i < std::size(unique_lumps); ++i)
     {
         if (mission != unique_lumps[i].mission)
         {

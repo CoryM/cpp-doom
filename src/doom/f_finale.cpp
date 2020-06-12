@@ -19,6 +19,7 @@
 
 #include <cstdio>
 #include <cctype>
+#include <string_view>
 
 // Functions.
 #include "../deh_main.hpp"
@@ -134,7 +135,7 @@ void F_StartFinale(void)
 
     // Find the right screen and set the text and background
 
-    for (i = 0; i < arrlen(textscreens); ++i)
+    for (i = 0; i < std::size(textscreens); ++i)
     {
         textscreen_t *screen = &textscreens[i];
 
@@ -487,7 +488,7 @@ static int F_SoundForState(int st)
     {
         int i;
 
-        for (i = 0; i < arrlen(actionsounds); i++)
+        for (i = 0; i < std::size(actionsounds); i++)
         {
             const actionsound_t *const as = &actionsounds[i];
 
@@ -701,7 +702,7 @@ bool F_CastResponder(event_t *ev)
         // [crispy] ... and allow to skip through them ..
         if (ev->data1 == key_strafeleft || ev->data1 == key_alt_strafeleft)
     {
-        castskip = castnum ? -1 : arrlen(castorder) - 2;
+        castskip = castnum ? -1 : std::size(castorder) - 2;
         return false;
     }
     else if (ev->data1 == key_straferight || ev->data1 == key_alt_straferight)

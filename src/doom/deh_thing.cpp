@@ -17,6 +17,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <string_view>
 
 #include "../doomtype.hpp"
 
@@ -155,7 +156,7 @@ static void DEH_ThingParseLine(deh_context_t *context, char *line, void *tag)
         for (; (value = strtok(value, ",+| \t\f\r")); value = NULL)
         {
             int i;
-            for (i = 0; i < arrlen(bex_thingbitstable); i++)
+            for (i = 0; i < std::size(bex_thingbitstable); i++)
                 if (!strcasecmp(value, bex_thingbitstable[i].flag))
                 {
                     ivalue |= bex_thingbitstable[i].bits;

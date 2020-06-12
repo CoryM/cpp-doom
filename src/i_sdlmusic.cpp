@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <string_view>
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_mixer.h"
@@ -496,7 +497,7 @@ static snddevice_t music_sdl_devices[] = {
 
 music_module_t music_sdl_module = {
     music_sdl_devices,
-    arrlen(music_sdl_devices),
+    std::size(music_sdl_devices),
     I_SDL_InitMusic,
     I_SDL_ShutdownMusic,
     I_SDL_SetMusicVolume,

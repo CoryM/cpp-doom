@@ -712,14 +712,13 @@ static char *ExpandFileExtension(const char *musicdir, const char *filename)
 {
     static const char *extns[] = { ".flac", ".ogg", ".mp3" };
     char *             replaced, *result;
-    int                i;
 
     if (!M_StringEndsWith(filename, ".{ext}"))
     {
         return GetFullPath(musicdir, filename);
     }
 
-    for (i = 0; i < arrlen(extns); ++i)
+    for (size_t i = 0; i < std::size(extns); ++i)
     {
         replaced = M_StringReplace(filename, ".{ext}", extns[i]);
         result   = GetFullPath(musicdir, replaced);
@@ -923,7 +922,6 @@ static void LoadSubstituteConfigs(void)
     char *       musicdir;
     const char * path;
     unsigned int old_music_len;
-    unsigned int i;
 
     // We can configure the path to music packs using the music_pack_path
     // configuration variable. Otherwise we use the current directory, or
@@ -964,7 +962,7 @@ static void LoadSubstituteConfigs(void)
 
     // Add entries from known filenames list. We add this after those from the
     // configuration files, so that the entries here can be overridden.
-    for (i = 0; i < arrlen(known_filenames); ++i)
+    for (size_t i = 0; i < std::size(known_filenames); ++i)
     {
         AddSubstituteMusic(musicdir, known_filenames[i].hash_prefix,
             known_filenames[i].filename);

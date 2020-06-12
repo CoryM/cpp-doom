@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <string_view>
 
 #include "../doomtype.hpp"
 
@@ -538,7 +539,7 @@ static const iwad_t **GetFallbackIwadList(void)
     fallback_iwad_list[0] = &fallback_iwads[0];
     fallback_iwad_list[1] = NULL;
 
-    for (i = 0; i < arrlen(fallback_iwads); ++i)
+    for (i = 0; i < std::size(fallback_iwads); ++i)
     {
         if (gamemission == fallback_iwads[i].mission)
         {

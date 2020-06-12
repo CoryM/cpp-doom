@@ -18,6 +18,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <string_view>
 
 #include "../deh_defs.hpp"
 #include "../deh_io.hpp"
@@ -355,7 +356,7 @@ static void DEH_BEXStrParseLine(deh_context_t *context, char *line, void *tag [[
         return;
     }
 
-    for (size_t i = 0; i < arrlen(bex_stringtable); i++)
+    for (size_t i = 0; i < std::size(bex_stringtable); i++)
     {
         if (!strcasecmp(bex_stringtable[i].macro, variable_name))
         {

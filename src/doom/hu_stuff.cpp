@@ -570,7 +570,7 @@ static const speciallevel_t speciallevels[] = {
 
 static void HU_SetSpecialLevelName(const char *wad, const char **name)
 {
-    for (size_t i = 0; i < arrlen(speciallevels); i++)
+    for (size_t i = 0; i < std::size(speciallevels); i++)
     {
         const speciallevel_t speciallevel = speciallevels[i];
 

@@ -14,6 +14,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <string_view>
 
 #include "../doomtype.hpp"
 
@@ -228,7 +229,7 @@ static mission_config_t *GetMissionForName(char *name)
 {
     int i;
 
-    for (i=0; i<arrlen(mission_configs); ++i)
+    for (i=0; i<std::size(mission_configs); ++i)
     {
         if (!strcmp(mission_configs[i].name, name))
         {
@@ -250,7 +251,7 @@ static bool CheckExecutableName(GameSelectCallback callback)
 
     exe_name = M_GetExecutableName();
 
-    for (i=0; i<arrlen(mission_configs); ++i)
+    for (i=0; i<std::size(mission_configs); ++i)
     {
         config = &mission_configs[i];
 
@@ -288,7 +289,7 @@ static void OpenGameSelectDialog(GameSelectCallback callback)
 
     // Add a button for each game.
 
-    for (i=0; i<arrlen(mission_configs); ++i)
+    for (i=0; i<std::size(mission_configs); ++i)
     {
         // Do we have any IWADs for this game installed?
         // If so, add a button.

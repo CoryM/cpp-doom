@@ -24,6 +24,7 @@
 #include <cctype>
 #include <cerrno>
 #include <cassert>
+#include <string_view>
 
 #include "SDL2/SDL_filesystem.h"
 
@@ -736,7 +737,7 @@ static default_t doom_defaults_list[] = {
 
 static default_collection_t doom_defaults = {
     doom_defaults_list,
-    arrlen(doom_defaults_list),
+    std::size(doom_defaults_list),
     NULL,
 };
 
@@ -2197,7 +2198,7 @@ static default_t extra_defaults_list[] = {
 
 static default_collection_t extra_defaults = {
     extra_defaults_list,
-    arrlen(extra_defaults_list),
+    std::size(extra_defaults_list),
     NULL,
 };
 
