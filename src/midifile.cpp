@@ -487,9 +487,7 @@ static bool ReadTrack(midi_track_t *track, FILE *stream)
 
 static void FreeTrack(midi_track_t *track)
 {
-    unsigned int i;
-
-    for (i = 0; i < track->num_events; ++i)
+    for (int i = 0; i < track->num_events; ++i)
     {
         FreeEvent(&track->events[i]);
     }

@@ -617,7 +617,6 @@ static char *ExpandExtension(const char *orig)
 
 char *TXT_SelectFile(const char *window_title, const char **extensions)
 {
-    unsigned int i;
     size_t len;
     char *result;
     char **argv;
@@ -648,7 +647,7 @@ char *TXT_SelectFile(const char *window_title, const char **extensions)
     }
     else if (extensions != NULL)
     {
-        for (i = 0; extensions[i] != NULL; ++i)
+        for (size_t i = 0; extensions[i] != NULL; ++i)
         {
             char * newext = ExpandExtension(extensions[i]);
             if (newext)
@@ -670,7 +669,7 @@ char *TXT_SelectFile(const char *window_title, const char **extensions)
 
     result = ExecReadOutput(argv);
 
-    for (i = 0; i < argc; ++i)
+    for (int i = 0; i < argc; ++i)
     {
         free(argv[i]);
     }
