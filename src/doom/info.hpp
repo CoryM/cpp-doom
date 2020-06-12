@@ -1592,35 +1592,35 @@ typedef enum
 
 } mobjtype_t;
 
-typedef struct
+struct mobjinfo_t
 {
-    int          doomednum;
-    int          spawnstate;
-    int          spawnhealth;
-    int          seestate;
-    int          seesound;
-    int          reactiontime;
-    int          attacksound;
-    int          painstate;
-    int          painchance;
-    int          painsound;
-    int          meleestate;
-    int          missilestate;
-    int          deathstate;
-    int          xdeathstate;
-    int          deathsound;
-    int          speed;
-    int          radius;
-    int          height;
-    int          mass;
-    int          damage;
-    int          activesound;
-    unsigned int flags;
-    int          raisestate;
+    int          doomednum   = 0;
+    int          spawnstate  = 0;
+    int          spawnhealth = 0;
+    int          seestate    = 0;
+    int          seesound    = 0;
+    int          reactiontime= 0;
+    int          attacksound = 0;
+    int          painstate   = 0;
+    int          painchance  = 0;
+    int          painsound   = 0;
+    int          meleestate  = 0;
+    int          missilestate= 0;
+    int          deathstate  = 0;
+    int          xdeathstate = 0;
+    int          deathsound  = 0;
+    int          speed       = 0;
+    int          radius      = 0;
+    int          height      = 0;
+    int          mass        = 0;
+    int          damage      = 0;
+    int          activesound = 0;
+    unsigned int flags       = 0;
+    int          raisestate  = 0;
     // [crispy] height of the spawnstate's first sprite in pixels
-    int actualheight;
+    int actualheight = 0;
 
-} mobjinfo_t;
+};
 
 extern mobjinfo_t mobjinfo[NUMMOBJTYPES];
 
