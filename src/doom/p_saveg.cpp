@@ -1763,7 +1763,7 @@ void P_RestoreTargets(void)
 //
 // P_ArchiveSpecials
 //
-enum
+enum specials_e : uint8_t
 {
     tc_ceiling,
     tc_door,
@@ -1773,8 +1773,7 @@ enum
     tc_strobe,
     tc_glow,
     tc_endspecials
-
-} specials_e;
+};
 
 
 //
