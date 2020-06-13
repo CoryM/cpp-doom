@@ -173,16 +173,17 @@ void P_LoadVertexes(int lump)
 //
 sector_t *GetSectorAtNullAddress(void)
 {
-    static bool  null_sector_is_initialized = false;
-    static sector_t null_sector;
-
-    if (!null_sector_is_initialized)
+    auto GetMemoryValue = [](auto location){
+        int32_t val = 0;
+        I_GetMemoryValue(location, &val, 4);
+        return val;
+    };
+    
+    static sector_t null_sector = 
     {
-        memset(&null_sector, 0, sizeof(null_sector));
-        I_GetMemoryValue(0, &null_sector.floorheight, 4);
-        I_GetMemoryValue(4, &null_sector.ceilingheight, 4);
-        null_sector_is_initialized = true;
-    }
+        .floorheight = GetMemoryValue(0),
+        .ceilingheight = GetMemoryValue(4)
+    };
 
     return &null_sector;
 }
@@ -344,27 +345,22 @@ void P_LoadSubsectors(int lump)
 //
 void P_LoadSectors(int lump)
 {
-    byte *       data;
-    int          i;
-    mapsector_t *ms;
-    sector_t *   ss;
-
     // [crispy] fail on missing sectors
-    if (lump >= numlumps)
+    if (lump >= static_cast<int>(numlumps))
         I_Error("P_LoadSectors: No sectors in map!");
 
     numsectors = W_LumpLength(lump) / sizeof(mapsector_t);
     sectors    = zmalloc<decltype(sectors)>(numsectors * sizeof(sector_t), PU_LEVEL, 0);
     memset(sectors, 0, numsectors * sizeof(sector_t));
-    data = cache_lump_num<byte *>(lump, PU_STATIC);
+    auto data = cache_lump_num<byte *>(lump, PU_STATIC);
 
     // [crispy] fail on missing sectors
     if (!data || !numsectors)
         I_Error("P_LoadSectors: No sectors in map!");
 
-    ms = (mapsector_t *)data;
-    ss = sectors;
-    for (i = 0; i < numsectors; i++, ss++, ms++)
+    auto ms = reinterpret_cast<mapsector_t *>(data);
+    auto ss = sectors;
+    for (int i = 0; i < numsectors; i++, ss++, ms++)
     {
         ss->floorheight   = SHORT(ms->floorheight) << FRACBITS;
         ss->ceilingheight = SHORT(ms->ceilingheight) << FRACBITS;
@@ -710,7 +706,7 @@ bool P_LoadBlockMap(int lump)
     short *wadblockmaplump;
 
     // [crispy] (re-)create BLOCKMAP if necessary
-    if (M_CheckParm("-blockmap") || lump >= numlumps || (lumplen = W_LumpLength(lump)) < 8 || (count = lumplen / 2) >= 0x10000)
+    if (M_CheckParm("-blockmap") || lump >= static_cast<int>(numlumps) || (lumplen = W_LumpLength(lump)) < 8 || (count = lumplen / 2) >= 0x10000)
     {
         return false;
     }
@@ -1064,7 +1060,7 @@ lumpinfo_t *maplumpinfo;
 //
 void P_SetupLevel(int episode,
     int               map,
-    int               playermask,
+    int               playermask [[maybe_unused]],
     skill_t           skill)
 {
     int         i;

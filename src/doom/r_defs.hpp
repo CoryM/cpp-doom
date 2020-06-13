@@ -83,81 +83,80 @@ struct line_s;
 //  moving objects (doppler), because
 //  position is prolly just buffered, not
 //  updated.
-typedef struct
+struct degenmobj_t
 {
     thinker_t thinker; // not used for anything
-    fixed_t   x;
-    fixed_t   y;
-    fixed_t   z;
-
-} degenmobj_t;
+    fixed_t   x = 0;
+    fixed_t   y = 0;
+    fixed_t   z = 0;
+};
 
 //
 // The SECTORS record, at runtime.
 // Stores things/mobjs.
 //
-typedef struct
+struct sector_t
 {
-    fixed_t floorheight;
-    fixed_t ceilingheight;
-    short   floorpic;
-    short   ceilingpic;
-    short   lightlevel;
-    short   special;
-    short   tag;
+    fixed_t floorheight      = 0;
+    fixed_t ceilingheight    = 0;
+    short   floorpic         = 0;
+    short   ceilingpic       = 0;
+    short   lightlevel       = 0;
+    short   special          = 0;
+    short   tag              = 0;
 
     // 0 = untraversed, 1,2 = sndlines -1
-    int soundtraversed;
+    int soundtraversed       = 0;
 
     // thing that made a sound (or null)
-    mobj_t *soundtarget;
+    mobj_t *soundtarget      = nullptr;
 
     // mapblock bounding box for height changes
-    int blockbox[4];
+    int blockbox[4]          = {};
 
     // origin for any sounds played by the sector
-    degenmobj_t soundorg;
+    degenmobj_t soundorg    = {};
 
     // if == validcount, already checked
-    int validcount;
+    int validcount           = 0;
 
     // list of mobjs in sector
-    mobj_t *thinglist;
+    mobj_t *thinglist        = nullptr;
 
     // thinker_t for reversable actions
-    void *specialdata;
-
-    int             linecount;
-    struct line_s **lines; // [linecount] size
+    void *specialdata        = nullptr;
+   
+    int         linecount    = 0;
+    struct line_s **lines    = nullptr; // [linecount] size
 
     // [crispy] WiggleFix: [kb] for R_FixWiggle()
-    int cachedheight;
-    int scaleindex;
+    int cachedheight         = 0;
+    int scaleindex           = 0;
 
     // [crispy] add support for MBF sky tranfers
-    int sky;
+    int sky                  = 0;
 
     // [AM] Previous position of floor and ceiling before
     //      think.  Used to interpolate between positions.
-    fixed_t oldfloorheight;
-    fixed_t oldceilingheight;
+    fixed_t oldfloorheight   = 0;
+    fixed_t oldceilingheight = 0 ;
 
     // [AM] Gametic when the old positions were recorded.
     //      Has a dual purpose; it prevents movement thinkers
     //      from storing old positions twice in a tic, and
     //      prevents the renderer from attempting to interpolate
     //      if old values were not updated recently.
-    int oldgametic;
+    int oldgametic           = 0;
 
     // [AM] Interpolated floor and ceiling height.
     //      Calculated once per tic and used inside
     //      the renderer.
-    fixed_t interpfloorheight;
-    fixed_t interpceilingheight;
+    fixed_t interpfloorheight   = 0;
+    fixed_t interpceilingheight = 0;
 
     // [crispy] revealed secrets
-    short oldspecial;
-} sector_t;
+    short oldspecial         = 0;
+};
 
 
 //
