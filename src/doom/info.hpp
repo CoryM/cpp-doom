@@ -1323,7 +1323,7 @@ typedef enum
 } statenum_t;
 
 
-typedef struct
+struct state_t
 {
     spritenum_t sprite;
     int         frame;
@@ -1333,7 +1333,7 @@ typedef struct
     statenum_t nextstate;
     int        misc1;
     int        misc2;
-} state_t;
+};
 
 extern state_t     states[NUMSTATES];
 extern const char *sprnames[];

@@ -199,7 +199,7 @@ typedef enum
 } slopetype_t;
 
 
-typedef struct line_s {
+struct line_s {
     // Vertices, from v1 to v2.
     vertex_t *v1;
     vertex_t *v2;
@@ -237,7 +237,7 @@ typedef struct line_s {
 
     // [crispy] calculate sound origin of line to be its midpoint
     degenmobj_t soundorg;
-} line_s;
+};
 
 
 //

@@ -155,7 +155,8 @@ void T_VerticalDoor(vldoor_t *door)
                     door->direction = 1;
                     S_StartSound(&door->sector->soundorg, sfx_bdopn);
                     break;
-                }
+                };
+                [[fallthrough]];
 
             default:
                 door->direction = 1;
@@ -569,8 +570,7 @@ void P_SpawnDoorCloseIn30(sector_t *sec)
 //
 // Spawn a door that opens after 5 minutes
 //
-void P_SpawnDoorRaiseIn5Mins(sector_t *sec,
-    int                                secnum)
+void P_SpawnDoorRaiseIn5Mins(sector_t *sec, int secnum [[maybe_unused]])
 {
     vldoor_t *door;
 

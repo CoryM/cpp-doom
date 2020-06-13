@@ -19,7 +19,7 @@
 //	uses native calls to malloc() and free().
 //
 
-
+#include <cstddef>
 #include <cstdlib>
 #include <cstring>
 
@@ -29,20 +29,18 @@
 
 #define ZONEID 0x1d4a11
 
-typedef struct memblock_s memblock_t;
-
 struct memblock_s {
     int         id; // = ZONEID
     int         tag;
     int         size;
     void **     user;
-    memblock_t *prev;
-    memblock_t *next;
+    memblock_s *prev;
+    memblock_s *next;
 };
 
 // Linked list of allocated blocks for each tag type
 
-static memblock_t *allocated_blocks[PU_NUM_TAGS];
+static memblock_s *allocated_blocks[PU_NUM_TAGS];
 
 #ifdef TESTING
 
@@ -85,7 +83,7 @@ void test_free(void *data)
 
 // Add a block into the linked list for its type.
 
-static void Z_InsertBlock(memblock_t *block)
+static void Z_InsertBlock(memblock_s *block)
 {
     block->prev                  = NULL;
     block->next                  = allocated_blocks[block->tag];
@@ -99,7 +97,7 @@ static void Z_InsertBlock(memblock_t *block)
 
 // Remove a block from its linked list.
 
-static void Z_RemoveBlock(memblock_t *block)
+static void Z_RemoveBlock(memblock_s *block)
 {
     // Unlink from list
 
@@ -135,9 +133,9 @@ void Z_Init(void)
 //
 void Z_Free(void *ptr)
 {
-    memblock_t *block;
+    memblock_s *block;
 
-    block = (memblock_t *)((byte *)ptr - sizeof(memblock_t));
+    block = (memblock_s *)((byte *)ptr - sizeof(memblock_s));
 
     if (block->id != ZONEID)
     {
@@ -165,13 +163,9 @@ void Z_Free(void *ptr)
 
 static bool ClearCache(int size)
 {
-    memblock_t *block;
-    memblock_t *next_block;
-    int         remaining;
+    auto block = allocated_blocks[PU_CACHE];
 
-    block = allocated_blocks[PU_CACHE];
-
-    if (block == NULL)
+    if (block == nullptr)
     {
         // Cache is already empty.
 
@@ -192,7 +186,7 @@ static bool ClearCache(int size)
     // Search backwards through the list freeing blocks until we have
     // freed the amount of memory required.
 
-    remaining = size;
+    auto remaining = size;
 
     while (remaining > 0)
     {
@@ -203,7 +197,7 @@ static bool ClearCache(int size)
             break;
         }
 
-        next_block = block->prev;
+        auto next_block = block->prev;
 
         Z_RemoveBlock(block);
 
@@ -211,7 +205,7 @@ static bool ClearCache(int size)
 
         if (block->user)
         {
-            *block->user = NULL;
+            *block->user = nullptr;
         }
 
         free(block);
@@ -229,15 +223,13 @@ static bool ClearCache(int size)
 
 void *Z_Malloc(int size, int tag, void *user)
 {
-    memblock_t *   newblock;
     unsigned char *data;
     void *         result;
 
     if (tag < 0 || tag >= PU_NUM_TAGS || tag == PU_FREE)
     {
         I_Error("Z_Malloc: attempted to allocate a block with an invalid "
-                "tag: %i",
-            tag);
+                "tag: %i", tag);
     }
 
     if (user == nullptr && tag >= PU_PURGELEVEL)
@@ -246,16 +238,15 @@ void *Z_Malloc(int size, int tag, void *user)
     }
 
     // Malloc a block of the required size
+    memblock_s *newblock = nullptr;
 
-    newblock = NULL;
-
-    while (newblock == NULL)
+    while (newblock == nullptr)
     {
-        newblock = (memblock_t *)malloc(sizeof(memblock_t) + size);
+        newblock = (memblock_s *)malloc(sizeof(memblock_s) + size);
 
-        if (newblock == NULL)
+        if (newblock == nullptr)
         {
-            if (!ClearCache(sizeof(memblock_t) + size))
+            if (!ClearCache(sizeof(memblock_s) + size))
             {
                 I_Error("Z_Malloc: failed on allocation of %i bytes", size);
             }
@@ -273,7 +264,7 @@ void *Z_Malloc(int size, int tag, void *user)
     Z_InsertBlock(newblock);
 
     data   = (unsigned char *)newblock;
-    result = data + sizeof(memblock_t);
+    result = data + sizeof(memblock_s);
 
     if (user != nullptr)
     {
@@ -294,8 +285,8 @@ void Z_FreeTags(int lowtag, int hightag)
 
     for (i = lowtag; i <= hightag; ++i)
     {
-        memblock_t *block;
-        memblock_t *next;
+        memblock_s *block;
+        memblock_s *next;
 
         // Free all in this chain
 
@@ -332,7 +323,7 @@ void Z_DumpHeap(int lowtag [[maybe_unused]], int hightag [[maybe_unused]])
     // broken
 
 #if 0
-    memblock_t*	block;
+    memblock_s*	block;
 	
     printf ("zone size: %i  location: %p\n",
 	    mainzone->size,mainzone);
@@ -372,7 +363,7 @@ void Z_FileDumpHeap(FILE *f [[maybe_unused]])
 {
     // broken
 #if 0
-    memblock_t*	block;
+    memblock_s*	block;
 	
     fprintf (f,"zone size: %i  location: %p\n",mainzone->size,mainzone);
 	
@@ -405,8 +396,8 @@ void Z_FileDumpHeap(FILE *f [[maybe_unused]])
 //
 void Z_CheckHeap(void)
 {
-    memblock_t *block;
-    memblock_t *prev;
+    memblock_s *block;
+    memblock_s *prev;
     int         i;
 
     // Check all chains
@@ -439,9 +430,9 @@ void Z_CheckHeap(void)
 
 void Z_ChangeTag2(void *ptr, int tag, const char *file, int line)
 {
-    memblock_t *block;
+    memblock_s *block;
 
-    block = (memblock_t *)((byte *)ptr - sizeof(memblock_t));
+    block = (memblock_s *)((byte *)ptr - sizeof(memblock_s));
 
     if (block->id != ZONEID)
         I_Error("%s:%i: Z_ChangeTag: block without a ZONEID!",
@@ -462,9 +453,9 @@ void Z_ChangeTag2(void *ptr, int tag, const char *file, int line)
 
 void Z_ChangeUser(void *ptr, void **user)
 {
-    memblock_t *block;
+    memblock_s *block;
 
-    block = (memblock_t *)((byte *)ptr - sizeof(memblock_t));
+    block = (memblock_s *)((byte *)ptr - sizeof(memblock_s));
 
     if (block->id != ZONEID)
     {

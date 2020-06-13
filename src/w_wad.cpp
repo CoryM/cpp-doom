@@ -489,7 +489,7 @@ int		profilecount;
 void W_Profile (void)
 {
     int		i;
-    memblock_t*	block;
+    memblock_s*	block;
     void*	ptr;
     char	ch;
     FILE*	f;
@@ -507,7 +507,7 @@ void W_Profile (void)
 	}
 	else
 	{
-	    block = (memblock_t *) ( (byte *)ptr - sizeof(memblock_t));
+	    block = (memblock_s *) ( (byte *)ptr - sizeof(memblock_s));
 	    if (block->tag < PU_PURGELEVEL)
 		ch = 'S';
 	    else

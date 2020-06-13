@@ -17,6 +17,7 @@
 //
 
 #include <cstdio>
+#include <functional>
 
 #include "../i_system.hpp"
 #include "../z_zone.hpp"
@@ -610,20 +611,12 @@ void P_MobjThinker(mobj_t *mobj)
 //
 // P_SpawnMobj
 //
-static mobj_t *
-    P_SpawnMobjSafe(fixed_t x,
-        fixed_t             y,
-        fixed_t             z,
-        mobjtype_t          type,
-        bool             safe)
+static mobj_t * P_SpawnMobjSafe(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type, bool safe)
 {
-    mobj_t *    mobj;
-    state_t *   st;
-    mobjinfo_t *info;
-
-    mobj = zmalloc<decltype(mobj)>(sizeof(*mobj), PU_LEVEL, NULL);
+    mobj_t *mobj = zmalloc<decltype(mobj)>(sizeof(*mobj), PU_LEVEL, NULL);
+    //auto mobj = new mobj_t();
     memset(mobj, 0, sizeof(*mobj));
-    info = &mobjinfo[type];
+    auto info = &mobjinfo[type];
 
     mobj->type   = type;
     mobj->info   = info;
@@ -640,9 +633,9 @@ static mobj_t *
     mobj->lastlook = safe ? Crispy_Random() % MAXPLAYERS : P_Random() % MAXPLAYERS;
     // do not set the state with P_SetMobjState,
     // because action routines can not be called yet
-    st = &states[safe ? P_LatestSafeState(
-                     static_cast<statenum_t>(info->spawnstate)) :
-                        info->spawnstate];
+    auto st = &states[safe ? 
+                    P_LatestSafeState(static_cast<statenum_t>(info->spawnstate)) :
+                    info->spawnstate];
 
     mobj->state  = st;
     mobj->tics   = st->tics;

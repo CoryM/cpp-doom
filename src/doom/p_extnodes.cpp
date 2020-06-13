@@ -47,7 +47,7 @@ mapformat_t P_CheckMapFormat(int lumpnum)
     byte *      nodes  = NULL;
     int         b;
 
-    if ((b = lumpnum + ML_BLOCKMAP + 1) < numlumps && !strncasecmp(lumpinfo[b]->name, "BEHAVIOR", 8))
+    if ((b = lumpnum + ML_BLOCKMAP + 1) < static_cast<int>(numlumps) && !strncasecmp(lumpinfo[b]->name, "BEHAVIOR", 8))
     {
         fprintf(stderr, "Hexen (");
         format = static_cast<mapformat_t>(format | MFMT_HEXEN);
@@ -55,7 +55,7 @@ mapformat_t P_CheckMapFormat(int lumpnum)
     else
         fprintf(stderr, "Doom (");
 
-    if (!((b = lumpnum + ML_NODES) < numlumps && (nodes = cache_lump_num<byte *>(b, PU_CACHE)) && W_LumpLength(b) > 0))
+    if (!((b = lumpnum + ML_NODES) < static_cast<int>(numlumps) && (nodes = cache_lump_num<byte *>(b, PU_CACHE)) && W_LumpLength(b) > 0))
         fprintf(stderr, "no nodes");
     else if (!memcmp(nodes, "xNd4\0\0\0\0", 8))
     {
@@ -224,7 +224,6 @@ void P_LoadNodes_DeePBSP(int lump)
 // - added support for flipped levels
 void P_LoadNodes_ZDBSP(int lump, bool compressed)
 {
-    unsigned int i;
 #ifdef HAVE_LIBZ
     byte *output;
 #endif
@@ -315,7 +314,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
         memset(newvertarray + orgVerts, 0, newVerts * sizeof(vertex_t));
     }
 
-    for (i = 0; i < newVerts; i++)
+    for (unsigned int i = 0; i < newVerts; i++)
     {
         newvertarray[i + orgVerts].r_x =
             newvertarray[i + orgVerts].x = *((unsigned int *)data);
@@ -328,7 +327,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
 
     if (vertexes != newvertarray)
     {
-        for (i = 0; i < (unsigned int)numlines; i++)
+        for (int i = 0; i < numlines; i++)
         {
             lines[i].v1 = lines[i].v1 - vertexes + newvertarray;
             lines[i].v2 = lines[i].v2 - vertexes + newvertarray;
@@ -350,7 +349,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
     numsubsectors = numSubs;
     subsectors    = zmalloc<decltype(subsectors)>(numsubsectors * sizeof(subsector_t), PU_LEVEL, 0);
 
-    for (i = currSeg = 0; i < numsubsectors; i++)
+    for (int i = currSeg = 0; i < numsubsectors; i++)
     {
         mapsubsector_zdbsp_t *mseg = (mapsubsector_zdbsp_t *)data + i;
 
@@ -375,7 +374,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
     numsegs = numSegs;
     segs    = zmalloc<decltype(segs)>(numsegs * sizeof(seg_t), PU_LEVEL, 0);
 
-    for (i = 0; i < numsegs; i++)
+    for (int i = 0; i < numsegs; i++)
     {
         line_s *        ldef;
         unsigned int    linedef;
@@ -436,9 +435,9 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
     numnodes = numNodes;
     nodes    = zmalloc<decltype(nodes)>(numnodes * sizeof(node_t), PU_LEVEL, 0);
 
-    for (i = 0; i < numnodes; i++)
+    for (int i = 0; i < numnodes; i++)
     {
-        int              j, k;
+        int              k;
         node_t *         no = nodes + i;
         mapnode_zdbsp_t *mn = (mapnode_zdbsp_t *)data + i;
 
@@ -447,7 +446,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
         no->dx = SHORT(mn->dx) << FRACBITS;
         no->dy = SHORT(mn->dy) << FRACBITS;
 
-        for (j = 0; j < 2; j++)
+        for (int j = 0; j < 2; j++)
         {
             no->children[j] = (unsigned int)(mn->children[j]);
 
@@ -503,23 +502,18 @@ void P_LoadThings_Hexen(int lump)
 // adapted from chocolate-doom/src/hexen/p_setup.c:410-490
 void P_LoadLineDefs_Hexen(int lump)
 {
-    int                 i;
-    maplinedef_hexen_t *mld;
-    line_s *            ld;
-    vertex_t *          v1, *v2;
-    int                 warn; // [crispy] warn about unknown linedef types
-
     numlines = W_LumpLength(lump) / sizeof(maplinedef_hexen_t);
-    lines    = zmalloc<decltype(lines)>(numlines * sizeof(line_s), PU_LEVEL, 0);
-    memset(lines, 0, numlines * sizeof(line_s));
+    const size_t sizeOfLines = numlines * sizeof(decltype(lines));
+    lines    = zmalloc<decltype(lines)>(sizeOfLines, PU_LEVEL, 0);
+    memset(lines, 0, sizeOfLines);
     auto *data = cache_lump_num<byte *>(lump, PU_STATIC);
 
-    mld  = (maplinedef_hexen_t *)data;
-    ld   = lines;
-    warn = 0; // [crispy] warn about unknown linedef types
-    for (i = 0; i < numlines; i++, mld++, ld++)
+    auto mld  = reinterpret_cast<maplinedef_hexen_t *>(data);
+    line_s *ld = lines;
+    int warn = 0; // [crispy] warn about unknown linedef types
+    for (int i = 0; i < numlines; i++, mld++, ld++)
     {
-        ld->flags = (unsigned short)SHORT(mld->flags);
+        ld->flags = static_cast<unsigned short>(mld->flags);
 
         ld->special = mld->special;
         //	ld->arg1 = mld->arg1;
@@ -529,14 +523,14 @@ void P_LoadLineDefs_Hexen(int lump)
         //	ld->arg5 = mld->arg5;
 
         // [crispy] warn about unknown linedef types
-        if ((unsigned short)ld->special > 141)
+        if (static_cast<unsigned short>(ld->special) > 141)
         {
             fprintf(stderr, "P_LoadLineDefs: Unknown special %d at line %d\n", ld->special, i);
             warn++;
         }
 
-        v1 = ld->v1 = &vertexes[(unsigned short)SHORT(mld->v1)];
-        v2 = ld->v2 = &vertexes[(unsigned short)SHORT(mld->v2)];
+        auto v1 = ld->v1 = &vertexes[static_cast<unsigned short>(mld->v1)];
+        auto v2 = ld->v2 = &vertexes[static_cast<unsigned short>(mld->v2)];
 
         ld->dx = v2->x - v1->x;
         ld->dy = v2->y - v1->y;
