@@ -3672,12 +3672,12 @@ enum
     DOOM2ONLY,
 };
 
-typedef struct
+struct fullbright_t
 {
-    const char *const texture;
-    const int         game;
-    byte *            colormask;
-} fullbright_t;
+    const char *const texture   = nullptr;
+    const int         game      = 0;
+    byte *            colormask = nullptr;
+};
 
 static const fullbright_t fullbright_doom[] = {
     // [crispy] common textures
@@ -3876,9 +3876,7 @@ static const fullbright_t fullbright_hacx[] = {
 
 static byte *R_BrightmapForTexName_Doom(const char *texname)
 {
-    int i;
-
-    for (i = 0; i < std::size(fullbright_doom); i++)
+    for (size_t i = 0; i < std::size(fullbright_doom); i++)
     {
         const fullbright_t *fullbright = &fullbright_doom[i];
 
@@ -3900,9 +3898,7 @@ static bool chex2 = false;
 
 static byte *R_BrightmapForTexName_Chex(const char *texname)
 {
-    int i;
-
-    for (i = 0; i < std::size(fullbright_chex); i++)
+    for (size_t i = 0; i < std::size(fullbright_chex); i++)
     {
         const fullbright_t *fullbright = &fullbright_chex[i];
 
@@ -3922,9 +3918,7 @@ static byte *R_BrightmapForTexName_Chex(const char *texname)
 
 static byte *R_BrightmapForTexName_Hacx(const char *texname)
 {
-    int i;
-
-    for (i = 0; i < std::size(fullbright_hacx); i++)
+    for (size_t i = 0; i < std::size(fullbright_hacx); i++)
     {
         const fullbright_t *fullbright = &fullbright_hacx[i];
 
@@ -3976,7 +3970,7 @@ static byte *R_BrightmapForSprite_Doom(const int type)
     return nobrightmap;
 }
 
-static byte *R_BrightmapForSprite_Chex(const int type)
+static byte *R_BrightmapForSprite_Chex(const int type [[maybe_unused]])
 {
     // [crispy] TODO
     /*
@@ -4085,7 +4079,7 @@ static byte *R_BrightmapForFlatNum_Hacx(const int num)
     return nobrightmap;
 }
 
-static byte *R_BrightmapForFlatNum_None(const int num)
+static byte *R_BrightmapForFlatNum_None(const int num [[maybe_unused]])
 {
     return nobrightmap;
 }
@@ -4139,7 +4133,7 @@ static byte *R_BrightmapForState_Hacx(const int state)
     return nobrightmap;
 }
 
-static byte *R_BrightmapForState_None(const int state)
+static byte *R_BrightmapForState_None(const int state [[maybe_unused]])
 {
     return nobrightmap;
 }
