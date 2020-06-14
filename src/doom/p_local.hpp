@@ -269,7 +269,7 @@ extern int P_GetNumForMap(int episode, int map, bool critical);
 
 // [crispy] blinking key or skull in the status bar
 #define KEYBLINKMASK 0x8
-#define KEYBLINKTICS (7 * KEYBLINKMASK)
+#define KEYBLINKTICS (7 && KEYBLINKMASK)
 extern int st_keyorskull[3];
 
 //

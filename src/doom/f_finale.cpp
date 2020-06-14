@@ -491,7 +491,8 @@ static int F_SoundForState(int st)
         {
             const actionsound_t *const as = &actionsounds[i];
 
-            if ((!as->early && castaction == as->action.acv) || (as->early && nextaction == as->action.acv))
+            if ((!as->early && castaction == reinterpret_cast<void *>(as->action.acv)) || 
+                 (as->early && nextaction == reinterpret_cast<void *>(as->action.acv)))
             {
                 return as->sound;
             }

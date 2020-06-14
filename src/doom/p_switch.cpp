@@ -107,7 +107,7 @@ int           maxbuttons; // [crispy] remove MAXBUTTONS limit
 //
 void P_InitSwitchList(void)
 {
-    int i, slindex, episode;
+    int i, episode;
 
     // [crispy] add support for SWITCHES lumps
     switchlist_t *alphSwitchList;
@@ -139,7 +139,7 @@ void P_InitSwitchList(void)
         break;
     }
 
-    slindex = 0;
+    size_t slindex = 0;
 
     for (i = 0; alphSwitchList[i].episode; i++)
     {

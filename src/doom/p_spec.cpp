@@ -1329,7 +1329,7 @@ void R_InterpolateTextureOffsets(void)
 #define DONUT_FLOORPIC_DEFAULT    0x16
 
 static void DonutOverrun(fixed_t *s3_floorheight, short *s3_floorpic,
-    line_s *line, sector_t *pillar_sector)
+    line_s *line [[maybe_unused]], sector_t *pillar_sector [[maybe_unused]])
 {
     static int first = 1;
     static int tmp_s3_floorheight;
@@ -1523,9 +1523,9 @@ line_s *linespeciallist[MAXLINEANIMS];
 
 static unsigned int NumScrollers()
 {
-    unsigned int i, scrollers = 0;
+    unsigned int scrollers = 0;
 
-    for (i = 0; i < numlines; i++)
+    for (int i = 0; i < numlines; i++)
     {
         if (48 == lines[i].special)
         {

@@ -18,6 +18,8 @@
 // 	format or DeePBSP format and/or LINEDEFS and THINGS lumps in Hexen format
 //
 
+#include <iostream>
+
 #include "../m_bbox.hpp"
 #include "p_local.hpp"
 #include "i_swap.hpp"
@@ -505,7 +507,8 @@ void P_LoadLineDefs_Hexen(int lump)
     numlines = W_LumpLength(lump) / sizeof(maplinedef_hexen_t);
     const size_t sizeOfLines = numlines * sizeof(decltype(lines));
     lines    = zmalloc<decltype(lines)>(sizeOfLines, PU_LEVEL, 0);
-    memset(lines, 0, sizeOfLines);
+    for (int i = 0; i < numlines; i++) {lines[i] = {};} // initilize without using memset
+    //memset(lines, 0, sizeOfLines);
     auto *data = cache_lump_num<byte *>(lump, PU_STATIC);
 
     auto mld  = reinterpret_cast<maplinedef_hexen_t *>(data);
