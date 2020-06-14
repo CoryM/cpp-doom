@@ -48,23 +48,23 @@
 
 const char *configdir;
 
-static char *autoload_path = "";
+static auto autoload_path = std::string_view("");
 
 // Default filenames for configuration files.
 
 static const char *default_main_config;
 static const char *default_extra_config;
 
-typedef enum
+enum default_type_t
 {
     DEFAULT_INT,
     DEFAULT_INT_HEX,
     DEFAULT_STRING,
     DEFAULT_FLOAT,
     DEFAULT_KEY,
-} default_type_t;
+};
 
-typedef struct
+struct default_t
 {
     // Name of the variable
     const char *name;
@@ -93,7 +93,7 @@ typedef struct
     // If true, this config variable has been bound to a variable
     // and is being used.
     bool bound;
-} default_t;
+};
 
 typedef struct
 {
@@ -2527,7 +2527,8 @@ void M_LoadDefaults(void)
     int i;
 
     // This variable is a special snowflake for no good reason.
-    M_BindStringVariable("autoload_path", &autoload_path);
+    //M_BindStringVariable("autoload_path", &autoload_path);
+    autoload_path = "autoload_path";
 
     // check for a custom default file
 
@@ -2877,7 +2878,7 @@ char *M_GetAutoloadDir(const char *iwadname)
 {
     char *result;
 
-    if (autoload_path == nullptr || strlen(autoload_path) == 0)
+    if (autoload_path.data() == nullptr || autoload_path.size() == 0)
     {
         char *prefdir;
         prefdir       = SDL_GetPrefPath("", PACKAGE_TARNAME);
@@ -2885,9 +2886,9 @@ char *M_GetAutoloadDir(const char *iwadname)
         SDL_free(prefdir);
     }
 
-    M_MakeDirectory(autoload_path);
+    M_MakeDirectory(autoload_path.data());
 
-    result = M_StringJoin(autoload_path, DIR_SEPARATOR_S, iwadname, NULL);
+    result = M_StringJoin(autoload_path.data(), DIR_SEPARATOR_S, iwadname, NULL);
     M_MakeDirectory(result);
 
     // TODO: Add README file
