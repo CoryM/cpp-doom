@@ -24,7 +24,7 @@
 #include "../tables.hpp"
 #include "../m_fixed.hpp"
 
-// We need the thinker_t stuff.
+// We need the thinker_s stuff.
 #include "d_think.hpp"
 
 // We need the WAD data structure for Map things,

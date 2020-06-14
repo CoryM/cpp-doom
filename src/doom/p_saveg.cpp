@@ -266,10 +266,10 @@ static void saveg_write_actionf_t(actionf_t *str)
 #define saveg_write_think_t saveg_write_actionf_t
 
 //
-// thinker_t
+// thinker_s
 //
 
-static void saveg_read_thinker_t(thinker_t *str)
+static void saveg_read_thinker_t(thinker_s *str)
 {
     // struct thinker_s* prev;
     str->prev = static_cast<thinker_s *>(saveg_readp());
@@ -281,7 +281,7 @@ static void saveg_read_thinker_t(thinker_t *str)
     saveg_read_think_t(&str->function);
 }
 
-static void saveg_write_thinker_t(thinker_t *str)
+static void saveg_write_thinker_t(thinker_s *str)
 {
     // struct thinker_s* prev;
     saveg_writep(str->prev);
@@ -301,7 +301,7 @@ static void saveg_read_mobj_t(mobj_t *str)
 {
     int pl;
 
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_read_thinker_t(&str->thinker);
 
     // fixed_t x;
@@ -419,9 +419,9 @@ static void saveg_read_mobj_t(mobj_t *str)
 }
 
 // [crispy] enumerate all thinker pointers
-uint32_t P_ThinkerToIndex(thinker_t *thinker)
+uint32_t P_ThinkerToIndex(thinker_s *thinker)
 {
-    thinker_t *th;
+    thinker_s *th;
     uint32_t   i;
 
     if (!thinker)
@@ -441,9 +441,9 @@ uint32_t P_ThinkerToIndex(thinker_t *thinker)
 }
 
 // [crispy] replace indizes with corresponding pointers
-thinker_t *P_IndexToThinker(uint32_t index)
+thinker_s *P_IndexToThinker(uint32_t index)
 {
-    thinker_t *th;
+    thinker_s *th;
     uint32_t   i;
 
     if (!index)
@@ -466,7 +466,7 @@ thinker_t *P_IndexToThinker(uint32_t index)
 
 static void saveg_write_mobj_t(mobj_t *str)
 {
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_write_thinker_t(&str->thinker);
 
     // fixed_t x;
@@ -553,7 +553,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     // struct mobj_s* target;
     // [crispy] instead of the actual pointer, store the
     // corresponding index in the mobj->target field
-    saveg_writep((void *)(uintptr_t)P_ThinkerToIndex((thinker_t *)str->target));
+    saveg_writep((void *)(uintptr_t)P_ThinkerToIndex((thinker_s *)str->target));
 
     // int reactiontime;
     saveg_write32(str->reactiontime);
@@ -580,7 +580,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     // struct mobj_s* tracer;
     // [crispy] instead of the actual pointer, store the
     // corresponding index in the mobj->tracers field
-    saveg_writep((void *)(uintptr_t)P_ThinkerToIndex((thinker_t *)str->tracer));
+    saveg_writep((void *)(uintptr_t)P_ThinkerToIndex((thinker_s *)str->tracer));
 }
 
 
@@ -968,7 +968,7 @@ static void saveg_read_ceiling_t(ceiling_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_read_thinker_t(&str->thinker);
 
     // ceiling_e type;
@@ -1002,7 +1002,7 @@ static void saveg_read_ceiling_t(ceiling_t *str)
 
 static void saveg_write_ceiling_t(ceiling_t *str)
 {
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_write_thinker_t(&str->thinker);
 
     // ceiling_e type;
@@ -1041,7 +1041,7 @@ static void saveg_read_vldoor_t(vldoor_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_read_thinker_t(&str->thinker);
 
     // vldoor_e type;
@@ -1069,7 +1069,7 @@ static void saveg_read_vldoor_t(vldoor_t *str)
 
 static void saveg_write_vldoor_t(vldoor_t *str)
 {
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_write_thinker_t(&str->thinker);
 
     // vldoor_e type;
@@ -1102,7 +1102,7 @@ static void saveg_read_floormove_t(floormove_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_read_thinker_t(&str->thinker);
 
     // floor_e type;
@@ -1133,7 +1133,7 @@ static void saveg_read_floormove_t(floormove_t *str)
 
 static void saveg_write_floormove_t(floormove_t *str)
 {
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_write_thinker_t(&str->thinker);
 
     // floor_e type;
@@ -1169,7 +1169,7 @@ static void saveg_read_plat_t(plat_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_read_thinker_t(&str->thinker);
 
     // sector_t* sector;
@@ -1209,7 +1209,7 @@ static void saveg_read_plat_t(plat_t *str)
 
 static void saveg_write_plat_t(plat_t *str)
 {
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_write_thinker_t(&str->thinker);
 
     // sector_t* sector;
@@ -1254,7 +1254,7 @@ static void saveg_read_lightflash_t(lightflash_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_read_thinker_t(&str->thinker);
 
     // sector_t* sector;
@@ -1279,7 +1279,7 @@ static void saveg_read_lightflash_t(lightflash_t *str)
 
 static void saveg_write_lightflash_t(lightflash_t *str)
 {
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_write_thinker_t(&str->thinker);
 
     // sector_t* sector;
@@ -1309,7 +1309,7 @@ static void saveg_read_strobe_t(strobe_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_read_thinker_t(&str->thinker);
 
     // sector_t* sector;
@@ -1334,7 +1334,7 @@ static void saveg_read_strobe_t(strobe_t *str)
 
 static void saveg_write_strobe_t(strobe_t *str)
 {
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_write_thinker_t(&str->thinker);
 
     // sector_t* sector;
@@ -1364,7 +1364,7 @@ static void saveg_read_glow_t(glow_t *str)
 {
     int sector;
 
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_read_thinker_t(&str->thinker);
 
     // sector_t* sector;
@@ -1383,7 +1383,7 @@ static void saveg_read_glow_t(glow_t *str)
 
 static void saveg_write_glow_t(glow_t *str)
 {
-    // thinker_t thinker;
+    // thinker_s thinker;
     saveg_write_thinker_t(&str->thinker);
 
     // sector_t* sector;
@@ -1657,7 +1657,7 @@ typedef enum
 //
 void P_ArchiveThinkers(void)
 {
-    thinker_t *th;
+    thinker_s *th;
 
     // save off the current thinkers
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
@@ -1685,8 +1685,8 @@ void P_ArchiveThinkers(void)
 void P_UnArchiveThinkers(void)
 {
     byte       tclass;
-    thinker_t *currentthinker;
-    thinker_t *next;
+    thinker_s *currentthinker;
+    thinker_s *next;
     mobj_t *   mobj;
 
     // remove all the current thinkers
@@ -1741,7 +1741,7 @@ void P_UnArchiveThinkers(void)
 void P_RestoreTargets(void)
 {
     mobj_t *   mo;
-    thinker_t *th;
+    thinker_s *th;
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
@@ -1789,7 +1789,7 @@ enum specials_e : uint8_t
 //
 void P_ArchiveSpecials(void)
 {
-    thinker_t *th;
+    thinker_s *th;
     int        i;
 
     // save off the current thinkers

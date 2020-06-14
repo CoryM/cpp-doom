@@ -1351,7 +1351,7 @@ void R_PrecacheLevel(void)
     int lump;
 
     texture_t *    texture;
-    thinker_t *    th;
+    thinker_s *    th;
     spriteframe_t *sf;
 
     if (demoplayback)

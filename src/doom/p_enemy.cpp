@@ -557,7 +557,7 @@ bool
 //
 void A_KeenDie(mobj_t *mo)
 {
-    thinker_t *th;
+    thinker_s *th;
     mobj_t *   mo2;
     line_s     junk;
 
@@ -1490,7 +1490,7 @@ void A_PainShootSkull(mobj_t *actor,
     angle_t    an;
     int        prestep;
     int        count;
-    thinker_t *currentthinker;
+    thinker_s *currentthinker;
 
     // count total number of skull currently on the level
     count = 0;
@@ -1694,7 +1694,7 @@ static bool CheckBossEnd(mobjtype_t motype)
 //
 void A_BossDeath(mobj_t *mo)
 {
-    thinker_t *th;
+    thinker_s *th;
     mobj_t *   mo2;
     line_s     junk;
     int        i;
@@ -1844,7 +1844,7 @@ static int maxbraintargets; // [crispy] remove braintargets limit
 
 void A_BrainAwake(mobj_t *mo [[maybe_unused]])
 {
-    thinker_t *thinker;
+    thinker_s *thinker;
     mobj_t *   m;
 
     // find all the target spots

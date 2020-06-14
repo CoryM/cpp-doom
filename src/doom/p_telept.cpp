@@ -44,7 +44,7 @@ int EV_Teleport(line_s *line,
     mobj_t *   m;
     mobj_t *   fog;
     unsigned   an;
-    thinker_t *thinker;
+    thinker_s *thinker;
     sector_t * sector;
     fixed_t    oldx;
     fixed_t    oldy;

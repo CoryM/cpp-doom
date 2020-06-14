@@ -120,7 +120,7 @@ extern void T_FireFlicker(fireflicker_t *flick);
 
 static void P_WriteFireFlicker(const char *key)
 {
-    thinker_t *th;
+    thinker_s *th;
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
@@ -181,7 +181,7 @@ static void P_WriteSoundTarget(const char *key)
             M_snprintf(line, MAX_LINE_LEN, "%s %d %d\n",
                 key,
                 i,
-                P_ThinkerToIndex((thinker_t *)sector->soundtarget));
+                P_ThinkerToIndex((thinker_s *)sector->soundtarget));
             fputs(line, save_stream);
         }
     }
@@ -285,7 +285,7 @@ extern int numbraintargets, braintargeton;
 
 static void P_WriteBrainTarget(const char *key)
 {
-    thinker_t *th;
+    thinker_s *th;
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {

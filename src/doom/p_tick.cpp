@@ -32,12 +32,12 @@ int leveltime;
 // All thinkers should be allocated by Z_Malloc
 // so they can be operated on uniformly.
 // The actual structures will vary in size,
-// but the first element must be thinker_t.
+// but the first element must be thinker_s.
 //
 
 
 // Both the head and tail of the thinker list.
-thinker_t thinkercap;
+thinker_s thinkercap;
 
 
 //
@@ -53,7 +53,7 @@ void P_InitThinkers(void)
 // P_AddThinker
 // Adds a new thinker at the end of the list.
 //
-void P_AddThinker(thinker_t *thinker)
+void P_AddThinker(thinker_s *thinker)
 {
     thinkercap.prev->next = thinker;
     thinker->next         = &thinkercap;
@@ -67,7 +67,7 @@ void P_AddThinker(thinker_t *thinker)
 // Deallocation is lazy -- it will not actually be freed
 // until its thinking turn comes up.
 //
-void P_RemoveThinker(thinker_t *thinker)
+void P_RemoveThinker(thinker_s *thinker)
 {
     // FIXME: NOP.
     thinker->function.acv = (actionf_v)(-1);
@@ -78,7 +78,7 @@ void P_RemoveThinker(thinker_t *thinker)
 // P_AllocateThinker
 // Allocates memory and adds a new thinker at the end of the list.
 //
-[[deprecated("function does nothing")]]void P_AllocateThinker(thinker_t *thinker [[maybe_unused]])
+[[deprecated("function does nothing")]]void P_AllocateThinker(thinker_s *thinker [[maybe_unused]])
 {
 }
 
@@ -88,7 +88,7 @@ void P_RemoveThinker(thinker_t *thinker)
 //
 void P_RunThinkers(void)
 {
-    thinker_t *currentthinker, *nextthinker;
+    thinker_s *currentthinker, *nextthinker;
 
     currentthinker = thinkercap.next;
     while (currentthinker != &thinkercap)

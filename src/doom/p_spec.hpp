@@ -110,7 +110,7 @@ int EV_DoDonut(line_s *line);
 //
 typedef struct
 {
-    thinker_t thinker;
+    thinker_s thinker;
     sector_t *sector;
     int       count;
     int       maxlight;
@@ -121,7 +121,7 @@ typedef struct
 
 typedef struct
 {
-    thinker_t thinker;
+    thinker_s thinker;
     sector_t *sector;
     int       count;
     int       maxlight;
@@ -134,7 +134,7 @@ typedef struct
 
 typedef struct
 {
-    thinker_t thinker;
+    thinker_s thinker;
     sector_t *sector;
     int       count;
     int       minlight;
@@ -147,7 +147,7 @@ typedef struct
 
 typedef struct
 {
-    thinker_t thinker;
+    thinker_s thinker;
     sector_t *sector;
     int       minlight;
     int       maxlight;
@@ -256,7 +256,7 @@ typedef enum
 
 typedef struct
 {
-    thinker_t  thinker;
+    thinker_s  thinker;
     sector_t * sector;
     fixed_t    speed;
     fixed_t    low;
@@ -310,7 +310,7 @@ typedef enum
 
 typedef struct
 {
-    thinker_t thinker;
+    thinker_s thinker;
     vldoor_e  type;
     sector_t *sector;
     fixed_t   topheight;
@@ -375,7 +375,7 @@ typedef enum
 
 typedef struct
 {
-    thinker_t	thinker;
+    thinker_s	thinker;
     sdt_e	type;
     line_s*	line;
     int		frame;
@@ -448,7 +448,7 @@ typedef enum
 
 typedef struct
 {
-    thinker_t thinker;
+    thinker_s thinker;
     ceiling_e type;
     sector_t *sector;
     fixed_t   bottomheight;
@@ -531,7 +531,7 @@ typedef enum
 
 typedef struct
 {
-    thinker_t thinker;
+    thinker_s thinker;
     floor_e   type;
     bool   crush;
     sector_t *sector;

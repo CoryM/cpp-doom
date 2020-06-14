@@ -501,7 +501,7 @@ void ST_refreshBackground(bool force)
 static int ST_cheat_massacre()
 {
     int         killcount = 0;
-    thinker_t * th;
+    thinker_s * th;
     extern int  numbraintargets;
     extern void A_PainDie(mobj_t *);
 
@@ -941,7 +941,7 @@ bool
                 if (plyr->cheats & CF_NOTARGET)
                 {
                     int        i;
-                    thinker_t *th;
+                    thinker_s *th;
 
                     // [crispy] let mobjs forget their target and tracer
                     for (th = thinkercap.next; th != &thinkercap; th = th->next)

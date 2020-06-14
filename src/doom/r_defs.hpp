@@ -85,7 +85,7 @@ struct line_s;
 //  updated.
 struct degenmobj_t
 {
-    thinker_t thinker; // not used for anything
+    thinker_s thinker; // not used for anything
     fixed_t   x = 0;
     fixed_t   y = 0;
     fixed_t   z = 0;
@@ -123,7 +123,7 @@ struct sector_t
     // list of mobjs in sector
     mobj_t *thinglist        = nullptr;
 
-    // thinker_t for reversable actions
+    // thinker_s for reversable actions
     void *specialdata        = nullptr;
    
     int         linecount    = 0;
@@ -231,7 +231,7 @@ struct line_s {
     // if == validcount, already checked
     int validcount;
 
-    // thinker_t for reversable actions
+    // thinker_s for reversable actions
     void *specialdata;
 
     // [crispy] calculate sound origin of line to be its midpoint
