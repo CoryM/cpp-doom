@@ -34,7 +34,7 @@ typedef struct txt_button_s txt_button_t;
 
 struct txt_button_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     char *label;
 };
 

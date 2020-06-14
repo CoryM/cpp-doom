@@ -29,7 +29,7 @@
 
 #else
 
-#define TXT_UNCAST_ARG(name) txt_widget_t *name
+#define TXT_UNCAST_ARG(name) txt_widget_s *name
 
 #endif
 
@@ -60,8 +60,6 @@ typedef enum
  * when a signal occurs using the @ref TXT_SignalConnect function.
  */
 
-typedef struct txt_widget_s txt_widget_t;
-
 typedef struct txt_widget_class_s txt_widget_class_t;
 typedef struct txt_callback_table_s txt_callback_table_t;
 
@@ -77,14 +75,14 @@ typedef void (*TxtWidgetFocusFunc)(TXT_UNCAST_ARG(widget), int focused);
 
 struct txt_widget_class_s
 {
-    TxtWidgetSelectableFunc selectable;
-    TxtWidgetSizeCalc size_calc;
-    TxtWidgetDrawer drawer;
-    TxtWidgetKeyPress key_press;
-    TxtWidgetDestroy destructor;
-    TxtMousePressFunc mouse_press;
-    TxtWidgetLayoutFunc layout;
-    TxtWidgetFocusFunc focus_change;
+    TxtWidgetSelectableFunc selectable = nullptr;
+    TxtWidgetSizeCalc size_calc        = nullptr;
+    TxtWidgetDrawer drawer             = nullptr;
+    TxtWidgetKeyPress key_press        = nullptr;
+    TxtWidgetDestroy destructor        = nullptr;
+    TxtMousePressFunc mouse_press      = nullptr;
+    TxtWidgetLayoutFunc layout         = nullptr;
+    TxtWidgetFocusFunc focus_change    = nullptr;
 };
 
 struct txt_widget_s
@@ -103,7 +101,7 @@ struct txt_widget_s
 
     // Pointer up to parent widget that contains this widget.
 
-    txt_widget_t *parent;
+    txt_widget_s *parent;
 };
 
 void TXT_InitWidget(TXT_UNCAST_ARG(widget), txt_widget_class_t *widget_class);

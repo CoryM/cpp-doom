@@ -49,7 +49,7 @@ std::shared_ptr<txt_callback_table_t> TXT_NewCallbackTable()
 
 void TXT_InitWidget(TXT_UNCAST_ARG(widget), txt_widget_class_t *widget_class)
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     widget->widget_class = widget_class;
     widget->callback_table = TXT_NewCallbackTable();
@@ -73,7 +73,7 @@ void TXT_SignalConnect(TXT_UNCAST_ARG(widget),
                        TxtWidgetSignalFunc func, 
                        void *user_data)
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     auto &table = widget->callback_table;
 
@@ -88,7 +88,7 @@ void TXT_SignalConnect(TXT_UNCAST_ARG(widget),
 
 void TXT_EmitSignal(TXT_UNCAST_ARG(widget), const char *signal_name)
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     auto table = widget->callback_table;
 
@@ -110,14 +110,14 @@ void TXT_EmitSignal(TXT_UNCAST_ARG(widget), const char *signal_name)
 
 void TXT_CalcWidgetSize(TXT_UNCAST_ARG(widget))
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     widget->widget_class->size_calc(widget);
 }
 
 void TXT_DrawWidget(TXT_UNCAST_ARG(widget))
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
     txt_saved_colors_t colors;
 
     // The drawing function might change the fg/bg colors,
@@ -138,7 +138,7 @@ void TXT_DrawWidget(TXT_UNCAST_ARG(widget))
 
 void TXT_DestroyWidget(TXT_UNCAST_ARG(widget))
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     widget->widget_class->destructor(widget);
     free(widget);
@@ -146,7 +146,7 @@ void TXT_DestroyWidget(TXT_UNCAST_ARG(widget))
 
 int TXT_WidgetKeyPress(TXT_UNCAST_ARG(widget), int key)
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     if (widget->widget_class->key_press != NULL)
     {
@@ -158,7 +158,7 @@ int TXT_WidgetKeyPress(TXT_UNCAST_ARG(widget), int key)
 
 void TXT_SetWidgetFocus(TXT_UNCAST_ARG(widget), int focused)
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     if (widget == NULL)
     {
@@ -178,14 +178,14 @@ void TXT_SetWidgetFocus(TXT_UNCAST_ARG(widget), int focused)
 
 void TXT_SetWidgetAlign(TXT_UNCAST_ARG(widget), txt_horiz_align_t horiz_align)
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     widget->align = horiz_align;
 }
 
 void TXT_WidgetMousePress(TXT_UNCAST_ARG(widget), int x, int y, int b)
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     if (widget->widget_class->mouse_press != NULL)
     {
@@ -195,7 +195,7 @@ void TXT_WidgetMousePress(TXT_UNCAST_ARG(widget), int x, int y, int b)
 
 void TXT_LayoutWidget(TXT_UNCAST_ARG(widget))
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     if (widget->widget_class->layout != NULL)
     {
@@ -215,7 +215,7 @@ int TXT_NeverSelectable(TXT_UNCAST_ARG(widget))
 
 int TXT_SelectableWidget(TXT_UNCAST_ARG(widget))
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     if (widget->widget_class->selectable != NULL)
     {
@@ -229,8 +229,8 @@ int TXT_SelectableWidget(TXT_UNCAST_ARG(widget))
 
 int TXT_ContainsWidget(TXT_UNCAST_ARG(haystack), TXT_UNCAST_ARG(needle))
 {
-    TXT_CAST_ARG(txt_widget_t, haystack);
-    TXT_CAST_ARG(txt_widget_t, needle);
+    TXT_CAST_ARG(txt_widget_s, haystack);
+    TXT_CAST_ARG(txt_widget_s, needle);
 
     while (needle != NULL)
     {
@@ -247,7 +247,7 @@ int TXT_ContainsWidget(TXT_UNCAST_ARG(haystack), TXT_UNCAST_ARG(needle))
 
 int TXT_HoveringOverWidget(TXT_UNCAST_ARG(widget))
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
     txt_window_t *active_window;
     int x, y;
 
@@ -270,7 +270,7 @@ int TXT_HoveringOverWidget(TXT_UNCAST_ARG(widget))
 
 void TXT_SetWidgetBG(TXT_UNCAST_ARG(widget))
 {
-    TXT_CAST_ARG(txt_widget_t, widget);
+    TXT_CAST_ARG(txt_widget_s, widget);
 
     if (widget->focused)
     {

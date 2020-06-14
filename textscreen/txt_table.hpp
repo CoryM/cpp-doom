@@ -68,11 +68,11 @@ typedef struct txt_table_s txt_table_t;
 
 struct txt_table_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
 
     // Widgets in this table
     // The widget at (x,y) in the table is widgets[columns * y + x]
-    txt_widget_t **widgets;
+    txt_widget_s **widgets;
     int num_widgets;
 
     // Number of columns
@@ -84,10 +84,10 @@ struct txt_table_s
 };
 
 extern txt_widget_class_t txt_table_class;
-extern txt_widget_t txt_table_overflow_right;
-extern txt_widget_t txt_table_overflow_down;
-extern txt_widget_t txt_table_eol;
-extern txt_widget_t txt_table_empty;
+extern txt_widget_s txt_table_overflow_right;
+extern txt_widget_s txt_table_overflow_down;
+extern txt_widget_s txt_table_eol;
+extern txt_widget_s txt_table_empty;
 
 void TXT_InitTable(txt_table_t *table, int columns);
 
@@ -134,7 +134,7 @@ txt_table_t *TXT_NewHorizBox(TXT_UNCAST_ARG(first_widget), ...);
  * @return             Pointer to the widget that is currently selected.
  */
 
-txt_widget_t *TXT_GetSelectedWidget(TXT_UNCAST_ARG(table));
+txt_widget_s *TXT_GetSelectedWidget(TXT_UNCAST_ARG(table));
 
 /**
  * Add a widget to a table.

@@ -35,11 +35,11 @@ typedef struct txt_scrollpane_s txt_scrollpane_t;
 
 struct txt_scrollpane_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     int w, h;
     int x, y;
     int expand_w, expand_h;
-    txt_widget_t *child;
+    txt_widget_s *child;
 };
 
 /**

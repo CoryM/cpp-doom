@@ -72,7 +72,7 @@ struct txt_window_s
 
     // Actions that appear in the box at the bottom of the window
 
-    txt_widget_t *actions[3];
+    txt_widget_s *actions[3];
 
     // Callback functions to invoke when keys/mouse buttons are pressed
 

@@ -36,7 +36,7 @@ typedef struct txt_inputbox_s txt_inputbox_t;
 
 struct txt_inputbox_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     char *buffer;
     size_t buffer_len;
     unsigned int size;

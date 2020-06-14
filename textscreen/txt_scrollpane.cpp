@@ -242,7 +242,7 @@ static void TXT_ScrollPaneFocused(TXT_UNCAST_ARG(scrollpane), int focused)
 
 static void ShowSelectedWidget(txt_scrollpane_t *scrollpane)
 {
-    txt_widget_t *selected;
+    txt_widget_s *selected;
 
     selected = TXT_GetSelectedWidget(scrollpane->child);
 
@@ -565,7 +565,7 @@ txt_widget_class_t txt_scrollpane_class =
 
 txt_scrollpane_t *TXT_NewScrollPane(int w, int h, TXT_UNCAST_ARG(target))
 {
-    TXT_CAST_ARG(txt_widget_t, target);
+    TXT_CAST_ARG(txt_widget_s, target);
     auto *scrollpane = create_struct<txt_scrollpane_t>();
 
     TXT_InitWidget(scrollpane, &txt_scrollpane_class);

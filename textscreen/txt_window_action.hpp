@@ -38,7 +38,7 @@ typedef struct txt_window_action_s txt_window_action_t;
 
 struct txt_window_action_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     char *label;
     int key;
 };

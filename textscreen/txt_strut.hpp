@@ -35,7 +35,7 @@ typedef struct txt_strut_s txt_strut_t;
 
 struct txt_strut_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     int width;
     int height;
 };

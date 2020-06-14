@@ -34,7 +34,7 @@ typedef struct txt_label_s txt_label_t;
 
 struct txt_label_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     char *label;
     char **lines;
     unsigned int w, h;

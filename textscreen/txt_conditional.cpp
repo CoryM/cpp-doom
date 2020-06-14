@@ -21,10 +21,10 @@
 
 struct txt_conditional_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     int *var;
     int expected_value;
-    txt_widget_t *child;
+    txt_widget_s *child;
 };
 
 static int ConditionTrue(txt_conditional_t *conditional)
@@ -132,7 +132,7 @@ txt_widget_class_t txt_conditional_class =
 txt_conditional_t *TXT_NewConditional(int *var, int expected_value,
                                       TXT_UNCAST_ARG(child))
 {
-    TXT_CAST_ARG(txt_widget_t, child);
+    TXT_CAST_ARG(txt_widget_s, child);
 
     auto *loc = malloc(sizeof(txt_conditional_t));
     auto *conditional = new (loc) txt_conditional_t{};
@@ -151,9 +151,9 @@ txt_conditional_t *TXT_NewConditional(int *var, int expected_value,
 // "Static" conditional that returns an empty strut if the given static
 // value is false. Kind of like a conditional but we only evaluate it at
 // creation time.
-txt_widget_t *TXT_If(int conditional, TXT_UNCAST_ARG(child))
+txt_widget_s *TXT_If(int conditional, TXT_UNCAST_ARG(child))
 {
-    TXT_CAST_ARG(txt_widget_t, child);
+    TXT_CAST_ARG(txt_widget_s, child);
 
     if (conditional)
     {

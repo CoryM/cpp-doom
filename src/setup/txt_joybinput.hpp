@@ -27,7 +27,7 @@ typedef struct txt_joystick_input_s txt_joystick_input_t;
 
 struct txt_joystick_input_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     int *variable;
     txt_window_t *prompt_window;
     int check_conflicts;

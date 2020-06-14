@@ -36,7 +36,7 @@ typedef struct txt_separator_s txt_separator_t;
 
 struct txt_separator_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     char *label;
 };
 

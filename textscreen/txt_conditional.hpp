@@ -56,7 +56,7 @@ txt_conditional_t *TXT_NewConditional(int *var, int expected_value,
  *                         widget.
  */
 
-txt_widget_t *TXT_If(int condition, TXT_UNCAST_ARG(child));
+txt_widget_s *TXT_If(int condition, TXT_UNCAST_ARG(child));
 
 #endif /* #ifndef TXT_CONDITIONAL_H */
 

@@ -44,7 +44,7 @@ typedef void (*txt_joystick_axis_callback_t)(void);
 
 struct txt_joystick_axis_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     int *axis, *invert;
     txt_joystick_axis_direction_t dir;
 

@@ -40,7 +40,7 @@ typedef struct txt_checkbox_s txt_checkbox_t;
 
 struct txt_checkbox_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     char *label;
     int *variable;
     int inverted;

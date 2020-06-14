@@ -38,7 +38,7 @@ void TXT_SetWindowAction(txt_window_t *window,
                          txt_horiz_align_t position, 
                          TXT_UNCAST_ARG(action))
 {
-    TXT_CAST_ARG(txt_widget_t, action);
+    TXT_CAST_ARG(txt_widget_s, action);
 
     if (window->actions[position] != NULL)
     {
@@ -152,7 +152,7 @@ static void CalcWindowPosition(txt_window_t *window)
 
 static void LayoutActionArea(txt_window_t *window)
 {
-    txt_widget_t *widget;
+    txt_widget_s *widget;
     int space_available;
     int space_left_offset;
 
@@ -233,7 +233,7 @@ static void DrawActionArea(txt_window_t *window)
 static void CalcActionAreaSize(txt_window_t *window, 
                                unsigned int *w, unsigned int *h)
 {
-    txt_widget_t *widget;
+    txt_widget_s *widget;
     int i;
 
     *w = 0;
@@ -244,7 +244,7 @@ static void CalcActionAreaSize(txt_window_t *window,
 
     for (i=0; i<3; ++i)
     {
-        widget = (txt_widget_t *) window->actions[i];
+        widget = (txt_widget_s *) window->actions[i];
 
         if (widget != NULL)
         {
@@ -263,7 +263,7 @@ static void CalcActionAreaSize(txt_window_t *window,
 
 void TXT_LayoutWindow(txt_window_t *window)
 {
-    txt_widget_t *widgets = (txt_widget_t *) window;
+    txt_widget_s *widgets = (txt_widget_s *) window;
     unsigned int widgets_w;
     unsigned int actionarea_w, actionarea_h;
 
@@ -326,7 +326,7 @@ void TXT_LayoutWindow(txt_window_t *window)
 
 void TXT_DrawWindow(txt_window_t *window)
 {
-    txt_widget_t *widgets;
+    txt_widget_s *widgets;
 
     TXT_LayoutWindow(window);
 
@@ -353,7 +353,7 @@ void TXT_DrawWindow(txt_window_t *window)
 
     // Draw an action area, if we have one
 
-    widgets = (txt_widget_t *) window;
+    widgets = (txt_widget_s *) window;
 
     if (widgets->y + widgets->h < window->window_y + window->window_h - 1)
     {
@@ -383,8 +383,8 @@ static int MouseButtonPress(txt_window_t *window, int b)
 {
     int x, y;
     int i;
-    txt_widget_t *widgets;
-    txt_widget_t *widget;
+    txt_widget_s *widgets;
+    txt_widget_s *widget;
 
     // Lay out the window, set positions and sizes of all widgets
 
@@ -410,7 +410,7 @@ static int MouseButtonPress(txt_window_t *window, int b)
 
     // Is it within the table range?
 
-    widgets = (txt_widget_t *) window;
+    widgets = (txt_widget_s *) window;
 
     if (x >= widgets->x && x < (signed) (widgets->x + widgets->w)
      && y >= widgets->y && y < (signed) (widgets->y + widgets->h))

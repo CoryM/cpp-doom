@@ -41,7 +41,7 @@ typedef struct txt_dropdown_list_s txt_dropdown_list_t;
 
 struct txt_dropdown_list_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     int *variable;
     const char **values;
     int num_values;

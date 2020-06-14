@@ -26,7 +26,7 @@ typedef struct txt_key_input_s txt_key_input_t;
 
 struct txt_key_input_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     int *variable;
     int check_conflicts;
 };

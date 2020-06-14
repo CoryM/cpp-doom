@@ -551,10 +551,10 @@ static const iwad_t **GetFallbackIwadList(void)
     return fallback_iwad_list;
 }
 
-static txt_widget_t *IWADSelector(void)
+static txt_widget_s *IWADSelector(void)
 {
     txt_dropdown_list_t *dropdown;
-    txt_widget_t *result;
+    txt_widget_s *result;
     int num_iwads;
 
     // Find out what WADs are installed
@@ -592,7 +592,7 @@ static txt_widget_t *IWADSelector(void)
     {
         // We have only one IWAD.  Show as a label.
 
-        result = (txt_widget_t *) TXT_NewLabel(found_iwads[0]->description);
+        result = (txt_widget_s *) TXT_NewLabel(found_iwads[0]->description);
     }
     else
     {
@@ -603,7 +603,7 @@ static txt_widget_t *IWADSelector(void)
 
         TXT_SignalConnect(dropdown, "changed", IWADSelected, NULL);
 
-        result = (txt_widget_t *) dropdown;
+        result = (txt_widget_s *) dropdown;
     }
 
     // The first time the dialog is opened, found_iwad_selected=-1,
@@ -714,7 +714,7 @@ static txt_dropdown_list_t *GameTypeDropdown(void)
 static void StartGameMenu(const char *window_title, int multiplayer)
 {
     txt_window_t *window;
-    txt_widget_t *iwad_selector;
+    txt_widget_s *iwad_selector;
 
     window = TXT_NewWindow(window_title);
     TXT_SetTableColumns(window, 2);

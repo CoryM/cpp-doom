@@ -45,7 +45,7 @@ typedef struct txt_radiobutton_s txt_radiobutton_t;
 
 struct txt_radiobutton_s
 {
-    txt_widget_t widget;
+    txt_widget_s widget;
     char *label;
     int *variable;
     int value;
