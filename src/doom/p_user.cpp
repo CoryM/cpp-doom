@@ -280,7 +280,8 @@ void P_PlayerThink(player_t *player)
     // [crispy] update weapon sound source coordinates
     if (player->so != player->mo)
     {
-        memcpy(player->so, player->mo, sizeof(degenmobj_t));
+        //memcpy(player->so, player->mo, sizeof(degenmobj_t));
+        player->so = player->mo;
     }
 
     // fixme: do this in the cheat code

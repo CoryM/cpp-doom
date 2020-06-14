@@ -614,8 +614,7 @@ void P_MobjThinker(mobj_t *mobj)
 static mobj_t * P_SpawnMobjSafe(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type, bool safe)
 {
     mobj_t *mobj = zmalloc<decltype(mobj)>(sizeof(*mobj), PU_LEVEL, NULL);
-    //auto mobj = new mobj_t();
-    memset(mobj, 0, sizeof(*mobj));
+    *mobj = {};
     auto info = &mobjinfo[type];
 
     mobj->type   = type;

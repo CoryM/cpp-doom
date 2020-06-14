@@ -351,7 +351,7 @@ void P_LoadSectors(int lump)
 
     numsectors = W_LumpLength(lump) / sizeof(mapsector_t);
     sectors    = zmalloc<decltype(sectors)>(numsectors * sizeof(sector_t), PU_LEVEL, 0);
-    memset(sectors, 0, numsectors * sizeof(sector_t));
+    for (int i = 0; i < numsectors; i++) { sectors[i] = {}; }
     auto data = cache_lump_num<byte *>(lump, PU_STATIC);
 
     // [crispy] fail on missing sectors
@@ -532,7 +532,7 @@ void P_LoadLineDefs(int lump)
 
     numlines = W_LumpLength(lump) / sizeof(maplinedef_t);
     lines    = zmalloc<decltype(lines)>(numlines * sizeof(line_s), PU_LEVEL, 0);
-    memset(lines, 0, numlines * sizeof(line_s));
+    for (int i = 0; i < numlines; i++) { lines[i] = {}; } // initilize lines
     data = cache_lump_num<byte *>(lump, PU_STATIC);
 
     mld  = (maplinedef_t *)data;
