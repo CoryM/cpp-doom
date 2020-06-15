@@ -46,23 +46,23 @@ union actionf_t {
     actionf_p3 acp3; // [crispy] let pspr action pointers get called from mobj states
 
     actionf_t()
-        : acv { nullptr }
+        : acv(nullptr)
     {
     }
     actionf_t(actionf_v f)
-        : acv { f }
+        : acv(f)
     {
     }
     actionf_t(actionf_p1 f)
-        : acp1 { f }
+        : acp1(f)
     {
     }
     actionf_t(actionf_p2 f)
-        : acp2 { f }
+        : acp2(f)
     {
     }
     actionf_t(actionf_p3 f)
-        : acp3 { f }
+        : acp3(f)
     {
     }
 };
@@ -79,7 +79,6 @@ struct thinker_s {
     struct thinker_s *prev = nullptr;
     struct thinker_s *next = nullptr;
     think_t           function;
-
 };
 
 

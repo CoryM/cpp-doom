@@ -266,11 +266,11 @@ typedef PACKED_STRUCT(
 // plus skill/visibility flags and attributes.
 typedef PACKED_STRUCT(
     {
-        short x;
-        short y;
-        short angle;
-        short type;
-        short options;
+        short x       = 0;
+        short y       = 0;
+        short angle   = 0;
+        short type    = 0;
+        short options = 0;
     }) mapthing_t;
 
 // [crispy] allow loading of Hexen-format maps

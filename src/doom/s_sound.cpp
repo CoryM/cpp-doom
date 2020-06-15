@@ -388,7 +388,7 @@ void S_Start(void)
             mus_ddtbl2,
         };
 
-        if ((gameepisode == 2 || gamemission == pack_nerve) && gamemap <= std::size(nmus))
+        if ((gameepisode == 2 || gamemission == pack_nerve) && gamemap <= std::ssize(nmus))
         {
             mnum = nmus[gamemap - 1];
         }
@@ -442,8 +442,7 @@ void S_Start(void)
     }
 
     // [crispy] reset musinfo data at the start of a new map
-    memset(&musinfo, 0, sizeof(musinfo));
-
+    musinfo = {};
     S_ChangeMusic(mnum, true);
 }
 
