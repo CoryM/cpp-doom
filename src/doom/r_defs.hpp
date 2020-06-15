@@ -85,7 +85,7 @@ struct line_s;
 //  updated.
 struct degenmobj_t
 {
-    thinker_s thinker; // not used for anything
+    thinker_s thinker = {}; // not used for anything
     fixed_t   x = 0;
     fixed_t   y = 0;
     fixed_t   z = 0;

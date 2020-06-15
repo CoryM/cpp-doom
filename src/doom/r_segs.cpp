@@ -309,7 +309,6 @@ void R_RenderMaskedSegRange(drawseg_t *ds,
 void R_RenderSegLoop(void)
 {
     angle_t  angle;
-    unsigned index;
     int      yl;
     int      yh;
     int      mid;
@@ -367,7 +366,7 @@ void R_RenderSegLoop(void)
             texturecolumn = rw_offset - FixedMul(finetangent[angle], rw_distance);
             texturecolumn >>= FRACBITS;
             // calculate lighting
-            index = rw_scale >> (LIGHTSCALESHIFT + crispy->hires);
+            int index = rw_scale >> (LIGHTSCALESHIFT + crispy->hires);
 
             if (index >= MAXLIGHTSCALE)
                 index = MAXLIGHTSCALE - 1;

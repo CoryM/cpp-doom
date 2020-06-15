@@ -30,7 +30,7 @@
 #define MOUSE_INPUT_WIDTH 10
 
 static int MousePressCallback(txt_window_t *window, 
-                              int x, int y, int b,
+                              int x [[maybe_unused]], int y [[maybe_unused]], int b,
                               TXT_UNCAST_ARG(mouse_input))
 {
     TXT_CAST_ARG(txt_mouse_input_t, mouse_input);
@@ -116,7 +116,7 @@ static void TXT_MouseInputDrawer(TXT_UNCAST_ARG(mouse_input))
     }
 }
 
-static void TXT_MouseInputDestructor(TXT_UNCAST_ARG(mouse_input))
+static void TXT_MouseInputDestructor(TXT_UNCAST_ARG(mouse_input) [[maybe_unused]])
 {
 }
 
@@ -141,7 +141,7 @@ static int TXT_MouseInputKeyPress(TXT_UNCAST_ARG(mouse_input), int key)
     return 0;
 }
 
-static void TXT_MouseInputMousePress(TXT_UNCAST_ARG(widget), int x, int y, int b)
+static void TXT_MouseInputMousePress(TXT_UNCAST_ARG(widget), int x [[maybe_unused]], int y  [[maybe_unused]], int b)
 {
     TXT_CAST_ARG(txt_mouse_input_t, widget);
 
