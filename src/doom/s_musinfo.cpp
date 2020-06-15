@@ -25,6 +25,8 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <string_view>
+
 #include "doomstat.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
@@ -52,10 +54,10 @@
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
 static void    CheckOpen(void);
-static void    OpenScript(char *name, int type);
-static void    SC_OpenLump(char *name);
+static void    OpenScript(std::string_view name, int type);
+static void    SC_OpenLump(std::string_view name);
 static void    SC_Close(void);
-static bool SC_Compare(const char *text);
+static bool    SC_Compare(const std::string_view text);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
@@ -88,7 +90,7 @@ static bool AlreadyGot = false;
 //
 //==========================================================================
 
-static void SC_OpenLump(char *name)
+static void SC_OpenLump(std::string_view name)
 {
     OpenScript(name, LUMP_SCRIPT);
 }
@@ -99,21 +101,21 @@ static void SC_OpenLump(char *name)
 //
 //==========================================================================
 
-static void OpenScript(char *name, int type)
+static void OpenScript(std::string_view name, int type)
 {
     SC_Close();
     if (type == LUMP_SCRIPT)
     { // Lump script
-        ScriptLumpNum = W_GetNumForName(name);
+        ScriptLumpNum = W_GetNumForName(name.data());
         ScriptBuffer  = (char *)W_CacheLumpNum(ScriptLumpNum, PU_STATIC);
         ScriptSize    = W_LumpLength(ScriptLumpNum);
-        M_StringCopy(ScriptName, name, sizeof(ScriptName));
+        M_StringCopy(ScriptName, name.data(), sizeof(ScriptName));
     }
     else if (type == FILE_ZONE_SCRIPT)
     { // File script - zone
         ScriptLumpNum = -1;
-        ScriptSize    = M_ReadFile(name, (byte **)&ScriptBuffer);
-        M_ExtractFileBase(name, ScriptName);
+        ScriptSize    = M_ReadFile(name.data(), (byte **)&ScriptBuffer);
+        M_ExtractFileBase(name.data(), ScriptName);
     }
     ScriptPtr    = ScriptBuffer;
     ScriptEndPtr = ScriptPtr + ScriptSize;
@@ -240,9 +242,9 @@ static bool SC_GetString(void)
 //
 //==========================================================================
 
-static bool SC_Compare(const char *text)
+static bool SC_Compare(const std::string_view text)
 {
-    if (strcasecmp(text, sc_String) == 0)
+    if (strcasecmp(text.data(), sc_String) == 0)
     {
         return true;
     }
@@ -265,7 +267,7 @@ static void CheckOpen(void)
 
 // [crispy] adapted from prboom-plus/src/s_advsound.c:54-159
 
-musinfo_t musinfo = { 0 };
+musinfo_s musinfo = { 0 };
 
 //
 // S_ParseMusInfo
@@ -347,7 +349,7 @@ void T_MusInfo(void)
             {
                 int lumpnum = musinfo.items[arraypt];
 
-                if (lumpnum > 0 && lumpnum < numlumps)
+                if (lumpnum > 0 && lumpnum < static_cast<int>(numlumps))
                 {
                     S_ChangeMusInfoMusic(lumpnum, true);
                 }

@@ -26,16 +26,16 @@
 
 #define MAX_MUS_ENTRIES 65 // [crispy] 0 to 64 inclusive
 
-typedef struct musinfo_s {
-    mobj_t *mapthing;
-    mobj_t *lastmapthing;
-    int     tics;
-    int     current_item;
-    int     items[MAX_MUS_ENTRIES];
-    bool from_savegame;
-} musinfo_t;
+struct musinfo_s {
+    mobj_t *mapthing               = nullptr;
+    mobj_t *lastmapthing           = nullptr;
+    int     tics                   = 0;
+    int     current_item           = 0;
+    int     items[MAX_MUS_ENTRIES] = {0};
+    bool from_savegame             = false;
+};
 
-extern musinfo_t musinfo;
+extern musinfo_s musinfo;
 
 extern void S_ParseMusInfo(const char *mapid);
 extern void T_MusInfo(void);
