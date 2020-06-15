@@ -21,6 +21,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
 
 #include "../i_system.hpp"
 #include "../z_zone.hpp"
@@ -222,7 +223,8 @@ static void R_RaiseVisplanes(visplane_t **vp)
 
         numvisplanes = numvisplanes ? 2 * numvisplanes : MAXVISPLANES;
         visplanes    = static_cast<decltype(visplanes)>(I_Realloc(visplanes, numvisplanes * sizeof(*visplanes)));
-        memset(visplanes + numvisplanes_old, 0, (numvisplanes - numvisplanes_old) * sizeof(*visplanes));
+        //memset(visplanes + numvisplanes_old, 0, (numvisplanes - numvisplanes_old) * sizeof(*visplanes));
+        for (int i = numvisplanes_old; i < (numvisplanes + numvisplanes_old); i++) { visplanes[i] = {};};
 
         lastvisplane = visplanes + numvisplanes_old;
         floorplane   = visplanes + (floorplane - visplanes_old);
@@ -398,7 +400,6 @@ void R_MakeSpans(int x,
 //
 void R_DrawPlanes(void)
 {
-    visplane_t *pl;
     int         light;
     int         x;
     int         stop;
@@ -419,7 +420,7 @@ void R_DrawPlanes(void)
             lastopening - openings);
 #endif
 
-    for (pl = visplanes; pl < lastvisplane; pl++)
+    for (visplane_t *pl = visplanes; pl < lastvisplane; pl++)
     {
         const bool swirling = (flattranslation[pl->picnum] == -1);
 
@@ -501,11 +502,11 @@ void R_DrawPlanes(void)
         planezlight = zlight[light];
 
         pl->top[pl->maxx + 1] = 0xffffffffu; // [crispy] hires / 32-bit integer math
-        pl->top[pl->minx - 1] = 0xffffffffu; // [crispy] hires / 32-bit integer math
-
+        pl->top[std::max(pl->minx - 1, 0)] = 0xffffffffu; // [crispy] hires / 32-bit integer math
+        
         stop = pl->maxx + 1;
 
-        for (x = pl->minx; x <= stop; x++)
+        for (x = std::max(pl->minx, 1); x <= stop; x++)
         {
             R_MakeSpans(x, pl->top[x - 1],
                 pl->bottom[x - 1],
