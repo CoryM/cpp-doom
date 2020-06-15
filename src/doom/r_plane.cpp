@@ -120,7 +120,6 @@ void R_MapPlane(int y,
     //  angle_t	angle;
     fixed_t distance;
     //  fixed_t	length;
-    unsigned index;
     int      dx, dy;
 
 #ifdef RANGECHECK
@@ -164,7 +163,7 @@ void R_MapPlane(int y,
         ds_colormap[0] = ds_colormap[1] = fixedcolormap;
     else
     {
-        index = distance >> LIGHTZSHIFT;
+        int index = distance >> LIGHTZSHIFT;
 
         if (index >= MAXLIGHTZ)
             index = MAXLIGHTZ - 1;
@@ -472,7 +471,7 @@ void R_DrawPlanes(void)
                 dc_yl = pl->top[x];
                 dc_yh = pl->bottom[x];
 
-                if ((unsigned)dc_yl <= dc_yh) // [crispy] 32-bit integer math
+                if (dc_yl <= dc_yh) // [crispy] 32-bit integer math
                 {
                     angle     = ((an + xtoviewangle[x]) ^ flip) >> ANGLETOSKYSHIFT;
                     dc_x      = x;

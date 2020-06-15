@@ -187,7 +187,6 @@ void R_RenderMaskedSegRange(drawseg_t *ds,
     int                                x1,
     int                                x2)
 {
-    unsigned  index;
     column_t *col;
     int       lightnum;
     int       texnum;
@@ -250,7 +249,7 @@ void R_RenderMaskedSegRange(drawseg_t *ds,
         {
             if (!fixedcolormap)
             {
-                index = spryscale >> (LIGHTSCALESHIFT + crispy->hires);
+                int index = spryscale >> (LIGHTSCALESHIFT + crispy->hires);
 
                 if (index >= MAXLIGHTSCALE)
                     index = MAXLIGHTSCALE - 1;
