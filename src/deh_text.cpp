@@ -93,7 +93,7 @@ static void *DEH_TextStart(deh_context_t *context, char *line)
 
     if (!bex_notext)
     {
-        DEH_AddStringReplacement(from_text.c_str(), to_text.c_str());
+        DEH_AddStringReplacement(from_text, to_text);
     }
 
     return NULL;

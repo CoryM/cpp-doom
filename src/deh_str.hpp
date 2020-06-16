@@ -24,22 +24,11 @@
 
 // Used to do dehacked text substitutions throughout the program
 
-const char *DEH_String(const char *s) PRINTF_ARG_ATTR(1);
+const char *DEH_String(const std::string_view s);
 void        DEH_printf(const char *fmt, ...) PRINTF_ATTR(1, 2);
 void        DEH_fprintf(FILE *fstream, const char *fmt, ...) PRINTF_ATTR(2, 3);
 void        DEH_snprintf(char *buffer, size_t len, const char *fmt, ...) PRINTF_ATTR(3, 4);
-void        DEH_AddStringReplacement(const char *from_text, const char *to_text);
-bool     DEH_HasStringReplacement(const char *s);
-
-
-#if 0
-// Static macro versions of the functions above
-
-#define DEH_String(x) (x)
-#define DEH_printf    printf
-#define DEH_fprintf   fprintf
-#define DEH_snprintf  snprintf
-
-#endif
+void        DEH_AddStringReplacement(const std::string_view from_text, const std::string_view to_text);
+bool        DEH_HasStringReplacement(const std::string_view s);
 
 #endif /* #ifndef DEH_STR_H */

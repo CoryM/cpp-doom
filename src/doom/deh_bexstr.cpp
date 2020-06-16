@@ -26,10 +26,10 @@
 
 #include "dstrings.hpp"
 
-typedef struct {
-    const char *macro;
-    const char *string;
-} bex_string_t;
+struct bex_string_t {
+    const std::string_view macro;
+    const std::string_view string;
+};
 
 // mnemonic keys table
 static const bex_string_t bex_stringtable[] = {
@@ -358,7 +358,7 @@ static void DEH_BEXStrParseLine(deh_context_t *context, char *line, void *tag [[
 
     for (size_t i = 0; i < std::size(bex_stringtable); i++)
     {
-        if (!strcasecmp(bex_stringtable[i].macro, variable_name))
+        if (!strcasecmp(bex_stringtable[i].macro.data(), variable_name))
         {
             DEH_AddStringReplacement(bex_stringtable[i].string, value);
         }

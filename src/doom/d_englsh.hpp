@@ -372,20 +372,20 @@ constexpr auto HUSTR_CHATMACRO0 = std::string_view("No");
 //	AM_map.C
 //
 
-#define AMSTR_FOLLOWON  "Follow Mode ON"
-#define AMSTR_FOLLOWOFF "Follow Mode OFF"
+constexpr auto AMSTR_FOLLOWON  = std::string_view("Follow Mode ON");
+constexpr auto AMSTR_FOLLOWOFF = std::string_view("Follow Mode OFF");
 
-#define AMSTR_GRIDON  "Grid ON"
-#define AMSTR_GRIDOFF "Grid OFF"
+constexpr auto AMSTR_GRIDON = std::string_view("Grid ON");
+constexpr auto AMSTR_GRIDOFF = std::string_view("Grid OFF");
 
-#define AMSTR_MARKEDSPOT   "Marked Spot"
-#define AMSTR_MARKSCLEARED "All Marks Cleared"
+constexpr auto AMSTR_MARKEDSPOT   = std::string_view("Marked Spot");
+constexpr auto AMSTR_MARKSCLEARED = std::string_view("All Marks Cleared");
 
-#define AMSTR_OVERLAYON  "Overlay Mode ON"
-#define AMSTR_OVERLAYOFF "Overlay Mode OFF"
+constexpr auto AMSTR_OVERLAYON  = std::string_view("Overlay Mode ON");
+constexpr auto AMSTR_OVERLAYOFF = std::string_view("Overlay Mode OFF");
 
-#define AMSTR_ROTATEON  "Rotate Mode ON"
-#define AMSTR_ROTATEOFF "Rotate Mode OFF"
+constexpr auto AMSTR_ROTATEON  = std::string_view("Rotate Mode ON");
+constexpr auto AMSTR_ROTATEOFF = std::string_view("Rotate Mode OFF");
 
 //
 //	ST_stuff.C
