@@ -125,7 +125,7 @@ static void OpenMusicPackDir(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(unused))
     }
 }
 
-void ConfigSound(TXT_UNCAST_ARG(widget), void *user_data)
+void ConfigSound(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
 {
     txt_window_t *window;
     txt_window_action_t *music_action;

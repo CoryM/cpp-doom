@@ -75,7 +75,7 @@ void I_AtExit(atexit_func_t func, bool run_on_error)
 
 // Tactile feedback function, probably used for the Logitech Cyberman
 
-void I_Tactile(int on, int off, int total)
+void I_Tactile(int on [[maybe_unused]], int off [[maybe_unused]], int total [[maybe_unused]])
 {
 }
 

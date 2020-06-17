@@ -274,7 +274,7 @@ static void TXT_JoystickInputDrawer(TXT_UNCAST_ARG(joystick_input))
     }
 }
 
-static void TXT_JoystickInputDestructor(TXT_UNCAST_ARG(joystick_input))
+static void TXT_JoystickInputDestructor(TXT_UNCAST_ARG(joystick_input)  [[maybe_unused]])
 {
 }
 
@@ -300,7 +300,7 @@ static int TXT_JoystickInputKeyPress(TXT_UNCAST_ARG(joystick_input), int key)
 }
 
 static void TXT_JoystickInputMousePress(TXT_UNCAST_ARG(widget),
-                                        int x, int y, int b)
+                                        int x [[maybe_unused]], int y [[maybe_unused]], int b)
 {
     TXT_CAST_ARG(txt_joystick_input_t, widget);
 

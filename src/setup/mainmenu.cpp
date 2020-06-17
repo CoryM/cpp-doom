@@ -95,7 +95,7 @@ static void SensibleDefaults(void)
     png_screenshots = 1;
 }
 
-static int MainMenuKeyPress(txt_window_t *window, int key, void *user_data)
+static int MainMenuKeyPress(txt_window_t *window, int key, void *user_data [[maybe_unused]])
 {
     if (key == cheat_sequence[cheat_sequence_index])
     {
@@ -119,7 +119,7 @@ static int MainMenuKeyPress(txt_window_t *window, int key, void *user_data)
     return 0;
 }
 
-static void DoQuit(void *widget, void *dosave)
+static void DoQuit(void *widget [[maybe_unused]], void *dosave)
 {
     if (dosave != NULL)
     {
@@ -131,7 +131,7 @@ static void DoQuit(void *widget, void *dosave)
     exit(0);
 }
 
-static void QuitConfirm(void *unused1, void *unused2)
+static void QuitConfirm(void *unused1 [[maybe_unused]], void *unused2 [[maybe_unused]])
 {
     txt_window_t *window;
     txt_label_t *label;
@@ -158,7 +158,7 @@ static void QuitConfirm(void *unused1, void *unused2)
     TXT_SetWindowAction(window, TXT_HORIZ_RIGHT, NULL);
 }
 
-static void LaunchDoom(void *unused1, void *unused2)
+static void LaunchDoom(void *unused1 [[maybe_unused]], void *unused2 [[maybe_unused]])
 {
     execute_context_t *exec;
     

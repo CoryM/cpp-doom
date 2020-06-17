@@ -99,7 +99,7 @@ static void FreeCallbackData(TXT_UNCAST_ARG(list),
 
 // Catch presses of escape and close the window.
 
-static int SelectorWindowListener(txt_window_t *window, int key, void *user_data)
+static int SelectorWindowListener(txt_window_t *window, int key, void *user_data [[maybe_unused]])
 {
     if (key == KEY_ESCAPE)
     {
@@ -110,8 +110,8 @@ static int SelectorWindowListener(txt_window_t *window, int key, void *user_data
     return 0;
 }
 
-static int SelectorMouseListener(txt_window_t *window, int x, int y, int b,
-                                 void *unused)
+static int SelectorMouseListener(txt_window_t *window, int x, int y, int b [[maybe_unused]],
+                                 void *unused [[maybe_unused]])
 {
     txt_widget_s *win;
 
@@ -267,7 +267,7 @@ static int TXT_DropdownListKeyPress(TXT_UNCAST_ARG(list), int key)
 }
 
 static void TXT_DropdownListMousePress(TXT_UNCAST_ARG(list), 
-                                       int x, int y, int b)
+                                       int x [[maybe_unused]], int y [[maybe_unused]], int b)
 {
     TXT_CAST_ARG(txt_dropdown_list_t, list);
 

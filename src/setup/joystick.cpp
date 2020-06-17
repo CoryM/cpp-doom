@@ -878,7 +878,7 @@ static bool SetJoystickGUID(SDL_JoystickID joy_id)
     return false;
 }
 
-static int CalibrationEventCallback(SDL_Event *event, void *user_data)
+static int CalibrationEventCallback(SDL_Event *event, void *user_data [[maybe_unused]])
 {
     if (event->type != SDL_JOYBUTTONDOWN)
     {
@@ -987,7 +987,7 @@ static void AddJoystickControl(TXT_UNCAST_ARG(table), const char *label, int *va
                    NULL);
 }
 
-void ConfigJoystick(TXT_UNCAST_ARG(widget), void *user_data)
+void ConfigJoystick(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
 {
     txt_window_t *window;
 

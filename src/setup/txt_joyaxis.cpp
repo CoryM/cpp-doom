@@ -488,7 +488,7 @@ static int TXT_JoystickAxisKeyPress(TXT_UNCAST_ARG(joystick_axis), int key)
 }
 
 static void TXT_JoystickAxisMousePress(TXT_UNCAST_ARG(widget),
-                                       int x, int y, int b)
+                                       int x [[maybe_unused]], int y [[maybe_unused]], int b)
 {
     TXT_CAST_ARG(txt_joystick_axis_t, widget);
 

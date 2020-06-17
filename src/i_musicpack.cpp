@@ -1086,7 +1086,7 @@ static bool SDLIsInitialized(void)
 }
 
 // Callback function that is invoked to track current track position.
-void TrackPositionCallback(int chan, void *stream, int len, void *udata)
+void TrackPositionCallback(int chan [[maybe_unused]], void *stream [[maybe_unused]], int len [[maybe_unused]], void *udata [[maybe_unused]])
 {
     // Position is doubled up twice: for 16-bit samples and for stereo.
     current_track_pos += len / 4;

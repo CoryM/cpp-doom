@@ -124,7 +124,7 @@ static void ConfigExtraButtons(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(unused))
     }
 }
 
-void ConfigMouse(TXT_UNCAST_ARG(widget), void *user_data)
+void ConfigMouse(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
 {
     txt_window_t *window;
 

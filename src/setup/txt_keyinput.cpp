@@ -148,7 +148,7 @@ static int TXT_KeyInputKeyPress(TXT_UNCAST_ARG(key_input), int key)
     return 0;
 }
 
-static void TXT_KeyInputMousePress(TXT_UNCAST_ARG(widget), int x, int y, int b)
+static void TXT_KeyInputMousePress(TXT_UNCAST_ARG(widget), int x [[maybe_unused]], int y [[maybe_unused]], int b)
 {
     TXT_CAST_ARG(txt_key_input_t, widget);
             

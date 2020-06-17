@@ -42,7 +42,7 @@ static void TXT_StrutDestructor(TXT_UNCAST_ARG(strut))
 {
 }
 
-static int TXT_StrutKeyPress(TXT_UNCAST_ARG(strut), int key)
+static int TXT_StrutKeyPress(TXT_UNCAST_ARG(strut), int key [[maybe_unused]])
 {
     return 0;
 }

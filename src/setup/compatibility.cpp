@@ -28,7 +28,7 @@
 int vanilla_savegame_limit = 0;
 int vanilla_demo_limit = 0;
 
-void CompatibilitySettings(TXT_UNCAST_ARG(widget), void *user_data)
+void CompatibilitySettings(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
 {
     txt_window_t *window;
 
