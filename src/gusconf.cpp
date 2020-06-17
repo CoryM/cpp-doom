@@ -33,13 +33,13 @@
 
 #define MAX_INSTRUMENTS 256
 
-typedef struct
+struct gus_config_t 
 {
     char *       patch_names[MAX_INSTRUMENTS];
     int          used[MAX_INSTRUMENTS];
     int          mapping[MAX_INSTRUMENTS];
     unsigned int count;
-} gus_config_t;
+};
 
 char *gus_patch_path = "";
 int   gus_ram_kb     = 1024;
@@ -274,7 +274,7 @@ static bool WriteTimidityConfig(char *path, gus_config_t *config)
 
 bool GUS_WriteConfig(char *path)
 {
-    bool      result;
+    bool         result;
     char *       dmxconf;
     gus_config_t config;
 

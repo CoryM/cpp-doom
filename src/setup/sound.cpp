@@ -66,9 +66,9 @@ static int show_talk = 0;
 static int use_libsamplerate = 1;
 static float libsamplerate_scale = 0.65;
 
-static char *music_pack_path = NULL;
-static char *timidity_cfg_path = NULL;
-static char *gus_patch_path = NULL;
+static char *music_pack_path   = nullptr;
+static char *timidity_cfg_path = nullptr;
+static char *gus_patch_path    = nullptr;
 static int gus_ram_kb = 1024;
 
 // DOS specific variables: these are unused but should be maintained
@@ -82,7 +82,7 @@ static int snd_mport = 0;
 
 static int snd_oplmode;
 
-static void UpdateSndDevices(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(data))
+static void UpdateSndDevices(TXT_UNCAST_ARG(widget) [[maybe_unused]], TXT_UNCAST_ARG(data) [[maybe_unused]])
 {
     switch (snd_oplmode)
     {
@@ -117,7 +117,7 @@ static txt_dropdown_list_t *OPLTypeSelector(void)
     return result;
 }
 
-static void OpenMusicPackDir(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(unused))
+static void OpenMusicPackDir(TXT_UNCAST_ARG(widget) [[maybe_unused]], TXT_UNCAST_ARG(unused)  [[maybe_unused]])
 {
     if (!OpenFolder(music_pack_path))
     {
@@ -125,7 +125,7 @@ static void OpenMusicPackDir(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(unused))
     }
 }
 
-void ConfigSound(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
+void ConfigSound(TXT_UNCAST_ARG(widget) [[maybe_unused]], void *user_data [[maybe_unused]])
 {
     txt_window_t *window;
     txt_window_action_t *music_action;
@@ -216,7 +216,7 @@ void BindSoundVariables(void)
 
     M_BindIntVariable("gus_ram_kb",               &gus_ram_kb);
     M_BindStringVariable("gus_patch_path",        &gus_patch_path);
-    M_BindStringVariable("music_pack_path",     &music_pack_path);
+    M_BindStringVariable("music_pack_path",       &music_pack_path);
     M_BindStringVariable("timidity_cfg_path",     &timidity_cfg_path);
 
     M_BindIntVariable("snd_sbport",               &snd_sbport);

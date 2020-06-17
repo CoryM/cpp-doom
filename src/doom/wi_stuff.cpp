@@ -418,7 +418,7 @@ void WI_drawLF(void)
     int y = WI_TITLEY;
 
     // [crispy] prevent crashes with maps without map title graphics lump
-    if (wbs->last >= num_lnames || lnames[wbs->last] == NULL)
+    if (wbs->last >= num_lnames || lnames[wbs->last] == nullptr)
     {
         V_DrawPatch((ORIGWIDTH - SHORT(finished->width)) / 2, y, finished);
         return;

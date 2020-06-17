@@ -2794,8 +2794,7 @@ void M_SetMusicPackDir(void)
 
     // We write a README file with some basic instructions on how to use
     // the directory.
-    readme_path = M_StringJoin(music_pack_path, DIR_SEPARATOR_S,
-        "README.txt", NULL);
+    readme_path = M_StringJoin(music_pack_path, DIR_SEPARATOR_S, "README.txt", NULL);
     M_WriteFile(readme_path, MUSIC_PACK_README, strlen(MUSIC_PACK_README));
 
     free(readme_path);
