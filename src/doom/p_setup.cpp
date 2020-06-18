@@ -493,7 +493,7 @@ void P_LoadThings(int lump)
         // Do spawn all other stuff.
         spawnthing.x       = SHORT(mt->x);
         spawnthing.y       = SHORT(mt->y);
-        spawnthing.angle   = SHORT(mt->angle);
+        spawnthing.setAngle(mt->getAngle());
         spawnthing.type    = SHORT(mt->type);
         spawnthing.options = SHORT(mt->options);
 

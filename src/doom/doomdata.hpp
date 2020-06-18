@@ -264,19 +264,33 @@ typedef PACKED_STRUCT(
 
 // Thing definition, position, orientation and type,
 // plus skill/visibility flags and attributes.
-typedef PACKED_STRUCT(
+struct mapthing_t {
+    short        x       = 0;
+    short        y       = 0;
+    short        angle   = 0;
+    short        type    = 0;
+    short        options = 0;
+    inline short getAngle()
     {
-        short x       = 0;
-        short y       = 0;
-        short angle   = 0;
-        short type    = 0;
-        short options = 0;
-    }) mapthing_t;
+        return angle;
+    }
+    inline void setAngle(short a)
+    {
+        while (a > 180)
+        {
+            a -= 360;
+        }
+        while (a < -180)
+        {
+            a += 360;
+        }
+        angle = a;
+    }
+};
 
 // [crispy] allow loading of Hexen-format maps
 // taken from chocolate-doom/src/hexen/xddefs.h:134-149
-typedef PACKED_STRUCT(
-    {
+struct mapthing_hexen_t {
         short tid;
         short x;
         short y;
@@ -290,7 +304,7 @@ typedef PACKED_STRUCT(
         byte  arg3;
         byte  arg4;
         byte  arg5;
-    }) mapthing_hexen_t;
+    };
 
 
 #endif // __DOOMDATA__

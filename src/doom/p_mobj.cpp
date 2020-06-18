@@ -495,7 +495,7 @@ void P_NightmareRespawn(mobj_t *mobj)
     // inherit attributes from deceased one
     mo             = P_SpawnMobj(x, y, z, mobj->type);
     mo->spawnpoint = mobj->spawnpoint;
-    mo->angle      = ANG45 * (mthing->angle / 45);
+    mo->angle      = mthing->getAngle() * (ANG45 / 45);
 
     // [crispy] count respawned monsters
     extrakills++;
@@ -790,7 +790,7 @@ void P_RespawnSpecials(void)
 
     mo             = P_SpawnMobj(x, y, z, static_cast<mobjtype_t>(i));
     mo->spawnpoint = *mthing;
-    mo->angle      = ANG45 * (mthing->angle / 45);
+    mo->angle      = mthing->getAngle() * (ANG45 / 45);
 
     // pull it from the que
     iquetail = (iquetail + 1) & (ITEMQUESIZE - 1);
@@ -845,7 +845,8 @@ void P_SpawnPlayer(mapthing_t *mthing)
     if (mthing->type > 1)
         mobj->flags |= (mthing->type - 1) << MF_TRANSSHIFT;
 
-    mobj->angle  = ANG45 * (mthing->angle / 45);
+    //mobj->angle  = ANG45 * (mthing->angle / 45);
+    mobj->angle  = mthing->getAngle() * (ANG45 / 45);
     mobj->player = p;
     mobj->health = p->health;
 
@@ -999,7 +1000,7 @@ void P_SpawnMapThing(mapthing_t *mthing)
     if (mobj->flags & MF_COUNTITEM)
         totalitems++;
 
-    mobj->angle = ANG45 * (mthing->angle / 45);
+    mobj->angle = mthing->getAngle() * (ANG45 / 45);
     if (mthing->options & MTF_AMBUSH)
         mobj->flags |= MF_AMBUSH;
 

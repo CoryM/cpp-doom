@@ -483,7 +483,7 @@ void P_LoadThings_Hexen(int lump)
         spawnthing.x = SHORT(mt->x);
         spawnthing.y = SHORT(mt->y);
         //	spawnthing.height = SHORT(mt->height);
-        spawnthing.angle   = SHORT(mt->angle);
+        spawnthing.setAngle(mt->angle);
         spawnthing.type    = SHORT(mt->type);
         spawnthing.options = SHORT(mt->options);
 
