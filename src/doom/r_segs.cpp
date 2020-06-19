@@ -61,7 +61,6 @@ fixed_t rw_scale;
 fixed_t rw_scalestep;
 fixed_t rw_midtexturemid;
 fixed_t rw_toptexturemid;
-//fixed_t rw_bottomtexturemid;
 int64_t rw_bottomtexturemid;
 
 int worldtop;

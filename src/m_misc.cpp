@@ -415,11 +415,9 @@ const char *M_StrCaseStr(const char *haystack, const char *needle)
 //
 char *M_StringDuplicate(const char *orig)
 {
-    char *result;
+    char *result = strdup(orig);
 
-    result = strdup(orig);
-
-    if (result == NULL)
+    if (result == nullptr)
     {
         I_Error("Failed to duplicate string (length %" PRIuPTR ")\n",
             strlen(orig));
