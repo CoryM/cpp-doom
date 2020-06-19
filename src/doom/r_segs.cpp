@@ -61,7 +61,8 @@ fixed_t rw_scale;
 fixed_t rw_scalestep;
 fixed_t rw_midtexturemid;
 fixed_t rw_toptexturemid;
-fixed_t rw_bottomtexturemid;
+//fixed_t rw_bottomtexturemid;
+int64_t rw_bottomtexturemid;
 
 int worldtop;
 int worldbottom;
@@ -447,9 +448,8 @@ void R_RenderSegLoop(void)
                 {
                     dc_yl         = mid;
                     dc_yh         = yh;
-                    dc_texturemid = rw_bottomtexturemid;
-                    dc_source     = R_GetColumn(bottomtexture,
-                        texturecolumn, true);
+                    dc_texturemid = rw_bottomtexturemid; // rw_bottomtexturemid not initilized??
+                    dc_source     = R_GetColumn(bottomtexture, texturecolumn, true);
                     dc_texheight  = textureheight[bottomtexture] >> FRACBITS; // [crispy] Tutti-Frutti fix
                     dc_brightmap  = texturebrightmap[bottomtexture];
                     colfunc();
@@ -716,9 +716,9 @@ void R_StoreWallRange(int start,
         }
 
 
-        if (worldhigh != worldtop
-            || backsector->ceilingpic != frontsector->ceilingpic
-            || backsector->lightlevel != frontsector->lightlevel)
+        if ((worldhigh != worldtop)
+            || (backsector->ceilingpic != frontsector->ceilingpic)
+            || (backsector->lightlevel != frontsector->lightlevel))
         {
             markceiling = true;
         }
