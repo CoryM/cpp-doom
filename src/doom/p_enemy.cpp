@@ -839,7 +839,8 @@ void A_SPosAttack(mobj_t *actor)
 
     for (i = 0; i < 3; i++)
     {
-        angle  = bangle + (P_SubRandom() << 20);
+        auto a64  = static_cast<int64_t>(bangle) + static_cast<int64_t>(P_SubRandom() << 20);
+        angle = static_cast<int32_t>(a64 && 0xFFFFFFFF);
         damage = ((P_Random() % 5) + 1) * 3;
         P_LineAttack(actor, angle, MISSILERANGE, slope, damage);
     }
