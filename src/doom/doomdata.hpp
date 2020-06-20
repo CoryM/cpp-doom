@@ -270,41 +270,24 @@ struct mapthing_t {
     short        angle   = 0;
     short        type    = 0;
     short        options = 0;
-    inline short getAngle()
-    {
-        return angle;
-    }
-    inline void setAngle(short a)
-    {
-        while (a > 180)
-        {
-            a -= 360;
-        }
-        while (a < -180)
-        {
-            a += 360;
-        }
-        angle = a;
-    }
 };
 
 // [crispy] allow loading of Hexen-format maps
 // taken from chocolate-doom/src/hexen/xddefs.h:134-149
 struct mapthing_hexen_t {
-        short tid;
-        short x;
-        short y;
-        short height;
-        short angle;
-        short type;
-        short options;
-        byte  special;
-        byte  arg1;
-        byte  arg2;
-        byte  arg3;
-        byte  arg4;
-        byte  arg5;
-    };
-
+    short tid;
+    short x;
+    short y;
+    short height;
+    short angle;
+    short type;
+    short options;
+    byte  special;
+    byte  arg1;
+    byte  arg2;
+    byte  arg3;
+    byte  arg4;
+    byte  arg5;
+};
 
 #endif // __DOOMDATA__

@@ -1425,7 +1425,7 @@ bool
         // This calculation overflows in Vanilla Doom, but here we deliberately
         // avoid integer overflow as it is undefined behavior, so the value of
         // 'an' will always be positive.
-        an = (ANG45 >> ANGLETOFINESHIFT) * static_cast<int>(mthing->getAngle() / 45);
+        an = (ANG45 >> ANGLETOFINESHIFT) * static_cast<int>(mthing->angle / 45);
 
         switch (an)
         {

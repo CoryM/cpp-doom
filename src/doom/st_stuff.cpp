@@ -697,7 +697,7 @@ bool
 
                     mt.x     = plyr->mo->x >> FRACBITS;
                     mt.y     = plyr->mo->y >> FRACBITS;
-                    mt.setAngle( (plyr->mo->angle + ANG45 / 2) * (uint64_t)45 / ANG45);
+                    mt.angle = (plyr->mo->angle + ANG45 / 2) * (uint64_t)45 / ANG45;
                     mt.type  = consoleplayer + 1;
                     P_SpawnPlayer(&mt);
 

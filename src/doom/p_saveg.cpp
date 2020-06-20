@@ -213,7 +213,7 @@ static void saveg_read_mapthing_t(mapthing_t *str)
     str->y = saveg_read16();
 
     // short angle;
-    str->setAngle(saveg_read16());
+    str->angle = saveg_read16();
 
     // short type;
     str->type = saveg_read16();
@@ -231,7 +231,7 @@ static void saveg_write_mapthing_t(mapthing_t *str)
     saveg_write16(str->y);
 
     // short angle;
-    saveg_write16(str->getAngle());
+    saveg_write16(str->angle);
 
     // short type;
     saveg_write16(str->type);
