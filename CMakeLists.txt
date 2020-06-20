@@ -46,7 +46,7 @@ endif()
 find_package(m)
 
 include(CheckSymbolExists)
-include(CheckIncludeFile)
+include(CheckIncludeFileCXX)
 check_symbol_exists(strcasecmp "strings.h" HAVE_DECL_STRCASECMP)
 check_symbol_exists(strncasecmp "strings.h" HAVE_DECL_STRNCASECMP)
 #check_include_file("dirent.h" HAVE_DIRENT_H)
