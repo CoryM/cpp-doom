@@ -17,7 +17,6 @@
 //	Action functions for weapons.
 //
 
-
 #include "doomdef.hpp"
 #include "../d_event.hpp"
 
@@ -569,21 +568,21 @@ void A_Saw(mobj_t *mobj [[maybe_unused]],
     S_StartSound(player->so, sfx_sawhit); // [crispy] weapon sound source
 
     // turn to face target
-    angle = R_PointToAngle2(player->mo->x, player->mo->y,
-        linetarget->x, linetarget->y);
-    if (angle - player->mo->angle > ANG180)
+    angle = R_PointToAngle2(player->mo->x, player->mo->y, linetarget->x, linetarget->y);
+    if (auto ang4_5 = (ANG90 / 20); (angle - player->mo->angle) > ANG180)
     {
-        if ((signed int)(angle - player->mo->angle) < -ANG90 / 20)
+        if (static_cast<int32_t>(player->mo->angle - angle) < static_cast<int32_t>(ang4_5)) {
             player->mo->angle = angle + ANG90 / 21;
-        else
-            player->mo->angle -= ANG90 / 20;
+        } else {
+            player->mo->angle -= ang4_5;
+        }
     }
     else
     {
-        if (angle - player->mo->angle > ANG90 / 20)
+        if (angle - player->mo->angle > ang4_5)
             player->mo->angle = angle - ANG90 / 21;
         else
-            player->mo->angle += ANG90 / 20;
+            player->mo->angle += ang4_5;
     }
     player->mo->flags |= MF_JUSTATTACKED;
 }
