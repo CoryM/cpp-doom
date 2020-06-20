@@ -843,7 +843,8 @@ void P_DamageMobj(mobj_t *target,
             target->x,
             target->y);
 
-        thrust = damage * (FRACUNIT >> 3) * 100 / target->info->mass;
+        // ../src/doom/p_inter.cpp:846:43: runtime error: signed integer overflow: 10000 * 819200 cannot be represented in type 'int'
+        thrust = damage * ((FRACUNIT >> 3) * 100 / target->info->mass);
 
         // make fall forwards sometimes
         if (damage < 40
