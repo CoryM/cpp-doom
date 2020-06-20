@@ -38,12 +38,12 @@
 
 #include "m_fixed.hpp"
 
-#define FINEANGLES 8192
-#define FINEMASK   (FINEANGLES - 1)
+constexpr auto FINEANGLES = 8192;
+constexpr auto FINEMASK   = FINEANGLES - 1;
 
 
 // 0x100000000 to 0x2000
-#define ANGLETOFINESHIFT 19
+constexpr auto ANGLETOFINESHIFT = 19;
 
 // Effective size is 10240.
 extern const fixed_t finesine[5 * FINEANGLES / 4];
@@ -60,26 +60,25 @@ extern const byte gammatable[5][256];
 
 // Binary Angle Measument, BAM.
 
-#define ANG45   0x20000000
-#define ANG90   0x40000000
-#define ANG180  0x80000000
-#define ANG270  0xc0000000
-#define ANG_MAX 0xffffffff
+typedef unsigned int angle_t;
 
-#define ANG1  (ANG45 / 45)
-#define ANG60 (ANG180 / 3)
+constexpr angle_t ANG45   = 0x20000000;
+constexpr angle_t ANG90   = 0x40000000;
+constexpr angle_t ANG180  = 0x80000000;
+constexpr angle_t ANG270  = 0xc0000000;
+constexpr angle_t ANG_MAX = 0xffffffff;
+constexpr angle_t ANG1    = (ANG45 / 45);
+constexpr angle_t ANG60   = (ANG180 / 3);
+
 
 // Heretic code uses this definition as though it represents one
 // degree, but it is not!  This is actually ~1.40 degrees.
 
-#define ANG1_X 0x01000000
+constexpr angle_t ANG1_X = 0x01000000;
 
-#define SLOPERANGE 2048
-#define SLOPEBITS  11
-#define DBITS      (FRACBITS - SLOPEBITS)
-
-typedef unsigned int angle_t;
-
+constexpr auto SLOPERANGE = 2048;
+constexpr auto SLOPEBITS  = 11;
+constexpr auto DBITS      = (FRACBITS - SLOPEBITS);
 
 // Effective size is 2049;
 // The +1 size is to handle the case when x==y
