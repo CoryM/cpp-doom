@@ -1658,7 +1658,7 @@ void I_InitGraphics(void)
 #ifndef CRISPY_TRUECOLOR
     I_VideoBuffer = static_cast<pixel_t *>(screenbuffer->pixels);
 #else
-    I_VideoBuffer = argbbuffer->pixels;
+    I_VideoBuffer = static_cast<pixel_t *>(argbbuffer->pixels);
 #endif
     V_RestoreBuffer();
 
@@ -1715,7 +1715,7 @@ void I_ReInitGraphics(int reinit)
         // [crispy] re-set the framebuffer pointer
         I_VideoBuffer = static_cast<pixel_t *>(screenbuffer->pixels);
 #else
-        I_VideoBuffer = argbbuffer->pixels;
+        I_VideoBuffer = static_cast<pixel_t *>(argbbuffer->pixels);
 #endif
         V_RestoreBuffer();
 

@@ -1138,7 +1138,8 @@ void R_InitColormaps(void)
         I_SetGammaTable();
     }
 
-    playpal = cache_lump_name<patch_t *>("PLAYPAL", PU_STATIC);
+    //playpal = cache_lump_name<patch_t *>("PLAYPAL", PU_STATIC);
+    playpal = cache_lump_name<byte *>("PLAYPAL", PU_STATIC);
 
     if (!colormaps)
     {
@@ -1172,7 +1173,8 @@ void R_InitColormaps(void)
     }
     else
     {
-        byte *const colormap = cache_lump_name<patch_t *>("COLORMAP", PU_STATIC);
+        //byte *const colormap = cache_lump_name<patch_t *>("COLORMAP", PU_STATIC);
+        byte *const colormap = cache_lump_name<byte *>("COLORMAP", PU_STATIC);
 
         for (c = 0; c <= NUMCOLORMAPS; c++)
         {
