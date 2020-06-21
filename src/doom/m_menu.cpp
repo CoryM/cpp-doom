@@ -1379,20 +1379,19 @@ static void M_DrawMouse(void)
 #include "m_background.hpp"
 static void M_DrawCrispnessBackground(void)
 {
-    const byte *const src = crispness_background;
-    pixel_t *         dest;
-    int               x, y;
-
-    dest = I_VideoBuffer;
-
-    for (y = 0; y < SCREENHEIGHT; y++)
+    
+    pixel_t *dest = I_VideoBuffer;
+    for (int y = 0; y < SCREENHEIGHT; y++)
     {
-        for (x = 0; x < SCREENWIDTH; x++)
+        auto tileY = y % crispness_background.size();
+        auto &backgroundLine = crispness_background.at(tileY);
+        for (int x = 0; x < SCREENWIDTH; x++)
         {
+            auto tileX = x % backgroundLine.size();
 #ifndef CRISPY_TRUECOLOR
-            *dest++ = src[(y & 63) * 64 + (x & 63)];
+            *dest++ = backgroundLine.at(tileX);
 #else
-            *dest++ = colormaps[src[(y & 63) * 64 + (x & 63)]];
+            *dest++ = colormaps[backgroundLine.at(tileX)];
 #endif
         }
     }

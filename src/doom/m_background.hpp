@@ -18,6 +18,8 @@
 //	[crispy] Crispness menu tiled background
 //
 
+#include <array>
+
 /*
 
 The following array contains a seamlessly tiling 64x64 icon depicting
@@ -52,7 +54,7 @@ int main (int argc, char **argv)
 }
 */
 
-static const byte crispness_background[] = {
+static constexpr std::array< std::array< byte, 64 >, 64 > crispness_background = {
     0x8d,
     0x8c,
     0x8b,
@@ -565,6 +567,7 @@ static const byte crispness_background[] = {
     0x86,
     0x87,
     0x91,
+
     0x87,
     0x92,
     0x8a,
