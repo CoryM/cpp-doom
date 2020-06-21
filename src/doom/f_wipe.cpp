@@ -16,6 +16,7 @@
 //	Mission begin melt/wipe screen special effect.
 //
 
+#include <algorithm>
 #include <cstring>
 
 #include "../z_zone.hpp"
@@ -74,7 +75,6 @@ int wipe_doColorXForm(int width,
     bool  changed;
     pixel_t *w;
     pixel_t *e;
-    int      newval;
 
     changed = false;
     w       = wipe_scr;
@@ -86,20 +86,22 @@ int wipe_doColorXForm(int width,
         {
             if (*w > *e)
             {
-                newval = *w - ticks;
-                if (newval < *e)
-                    *w = *e;
-                else
-                    *w = newval;
+                auto newval = static_cast<pixel_t>(*w - ticks);
+                *w = std::max(*e, newval);
+                //if (newval < *e)
+                //    *w = *e;
+                //else
+                //    *w = newval;
                 changed = true;
             }
             else if (*w < *e)
             {
-                newval = *w + ticks;
-                if (newval > *e)
-                    *w = *e;
-                else
-                    *w = newval;
+                auto newval = static_cast<pixel_t>(*w + ticks);
+                *w = std::min(*e, newval);
+                //if (newval > *e)
+                //    *w = *e;
+                //else
+                //    *w = newval;
                 changed = true;
             }
         }
@@ -118,7 +120,7 @@ int wipe_exitColorXForm(int width [[maybe_unused]],
 }
 
 
-static int *y;
+static int *wipe_y;
 
 int wipe_initMelt(int width,
     int               height,
@@ -136,16 +138,16 @@ int wipe_initMelt(int width,
 
     // setup initial column positions
     // (y<0 => not ready to scroll yet)
-    y    = (int *)Z_Malloc(width * sizeof(int), PU_STATIC, 0);
-    y[0] = -(M_Random() % 16);
+    wipe_y    = (int *)Z_Malloc(width * sizeof(int), PU_STATIC, 0);
+    wipe_y[0] = -(M_Random() % 16);
     for (i = 1; i < width; i++)
     {
         r    = (M_Random() % 3) - 1;
-        y[i] = y[i - 1] + r;
-        if (y[i] > 0)
-            y[i] = 0;
-        else if (y[i] == -16)
-            y[i] = -15;
+        wipe_y[i] = wipe_y[i - 1] + r;
+        if (wipe_y[i] > 0)
+            wipe_y[i] = 0;
+        else if (wipe_y[i] == -16)
+            wipe_y[i] = -15;
     }
 
     return 0;
@@ -170,28 +172,28 @@ int wipe_doMelt(int width,
     {
         for (i = 0; i < width; i++)
         {
-            if (y[i] < 0)
+            if (wipe_y[i] < 0)
             {
-                y[i]++;
+                wipe_y[i]++;
                 done = false;
             }
-            else if (y[i] < height)
+            else if (wipe_y[i] < height)
             {
-                dy = (y[i] < 16) ? y[i] + 1 : (8 << crispy->hires);
-                if (y[i] + dy >= height) dy = height - y[i];
-                s   = &((dpixel_t *)wipe_scr_end)[i * height + y[i]];
-                d   = &((dpixel_t *)wipe_scr)[y[i] * width + i];
+                dy = (wipe_y[i] < 16) ? wipe_y[i] + 1 : (8 << crispy->hires);
+                if (wipe_y[i] + dy >= height) dy = height - wipe_y[i];
+                s   = &((dpixel_t *)wipe_scr_end)[i * height + wipe_y[i]];
+                d   = &((dpixel_t *)wipe_scr)[wipe_y[i] * width + i];
                 idx = 0;
                 for (j = dy; j; j--)
                 {
                     d[idx] = *(s++);
                     idx += width;
                 }
-                y[i] += dy;
+                wipe_y[i] += dy;
                 s   = &((dpixel_t *)wipe_scr_start)[i * height];
-                d   = &((dpixel_t *)wipe_scr)[y[i] * width + i];
+                d   = &((dpixel_t *)wipe_scr)[wipe_y[i] * width + i];
                 idx = 0;
-                for (j = height - y[i]; j; j--)
+                for (j = height - wipe_y[i]; j; j--)
                 {
                     d[idx] = *(s++);
                     idx += width;
@@ -208,7 +210,7 @@ int wipe_exitMelt(int width [[maybe_unused]],
     int               height [[maybe_unused]],
     int               ticks [[maybe_unused]])
 {
-    Z_Free(y);
+    Z_Free(wipe_y);
     Z_Free(wipe_scr_start);
     Z_Free(wipe_scr_end);
     return 0;
