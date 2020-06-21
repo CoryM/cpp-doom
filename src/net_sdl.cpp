@@ -131,7 +131,7 @@ static net_addr_t *NET_SDL_FindAddress(IPaddress *addr)
     new_entry->sdl_addr          = *addr;
     new_entry->net_addr.refcount = 0;
     new_entry->net_addr.handle   = &new_entry->sdl_addr;
-    new_entry->net_addr.module   = &net_sdl_module;
+    new_entry->net_addr.mod      = &net_sdl_module;
 
     addr_table[empty_entry] = new_entry;
 

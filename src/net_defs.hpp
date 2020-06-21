@@ -44,19 +44,20 @@
 
 #define BACKUPTICS 128
 
-typedef struct _net_module_s  net_module_t;
-typedef struct _net_packet_s  net_packet_t;
-typedef struct _net_addr_s    net_addr_t;
-typedef struct _net_context_s net_context_t;
+struct net_addr_t;
+struct net_module_t;
+struct net_packet_t;
+struct net_addr_t;
+struct net_context_t;
 
-struct _net_packet_s {
+struct net_packet_t {
     byte *       data;
     size_t       len;
     size_t       alloced;
     unsigned int pos;
 };
 
-struct _net_module_s {
+struct net_module_t {
     // Initialize this module for use as a client
 
     bool (*InitClient)(void);
@@ -90,10 +91,10 @@ struct _net_module_s {
 
 // net_addr_t
 
-struct _net_addr_s {
-    net_module_t *module;
-    int           refcount;
-    void *        handle;
+struct net_addr_t {
+    net_module_t *mod   = nullptr;
+    int           refcount = 0;
+    void *        handle   = nullptr;
 };
 
 // Magic number sent when connecting to check this is a valid client

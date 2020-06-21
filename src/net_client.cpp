@@ -1078,13 +1078,13 @@ bool NET_CL_Connect(net_addr_t *addr, net_connect_data_t *data)
     client_context = NET_NewContext();
 
     // initialize module for client mode
-    if (!addr->module->InitClient())
+    if (!addr->mod->InitClient())
     {
         SetRejectReason("Failed to initialize client module");
         return false;
     }
 
-    NET_AddModule(client_context, addr->module);
+    NET_AddModule(client_context, addr->mod);
 
     net_client_connected          = true;
     net_client_received_wait_data = false;
