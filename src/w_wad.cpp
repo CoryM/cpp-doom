@@ -116,7 +116,7 @@ wad_file_t *W_AddFile(const char *filename)
     // reload hack.
     if (filename[0] == '~')
     {
-        if (reloadname != NULL)
+        if (reloadname != nullptr)
         {
             I_Error("Prefixing a WAD filename with '~' indicates that the "
                     "WAD should be reloaded\n"

@@ -352,10 +352,10 @@ typedef struct drawseg_s {
 // A vissprite_t is a thing
 //  that will be drawn during a refresh.
 // I.e. a sprite object that is partly visible.
-typedef struct vissprite_s {
+struct vissprite_t {
     // Doubly linked list.
-    struct vissprite_s *prev;
-    struct vissprite_s *next;
+    struct vissprite_t *prev;
+    struct vissprite_t *next;
 
     int x1;
     int x2;
@@ -388,9 +388,9 @@ typedef struct vissprite_s {
     int mobjflags;
     // [crispy] color translation table for blood colored by monster class
     byte *translation;
-    const pixel_t (*blendfunc)(const pixel_t fg, const pixel_t bg);
+    pixel_t (*blendfunc)(const pixel_t fg, const pixel_t bg);
 
-} vissprite_t;
+};
 
 
 //

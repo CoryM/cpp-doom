@@ -1765,7 +1765,7 @@ const pixel_t I_BlendOver(const pixel_t bg, const pixel_t fg)
 
 const pixel_t (*blendfunc)(const pixel_t fg, const pixel_t bg) = I_BlendOver;
 
-const pixel_t I_MapRGB(const uint8_t r, const uint8_t g, const uint8_t b)
+pixel_t I_MapRGB(const uint8_t r, const uint8_t g, const uint8_t b)
 {
     /*
 	return amask |
