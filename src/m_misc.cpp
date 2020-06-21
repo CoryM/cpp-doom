@@ -25,6 +25,7 @@
 #include <cerrno>
 #include <initializer_list>
 #include <iostream>
+#include <numeric>
 #include <string_view>
 
 #include <sys/stat.h>
@@ -230,33 +231,16 @@ int M_ReadFile(const char *name, byte **buffer)
 
 char *M_TempFile(const char *s)
 {
-    const char *tempdir;
-
-#ifdef _WIN32
-
-    // Check the TEMP environment variable to find the location.
-
-    tempdir = getenv("TEMP");
-
-    if (tempdir == NULL)
-    {
-        tempdir = ".";
-    }
-#else
     // In Unix, just use /tmp.
-
-    tempdir = "/tmp";
-#endif
-
-    return M_StringJoin({tempdir, DIR_SEPARATOR_S, s});
+    return M_StringJoin({"/tmp", DIR_SEPARATOR_S, s});
 }
 
 bool M_StrToInt(const char *str, int *result)
 {
-    return sscanf(str, " 0x%x", result) == 1
-           || sscanf(str, " 0X%x", result) == 1
-           || sscanf(str, " 0%o", result) == 1
-           || sscanf(str, " %d", result) == 1;
+    errno = 0;
+    char* str_end;
+    *result = std::strtol(str, &str_end, 0);      
+    return (str != str_end && errno == 0);
 }
 
 // Returns the directory portion of the given path, without the trailing
@@ -542,41 +526,30 @@ bool M_StringEndsWith(const char *s, const char *suffix)
 // Return a newly-malloced string with all the strings given as arguments
 // concatenated together.
 
-char *M_StringJoin(std::initializer_list< const std::string_view > il_S)
+[[deprecated("replaced by U_StringJoin")]]char *M_StringJoin(std::initializer_list<const std::string_view> il_S)
 {
-    size_t      result_len = 1;
-    for (const auto &s: il_S)
-    {
-        if (s.data() == nullptr) {
-            break;
-        }
-        result_len += s.size();
-    }
+    // Find out how much space we need
+    auto result_len = std::accumulate(il_S.begin(), il_S.end(), 1,
+        [](const auto &len, const auto &sv) { return len + sv.size(); });
 
+    // allocate the space
     auto result = static_cast<char *>(malloc(result_len));
-    for (size_t i = 0; i < result_len; i++) {
-        result[i] = NULL;
-    } // strlen requires NULL terminated string 
 
-
-    if (result == nullptr)
+    // Copy the strings
+    auto index = result;
+    for (const auto &s : il_S)
     {
-        I_Error("M_StringJoin: Failed to allocate new string.");
-        return nullptr;
-    }
-
-    for (const auto &s: il_S)
-    {
-        if (s.data() == nullptr)
-        {
-            break;
-        }
-        std::cout << "xx" << s << "::" << s.size() << "xx" << result_len << std::endl;
-
-        M_StringConcat(result, s.data(), result_len);
-    }
+        index = std::copy(s.begin(), s.end(), index);
+    };
+    *index = '\0'; // Null terminate
 
     return result;
+}
+
+// Builds a string and returns a unique_ptr for the char * with needed std::free deleter
+std::unique_ptr<char, decltype(&std::free)> U_StringJoin(std::initializer_list<const std::string_view> il_S) {
+    auto result = M_StringJoin(il_S);
+    return std::unique_ptr<char, decltype(&std::free)>(result, std::free);
 }
 
 // Safe, portable vsnprintf().
