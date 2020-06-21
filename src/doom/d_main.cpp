@@ -1011,7 +1011,7 @@ static bool D_AddFile(char *filename)
     printf(" adding %s\n", filename);
     handle = W_AddFile(filename);
 
-    return handle != NULL;
+    return handle != nullptr;
 }
 
 // Copyright message banners
@@ -1757,6 +1757,7 @@ void D_DoomMain(void)
 
     DEH_printf("W_Init: Init WADfiles.\n");
     D_AddFile(iwadfile);
+    free(iwadfile);
     auto numiwadlumps = numlumps;
 
     W_CheckCorrectIWAD(doom);
