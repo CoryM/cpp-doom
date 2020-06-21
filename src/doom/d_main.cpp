@@ -261,12 +261,9 @@ bool D_Display(void)
         HU_Drawer();
 
     // clean up border stuff
-    if (gamestate != oldgamestate && gamestate != GS_LEVEL)
-#ifndef CRISPY_TRUECOLOR
-        I_SetPalette(cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
-#else
+    if (gamestate != oldgamestate && gamestate != GS_LEVEL) {
         I_SetPalette(0);
-#endif
+    }
 
     // see if the border needs to be initially drawn
     if (gamestate == GS_LEVEL && oldgamestate != GS_LEVEL)
@@ -447,9 +444,7 @@ void D_BindVariables(void)
     M_BindIntVariable("crispy_soundfull", &crispy->soundfull);
     M_BindIntVariable("crispy_soundmono", &crispy->soundmono);
     M_BindIntVariable("crispy_translucency", &crispy->translucency);
-#ifdef CRISPY_TRUECOLOR
     M_BindIntVariable("crispy_truecolor", &crispy->truecolor);
-#endif
     M_BindIntVariable("crispy_uncapped", &crispy->uncapped);
     M_BindIntVariable("crispy_vsync", &crispy->vsync);
     M_BindIntVariable("crispy_weaponsquat", &crispy->weaponsquat);

@@ -1602,9 +1602,6 @@ void ST_doPaletteStuff(void)
 {
 
     int palette;
-#ifndef CRISPY_TRUECOLOR
-    byte *pal;
-#endif
     int cnt;
     int bzc;
 
@@ -1669,12 +1666,7 @@ void ST_doPaletteStuff(void)
     if (palette != st_palette)
     {
         st_palette = palette;
-#ifndef CRISPY_TRUECOLOR
-        pal = (byte *)W_CacheLumpNum(lu_palette, PU_CACHE) + palette * 768;
-        I_SetPalette(pal);
-#else
         I_SetPalette(palette);
-#endif
     }
 }
 
@@ -2319,11 +2311,7 @@ void ST_Stop(void)
     if (st_stopped)
         return;
 
-#ifndef CRISPY_TRUECOLOR
-    I_SetPalette(cache_lump_num<byte *>(lu_palette, PU_CACHE));
-#else
     I_SetPalette(0);
-#endif
 
     st_stopped = true;
 }

@@ -14,6 +14,4 @@
 #define HAVE_DECL_STRCASECMP 1
 #define HAVE_DECL_STRNCASECMP 1
 
-#define CRISPY_TRUECOLOR 1
-
 #endif

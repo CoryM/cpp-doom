@@ -71,9 +71,7 @@ struct crispy_t {
 	int soundfull       = 0;
 	int soundmono       = 0;
 	int translucency    = 0;
-#if CRISPY_TRUECOLOR
-    int truecolor;
-#endif
+    int truecolor       = 0;
 	int uncapped        = 0;
 	int vsync           = 0;
 	int weaponsquat     = 0;
