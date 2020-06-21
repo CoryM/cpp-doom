@@ -114,7 +114,7 @@ void I_InitTimidityConfig(void)
 
     if (success)
     {
-        env_string = M_StringJoin("TIMIDITY_CFG=", temp_timidity_cfg, NULL);
+        env_string = M_StringJoin({"TIMIDITY_CFG=", temp_timidity_cfg});
         putenv(env_string);
     }
     else

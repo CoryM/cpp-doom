@@ -1062,10 +1062,10 @@ void M_QuickSave(void)
         return;
     }
     // [crispy] print savegame name in golden letters
-    savegamestring = M_StringJoin(crstr[CR_GOLD],
+    savegamestring = M_StringJoin({crstr[CR_GOLD],
         savegamestrings[quickSaveSlot],
-        crstr[CR_NONE],
-        NULL);
+        crstr[CR_NONE]});
+
     DEH_snprintf(tempstring, sizeof(tempstring),
         QSPROMPT, savegamestring);
     free(savegamestring);
@@ -1107,10 +1107,10 @@ void M_QuickLoad(void)
         return;
     }
     // [crispy] print savegame name in golden letters
-    savegamestring = M_StringJoin(crstr[CR_GOLD],
+    savegamestring = M_StringJoin({crstr[CR_GOLD],
         savegamestrings[quickSaveSlot],
-        crstr[CR_NONE],
-        NULL);
+        crstr[CR_NONE]});
+
     DEH_snprintf(tempstring, sizeof(tempstring),
         QLPROMPT, savegamestring);
     free(savegamestring);
@@ -3134,17 +3134,17 @@ void M_ForceLoadGame()
 {
     savegwarning =
         savemaplumpinfo ?
-            M_StringJoin("This savegame requires the file\n",
+            M_StringJoin({"This savegame requires the file\n",
                 crstr[CR_GOLD], savewadfilename, crstr[CR_NONE], "\n",
                 "to restore ", crstr[CR_GOLD], savemaplumpinfo->name, crstr[CR_NONE], " .\n\n",
                 "Continue to restore from\n",
                 crstr[CR_GOLD], W_WadNameForLump(savemaplumpinfo), crstr[CR_NONE], " ?\n\n",
-                PRESSYN, NULL) :
-            M_StringJoin("This savegame requires the file\n",
+                PRESSYN}) :
+            M_StringJoin({"This savegame requires the file\n",
                 crstr[CR_GOLD], savewadfilename, crstr[CR_NONE], "\n",
                 "to restore a map that is\n",
                 "currently not available!\n\n",
-                PRESSKEY, NULL);
+                PRESSKEY});
 
     M_StartMessage(savegwarning, M_ForceLoadGameResponse, savemaplumpinfo != NULL);
     messageToPrint = 2;
@@ -3169,9 +3169,9 @@ static void M_ConfirmDeleteGameResponse(int key)
 void M_ConfirmDeleteGame()
 {
     savegwarning =
-        M_StringJoin("delete savegame\n\n",
+        M_StringJoin({"delete savegame\n\n",
             crstr[CR_GOLD], savegamestrings[itemOn], crstr[CR_NONE], " ?\n\n",
-            PRESSYN, NULL);
+            PRESSYN});
 
     M_StartMessage(savegwarning, M_ConfirmDeleteGameResponse, true);
     messageToPrint = 2;

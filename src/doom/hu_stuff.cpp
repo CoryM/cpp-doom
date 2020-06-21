@@ -718,7 +718,7 @@ void HU_Start(void)
     {
         char *m;
 
-        ptr = M_StringJoin(crstr[CR_GOLD], W_WadNameForLump(maplumpinfo), ": ", crstr[CR_GRAY], maplumpinfo->name, NULL);
+        ptr = M_StringJoin({crstr[CR_GOLD], W_WadNameForLump(maplumpinfo), ": ", crstr[CR_GRAY], maplumpinfo->name});
         m   = ptr;
 
         while (*m)

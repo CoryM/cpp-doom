@@ -924,7 +924,7 @@ void I_InitWindowTitle(void)
 {
     char *buf;
 
-    buf = M_StringJoin(window_title, " - ", PACKAGE_STRING, NULL);
+    buf = M_StringJoin({window_title, " - ", PACKAGE_STRING});
     SDL_SetWindowTitle(screen, buf);
     free(buf);
 }
@@ -1118,7 +1118,7 @@ static void SetSDLVideoDriver(void)
     {
         char *env_string;
 
-        env_string = M_StringJoin("SDL_VIDEODRIVER=", video_driver, NULL);
+        env_string = M_StringJoin({"SDL_VIDEODRIVER=", video_driver});
         putenv(env_string);
         free(env_string);
     }

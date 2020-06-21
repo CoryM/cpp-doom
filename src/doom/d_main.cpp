@@ -1006,12 +1006,8 @@ char title[128];
 
 static bool D_AddFile(char *filename)
 {
-    wad_file_t *handle;
-
     printf(" adding %s\n", filename);
-    handle = W_AddFile(filename);
-
-    return handle != nullptr;
+    return W_AddFile(filename) != nullptr;
 }
 
 // Copyright message banners
@@ -1298,7 +1294,7 @@ static void LoadIwadDeh(void)
 
         // Look for chex.deh in the same directory as the IWAD file.
         dirname  = M_DirName(iwadfile);
-        chex_deh = M_StringJoin(dirname, DIR_SEPARATOR_S, "chex.deh", NULL);
+        chex_deh = M_StringJoin({dirname, DIR_SEPARATOR_S, "chex.deh"});
         free(dirname);
 
         // If the dehacked patch isn't found, try searching the WAD
@@ -1389,12 +1385,12 @@ static void LoadSigilWad(void)
         char *sigil_wad_file = nullptr, *sigil_shreds = nullptr;
 
         char *dirname = M_DirName(iwadfile);
-        sigil_shreds  = M_StringJoin(dirname, DIR_SEPARATOR_S, "SIGIL_SHREDS.wad", NULL);
+        sigil_shreds  = M_StringJoin({dirname, DIR_SEPARATOR_S, "SIGIL_SHREDS.wad"});
 
         // [crispy] load SIGIL.WAD
         for ( auto &sigilWad : a_sigilWads)
         {
-            sigil_wad_file = M_StringJoin(dirname, DIR_SEPARATOR_S, sigilWad, NULL);
+            sigil_wad_file = M_StringJoin({dirname, DIR_SEPARATOR_S, sigilWad});
 
             if (M_FileExists(sigil_wad_file))
             {
@@ -1492,7 +1488,7 @@ static void LoadNerveWad(void)
         {
             char *dir;
             dir          = M_DirName(iwadfile);
-            nervewadfile = M_StringJoin(dir, DIR_SEPARATOR_S, "nerve.wad", NULL);
+            nervewadfile = M_StringJoin({dir, DIR_SEPARATOR_S, "nerve.wad"});
             free(dir);
         }
         else
@@ -1747,7 +1743,7 @@ void D_DoomMain(void)
 
     // None found?
 
-    if (iwadfile == NULL)
+    if (iwadfile == nullptr)
     {
         I_Error("Game mode indeterminate.  No IWAD file was found.  Try\n"
                 "specifying one with the '-iwad' command line parameter.\n");

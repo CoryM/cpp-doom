@@ -114,7 +114,7 @@ void SetDisplayDriver(void)
     {
         char *env_string;
 
-        env_string = M_StringJoin("SDL_VIDEODRIVER=", video_driver, NULL);
+        env_string = M_StringJoin({"SDL_VIDEODRIVER=", video_driver});
         putenv(env_string);
         free(env_string);
     }

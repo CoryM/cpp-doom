@@ -1162,11 +1162,10 @@ void P_SetupLevel(int episode,
                   ttime  = (totalleveltimes + savedleveltime) / TICRATE;
         char *rfn_str;
 
-        rfn_str = M_StringJoin(
+        rfn_str = M_StringJoin({
             respawnparm ? " -respawn" : "",
             fastparm ? " -fast" : "",
-            nomonsters ? " -nomonsters" : "",
-            NULL);
+            nomonsters ? " -nomonsters" : ""});
 
         fprintf(stderr, "P_SetupLevel: %s (%s) %s%s %d:%02d:%02d/%d:%02d:%02d ",
             maplumpinfo->name, W_WadNameForLump(maplumpinfo),

@@ -73,7 +73,7 @@ static char *TempFile(const char *s)
     tempdir = "/tmp";
 #endif
 
-    return M_StringJoin(tempdir, DIR_SEPARATOR_S, s, NULL);
+    return M_StringJoin({tempdir, DIR_SEPARATOR_S, s});
 }
 
 static int ArgumentNeedsEscape(char *arg)
@@ -268,11 +268,7 @@ bool OpenFolder(const char *path)
     char *cmd;
     int result;
 
-#if defined(__MACOSX__)
-    cmd = M_StringJoin("open \"", path, "\"", NULL);
-#else
-    cmd = M_StringJoin("xdg-open \"", path, "\"", NULL);
-#endif
+    cmd = M_StringJoin({"xdg-open \"", path, "\""});
     result = system(cmd);
     free(cmd);
 
@@ -359,7 +355,7 @@ int ExecuteDoom(execute_context_t *context)
 
     // Build the command line
 
-    response_file_arg = M_StringJoin("@", context->response_file, NULL);
+    response_file_arg = M_StringJoin({"@", context->response_file});
 
     // Run Doom
 

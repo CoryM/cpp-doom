@@ -73,7 +73,6 @@ std::string_view env_view(const char *envVar)
 // UsedIn:    d_iwad.cpp
 auto        v_iwadDirs      = std::vector<std::string>();
 
-
 // Returns true if the specified path is a path to a file
 // of the specified name.
 // UsedIn:    d_iwad.cpp
@@ -112,7 +111,7 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
     }
     else
     {
-        filename = M_StringJoin(dir, DIR_SEPARATOR_S, iwadname, NULL);
+        filename = M_StringJoin({dir, DIR_SEPARATOR_S, iwadname});
     }
 
     free(probe);
@@ -193,23 +192,21 @@ static GameMission_t IdentifyIWADByName(const char *name, int mask)
 // DefinedIn: d_iwad.cpp
 static void AddIWADPath(const char *path, const char *suffix)
 {
-    char *left, *p, *dup_path;
-
-    dup_path = M_StringDuplicate(path);
+    auto dup_path = M_StringDuplicate(path);
 
     // Split into individual dirs within the list.
-    left = dup_path;
+    auto left = dup_path;
 
     for (;;)
     {
-        p = strchr(left, PATH_SEPARATOR);
-        if (p != NULL)
+        auto p = strchr(left, PATH_SEPARATOR);
+        if (p != nullptr)
         {
             // Break at the separator and use the left hand side
             // as another iwad dir
             *p = '\0';
 
-            v_iwadDirs.push_back(M_StringJoin(left, suffix, NULL));
+            v_iwadDirs.push_back(M_StringJoin({left, suffix}));
             left = p + 1;
         }
         else
@@ -218,7 +215,7 @@ static void AddIWADPath(const char *path, const char *suffix)
         }
     }
 
-    v_iwadDirs.push_back(M_StringJoin(left, suffix, NULL));
+    v_iwadDirs.push_back(M_StringJoin({left, suffix}));
 
     free(dup_path);
 }
@@ -251,14 +248,14 @@ static void AddXdgDirs(void)
             homedir = std::basic_string_view<char>("~/");
         }
 
-        tmp_env = M_StringJoin(homedir.data(), "/.local/share", NULL);
+        tmp_env = M_StringJoin({homedir.data(), "/.local/share"});
         env     = std::string_view(tmp_env);
     }
 
     // We support $XDG_DATA_HOME/games/doom (which will usually be
     // ~/.local/share/games/doom) as a user-writeable extension to
     // the usual /usr/share/games/doom location.
-    v_iwadDirs.push_back(M_StringJoin(env.data(), "/games/doom", NULL));
+    v_iwadDirs.push_back(M_StringJoin({env.data(), "/games/doom"}));
     free(tmp_env);
 
     // Quote:
@@ -303,7 +300,7 @@ static void AddSteamDirs(void)
     {
         homedir = std::string_view("/");
     }
-    steampath = M_StringJoin(homedir.data(), "/.steam/root/steamapps/common", NULL);
+    steampath = M_StringJoin({homedir.data(), "/.steam/root/steamapps/common"});
 
     AddIWADPath(steampath, "/Doom 2/base");
     AddIWADPath(steampath, "/Master Levels of Doom/doom2");
@@ -348,7 +345,7 @@ static void BuildIWADDirList(void)
 
     // Add dirs from DOOMWADPATH:
     env = getenv("DOOMWADPATH");
-    if (env != NULL)
+    if (env != nullptr)
     {
         AddIWADPath(env, "");
     }
@@ -398,7 +395,7 @@ char *D_FindWADByName(const char *name)
 
         // Construct a string for the full path
 
-        path = M_StringJoin(iwadDir.c_str(), DIR_SEPARATOR_S, name, NULL);
+        path = M_StringJoin({iwadDir, DIR_SEPARATOR_S, name});
 
         probe = M_FileCaseExists(path);
         if (probe != NULL)
@@ -449,10 +446,7 @@ char *D_TryFindWADByName(const char *filename)
 // UsedIn:    doom/d_main.cpp
 char *D_FindIWAD(int mask, GameMission_t *mission)
 {
-    char *result;
-    char *iwadfile;
-    int   iwadparm;
-
+    char *result = nullptr;
     // Check for the -iwad parameter
 
     //!
@@ -461,17 +455,17 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
     // @arg <file>
     //
 
-    iwadparm = M_CheckParmWithArgs("-iwad", 1);
+    int iwadparm = M_CheckParmWithArgs("-iwad", 1);
 
     if (iwadparm)
     {
         // Search through IWAD dirs for an IWAD with the given name.
 
-        iwadfile = myargv[iwadparm + 1];
+        char *iwadfile = myargv[iwadparm + 1];
 
         result = D_FindWADByName(iwadfile);
 
-        if (result == NULL)
+        if (result == nullptr)
         {
             I_Error("IWAD file '%s' not found!", iwadfile);
         }
@@ -481,8 +475,6 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
     else
     {
         // Search through the list and look for an IWAD
-
-        result = NULL;
 
         BuildIWADDirList();
 

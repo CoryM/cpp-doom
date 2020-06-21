@@ -23,18 +23,12 @@
 #include <cstring>
 #include <cctype>
 #include <cerrno>
+#include <initializer_list>
+#include <iostream>
+#include <string_view>
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <io.h>
-#ifdef _MSC_VER
-#include <direct.h>
-#endif
-#else
 #include <sys/stat.h>
 #include <sys/types.h>
-#endif
 
 #include "doomtype.hpp"
 
@@ -254,7 +248,7 @@ char *M_TempFile(const char *s)
     tempdir = "/tmp";
 #endif
 
-    return M_StringJoin(tempdir, DIR_SEPARATOR_S, s, NULL);
+    return M_StringJoin({tempdir, DIR_SEPARATOR_S, s});
 }
 
 bool M_StrToInt(const char *str, int *result)
@@ -528,6 +522,7 @@ bool M_StringConcat(char *dest, const char *src, size_t dest_size)
     return M_StringCopy(dest + offset, src, dest_size - offset);
 }
 
+
 // Returns true if 's' begins with the specified prefix.
 
 bool M_StringStartsWith(const char *s, const char *prefix)
@@ -547,50 +542,39 @@ bool M_StringEndsWith(const char *s, const char *suffix)
 // Return a newly-malloced string with all the strings given as arguments
 // concatenated together.
 
-char *M_StringJoin(const char *s, ...)
+char *M_StringJoin(std::initializer_list< const std::string_view > il_S)
 {
-    char *      result;
-    const char *v;
-    va_list     args;
-    size_t      result_len;
-
-    result_len = strlen(s) + 1;
-
-    va_start(args, s);
-    for (;;)
+    size_t      result_len = 1;
+    for (const auto &s: il_S)
     {
-        v = va_arg(args, const char *);
-        if (v == NULL)
-        {
+        if (s.data() == nullptr) {
             break;
         }
-
-        result_len += strlen(v);
+        result_len += s.size();
     }
-    va_end(args);
 
-    result = static_cast<char *>(malloc(result_len));
+    auto result = static_cast<char *>(malloc(result_len));
+    for (size_t i = 0; i < result_len; i++) {
+        result[i] = NULL;
+    } // strlen requires NULL terminated string 
 
-    if (result == NULL)
+
+    if (result == nullptr)
     {
         I_Error("M_StringJoin: Failed to allocate new string.");
-        return NULL;
+        return nullptr;
     }
 
-    M_StringCopy(result, s, result_len);
-
-    va_start(args, s);
-    for (;;)
+    for (const auto &s: il_S)
     {
-        v = va_arg(args, const char *);
-        if (v == NULL)
+        if (s.data() == nullptr)
         {
             break;
         }
+        std::cout << "xx" << s << "::" << s.size() << "xx" << result_len << std::endl;
 
-        M_StringConcat(result, v, result_len);
+        M_StringConcat(result, s.data(), result_len);
     }
-    va_end(args);
 
     return result;
 }

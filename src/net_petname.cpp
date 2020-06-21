@@ -115,5 +115,5 @@ char *NET_GetRandomPetName()
     a = adjectives[rand() % std::size(adjectives)];
     n = nouns[rand() % std::size(nouns)];
 
-    return M_StringJoin(a, " ", n, NULL);
+    return M_StringJoin({a, " ", n});
 }

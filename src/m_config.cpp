@@ -2547,7 +2547,7 @@ void M_LoadDefaults(void)
     }
     else
     {
-        doom_defaults.filename = M_StringJoin(configdir, default_main_config, NULL);
+        doom_defaults.filename = M_StringJoin({configdir, default_main_config});
     }
 
     printf("saving config in %s\n", doom_defaults.filename);
@@ -2569,7 +2569,7 @@ void M_LoadDefaults(void)
     }
     else
     {
-        extra_defaults.filename = M_StringJoin(configdir, default_extra_config, NULL);
+        extra_defaults.filename = M_StringJoin({configdir, default_extra_config});
     }
 
     LoadDefaultCollection(&doom_defaults);
@@ -2784,7 +2784,7 @@ void M_SetMusicPackDir(void)
     }
 
     prefdir         = SDL_GetPrefPath("", PACKAGE_TARNAME);
-    music_pack_path = M_StringJoin(prefdir, "music-packs", NULL);
+    music_pack_path = M_StringJoin({prefdir, "music-packs"});
 
     M_MakeDirectory(prefdir);
     M_MakeDirectory(music_pack_path);
@@ -2792,7 +2792,7 @@ void M_SetMusicPackDir(void)
 
     // We write a README file with some basic instructions on how to use
     // the directory.
-    readme_path = M_StringJoin(music_pack_path, DIR_SEPARATOR_S, "README.txt", NULL);
+    readme_path = M_StringJoin({music_pack_path, DIR_SEPARATOR_S, "README.txt"});
     M_WriteFile(readme_path, MUSIC_PACK_README, strlen(MUSIC_PACK_README));
 
     free(readme_path);
@@ -2828,19 +2828,10 @@ char *M_GetSaveGameDir(const char *iwadname)
         }
 
         // add separator at end just in case
-        savegamedir = M_StringJoin(savegamedir, DIR_SEPARATOR_S, NULL);
+        savegamedir = M_StringJoin({savegamedir, DIR_SEPARATOR_S});
 
         printf("Save directory changed to %s.\n", savegamedir);
     }
-#ifdef _WIN32
-    // In -cdrom mode, we write savegames to a specific directory
-    // in addition to configs.
-
-    else if (M_ParmExists("-cdrom"))
-    {
-        savegamedir = M_StringDuplicate(configdir);
-    }
-#endif
     // If not "doing" a configuration directory (Windows), don't "do"
     // a savegame directory, either.
     else if (!strcmp(configdir, ""))
@@ -2851,13 +2842,12 @@ char *M_GetSaveGameDir(const char *iwadname)
     {
         // ~/.local/share/chocolate-doom/savegames
 
-        topdir = M_StringJoin(configdir, "savegames", NULL);
+        topdir = M_StringJoin({configdir, "savegames"});
         M_MakeDirectory(topdir);
 
         // eg. ~/.local/share/chocolate-doom/savegames/doom2.wad/
 
-        savegamedir = M_StringJoin(topdir, DIR_SEPARATOR_S, iwadname,
-            DIR_SEPARATOR_S, NULL);
+        savegamedir = M_StringJoin({topdir, DIR_SEPARATOR_S, iwadname, DIR_SEPARATOR_S});
 
         M_MakeDirectory(savegamedir);
 
@@ -2879,13 +2869,13 @@ char *M_GetAutoloadDir(const char *iwadname)
     {
         char *prefdir;
         prefdir       = SDL_GetPrefPath("", PACKAGE_TARNAME);
-        autoload_path = M_StringJoin(prefdir, "autoload", NULL);
+        autoload_path = M_StringJoin({prefdir, "autoload"});
         SDL_free(prefdir);
     }
 
     M_MakeDirectory(autoload_path.data());
 
-    result = M_StringJoin(autoload_path.data(), DIR_SEPARATOR_S, iwadname, NULL);
+    result = M_StringJoin({autoload_path.data(), DIR_SEPARATOR_S, iwadname});
     M_MakeDirectory(result);
 
     // TODO: Add README file
