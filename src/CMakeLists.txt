@@ -2,6 +2,9 @@ foreach(SUBDIR doom setup test)
     add_subdirectory("${SUBDIR}")
 endforeach()
 
+include(CheckIPOSupported)
+check_ipo_supported(RESULT FoundIPO)
+
 # Common source files used by absolutely everything:
 
 set(COMMON_SOURCE_FILES
@@ -31,10 +34,13 @@ set(DEDSERV_FILES
     net_structrw.cpp      net_structrw.hpp
     z_native.cpp          z_zone.hpp ../utils/lump.hpp)
 
-add_executable("${PROGRAM_PREFIX}server" WIN32 ${COMMON_SOURCE_FILES} ${DEDSERV_FILES})
+add_executable("${PROGRAM_PREFIX}server" ${COMMON_SOURCE_FILES} ${DEDSERV_FILES})
 target_include_directories("${PROGRAM_PREFIX}server"
                            PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
-target_link_libraries("${PROGRAM_PREFIX}server" SDL2::SDL2main SDL2::net)
+target_link_libraries("${PROGRAM_PREFIX}server" SDL2::SDL2main SDL2::net )
+if(FoundIPO)
+  set_property(TARGET "${PROGRAM_PREFIX}server" PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
+endif()
 
 # Source files used by the game binaries (chocolate-doom, etc.)
 
@@ -128,6 +134,9 @@ add_executable("${PROGRAM_PREFIX}doom" ${SOURCE_FILES_WITH_DEH})
 
 target_include_directories("${PROGRAM_PREFIX}doom" PRIVATE ${GAME_INCLUDE_DIRS})
 target_link_libraries("${PROGRAM_PREFIX}doom" doom ${EXTRA_LIBS})
+if(FoundIPO)
+  set_property(TARGET "${PROGRAM_PREFIX}doom" PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
+endif()
 
 # Source files needed for chocolate-setup:
 
@@ -161,7 +170,9 @@ add_executable(mus2mid mus2mid.cpp memio.cpp z_native.cpp i_system.cpp m_argv.cp
 target_compile_definitions(mus2mid PRIVATE "-DSTANDALONE")
 target_include_directories(mus2mid PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
 target_link_libraries(mus2mid SDL2::SDL2main SDL2::SDL2)
-
+if(FoundIPO)
+set_property(TARGET mus2mid PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
+endif()
 
 
 #Setup the test executable using GTest (Google Test Framework)
@@ -174,3 +185,6 @@ list(REMOVE_ITEM SOURCE_FILES_WITH_DEH i_main.cpp)
 add_executable("${PROGRAM_PREFIX}test" ${TEST_FILES} ${SOURCE_FILES_WITH_DEH} )
 target_include_directories("${PROGRAM_PREFIX}test" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
 target_link_libraries("${PROGRAM_PREFIX}test" test doom GTest::gtest ${EXTRA_LIBS})
+if(FoundIPO)
+set_property(TARGET "${PROGRAM_PREFIX}test" PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
+endif()

@@ -16,3 +16,9 @@ add_library(setup STATIC
 
 target_include_directories(setup PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../")
 target_link_libraries(setup textscreen SDL2::SDL2 SDL2::mixer)
+
+include(CheckIPOSupported)
+check_ipo_supported(RESULT FoundIPO)
+if(FoundIPO)
+set_property(TARGET setup PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
+endif()

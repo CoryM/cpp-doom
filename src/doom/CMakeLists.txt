@@ -81,3 +81,9 @@ add_library(doom STATIC
 
 target_include_directories(doom PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../")
 target_link_libraries(doom SDL2::SDL2 SDL2::mixer SDL2::net)
+
+include(CheckIPOSupported)
+check_ipo_supported(RESULT FoundIPO)
+if(FoundIPO)
+set_property(TARGET doom PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
+endif()
