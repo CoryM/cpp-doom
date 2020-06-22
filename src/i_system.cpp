@@ -15,22 +15,6 @@
 // DESCRIPTION:
 //
 
-
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-
-#include <cstdarg>
-
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
-
-#include "SDL2/SDL.h"
-
 #include "config.hpp"
 
 #include "deh_str.hpp"
@@ -211,12 +195,7 @@ void I_PrintStartupBanner(const char *gamedescription)
 
 bool I_ConsoleStdout(void)
 {
-#ifdef _WIN32
-    // SDL "helpfully" always redirects stdout to a file.
-    return false;
-#else
     return isatty(fileno(stdout));
-#endif
 }
 
 //

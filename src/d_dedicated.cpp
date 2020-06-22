@@ -14,9 +14,7 @@
 // Code specific to the standalone dedicated server.
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstdarg>
+#include "common.hpp"
 
 #include "config.hpp"
 

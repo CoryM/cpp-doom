@@ -16,8 +16,11 @@
 //	Main loop stuff.
 //
 
+#pragma once
 #ifndef __D_LOOP__
 #define __D_LOOP__
+
+#include "common.hpp"
 
 #include "net_defs.hpp"
 

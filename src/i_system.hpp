@@ -20,6 +20,8 @@
 #ifndef __I_SYSTEM__
 #define __I_SYSTEM__
 
+#include "common.hpp"
+
 #include "d_ticcmd.hpp"
 #include "d_event.hpp"
 

@@ -17,15 +17,11 @@
 // name
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "deh_mapping.hpp"
 
-#include "doomtype.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
 
-#include "deh_mapping.hpp"
 
 static deh_mapping_entry_t *GetMappingEntryByName(deh_context_t *context,
     deh_mapping_t *                                              mapping,

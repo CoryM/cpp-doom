@@ -17,8 +17,6 @@
 //   mode.
 //
 
-#include <string_view>
-
 #include "doomtype.hpp"
 #include "d_mode.hpp"
 

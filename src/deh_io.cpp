@@ -14,12 +14,7 @@
 //
 // Dehacked I/O code (does all reads from dehacked files)
 //
-
-#include <cstdarg>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
+#include "deh_io.hpp"
 
 #include "m_misc.hpp"
 #include "w_wad.hpp"
@@ -28,7 +23,6 @@
 #include "../utils/lump.hpp"
 #include "../utils/memory.hpp"
 #include "deh_defs.hpp"
-#include "deh_io.hpp"
 
 typedef enum
 {

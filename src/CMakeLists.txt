@@ -5,6 +5,7 @@ endforeach()
 # Common source files used by absolutely everything:
 
 set(COMMON_SOURCE_FILES
+    common.cpp             common.hpp
     crispy.cpp             crispy.hpp
     i_main.cpp
     i_system.cpp           i_system.hpp

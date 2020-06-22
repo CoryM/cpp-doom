@@ -15,18 +15,10 @@
 // Parses Text substitution sections in dehacked files
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cstdarg>
-#include <string>
-#include <string_view>
-#include <map>
+#include "deh_str.hpp"
 
 #include "doomtype.hpp"
-#include "deh_str.hpp"
 #include "m_misc.hpp"
-
 #include "../utils/memory.hpp"
 #include "z_zone.hpp"
 

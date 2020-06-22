@@ -15,10 +15,7 @@
 // Parses Text substitution sections in dehacked files
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <string>
+#include "common.hpp"
 
 #include "doomtype.hpp"
 

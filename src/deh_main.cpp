@@ -15,10 +15,7 @@
 // Main dehacked code
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
+#include "deh_main.hpp"
 
 #include "doomtype.hpp"
 #include "i_glob.hpp"
@@ -29,7 +26,6 @@
 
 #include "deh_defs.hpp"
 #include "deh_io.hpp"
-#include "deh_main.hpp"
 
 extern deh_section_t *deh_section_types[];
 extern const char *   deh_signatures[];

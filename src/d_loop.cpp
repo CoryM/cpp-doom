@@ -16,11 +16,9 @@
 //     Main loop code.
 //
 
-#include <cstdlib>
-#include <cstring>
+#include "d_loop.hpp"
 
 #include "d_event.hpp"
-#include "d_loop.hpp"
 #include "d_ticcmd.hpp"
 
 #include "i_system.hpp"

@@ -18,7 +18,7 @@
 #ifndef DEH_STR_H
 #define DEH_STR_H
 
-#include <cstdio>
+#include "common.hpp"
 
 #include "doomtype.hpp"
 

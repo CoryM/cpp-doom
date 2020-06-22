@@ -16,19 +16,7 @@
 //     to the IWAD type.
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cctype>
-#include <cstring>
-
-#include <array>
-#include <iostream>
-#include <vector>
-// Included In Header d_iwad.hpp
-//#include <string>
-//#include <string_view>
-
-#include "d_iwad.hpp"
+#include "d_iwad.hpp" // Includes common.hpp
 
 #include "../utils/memory.hpp"
 #include "deh_str.hpp"
@@ -76,13 +64,21 @@ static const auto a_iwads = std::to_array<iwad_t>({
 // UsedIn:    d_iwad.cpp
 std::vector<std::string> v_iwadDirs;
 
-void v_iwadDirs_init() {
+void v_iwadDirs_clear()
+{
+    if (v_iwadDirs.size())
+    {
+        std::cout << "Clearing v_iwadDirs size before clear was " << v_iwadDirs.size() << std::endl;
+    }
+    v_iwadDirs.clear();
+}
+
+void v_iwadDirs_init()
+{
     v_iwadDirs = std::vector<std::string>();
-    v_iwadDirs.clear();
-};
-void v_iwadDirs_clear() {
-    v_iwadDirs.clear();
-};
+    v_iwadDirs_clear();
+}
+
 
 // Returns true if the specified path is a path to a file
 // of the specified name.
