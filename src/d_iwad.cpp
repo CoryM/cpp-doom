@@ -23,8 +23,10 @@
 
 #include <array>
 #include <iostream>
-#include <string>
 #include <vector>
+// Included In Header d_iwad.hpp
+//#include <string>
+//#include <string_view>
 
 #include "d_iwad.hpp"
 
@@ -55,15 +57,16 @@ static const auto a_iwads = std::to_array<iwad_t>({
     { "strife1.wad", strife, commercial, "Strife" } });
 
 // Helper function to get Enviroment Varibles into a string_view
-std::string_view env_view(const char *envVar)
+[[nodiscard]]std::string env_view(const std::string_view envVar)
 {
-    const auto envCharStar = getenv(envVar);
-    // Creating a string view with a nullprt is undefined behavour.
+    // returns a NON OWENING String.  The char* is owned and by the OS
+    const char * envCharStar = getenv(envVar.data());
+    // Creating a string with a nullprt is undefined behavour.
     if (envCharStar != nullptr)
     {
-        return std::string_view(envCharStar);
+        return std::string(envCharStar);
     }
-    return std::string_view();
+    return std::string();
 }
 
 
@@ -71,7 +74,15 @@ std::string_view env_view(const char *envVar)
 //
 // DefinedIn: d_iwad.cpp
 // UsedIn:    d_iwad.cpp
-auto        v_iwadDirs      = std::vector<std::string>();
+std::vector<std::string> v_iwadDirs;
+
+void v_iwadDirs_init() {
+    v_iwadDirs = std::vector<std::string>();
+    v_iwadDirs.clear();
+};
+void v_iwadDirs_clear() {
+    v_iwadDirs.clear();
+};
 
 // Returns true if the specified path is a path to a file
 // of the specified name.
@@ -88,35 +99,33 @@ static bool DirIsFile(const char *path, const char *filename)
 // if not found.
 // UsedIn:    d_iwad.cpp
 // DefinedIn: d_iwad.cpp
-static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
+static char *CheckDirectoryHasIWAD(const std::string_view dir, const std::string_view iwadname)
 {
-    char *filename;
-    char *probe;
-
     // As a special case, the "directory" may refer directly to an
     // IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
 
-    probe = M_FileCaseExists(dir);
-    if (DirIsFile(dir, iwadname) && probe != NULL)
+    char *probe = M_FileCaseExists(dir.data());
+    if (DirIsFile(dir.data(), iwadname.data()) && probe != NULL)
     {
         return probe;
     }
 
     // Construct the full path to the IWAD if it is located in
     // this directory, and check if it exists.
-
-    if (!strcmp(dir, "."))
+    std::string filename;
+    if (!strcmp(dir.data(), "."))
     {
-        filename = M_StringDuplicate(iwadname);
+        //filename = M_StringDuplicate(iwadname.data());
+        filename = std::string  (iwadname);
     }
     else
     {
-        filename = M_StringJoin({dir, DIR_SEPARATOR_S, iwadname});
+        //filename = U_StringJoin({dir, DIR_SEPARATOR_S, iwadname});
+        filename = std::string(dir) + DIR_SEPARATOR_S + std::string(iwadname);
     }
 
     free(probe);
-    probe = M_FileCaseExists(filename);
-    free(filename);
+    probe = M_FileCaseExists(filename.c_str());
     if (probe != NULL)
     {
         return probe;
@@ -190,23 +199,23 @@ static GameMission_t IdentifyIWADByName(const char *name, int mask)
 // to the end of the paths before adding them.
 // UsedIn:    d_iwad.cpp
 // DefinedIn: d_iwad.cpp
-static void AddIWADPath(const char *path, const char *suffix)
+static void AddIWADPath(const std::string_view path, const std::string_view suffix)
 {
-    auto dup_path = M_StringDuplicate(path);
+    auto dup_path = S_StringDuplicate(path);
 
     // Split into individual dirs within the list.
     auto left = dup_path;
 
     for (;;)
     {
-        auto p = strchr(left, PATH_SEPARATOR);
+        auto p = strchr(left.c_str(), PATH_SEPARATOR);
         if (p != nullptr)
         {
             // Break at the separator and use the left hand side
             // as another iwad dir
-            *p = '\0';
+            *const_cast<char *>(p) = '\0'; // a "const char *" pointer can be modiefed but not the data
 
-            v_iwadDirs.push_back(M_StringJoin({left, suffix}));
+            v_iwadDirs.push_back(S_StringJoin({left, suffix}));
             left = p + 1;
         }
         else
@@ -215,9 +224,8 @@ static void AddIWADPath(const char *path, const char *suffix)
         }
     }
 
-    v_iwadDirs.push_back(M_StringJoin({left, suffix}));
+    v_iwadDirs.push_back(S_StringJoin({left, suffix}));
 
-    free(dup_path);
 }
 
 // Add standard directories where IWADs are located on Unix systems.
@@ -248,14 +256,14 @@ static void AddXdgDirs(void)
             homedir = std::basic_string_view<char>("~/");
         }
 
-        tmp_env = M_StringJoin({homedir.data(), "/.local/share"});
+        tmp_env = M_StringJoin({homedir, "/.local/share"});
         env     = std::string_view(tmp_env);
     }
 
     // We support $XDG_DATA_HOME/games/doom (which will usually be
     // ~/.local/share/games/doom) as a user-writeable extension to
     // the usual /usr/share/games/doom location.
-    v_iwadDirs.push_back(M_StringJoin({env.data(), "/games/doom"}));
+    v_iwadDirs.push_back(S_StringJoin({env, "/games/doom"}));
     free(tmp_env);
 
     // Quote:
@@ -293,14 +301,13 @@ static void AddXdgDirs(void)
 // DefinedIn: d_iwad.cpp
 static void AddSteamDirs(void)
 {
-    char *steampath;
-
     auto homedir = env_view("HOME");
     if (homedir.data() == nullptr)
     {
         homedir = std::string_view("/");
     }
-    steampath = M_StringJoin({homedir.data(), "/.steam/root/steamapps/common"});
+    // steampath auto deallocated apon exit
+    std::string steampath = S_StringJoin({homedir, "/.steam/root/steamapps/common"});
 
     AddIWADPath(steampath, "/Doom 2/base");
     AddIWADPath(steampath, "/Master Levels of Doom/doom2");
@@ -311,7 +318,6 @@ static void AddSteamDirs(void)
     AddIWADPath(steampath, "/Hexen/base");
     AddIWADPath(steampath, "/Hexen Deathkings of the Dark Citadel/base");
     AddIWADPath(steampath, "/Strife");
-    free(steampath);
 }
 
 

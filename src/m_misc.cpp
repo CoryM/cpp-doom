@@ -391,17 +391,21 @@ const char *M_StrCaseStr(const char *haystack, const char *needle)
 // Safe version of strdup() that checks the string was successfully
 // allocated.
 //
-char *M_StringDuplicate(const char *orig)
+char *M_StringDuplicate(const std::string_view orig)
 {
-    char *result = strdup(orig);
+    char *result = strdup(orig.data());
 
     if (result == nullptr)
     {
         I_Error("Failed to duplicate string (length %" PRIuPTR ")\n",
-            strlen(orig));
+            std::size(orig));
     }
 
     return result;
+}
+// In trans to using strings / string_view instead of char*
+std::string S_StringDuplicate(const std::string_view orig) {
+    return std::string(M_StringDuplicate(orig));
 }
 
 //
@@ -547,9 +551,8 @@ bool M_StringEndsWith(const char *s, const char *suffix)
 }
 
 // Builds a string and returns a unique_ptr for the char * with needed std::free deleter
-std::unique_ptr<char, decltype(&std::free)> U_StringJoin(std::initializer_list<const std::string_view> il_S) {
-    auto result = M_StringJoin(il_S);
-    return std::unique_ptr<char, decltype(&std::free)>(result, std::free);
+std::string S_StringJoin(std::initializer_list<const std::string_view> il_S) {
+    return std::string(M_StringJoin(il_S));
 }
 
 // Safe, portable vsnprintf().

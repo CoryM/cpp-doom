@@ -83,7 +83,7 @@ static void CheckForClientOptions(void)
     }
 }
 
-void NET_DedicatedServer(void)
+[[noreturn]] void NET_DedicatedServer(void)
 {
     CheckForClientOptions();
 

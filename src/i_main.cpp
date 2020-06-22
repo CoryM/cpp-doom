@@ -20,6 +20,7 @@
 #include "crispy.hpp"
 
 #include <cstdio>
+#include <iostream>
 
 #include "SDL2/SDL.h"
 
@@ -27,6 +28,7 @@
 #include "i_system.hpp"
 #include "m_argv.hpp"
 #include "m_misc.hpp" // [crispy] M_snprintf()
+#include "d_iwad.hpp"
 
 //
 // D_DoomMain()
@@ -39,9 +41,10 @@ void D_DoomMain(void);
 int main(int argc, char **argv)
 {
     // save arguments
-
     myargc = argc;
     myargv = argv;
+
+    v_iwadDirs_init();
 
     //!
     // Print the program version and exit.
@@ -61,12 +64,6 @@ int main(int argc, char **argv)
         crispy->platform   = SDL_GetPlatform();
     }
 
-#if defined(_WIN32)
-    // compose a proper command line from loose file paths passed as arguments
-    // to allow for loading WADs and DEHACKED patches by drag-and-drop
-    M_AddLooseFiles();
-#endif
-
     M_FindResponseFile();
 
 #ifdef SDL_HINT_NO_SIGNAL_HANDLERS
@@ -76,6 +73,10 @@ int main(int argc, char **argv)
     // start doom
 
     D_DoomMain();
+    
+    // Cleanup
+    std::cout << "Shutting down and cleaning up" << std::endl;
+    v_iwadDirs_clear();
 
     return 0;
 }

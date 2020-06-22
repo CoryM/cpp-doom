@@ -15,10 +15,11 @@
 //     Find IWAD and initialize according to IWAD type.
 //
 
-
+#pragma once
 #ifndef __D_IWAD__
 #define __D_IWAD__
 
+#include <string>
 #include <string_view>
 #include "d_mode.hpp"
 
@@ -39,15 +40,19 @@ struct iwad_t {
     const char *  description;
 };
 
-char *         D_FindWADByName(const char *filename);
-char *         D_TryFindWADByName(const char *filename);
-char *         D_FindIWAD(int mask, GameMission_t *mission);
-const iwad_t **D_FindAllIWADs(int mask);
-const char *   D_SaveGameIWADName(GameMission_t gamemission);
-const char *   D_SuggestIWADName(GameMission_t mission, GameMode_t mode);
-const char *   D_SuggestGameName(GameMission_t mission, GameMode_t mode);
+[[nodiscard]] char *         D_FindWADByName(const char *filename);
+[[nodiscard]] char *         D_TryFindWADByName(const char *filename);
+[[nodiscard]] char *         D_FindIWAD(int mask, GameMission_t *mission);
+[[nodiscard]] const iwad_t **D_FindAllIWADs(int mask);
+[[nodiscard]] const char *   D_SaveGameIWADName(GameMission_t gamemission);
+[[nodiscard]] const char *   D_SuggestIWADName(GameMission_t mission, GameMode_t mode);
+[[nodiscard]] const char *   D_SuggestGameName(GameMission_t mission, GameMode_t mode);
 
 // Helper function to get Enviroment Varibles into a string_view
-std::string_view env_view(const char *envVar);
+[[nodiscard]] std::string env_view(const std::string_view envVar);
+
+void v_iwadDirs_init();
+void v_iwadDirs_clear();
+
 
 #endif
