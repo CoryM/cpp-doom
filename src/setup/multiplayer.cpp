@@ -814,7 +814,7 @@ void WarpMenu(TXT_UNCAST_ARG(widget), void *user_data [[maybe_unused]])
     StartGameMenu("Level Warp", 0);
 }
 
-static void DoJoinGame(void *unused1, void *unused2  [[maybe_unused]])
+static void DoJoinGame(void *unused1 [[maybe_unused]], void *unused2 [[maybe_unused]])
 {
     execute_context_t *exec;
 

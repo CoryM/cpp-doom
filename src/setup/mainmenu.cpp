@@ -95,7 +95,7 @@ static void SensibleDefaults(void)
     png_screenshots = 1;
 }
 
-static int MainMenuKeyPress(txt_window_t *window, int key, void *user_data [[maybe_unused]])
+static int MainMenuKeyPress(txt_window_t *window, const int key, void *user_data [[maybe_unused]])
 {
     if (key == cheat_sequence[cheat_sequence_index])
     {
