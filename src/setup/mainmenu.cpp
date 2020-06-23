@@ -128,7 +128,8 @@ static void DoQuit(void *widget [[maybe_unused]], void *dosave)
 
     TXT_Shutdown();
 
-    exit(0);
+    //exit(0);
+    throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
 }
 
 static void QuitConfirm(void *unused1 [[maybe_unused]], void *unused2 [[maybe_unused]])
@@ -176,7 +177,8 @@ static void LaunchDoom(void *unused1 [[maybe_unused]], void *unused2 [[maybe_unu
     PassThroughArguments(exec);
     ExecuteDoom(exec);
 
-    exit(0);
+    //exit(0);
+    throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
 }
 
 static txt_button_t *GetLaunchButton(void)
@@ -309,7 +311,8 @@ static void InitTextscreen(void)
     if (!TXT_Init())
     {
         fprintf(stderr, "Failed to initialize GUI\n");
-        exit(-1);
+        //exit(-1);
+        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
     }
 
     // Set Romero's "funky blue" color:

@@ -293,7 +293,8 @@ static void StartGame(int multiplayer)
 
     ExecuteDoom(exec);
 
-    exit(0);
+    //exit(0);
+    throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
 }
 
 static void StartServerGame(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(unused))
@@ -849,7 +850,8 @@ static void DoJoinGame(void *unused1 [[maybe_unused]], void *unused2 [[maybe_unu
 
     ExecuteDoom(exec);
 
-    exit(0);
+    //exit(0);
+    throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
 }
 
 static txt_window_action_t *JoinGameAction(void)

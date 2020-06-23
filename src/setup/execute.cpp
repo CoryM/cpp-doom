@@ -124,7 +124,8 @@ execute_context_t *NewExecuteContext(void)
     if (result->stream == NULL)
     {
         fprintf(stderr, "Error opening response file\n");
-        exit(-1);
+        //exit(-1);
+        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
     }
     
     return result;
@@ -324,7 +325,8 @@ static int ExecuteCommand(const char *program, const char *arg)
 
         execvp(argv[0], (char **) argv);
 
-        exit(0x80);
+        //exit(0x80);
+        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
     }
     else
     {

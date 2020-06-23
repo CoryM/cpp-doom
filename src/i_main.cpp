@@ -38,42 +38,49 @@
 
 void D_DoomMain(void);
 
-int main(int argc, char **argv)
+auto main(int argc, char **argv) -> int
 {
-    // save arguments
-    myargc = argc;
-    myargv = argv;
-
-    v_iwadDirs_init();
-
-    //!
-    // Print the program version and exit.
-    //
-    if (M_ParmExists("-version") || M_ParmExists("--version"))
+    try
     {
-        puts(PACKAGE_STRING);
-        exit(0);
-    }
+        // save arguments
+        myargc = argc;
+        myargv = argv;
 
-    {
-        char        buf[16];
-        SDL_version version;
-        SDL_GetVersion(&version);
-        M_snprintf(buf, sizeof(buf), "%d.%d.%d", version.major, version.minor, version.patch);
-        crispy->sdlversion = M_StringDuplicate(buf);
-        crispy->platform   = SDL_GetPlatform();
-    }
+        v_iwadDirs_init();
 
-    M_FindResponseFile();
+        //!
+        // Print the program version and exit.
+        //
+        if (M_ParmExists("-version") || M_ParmExists("--version"))
+        {
+            puts(PACKAGE_STRING);
+            //exit(0);
+            throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+        }
+
+        {
+            char        buf[16];
+            SDL_version version;
+            SDL_GetVersion(&version);
+            M_snprintf(buf, sizeof(buf), "%d.%d.%d", version.major, version.minor, version.patch);
+            crispy->sdlversion = M_StringDuplicate(buf);
+            crispy->platform   = SDL_GetPlatform();
+        }
+
+        M_FindResponseFile();
 
 #ifdef SDL_HINT_NO_SIGNAL_HANDLERS
-    SDL_SetHint(SDL_HINT_NO_SIGNAL_HANDLERS, "1");
+        SDL_SetHint(SDL_HINT_NO_SIGNAL_HANDLERS, "1");
 #endif
 
-    // start doom
+        // start doom
 
-    D_DoomMain();
-    
+        D_DoomMain();
+    } catch (std::exception &e)
+    {
+        std::cout << "Caught an Exception : " << e.what() << std::endl;
+    }
+
     // Cleanup
     std::cout << "Shutting down and cleaning up" << std::endl;
     v_iwadDirs_clear();

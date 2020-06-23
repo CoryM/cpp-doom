@@ -393,7 +393,8 @@ void NET_WaitForLaunch(void)
     if (!TXT_Init())
     {
         fprintf(stderr, "Failed to initialize GUI\n");
-        exit(-1);
+        //exit(-1);
+        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
     }
 
     TXT_SetColor(TXT_COLOR_BLUE, 0x04, 0x14, 0x40); // Romero's "funky blue" color

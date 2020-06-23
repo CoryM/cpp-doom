@@ -89,7 +89,8 @@ static void LoadResponseFile(int argv_index, const char *filename)
     if (handle == NULL)
     {
         printf("\nNo such response file!");
-        exit(1);
+        //exit(1);
+        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
     }
 
     printf("Found response file %s!\n", filename);

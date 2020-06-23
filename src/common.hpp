@@ -26,6 +26,7 @@
 
 // C++ Standard Libraries
 #include <array>
+#include <exception>
 #include <iostream>
 #include <map>
 #include <string>
@@ -37,5 +38,12 @@
 
 // OS Libraries
 #include <unistd.h>
+
+namespace MACROS {
+using std::string;
+#define S1(x)        #x
+#define S2(x)        S1(x)
+#define LOCATION_STR string("In File " __FILE__ " on line " S2(__LINE__))
+}
 
 #endif
