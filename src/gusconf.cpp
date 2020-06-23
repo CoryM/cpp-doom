@@ -20,11 +20,7 @@
 //     DMXGUS lump into an equivalent Timidity configuration file.
 //
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
+#include "common.hpp"
 
 #include "../utils/memory.hpp"
 #include "m_misc.hpp"

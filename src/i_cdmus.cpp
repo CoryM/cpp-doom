@@ -16,13 +16,13 @@
 // Hexen CD interface.
 //
 
-#include <cstdio>
+#include "i_cdmus.hpp"
 
-#include "SDL2/SDL.h"
+#include "common.hpp"
 
 #include "doomtype.hpp"
 
-#include "i_cdmus.hpp"
+
 
 int cd_Error;
 

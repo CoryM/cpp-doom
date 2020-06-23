@@ -551,8 +551,22 @@ bool M_StringEndsWith(const char *s, const char *suffix)
 }
 
 // Builds a string and returns a unique_ptr for the char * with needed std::free deleter
-std::string S_StringJoin(std::initializer_list<const std::string_view> il_S) {
-    return std::string(M_StringJoin(il_S));
+std::string S_StringJoin(const std::initializer_list<const std::string_view> &il_S) {
+ 
+    // Find out how much space we need
+    auto result_len = std::accumulate(il_S.begin(), il_S.end(), 1,
+        [](const auto &len, const auto &sv) { return len + sv.size(); });
+
+    // allocate the space
+    auto result = std::basic_string(result_len, '\0');
+
+    // Copy the strings
+    for (auto index = result.begin(); const auto &s : il_S)
+    {
+        index = std::copy(s.begin(), s.end(), index);
+    };
+
+    return result;
 }
 
 // Safe, portable vsnprintf().

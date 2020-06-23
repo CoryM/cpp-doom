@@ -15,13 +15,7 @@
 // DESCRIPTION:
 //
 
-
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
-#include "SDL2/SDL_stdinc.h"
+#include "common.hpp"
 
 #include "doomtype.hpp"
 #include "d_iwad.hpp"

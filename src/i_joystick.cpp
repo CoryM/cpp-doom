@@ -15,13 +15,7 @@
 //       SDL Joystick code.
 //
 
-
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_joystick.h"
-
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
+#include "common.hpp"
 
 #include "doomtype.hpp"
 #include "d_event.hpp"

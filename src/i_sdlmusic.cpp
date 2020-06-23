@@ -16,18 +16,9 @@
 //	System interface for music.
 //
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
-#include <string_view>
-
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_mixer.h"
+#include "common.hpp"
 
 #include "i_midipipe.hpp"
-
 #include "config.hpp"
 #include "doomtype.hpp"
 #include "memio.hpp"

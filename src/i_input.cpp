@@ -15,10 +15,7 @@
 // DESCRIPTION:
 //     SDL implementation of system-specific input interface.
 //
-#include <string_view>
-
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_keycode.h"
+#include "common.hpp"
 
 #include "doomkeys.hpp"
 #include "doomtype.hpp"

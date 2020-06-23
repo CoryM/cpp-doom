@@ -17,16 +17,7 @@
 //    Configuration file interface.
 //
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
-#include <cerrno>
-#include <cassert>
-#include <string_view>
-
-#include "SDL2/SDL_filesystem.h"
+#include "m_config.hpp"
 
 #include "config.hpp"
 
@@ -34,7 +25,6 @@
 #include "doomkeys.hpp"
 #include "i_system.hpp"
 #include "m_argv.hpp"
-#include "m_config.hpp"
 #include "m_misc.hpp"
 
 #include "z_zone.hpp"

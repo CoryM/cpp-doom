@@ -14,10 +14,7 @@
 // DESCRIPTION:
 //	System interface for PC speaker sound.
 //
-#include <cstring>
-#include <string_view>
-
-#include "SDL2/SDL.h"
+#include "common.hpp"
 
 #include "doomtype.hpp"
 

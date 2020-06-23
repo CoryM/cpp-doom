@@ -15,14 +15,10 @@
 // DESCRIPTION:
 //	Main program, simply calls D_DoomMain high level loop.
 //
+#include "common.hpp"
 
 #include "config.hpp"
 #include "crispy.hpp"
-
-#include <cstdio>
-#include <iostream>
-
-#include "SDL2/SDL.h"
 
 #include "doomtype.hpp"
 #include "i_system.hpp"

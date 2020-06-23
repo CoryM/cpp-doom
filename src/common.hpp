@@ -18,7 +18,9 @@
 #define __COMMON_HPP__
 
 // C Standard Libraries (C++ Version)
+#include <cassert>
 #include <cctype>
+#include <cerrno>
 #include <cstdlib>
 #include <cstdarg>
 #include <cstdio>
@@ -29,12 +31,18 @@
 #include <exception>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
 
 // 3rd Party Libraries
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_keycode.h"
+#include "SDL2/SDL_joystick.h"
+#include "SDL2/SDL_mixer.h"
+#include "SDL2/SDL_opengl.h"
+#include "SDL2/SDL_stdinc.h"
 
 // OS Libraries
 #include <unistd.h>

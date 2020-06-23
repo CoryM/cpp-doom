@@ -16,9 +16,7 @@
 // to be interrogated.
 //
 
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
+#include "common.hpp"
 
 #include "i_glob.hpp"
 #include "m_misc.hpp"
