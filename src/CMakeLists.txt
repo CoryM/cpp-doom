@@ -185,6 +185,9 @@ list(REMOVE_ITEM SOURCE_FILES_WITH_DEH i_main.cpp)
 add_executable("${PROGRAM_PREFIX}test" ${TEST_FILES} ${SOURCE_FILES_WITH_DEH} )
 target_include_directories("${PROGRAM_PREFIX}test" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
 target_link_libraries("${PROGRAM_PREFIX}test" test doom GTest::gtest ${EXTRA_LIBS})
-if(FoundIPO)
-set_property(TARGET "${PROGRAM_PREFIX}test" PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
-endif()
+
+# Fails due to 
+#   lto1: note: variable tracking size limit exceeded with ‘-fvar-tracking-assignments’, retrying without
+#if(FoundIPO)
+#set_property(TARGET "${PROGRAM_PREFIX}test" PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
+#endif()

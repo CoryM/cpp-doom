@@ -22,7 +22,8 @@ set(PACKAGE_LICENSE "GNU General Public License, version 2")
 
 # Any settings that should apply to all targets in this directory and all
 # subdirectories should go here.  Use judiciously.
-add_compile_options("-Wall" "-Wextra" "-pedantic" "-pthread" "-O1")
+add_compile_options("-Wall" "-Wextra" "-pedantic" "-pthread" "-Og")
+add_link_options("-Og")
 add_compile_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
 add_link_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
 
