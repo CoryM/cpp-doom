@@ -197,22 +197,19 @@ static GameMission_t IdentifyIWADByName(const char *name, int mask)
 // DefinedIn: d_iwad.cpp
 static void AddIWADPath(const std::string_view path, const std::string_view suffix)
 {
-    auto dup_path = S_StringDuplicate(path);
-
     // Split into individual dirs within the list.
-    auto left = dup_path;
+    auto left = std::string(path);
 
     for (;;)
     {
-        auto p = strchr(left.c_str(), PATH_SEPARATOR);
-        if (p != nullptr)
+        std::size_t pos = left.find(PATH_SEPARATOR);      // position of "live" in str
+
+        if (pos != std::string::npos)
         {
             // Break at the separator and use the left hand side
             // as another iwad dir
-            *const_cast<char *>(p) = '\0'; // a "const char *" pointer can be modiefed but not the data
-
-            v_iwadDirs.push_back(S_StringJoin({left, suffix}));
-            left = p + 1;
+            left = left.substr(pos + 1);
+            v_iwadDirs.emplace_back(left + std::string(suffix));
         }
         else
         {
@@ -220,7 +217,7 @@ static void AddIWADPath(const std::string_view path, const std::string_view suff
         }
     }
 
-    v_iwadDirs.push_back(S_StringJoin({left, suffix}));
+    v_iwadDirs.emplace_back(left + std::string(suffix));
 
 }
 
@@ -241,26 +238,21 @@ static void AddXdgDirs(void)
 
     auto env = env_view("XDG_DATA_HOME");
 
-    char *tmp_env = nullptr;
-
     if (env.data() == nullptr)
     {
         auto homedir = env_view("HOME");
 
         if (homedir.data() == nullptr)
         {
-            homedir = std::basic_string_view<char>("~/");
+            homedir = std::string_view("~/");
         }
-
-        tmp_env = M_StringJoin({homedir, "/.local/share"});
-        env     = std::string_view(tmp_env);
+        env     = homedir + std::string("/.local/share");
     }
 
     // We support $XDG_DATA_HOME/games/doom (which will usually be
     // ~/.local/share/games/doom) as a user-writeable extension to
     // the usual /usr/share/games/doom location.
-    v_iwadDirs.push_back(S_StringJoin({env, "/games/doom"}));
-    free(tmp_env);
+    v_iwadDirs.emplace_back(env + std::string("/games/doom"));
 
     // Quote:
     // > $XDG_DATA_DIRS defines the preference-ordered set of base
