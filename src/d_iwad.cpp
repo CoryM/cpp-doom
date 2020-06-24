@@ -294,7 +294,7 @@ static void AddSteamDirs(void)
     {
         homedir = std::string_view("/");
     }
-    // steampath auto deallocated apon exit
+    // steampath auto deallocated upon exit
     std::string steampath = S_StringJoin({homedir, "/.steam/root/steamapps/common"});
 
     AddIWADPath(steampath, "/Doom 2/base");
