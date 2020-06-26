@@ -247,18 +247,16 @@ bool M_StrToInt(const char *str, int *result)
 // slash separator character. If no directory is described in the path,
 // the string "." is returned. In either case, the result is newly allocated
 // and must be freed by the caller after use.
-char *M_DirName(const char *path)
+std::string M_DirName(const std::string_view path)
 {
-    const auto *p = strrchr(path, DIR_SEPARATOR);
-    if (p == nullptr)
+    const auto p = path.find(DIR_SEPARATOR);
+    if (p == std::string::npos)
     {
-        return M_StringDuplicate(".");
+        return std::string(".");
     }
     else
     {
-        auto *result     = M_StringDuplicate(path);
-        result[p - path] = '\0';
-        return result;
+        return std::string(path).substr(0, p - 1);
     }
 }
 

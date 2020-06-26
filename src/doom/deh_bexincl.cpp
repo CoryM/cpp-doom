@@ -68,10 +68,8 @@ static void *DEH_BEXInclStart(deh_context_t *context, char *line)
     if (!M_FileExists(try_path.c_str()))
     {
         // second, try loading the file in the directory of the current file
-        char *dir;
-        dir      = M_DirName(deh_file);
-        try_path = std::string(dir) + DIR_SEPARATOR_S + inc_file;
-        free(dir);
+        auto dir = M_DirName(deh_file);
+        try_path = dir + DIR_SEPARATOR_S + inc_file;
     }
 
     bex_nested = true;

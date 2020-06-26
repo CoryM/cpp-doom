@@ -59,7 +59,6 @@ static char *temp_timidity_cfg = NULL;
 
 static bool WriteWrapperTimidityConfig(char *write_path)
 {
-    char *path;
     FILE *fstream;
 
     if (!strcmp(timidity_cfg_path, ""))
@@ -74,9 +73,8 @@ static bool WriteWrapperTimidityConfig(char *write_path)
         return false;
     }
 
-    path = M_DirName(timidity_cfg_path);
+    auto path = M_DirName(timidity_cfg_path);
     fprintf(fstream, "dir %s\n", path);
-    free(path);
 
     fprintf(fstream, "source %s\n", timidity_cfg_path);
     fclose(fstream);

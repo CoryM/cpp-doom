@@ -66,10 +66,14 @@ std::vector<std::string> v_iwadDirs;
 
 void v_iwadDirs_clear()
 {
-    if (v_iwadDirs.size())
-    {
-        std::cout << "Clearing v_iwadDirs size before clear was " << v_iwadDirs.size() << std::endl;
-    }
+    // if (v_iwadDirs.size())
+    // {
+    //     std::cout << "Clearing v_iwadDirs size before clear was " << v_iwadDirs.size() << std::endl;
+    //     size_t count = 0;
+    //     for (const auto &str : v_iwadDirs) {
+    //         std::cout << count++ << ") " << str << std::endl;
+    //     }
+    // }
     v_iwadDirs.clear();
 }
 
@@ -199,6 +203,7 @@ static void AddIWADPath(const std::string_view path, const std::string_view suff
 {
     // Split into individual dirs within the list.
     auto left = std::string(path);
+    std::cout << "AddIWADPath - path :\"" << path << "\"" << " suffix :\"" << suffix << "\"" << std::endl;
 
     for (;;)
     {
@@ -208,8 +213,8 @@ static void AddIWADPath(const std::string_view path, const std::string_view suff
         {
             // Break at the separator and use the left hand side
             // as another iwad dir
+            v_iwadDirs.emplace_back(left.substr(0, pos - 1) + std::string(suffix));
             left = left.substr(pos + 1);
-            v_iwadDirs.emplace_back(left + std::string(suffix));
         }
         else
         {

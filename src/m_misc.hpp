@@ -34,7 +34,7 @@ bool        M_FileExists(const char *file);
 char *      M_FileCaseExists(const char *file);
 long        M_FileLength(FILE *handle);
 bool        M_StrToInt(const char *str, int *result);
-char *      M_DirName(const char *path);
+std::string M_DirName(const std::string_view path);
 const char *M_BaseName(const char *path);
 void        M_ExtractFileBase(const char *path, char *dest);
 void        M_ForceUppercase(char *text);
