@@ -28,7 +28,7 @@
 #include "w_wad.hpp"
 #include "z_zone.hpp"
 
-static const auto a_iwads = std::to_array<iwad_t>({ 
+static const auto a_iwads = std::to_array<iwad_t>({
     { "doom2.wad", doom2, commercial, "Doom II" },
     { "plutonia.wad", pack_plut, commercial, "Final Doom: Plutonia Experiment" },
     { "tnt.wad", pack_tnt, commercial, "Final Doom: TNT: Evilution" },
@@ -203,7 +203,6 @@ static void AddIWADPath(const std::string_view path, const std::string_view suff
 {
     // Split into individual dirs within the list.
     auto left = std::string(path);
-    std::cout << "AddIWADPath - path :\"" << path << "\"" << " suffix :\"" << suffix << "\"" << std::endl;
 
     for (;;)
     {
