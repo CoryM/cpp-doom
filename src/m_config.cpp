@@ -45,7 +45,7 @@ static auto autoload_path = std::string_view("");
 static const char *default_main_config;
 static const char *default_extra_config;
 
-enum default_type_t
+enum class default_type_t
 {
     DEFAULT_INT,
     DEFAULT_INT_HEX,
@@ -85,32 +85,29 @@ struct default_t
     bool bound;
 };
 
-typedef struct
+struct default_collection_t
 {
     default_t * defaults;
     int         numdefaults;
     const char *filename;
-} default_collection_t;
+};
 
-#define CONFIG_VARIABLE_GENERIC(name, type) \
-    {                                       \
-#name, { NULL }, type, 0, 0, false  \
-    }
+#define CONFIG_VARIABLE_GENERIC(name, type) { #name, { NULL }, type, 0, 0, false }
 
 #define CONFIG_VARIABLE_KEY(name) \
-    CONFIG_VARIABLE_GENERIC(name, DEFAULT_KEY)
+    CONFIG_VARIABLE_GENERIC(name, default_type_t::DEFAULT_KEY)
 #define CONFIG_VARIABLE_INT(name) \
-    CONFIG_VARIABLE_GENERIC(name, DEFAULT_INT)
+    CONFIG_VARIABLE_GENERIC(name, default_type_t::DEFAULT_INT)
 #define CONFIG_VARIABLE_INT_HEX(name) \
-    CONFIG_VARIABLE_GENERIC(name, DEFAULT_INT_HEX)
+    CONFIG_VARIABLE_GENERIC(name, default_type_t::DEFAULT_INT_HEX)
 #define CONFIG_VARIABLE_FLOAT(name) \
-    CONFIG_VARIABLE_GENERIC(name, DEFAULT_FLOAT)
+    CONFIG_VARIABLE_GENERIC(name, default_type_t::DEFAULT_FLOAT)
 #define CONFIG_VARIABLE_STRING(name) \
-    CONFIG_VARIABLE_GENERIC(name, DEFAULT_STRING)
+    CONFIG_VARIABLE_GENERIC(name, default_type_t::DEFAULT_STRING)
 
 //! @begin_config_file default
 
-static default_t doom_defaults_list[] = {
+static auto doom_defaults_list = std::to_array<default_t> ({
     //!
     // Mouse sensitivity.  This value is used to multiply input mouse
     // movement to control the effect of moving the mouse.
@@ -723,12 +720,12 @@ static default_t doom_defaults_list[] = {
     //
 
     CONFIG_VARIABLE_INT(comport),
-};
+});
 
 static default_collection_t doom_defaults = {
-    doom_defaults_list,
+    doom_defaults_list.data(),
     std::size(doom_defaults_list),
-    NULL,
+    NULL
 };
 
 //! @begin_config_file extended
@@ -2187,7 +2184,7 @@ static default_t extra_defaults_list[] = {
 static default_collection_t extra_defaults = {
     extra_defaults_list,
     std::size(extra_defaults_list),
-    NULL,
+    NULL
 };
 
 // Search a collection for a variable
@@ -2237,19 +2234,19 @@ static const int scantokey[128] = {
 };
 
 
-static void SaveDefaultCollection(default_collection_t *collection)
+static void SaveDefaultCollection(default_collection_t &collection)
 {
     default_t *defaults;
     int        i, v;
     FILE *     f;
 
-    f = fopen(collection->filename, "w");
+    f = fopen(collection.filename, "w");
     if (!f)
         return; // can't write the file, but don't complain
 
-    defaults = collection->defaults;
+    defaults = collection.defaults;
 
-    for (i = 0; i < collection->numdefaults; i++)
+    for (i = 0; i < collection.numdefaults; i++)
     {
         int chars_written;
 
@@ -2271,7 +2268,7 @@ static void SaveDefaultCollection(default_collection_t *collection)
 
         switch (defaults[i].type)
         {
-        case DEFAULT_KEY:
+        case default_type_t::DEFAULT_KEY:
 
             // use the untranslated version if we can, to reduce
             // the possibility of screwing up the user's config
@@ -2317,19 +2314,19 @@ static void SaveDefaultCollection(default_collection_t *collection)
             fprintf(f, "%i", v);
             break;
 
-        case DEFAULT_INT:
+        case default_type_t::DEFAULT_INT:
             fprintf(f, "%i", *defaults[i].location.i);
             break;
 
-        case DEFAULT_INT_HEX:
+        case default_type_t::DEFAULT_INT_HEX:
             fprintf(f, "0x%x", *defaults[i].location.i);
             break;
 
-        case DEFAULT_FLOAT:
+        case default_type_t::DEFAULT_FLOAT:
             fprintf(f, "%f", *defaults[i].location.f);
             break;
 
-        case DEFAULT_STRING:
+        case default_type_t::DEFAULT_STRING:
             fprintf(f, "\"%s\"", *defaults[i].location.s);
             break;
         }
@@ -2367,16 +2364,16 @@ static void SetVariable(default_t *def, const char *value)
 
     switch (def->type)
     {
-    case DEFAULT_STRING:
+    case default_type_t::DEFAULT_STRING:
         *def->location.s = M_StringDuplicate(value);
         break;
 
-    case DEFAULT_INT:
-    case DEFAULT_INT_HEX:
+    case default_type_t::DEFAULT_INT:
+    case default_type_t::DEFAULT_INT_HEX:
         *def->location.i = ParseIntParameter(value);
         break;
 
-    case DEFAULT_KEY:
+    case default_type_t::DEFAULT_KEY:
 
         // translate scancodes read from config
         // file (save the old value in untranslated)
@@ -2396,7 +2393,7 @@ static void SetVariable(default_t *def, const char *value)
         *def->location.i         = intparm;
         break;
 
-    case DEFAULT_FLOAT:
+    case default_type_t::DEFAULT_FLOAT:
         *def->location.f = (float)atof(value);
         break;
     }
@@ -2477,8 +2474,8 @@ void M_SetConfigFilenames(const char *main_config, const char *extra_config)
 
 void M_SaveDefaults(void)
 {
-    SaveDefaultCollection(&doom_defaults);
-    SaveDefaultCollection(&extra_defaults);
+    SaveDefaultCollection(doom_defaults);
+    SaveDefaultCollection(extra_defaults);
 }
 
 //
@@ -2600,9 +2597,9 @@ void M_BindIntVariable(const char *name, int *location)
     default_t *variable;
 
     variable = GetDefaultForName(name);
-    assert(variable->type == DEFAULT_INT
-           || variable->type == DEFAULT_INT_HEX
-           || variable->type == DEFAULT_KEY);
+    assert(variable->type == default_type_t::DEFAULT_INT
+           || variable->type == default_type_t::DEFAULT_INT_HEX
+           || variable->type == default_type_t::DEFAULT_KEY);
 
     variable->location.i = location;
     variable->bound      = true;
@@ -2613,7 +2610,7 @@ void M_BindFloatVariable(const char *name, float *location)
     default_t *variable;
 
     variable = GetDefaultForName(name);
-    assert(variable->type == DEFAULT_FLOAT);
+    assert(variable->type == default_type_t::DEFAULT_FLOAT);
 
     variable->location.f = location;
     variable->bound      = true;
@@ -2624,7 +2621,7 @@ void M_BindStringVariable(const char *name, char **location)
     default_t *variable;
 
     variable = GetDefaultForName(name);
-    assert(variable->type == DEFAULT_STRING);
+    assert(variable->type == default_type_t::DEFAULT_STRING);
 
     variable->location.s = location;
     variable->bound      = true;
@@ -2658,7 +2655,7 @@ int M_GetIntVariable(const char *name)
     variable = GetDefaultForName(name);
 
     if (variable == NULL || !variable->bound
-        || (variable->type != DEFAULT_INT && variable->type != DEFAULT_INT_HEX))
+        || (variable->type != default_type_t::DEFAULT_INT && variable->type != default_type_t::DEFAULT_INT_HEX))
     {
         return 0;
     }
@@ -2673,7 +2670,7 @@ const char *M_GetStringVariable(const char *name)
     variable = GetDefaultForName(name);
 
     if (variable == NULL || !variable->bound
-        || variable->type != DEFAULT_STRING)
+        || variable->type != default_type_t::DEFAULT_STRING)
     {
         return NULL;
     }
@@ -2688,7 +2685,7 @@ float M_GetFloatVariable(const char *name)
     variable = GetDefaultForName(name);
 
     if (variable == NULL || !variable->bound
-        || variable->type != DEFAULT_FLOAT)
+        || variable->type != default_type_t::DEFAULT_FLOAT)
     {
         return 0;
     }
@@ -2708,13 +2705,10 @@ static char *GetDefaultConfigDir(void)
     // ~/.local/share/chocolate-doom.  On Windows, we behave like
     // Vanilla Doom and save in the current directory.
 
-    char *result;
-    char *copy;
-
-    result = SDL_GetPrefPath("", PACKAGE_TARNAME);
-    if (result != NULL)
+    char *result = SDL_GetPrefPath("", PACKAGE_TARNAME);
+    if (result != nullptr)
     {
-        copy = M_StringDuplicate(result);
+        char *copy = M_StringDuplicate(result);
         SDL_free(result);
         return copy;
     }
