@@ -78,8 +78,9 @@ auto main(int argc, char **argv) -> int
     }
 
     // Cleanup
-    std::cout << "Shutting down and cleaning up" << std::endl;
+    std::cout << "cleaning up" << std::endl;
     v_iwadDirs_clear();
 
+    std::cout << "Shutting down" << std::endl;
     return 0;
 }

@@ -116,7 +116,7 @@ extern bool inhelpscreens;
 skill_t startskill;
 int     startepisode;
 int     startmap;
-bool autostart;
+bool    autostart;
 int     startloadgame;
 
 bool advancedemo;
@@ -501,7 +501,7 @@ void D_RunFrame()
         return;
     }
 
-    // frame syncronous IO operations
+    // frame synchronous IO operations
     I_StartFrame();
 
     TryRunTics(); // will run at least one tic
@@ -1328,7 +1328,7 @@ static void LoadSigilWad(void)
         const std::string_view new_name;
     };
 
-    constexpr auto a_sigilLumps = std::array< s_sigilLumps, 10 >({ 
+    constexpr auto a_sigilLumps = std::array< s_sigilLumps, 10 >({
         {"CREDIT",  "SIGCREDI"},
         {"HELP1",   "SIGHELP1"},
         {"TITLEPIC","SIGTITLE"},
@@ -1346,7 +1346,7 @@ static void LoadSigilWad(void)
         "TEXTURE1",
         "TEXTURE2"
     });
-    
+
 
     // [crispy] don't load SIGIL.wad if another PWAD already provides E5M1
     int i = W_CheckNumForName("E5M1");
@@ -1751,7 +1751,7 @@ void D_DoomMain(void)
 
     DEH_printf("W_Init: Init WADfiles.\n");
     D_AddFile(iwadfile);
-    free(iwadfile);
+    //free(iwadfile);
     auto numiwadlumps = numlumps;
 
     W_CheckCorrectIWAD(doom);
