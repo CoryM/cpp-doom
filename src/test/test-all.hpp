@@ -5,6 +5,7 @@
 // solves linker issue
 #include "d_iwad_test.hpp"
 #include "test-fmt.hpp"
+#include "test-d_event.hpp"
 
 
 #endif

@@ -47,7 +47,7 @@ event_t *D_PopEvent(void)
 
     if (eventtail == eventhead)
     {
-        return NULL;
+        return nullptr;
     }
 
     result = &events[eventtail];
