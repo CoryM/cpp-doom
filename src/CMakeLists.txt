@@ -175,18 +175,18 @@ set_property(TARGET mus2mid PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
 endif()
 
 
-#Setup the test executable using GTest (Google Test Framework)
+#Setup the test executable using Catch2
 
-set(TEST_FILES 
+set(TEST_FILES
     test_main.cpp
     test/test-all.hpp
 )
 list(REMOVE_ITEM SOURCE_FILES_WITH_DEH i_main.cpp)
 add_executable("${PROGRAM_PREFIX}test" ${TEST_FILES} ${SOURCE_FILES_WITH_DEH} )
 target_include_directories("${PROGRAM_PREFIX}test" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
-target_link_libraries("${PROGRAM_PREFIX}test" test doom GTest::gtest ${EXTRA_LIBS})
+target_link_libraries("${PROGRAM_PREFIX}test" test doom Catch2::Catch2 ${EXTRA_LIBS})
 
-# Fails due to 
+# Fails due to
 #   lto1: note: variable tracking size limit exceeded with ‘-fvar-tracking-assignments’, retrying without
 #if(FoundIPO)
 #set_property(TARGET "${PROGRAM_PREFIX}test" PROPERTY INTERPROCEDURAL_OPTIMIZATION True)

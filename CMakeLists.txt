@@ -27,10 +27,10 @@ add_link_options("-Og")
 add_compile_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
 add_link_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
 
-find_package(SDL2 2.0.1)
-find_package(SDL2_mixer 2.0.0)
-find_package(SDL2_net 2.0.0)
-find_package(GTest)
+find_package(SDL2 2.0.1 REQUIRED)
+find_package(SDL2_mixer 2.0.0 REQUIRED)
+find_package(SDL2_net 2.0.0 REQUIRED)
+find_package(Catch2 REQUIRED)
 
 # Check for libsamplerate.
 find_package(samplerate)

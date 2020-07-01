@@ -1,8 +1,4 @@
- 
-#include "gtest/gtest.h"
-#include "test/test-all.hpp"
+#define CATCH_CONFIG_MAIN
+#include "catch2/catch.hpp"
 
-auto main(int argc, char** argv) -> int {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+#include "test/test-all.hpp"
