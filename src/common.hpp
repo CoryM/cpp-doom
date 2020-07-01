@@ -37,6 +37,7 @@
 #include <vector>
 
 // 3rd Party Libraries
+#include <fmt/core.h>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_keycode.h"
 #include "SDL2/SDL_joystick.h"

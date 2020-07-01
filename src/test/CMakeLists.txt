@@ -1,6 +1,7 @@
 add_library(test STATIC
             test-all.hpp
             d_iwad_test.hpp
+            test-fmt.hpp
             )
 set_target_properties(test PROPERTIES LINKER_LANGUAGE CXX)
 
