@@ -55,17 +55,16 @@
 
 //
 // Animating textures and planes
-// There is another anim_t used in wi_stuff, unrelated.
+// There is another local_anim_t used in wi_stuff, unrelated.
 //
-typedef struct
+struct local_anim_t
 {
-    bool istexture;
-    int     picnum;
-    int     basepic;
-    int     numpics;
-    int     speed;
-
-} anim_t;
+    bool  istexture = false;
+    int   picnum  = 0;
+    int   basepic = 0;
+    int   numpics = 0;
+    int   speed   = 0;
+};
 
 //
 //      source animation definition
@@ -84,8 +83,8 @@ typedef PACKED_STRUCT(
 #define MAXANIMS 32
 
 // [crispy] remove MAXANIMS limit
-extern anim_t *anims;
-extern anim_t *lastanim;
+extern local_anim_t *anims;
+extern local_anim_t *lastanim;
 
 //
 // P_InitPicAnims
@@ -134,8 +133,8 @@ animdef_t animdefs_vanilla[] = {
 };
 
 // [crispy] remove MAXANIMS limit
-anim_t *      anims;
-anim_t *      lastanim;
+local_anim_t *      anims;
+local_anim_t *      lastanim;
 static size_t maxanims;
 
 
@@ -1188,7 +1187,7 @@ int     levelTimeCount;
 
 void P_UpdateSpecials(void)
 {
-    anim_t *anim;
+    local_anim_t *anim;
     int     pic;
     int     i;
     line_s *line;
@@ -1638,7 +1637,7 @@ void P_SpawnSpecials(void)
             numlinespecials++;
             break;
 
-        // [crispy] add support for MBF sky tranfers
+        // [crispy] add support for MBF sky transfers
         case 271:
         case 272: {
             int secnum;
@@ -1666,6 +1665,6 @@ void P_SpawnSpecials(void)
     for (i = 0; i < maxbuttons; i++)
         memset(&buttonlist[i], 0, sizeof(button_t));
 
-    // UNUSED: no horizonal sliders.
+    // UNUSED: no horizontal sliders.
     //	P_InitSlidingDoorFrames();
 }

@@ -128,7 +128,7 @@ typedef struct
 // Animation.
 // There is another anim_t used in p_spec.
 //
-typedef struct
+struct anim_t
 {
     animenum_t type;
 
@@ -168,7 +168,7 @@ typedef struct
     // used by RANDOM and LEVEL when animating
     int state;
 
-} anim_t;
+};
 
 
 static point_t lnodes[NUMEPISODES][NUMMAPS] = {
