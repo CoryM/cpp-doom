@@ -20,7 +20,7 @@
 #ifndef __M_CONFIG__
 #define __M_CONFIG__
 
-#include "common.hpp"
+
 
 #include "doomtype.hpp"
 

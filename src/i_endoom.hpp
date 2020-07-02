@@ -20,7 +20,7 @@
 #ifndef __I_ENDOOM__
 #define __I_ENDOOM__
 
-#include "common.hpp"
+
 #include "doomtype.hpp"
 
 // Display the Endoom screen on shutdown.  Pass a pointer to the

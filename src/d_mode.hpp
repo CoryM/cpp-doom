@@ -20,7 +20,7 @@
 #ifndef __D_MODE__
 #define __D_MODE__
 
-#include "common.hpp"
+
 
 #include "doomtype.hpp"
 

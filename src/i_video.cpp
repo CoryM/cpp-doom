@@ -16,7 +16,8 @@
 //	DOOM graphics stuff for SDL.
 //
 
-#include "common.hpp"
+
+#include "SDL2/SDL.h"
 
 #include "icon.cpp"
 
@@ -730,7 +731,7 @@ void I_FinishUpdate(void)
 
 #if 0 // SDL2-TODO
     // Don't update the screen if the window isn't visible.
-    // Not doing this breaks under Windows when we alt-tab away 
+    // Not doing this breaks under Windows when we alt-tab away
     // while fullscreen.
 
     if (!(SDL_GetAppState() & SDL_APPACTIVE))
@@ -1766,4 +1767,3 @@ pixel_t I_MapRGB(const uint8_t r, const uint8_t g, const uint8_t b)
 */
     return SDL_MapRGB(argbbuffer->format, r, g, b);
 }
-

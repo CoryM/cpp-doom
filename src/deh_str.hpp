@@ -18,7 +18,8 @@
 #ifndef DEH_STR_H
 #define DEH_STR_H
 
-#include "common.hpp"
+#include <map>
+#include <string_view>
 
 #include "doomtype.hpp"
 

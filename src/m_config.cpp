@@ -16,6 +16,7 @@
 // DESCRIPTION:
 //    Configuration file interface.
 //
+#include <cassert>
 
 #include "m_config.hpp"
 
@@ -28,6 +29,8 @@
 #include "m_misc.hpp"
 
 #include "z_zone.hpp"
+
+#include "SDL2/SDL.h"
 
 //
 // DEFAULTS

@@ -15,7 +15,10 @@
 // DESCRIPTION:
 //	Main program, simply calls D_DoomMain high level loop.
 //
-#include "common.hpp"
+
+#include <iostream>
+
+#include "SDL2/SDL_mixer.h"
 
 #include "config.hpp"
 #include "crispy.hpp"

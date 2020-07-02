@@ -15,7 +15,9 @@
 // DESCRIPTION:
 //	System interface for music.
 //
-#include "common.hpp"
+
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_mixer.h"
 
 #include "i_glob.hpp"
 #include "i_midipipe.hpp"

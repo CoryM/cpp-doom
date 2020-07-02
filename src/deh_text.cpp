@@ -15,7 +15,8 @@
 // Parses Text substitution sections in dehacked files
 //
 
-#include "common.hpp"
+
+#include <string>
 
 #include "doomtype.hpp"
 

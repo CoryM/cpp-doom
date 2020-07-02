@@ -16,6 +16,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "../common.hpp"
+
 #include "../config.hpp"
 #include "../../textscreen/textscreen.hpp"
 
@@ -141,7 +143,7 @@ static void QuitConfirm(void *unused1 [[maybe_unused]], void *unused2 [[maybe_un
 
     window = TXT_NewWindow(NULL);
 
-    TXT_AddWidgets(window, 
+    TXT_AddWidgets(window,
                    label = TXT_NewLabel("Exiting setup.\nSave settings?"),
                    TXT_NewStrut(24, 0),
                    yes_button = TXT_NewButton2("  Yes  ", DoQuit, reinterpret_cast<void(*)>(DoQuit)),
@@ -154,7 +156,7 @@ static void QuitConfirm(void *unused1 [[maybe_unused]], void *unused2 [[maybe_un
 
     // Only an "abort" button in the middle.
     TXT_SetWindowAction(window, TXT_HORIZ_LEFT, NULL);
-    TXT_SetWindowAction(window, TXT_HORIZ_CENTER, 
+    TXT_SetWindowAction(window, TXT_HORIZ_CENTER,
                         TXT_NewWindowAbortAction(window));
     TXT_SetWindowAction(window, TXT_HORIZ_RIGHT, NULL);
 }
@@ -162,7 +164,7 @@ static void QuitConfirm(void *unused1 [[maybe_unused]], void *unused2 [[maybe_un
 static void LaunchDoom(void *unused1 [[maybe_unused]], void *unused2 [[maybe_unused]])
 {
     execute_context_t *exec;
-    
+
     // Save configuration first
 
     M_SaveDefaults();
@@ -337,7 +339,7 @@ void RestartTextscreen(void)
     InitTextscreen();
 }
 
-// 
+//
 // Initialize and run the textscreen GUI.
 //
 

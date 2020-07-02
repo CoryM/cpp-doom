@@ -18,7 +18,8 @@
 
 #include "i_cdmus.hpp"
 
-#include "common.hpp"
+
+#include <cstdio>
 
 #include "doomtype.hpp"
 

@@ -19,7 +19,8 @@
 #ifndef __D_IWAD__
 #define __D_IWAD__
 
-#include "common.hpp"
+#include <string>
+#include <string_view>
 
 #include "d_mode.hpp"
 

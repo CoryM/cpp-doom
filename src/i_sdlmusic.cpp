@@ -16,7 +16,9 @@
 //	System interface for music.
 //
 
-#include "common.hpp"
+
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_mixer.h"
 
 #include "i_midipipe.hpp"
 #include "config.hpp"
@@ -74,7 +76,7 @@ static bool WriteWrapperTimidityConfig(char *write_path)
     }
 
     auto path = M_DirName(timidity_cfg_path);
-    fprintf(fstream, "dir %s\n", path);
+    fprintf(fstream, "dir %s\n", path.c_str());
 
     fprintf(fstream, "source %s\n", timidity_cfg_path);
     fclose(fstream);

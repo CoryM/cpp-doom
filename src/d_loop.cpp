@@ -15,6 +15,7 @@
 // DESCRIPTION:
 //     Main loop code.
 //
+#include <cstdlib>
 
 #include "d_loop.hpp"
 

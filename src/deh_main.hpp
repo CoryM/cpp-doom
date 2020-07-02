@@ -18,7 +18,7 @@
 #ifndef DEH_MAIN_H
 #define DEH_MAIN_H
 
-#include "common.hpp"
+
 
 #include "doomtype.hpp"
 #include "deh_str.hpp"

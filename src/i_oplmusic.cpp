@@ -16,7 +16,7 @@
 //   System interface for music.
 //
 
-#include "common.hpp"
+#include <cstddef>
 
 #include "memio.hpp"
 #include "mus2mid.hpp"

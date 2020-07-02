@@ -15,6 +15,9 @@
 // DESCRIPTION:
 //
 
+#include <unistd.h>
+#include "SDL2/SDL.h"
+
 #include "config.hpp"
 
 #include "deh_str.hpp"

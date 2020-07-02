@@ -15,7 +15,8 @@
 // DESCRIPTION:  none
 //
 
-#include "common.hpp"
+
+#include "SDL2/SDL_mixer.h"
 
 #include "config.hpp"
 #include "doomtype.hpp"

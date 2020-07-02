@@ -1328,7 +1328,7 @@ static void LoadSigilWad(void)
         const std::string_view new_name;
     };
 
-    constexpr auto a_sigilLumps = std::array< s_sigilLumps, 10 >({
+    constexpr auto a_sigilLumps = std::to_array< s_sigilLumps >({
         {"CREDIT",  "SIGCREDI"},
         {"HELP1",   "SIGHELP1"},
         {"TITLEPIC","SIGTITLE"},

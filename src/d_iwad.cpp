@@ -15,6 +15,7 @@
 //     Search for and locate an IWAD file, and initialize according
 //     to the IWAD type.
 //
+#include <vector>
 
 #include "d_iwad.hpp" // Includes common.hpp
 

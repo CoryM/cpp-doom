@@ -20,7 +20,7 @@
 #ifndef DEH_MAPPING_H
 #define DEH_MAPPING_H
 
-#include "common.hpp"
+
 
 #include "doomtype.hpp"
 #include "deh_io.hpp"

@@ -16,7 +16,7 @@
 // to be interrogated.
 //
 
-#include "common.hpp"
+#include <cstdlib>
 
 #include "i_glob.hpp"
 #include "m_misc.hpp"

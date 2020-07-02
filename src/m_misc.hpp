@@ -23,6 +23,8 @@
 #include <cstdio>
 #include <cstdarg>
 #include <memory>
+#include <string>
+#include <string_view>
 
 #include "doomtype.hpp"
 

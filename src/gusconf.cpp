@@ -20,8 +20,8 @@
 //     DMXGUS lump into an equivalent Timidity configuration file.
 //
 
-#include "common.hpp"
-
+#include <cctype>
+#include <string_view>
 #include "../utils/memory.hpp"
 #include "m_misc.hpp"
 #include "w_wad.hpp"
@@ -29,7 +29,7 @@
 
 #define MAX_INSTRUMENTS 256
 
-struct gus_config_t 
+struct gus_config_t
 {
     char *       patch_names[MAX_INSTRUMENTS];
     int          used[MAX_INSTRUMENTS];
