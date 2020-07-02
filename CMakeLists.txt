@@ -1,8 +1,11 @@
+cmake_minimum_required(VERSION 3.17.3)
+project("Cpp Doom" VERSION 5.7.3 LANGUAGES CXX)
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-cmake_minimum_required(VERSION 3.17.3)
-project("Cpp Doom" VERSION 5.7.2 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
+set(CXX_STANDARD_REQUIRED on)
+set(CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Autotools variables
@@ -23,7 +26,7 @@ set(PACKAGE_LICENSE "GNU General Public License, version 2")
 # Any settings that should apply to all targets in this directory and all
 # subdirectories should go here.  Use judiciously.
 add_compile_options("-Wall" "-Wextra" "-pedantic" "-pthread" "-Og")
-add_link_options("-Og")
+add_link_options("-O2")
 add_compile_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
 add_link_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
 
