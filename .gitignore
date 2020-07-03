@@ -60,6 +60,9 @@ GTAGS
 .vscode/settings.json
 .vscode/c_cpp_properties.json
 
+#ignore Doxygen generated files
+/doxy/*
+
 *.WAD
 *.wad
 *.pk3
