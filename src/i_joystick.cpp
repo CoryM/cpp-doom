@@ -362,7 +362,7 @@ void I_UpdateJoystick(void)
     {
         event_t ev;
 
-        ev.type  = ev_joystick;
+        ev.type  = evtype_t::ev_joystick;
         ev.data1 = GetButtonsState();
         ev.data2 = GetAxisState(joystick_x_axis, joystick_x_invert);
         ev.data3 = GetAxisState(joystick_y_axis, joystick_y_invert);

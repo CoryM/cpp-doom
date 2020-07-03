@@ -1151,11 +1151,11 @@ bool HU_Responder(event_t *ev)
     }
     else if (ev->data1 == KEY_RALT || ev->data1 == KEY_LALT)
     {
-        altdown = ev->type == ev_keydown;
+        altdown = ev->type == evtype_t::ev_keydown;
         return false;
     }
 
-    if (ev->type != ev_keydown)
+    if (ev->type != evtype_t::ev_keydown)
         return false;
 
     if (!chat_on)

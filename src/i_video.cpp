@@ -443,7 +443,7 @@ void I_GetEvent(void)
             else
             {
                 event_t event;
-                event.type = ev_quit;
+                event.type = evtype_t::ev_quit;
                 D_PostEvent(&event);
             }
             break;

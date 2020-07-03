@@ -657,13 +657,12 @@ static void GiveBackpack(bool give)
 
 // Respond to keyboard input events,
 //  intercept cheats.
-bool
-    ST_Responder(event_t *ev)
+bool ST_Responder(event_t *ev)
 {
     int i;
 
     // Filter automap on/off.
-    if (ev->type == ev_keyup
+    if (ev->type == evtype_t::ev_keyup
         && ((ev->data1 & 0xffff0000) == AM_MSGHEADER))
     {
         switch (ev->data1)
@@ -681,7 +680,7 @@ bool
     }
 
     // if a user keypress...
-    else if (ev->type == ev_keydown)
+    else if (ev->type == evtype_t::ev_keydown)
     {
         if (!netgame && gameskill != sk_nightmare)
         {
@@ -1075,7 +1074,7 @@ bool
                     else
                     {
                         // [crispy] no reason for evil grin
-                        oldweaponsowned[w]   = false; 
+                        oldweaponsowned[w]   = false;
                         plyr->weaponowned[w] = false;
 
                         // [crispy] removed current weapon, select another one

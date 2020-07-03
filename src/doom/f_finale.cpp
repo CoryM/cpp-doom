@@ -473,12 +473,12 @@ static int F_SoundForState(int st)
     }
     else
     {
-        
+
         for (size_t i = 0; i < std::size(actionsounds); i++)
         {
             const actionsound_t *const as = &actionsounds[i];
 
-            if ((!as->early && castaction == reinterpret_cast<void *>(as->action.acv)) || 
+            if ((!as->early && castaction == reinterpret_cast<void *>(as->action.acv)) ||
                  (as->early && nextaction == reinterpret_cast<void *>(as->action.acv)))
             {
                 return as->sound;
@@ -597,7 +597,7 @@ void F_CastTicker(void)
 	  case S_PAIN_ATK3:	sfx = sfx_sklatk; break;
 	  default: sfx = 0; break;
 	}
-		
+
 */
         if (sfx)
             S_StartSound(NULL, sfx);
@@ -669,7 +669,7 @@ bool F_CastResponder(event_t *ev)
 {
     bool xdeath = false;
 
-    if (ev->type != ev_keydown)
+    if (ev->type != evtype_t::ev_keydown)
         return false;
 
     // [crispy] make monsters turnable in cast ...

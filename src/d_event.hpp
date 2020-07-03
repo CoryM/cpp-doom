@@ -30,7 +30,7 @@
 //
 
 // Input event types.
-enum evtype_t
+enum class evtype_t
 {
     // Key press/release events.
     //    data1: Key code (from doomkeys.h) of the key that was
@@ -65,12 +65,15 @@ enum evtype_t
 
     // Quit event. Triggered when the user clicks the "close" button
     // to terminate the application.
-    ev_quit
+    ev_quit,
+
+    // No Statue
+    none
 };
 
 // Event structure.
 struct event_t {
-    evtype_t type;
+    evtype_t type = evtype_t::none;
     // Event-specific data; see the descriptions given above.
     int data1 = 0;
     int data2 = 0;

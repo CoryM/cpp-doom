@@ -938,18 +938,14 @@ static void SetDefaultSaveName(int slot [[maybe_unused]])
     }
     else
     {
-        char *wadname = M_StringDuplicate(W_WadNameForLump(maplumpinfo));
-        char *ext     = strrchr(wadname, '.');
+        auto wadname = S_StringDuplicate(W_WadNameForLump(maplumpinfo));
 
-        if (ext != NULL)
+        if (auto ext = wadname.find('.'); ext != std::string::npos)
         {
-            *ext = '\0';
+            wadname = wadname.substr(0, (wadname.size() - ext) - 1);
         }
 
-        M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE,
-            "%s (%s)", maplumpinfo->name,
-            wadname);
-        free(wadname);
+        M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE, "%s (%s)", maplumpinfo->name, wadname.c_str());
     }
     M_ForceUppercase(savegamestrings[itemOn]);
     joypadSave = false;
@@ -1379,7 +1375,7 @@ static void M_DrawMouse(void)
 #include "m_background.hpp"
 static void M_DrawCrispnessBackground(void)
 {
-    
+
     pixel_t *dest = I_VideoBuffer;
     for (int y = 0; y < SCREENHEIGHT; y++)
     {
@@ -2172,8 +2168,8 @@ bool M_Responder(event_t *ev)
 
     if (testcontrols)
     {
-        if (ev->type == ev_quit
-            || (ev->type == ev_keydown
+        if (ev->type == evtype_t::ev_quit
+            || (ev->type == evtype_t::ev_keydown
                 && (ev->data1 == key_menu_activate || ev->data1 == key_menu_quit)))
         {
             I_Quit();
@@ -2184,7 +2180,7 @@ bool M_Responder(event_t *ev)
     }
 
     // "close" button pressed on window?
-    if (ev->type == ev_quit)
+    if (ev->type == evtype_t::ev_quit)
     {
         // First click on close button = bring up quit confirm message.
         // Second click on close button = confirm quit
@@ -2207,7 +2203,7 @@ bool M_Responder(event_t *ev)
     ch  = 0;
     key = -1;
 
-    if (ev->type == ev_joystick)
+    if (ev->type == evtype_t::ev_joystick)
     {
         // Simulate key presses from joystick events to interact with the menu.
 
@@ -2287,7 +2283,7 @@ bool M_Responder(event_t *ev)
     }
     else
     {
-        if (ev->type == ev_mouse && mousewait < I_GetTime())
+        if (ev->type == evtype_t::ev_mouse && mousewait < I_GetTime())
         {
             // [crispy] novert disables controlling the menus with the mouse
             if (!novert)
@@ -2347,7 +2343,7 @@ bool M_Responder(event_t *ev)
         }
         else
         {
-            if (ev->type == ev_keydown)
+            if (ev->type == evtype_t::ev_keydown)
             {
                 key = ev->data1;
                 ch  = ev->data2;
@@ -2394,7 +2390,7 @@ bool M_Responder(event_t *ev)
             // instead, use ev->data3 which gives the fully-translated and
             // modified key input.
 
-            if (ev->type != ev_keydown)
+            if (ev->type != evtype_t::ev_keydown)
             {
                 break;
             }

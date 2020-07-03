@@ -925,7 +925,7 @@ static void SetMouseButtons(unsigned int buttons_mask)
 bool G_Responder(event_t *ev)
 {
     // allow spy mode changes even during the demo
-    if (gamestate == GS_LEVEL && ev->type == ev_keydown
+    if (gamestate == GS_LEVEL && ev->type == evtype_t::ev_keydown
         && ev->data1 == key_spy && (singledemo || !deathmatch))
     {
         // spy mode
@@ -941,7 +941,7 @@ bool G_Responder(event_t *ev)
     // any other key pops up menu if in demos
     if (gameaction == ga_nothing && !singledemo && (demoplayback || gamestate == GS_DEMOSCREEN))
     {
-        if (ev->type == ev_keydown || (ev->type == ev_mouse && ev->data1) || (ev->type == ev_joystick && ev->data1))
+        if (ev->type == evtype_t::ev_keydown || (ev->type == evtype_t::ev_mouse && ev->data1) || (ev->type == evtype_t::ev_joystick && ev->data1))
         {
             M_StartControlPanel();
             // [crispy] play a sound if the menu is activated with a different key than ESC
@@ -954,11 +954,11 @@ bool G_Responder(event_t *ev)
 
     if (gamestate == GS_LEVEL)
     {
-#if 0 
-	if (devparm && ev->type == ev_keydown && ev->data1 == ';') 
-	{ 
-	    G_DeathMatchSpawnPlayer (0); 
-	    return true; 
+#if 0
+	if (devparm && ev->type == ev_keydown && ev->data1 == ';')
+	{
+	    G_DeathMatchSpawnPlayer (0);
+	    return true;
 	}
 #endif
         if (HU_Responder(ev))
@@ -975,7 +975,7 @@ bool G_Responder(event_t *ev)
             return true; // finale ate the event
     }
 
-    if (testcontrols && ev->type == ev_mouse)
+    if (testcontrols && ev->type == evtype_t::ev_mouse)
     {
         // If we are invoked by setup to test the controls, save the
         // mouse speed so that we can display it on-screen.
@@ -988,18 +988,18 @@ bool G_Responder(event_t *ev)
     // If the next/previous weapon keys are pressed, set the next_weapon
     // variable to change weapons when the next ticcmd is generated.
 
-    if (ev->type == ev_keydown && ev->data1 == key_prevweapon)
+    if (ev->type == evtype_t::ev_keydown && ev->data1 == key_prevweapon)
     {
         next_weapon = -1;
     }
-    else if (ev->type == ev_keydown && ev->data1 == key_nextweapon)
+    else if (ev->type == evtype_t::ev_keydown && ev->data1 == key_nextweapon)
     {
         next_weapon = 1;
     }
 
     switch (ev->type)
     {
-    case ev_keydown:
+    case evtype_t::ev_keydown:
         if (ev->data1 == key_pause)
         {
             sendpause = true;
@@ -1011,12 +1011,12 @@ bool G_Responder(event_t *ev)
 
         return true; // eat key down events
 
-    case ev_keyup:
+    case evtype_t::ev_keyup:
         if (ev->data1 < NUMKEYS)
             gamekeydown[ev->data1] = false;
         return false; // always let key up events filter down
 
-    case ev_mouse:
+    case evtype_t::ev_mouse:
         SetMouseButtons(ev->data1);
         if (mouseSensitivity)
             mousex = ev->data2 * (mouseSensitivity + 5) / 10;
@@ -1032,7 +1032,7 @@ bool G_Responder(event_t *ev)
             mousey = 0; // [crispy] disable entirely
         return true;    // eat events
 
-    case ev_joystick:
+    case evtype_t::ev_joystick:
         SetJoyButtons(ev->data1);
         joyxmove      = ev->data2;
         joyymove      = ev->data3;
@@ -1668,20 +1668,20 @@ void G_DoCompleted(void)
     /*
 //#if 0  Hmmm - why?
     if ( (gamemap == 8)
-	 && (gamemode != commercial) ) 
+	 && (gamemode != commercial) )
     {
-	// victory 
-	gameaction = ga_victory; 
-	return; 
-    } 
-	 
+	// victory
+	gameaction = ga_victory;
+	return;
+    }
+
     if ( (gamemap == 9)
-	 && (gamemode != commercial) ) 
+	 && (gamemode != commercial) )
     {
-	// exit secret level 
-	for (i=0 ; i<MAXPLAYERS ; i++) 
-	    players[i].didsecret = true; 
-    } 
+	// exit secret level
+	for (i=0 ; i<MAXPLAYERS ; i++)
+	    players[i].didsecret = true;
+    }
 //#endif
 */
 
@@ -2529,9 +2529,9 @@ void G_WriteDemoTiccmd(ticcmd_t *cmd)
         /*
         if (vanilla_demo_limit)
         {
-            // no more space 
-            G_CheckDemoStatus (); 
-            return; 
+            // no more space
+            G_CheckDemoStatus ();
+            return;
         }
         else
         */
@@ -2889,14 +2889,14 @@ void G_TimeDemo(char *name)
 }
 
 
-/* 
-=================== 
-= 
-= G_CheckDemoStatus 
-= 
-= Called after a death or level completion to allow demos to be cleaned up 
-= Returns true if a new demo loop action will take place 
-=================== 
+/*
+===================
+=
+= G_CheckDemoStatus
+=
+= Called after a death or level completion to allow demos to be cleaned up
+= Returns true if a new demo loop action will take place
+===================
 */
 
 bool G_CheckDemoStatus(void)

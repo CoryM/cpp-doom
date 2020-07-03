@@ -7,8 +7,8 @@
 
 TEST_CASE("{d_event}", "[d_event][sideeffects]")
 {
-    auto ev1 = event_t({ ev_keydown, 1, 2, 3, 4, 5 });
-    auto ev2 = event_t({ ev_keyup, 6, 7, 8, 9, 10 });
+    auto ev1 = event_t({ evtype_t::ev_keydown, 1, 2, 3, 4, 5 });
+    auto ev2 = event_t({ evtype_t::ev_keyup, 6, 7, 8, 9, 10 });
 
     SECTION("push onto event stack")
     {

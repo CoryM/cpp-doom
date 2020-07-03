@@ -485,7 +485,7 @@ void AM_changeWindowLoc(void)
 void AM_initVariables(void)
 {
     int            pnum;
-    static event_t st_notify = { ev_keyup, AM_MSGENTERED, 0, 0 };
+    static event_t st_notify = { evtype_t::ev_keyup, AM_MSGENTERED, 0, 0 };
 
     automapactive = true;
     //  fb = I_VideoBuffer; // [crispy] simplify
@@ -625,7 +625,7 @@ void AM_ReInit(void)
 //
 void AM_Stop(void)
 {
-    static event_t st_notify = { {}, ev_keyup, AM_MSGEXITED, 0 };
+    static event_t st_notify = { evtype_t::ev_keyup, AM_MSGEXITED, 0 };
 
     AM_unloadPics();
     automapactive = false;
@@ -692,7 +692,7 @@ bool
 
     rc = false;
 
-    if (ev->type == ev_joystick && joybautomap >= 0
+    if (ev->type == evtype_t::ev_joystick && joybautomap >= 0
         && (ev->data1 & (1 << joybautomap)) != 0)
     {
         joywait = I_GetTime() + 5;
@@ -714,7 +714,7 @@ bool
 
     if (!automapactive)
     {
-        if (ev->type == ev_keydown && ev->data1 == key_map_toggle)
+        if (ev->type == evtype_t::ev_keydown && ev->data1 == key_map_toggle)
         {
             AM_Start();
             viewactive = false;
@@ -722,7 +722,7 @@ bool
         }
     }
     // [crispy] zoom and move Automap with the mouse (wheel)
-    else if (ev->type == ev_mouse && !crispy->automapoverlay && !menuactive && !inhelpscreens)
+    else if (ev->type == evtype_t::ev_mouse && !crispy->automapoverlay && !menuactive && !inhelpscreens)
     {
         if (mousebprevweapon >= 0 && ev->data1 & (1 << mousebprevweapon))
         {
@@ -745,7 +745,7 @@ bool
             rc         = true;
         }
     }
-    else if (ev->type == ev_keydown)
+    else if (ev->type == evtype_t::ev_keydown)
     {
         rc  = true;
         key = ev->data1;
@@ -867,7 +867,7 @@ bool
             cheating = (cheating + 1) % 3;
         }
     }
-    else if (ev->type == ev_keyup)
+    else if (ev->type == evtype_t::ev_keyup)
     {
         rc  = false;
         key = ev->data1;
