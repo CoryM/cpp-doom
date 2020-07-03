@@ -232,14 +232,14 @@ int M_ReadFile(const char *name, byte **buffer)
 char *M_TempFile(const char *s)
 {
     // In Unix, just use /tmp.
-    return M_StringJoin({"/tmp", DIR_SEPARATOR_S, s});
+    return M_StringJoin({ "/tmp", DIR_SEPARATOR_S, s });
 }
 
 bool M_StrToInt(const char *str, int *result)
 {
     errno = 0;
-    char* str_end;
-    *result = std::strtol(str, &str_end, 0);      
+    char *str_end;
+    *result = std::strtol(str, &str_end, 0);
     return (str != str_end && errno == 0);
 }
 
@@ -322,7 +322,6 @@ void M_ExtractFileBase(const char *path, char *dest)
 // Change string to uppercase.
 //
 //---------------------------------------------------------------------------
-
 void M_ForceUppercase(char *text)
 {
     char *p;
@@ -402,7 +401,8 @@ char *M_StringDuplicate(const std::string_view orig)
     return result;
 }
 // In trans to using strings / string_view instead of char*
-std::string S_StringDuplicate(const std::string_view orig) {
+std::string S_StringDuplicate(const std::string_view orig)
+{
     return std::string(M_StringDuplicate(orig));
 }
 
@@ -528,7 +528,7 @@ bool M_StringEndsWith(const char *s, const char *suffix)
 // Return a newly-malloced string with all the strings given as arguments
 // concatenated together.
 
-[[deprecated("replaced by U_StringJoin")]]char *M_StringJoin(const std::initializer_list<const std::string_view> &il_S)
+[[deprecated("replaced by S_StringJoin")]] char *M_StringJoin(const std::initializer_list<const std::string_view> &il_S)
 {
     // Find out how much space we need
     const auto result_len = std::accumulate(il_S.begin(), il_S.end(), 1,
@@ -549,7 +549,8 @@ bool M_StringEndsWith(const char *s, const char *suffix)
 }
 
 // Builds a string and returns a unique_ptr for the char * with needed std::free deleter
-std::string S_StringJoin(const std::initializer_list<const std::string_view> &il_S) {
+std::string S_StringJoin(const std::initializer_list<const std::string_view> &il_S)
+{
     return std::string(M_StringJoin(il_S));
 }
 
