@@ -17,10 +17,14 @@
 //	Sliders and icons. Kinda widget stuff.
 //
 
-
+#include <algorithm>
 #include <cstdlib>
 #include <cctype>
+#include <string>
 #include <string_view>
+#include <iostream> // needed for cout debuging
+
+#include "fmt/core.h"
 
 #include "doomdef.hpp"
 #include "../doomkeys.hpp"
@@ -66,7 +70,7 @@
 #include "v_trans.hpp" // [crispy] colored "invert mouse" message
 
 extern patch_t *hu_font[HU_FONTSIZE];
-extern bool  message_dontfuckwithme;
+extern bool     message_dontfuckwithme;
 
 extern bool chat_on; // in heads-up code
 
@@ -121,9 +125,9 @@ char gammamsg[5 + 4][26 + 2] = {
 };
 
 // we are going to be entering a savegame string
-int            saveStringEnter;
-int            saveSlot;           // which slot to save in
-int            saveCharIndex;      // which char we're editing
+int         saveStringEnter;
+int         saveSlot;           // which slot to save in
+int         saveCharIndex;      // which char we're editing
 static bool joypadSave = false; // was the save action initiated by joypad?
 // old save description before edit
 char saveOldString[SAVESTRINGSIZE];
@@ -136,7 +140,7 @@ bool menuactive;
 #define CRISPY_LINEHEIGHT 10 // [crispy] Crispness menu
 
 extern bool sendpause;
-char           savegamestrings[10][SAVESTRINGSIZE];
+char        savegamestrings[10][SAVESTRINGSIZE];
 
 char endstring[160];
 
@@ -147,8 +151,7 @@ extern bool speedkeydown(void);
 //
 // MENU TYPEDEFS
 //
-struct menuitem_t
-{
+struct menuitem_t {
     // 0 = no cursor here, 1 = ok, 2 = arrows ok
     short status;
 
@@ -160,7 +163,7 @@ struct menuitem_t
     void (*routine)(int choice);
 
     // hotkey in menu
-    char  alphaKey;
+    char             alphaKey;
     std::string_view alttext = std::string_view(); // [crispy] alternative text for the Options menu
 };
 
@@ -262,7 +265,7 @@ enum
     readthis,
     quitdoom,
     main_end
-} main_e  [[maybe_unused]];
+} main_e [[maybe_unused]];
 
 menuitem_t MainMenu[] = {
     { 1, "M_NGAME", M_NewGame, 'n' },
@@ -295,7 +298,7 @@ enum
     ep4,
     ep5, // [crispy] Sigil
     ep_end
-} episodes_e  [[maybe_unused]];
+} episodes_e [[maybe_unused]];
 
 menuitem_t EpisodeMenu[] = {
     { 1, "M_EPI1", M_Episode, 'k' },
@@ -321,7 +324,7 @@ enum
     ex1,
     ex2,
     ex_end
-} expansions_e  [[maybe_unused]];
+} expansions_e [[maybe_unused]];
 
 static menuitem_t ExpansionMenu[] = {
     { 1, "M_EPI1", M_Expansion, 'h' },
@@ -348,7 +351,7 @@ enum
     violence,
     nightmare,
     newg_end
-} newgame_e  [[maybe_unused]];
+} newgame_e [[maybe_unused]];
 
 menuitem_t NewGameMenu[] = {
     { 1, "M_JKILL", M_ChooseSkill, 'i' },
@@ -382,7 +385,7 @@ enum
     soundvol,
     crispness, // [crispy] Crispness menu
     opt_end
-} options_e  [[maybe_unused]];
+} options_e [[maybe_unused]];
 
 menuitem_t OptionsMenu[] = {
     { 1, "M_ENDGAM", M_EndGame, 'e', "End Game" },
@@ -415,7 +418,7 @@ enum
     mouse_empty3,
     mouse_invert,
     mouse_end
-} mouse_e  [[maybe_unused]];
+} mouse_e [[maybe_unused]];
 
 static menuitem_t MouseMenu[] = {
     { 2, "", M_ChangeSensitivity, 'h' },
@@ -510,7 +513,7 @@ enum
     crispness2_next,
     crispness2_prev,
     crispness2_end
-} crispness2_e  [[maybe_unused]];
+} crispness2_e [[maybe_unused]];
 
 static menuitem_t Crispness2Menu[] = {
     { -1, "", 0, '\0' },
@@ -561,7 +564,7 @@ enum
     crispness3_next,
     crispness3_prev,
     crispness3_end
-} crispness3_e  [[maybe_unused]];
+} crispness3_e [[maybe_unused]];
 
 static menuitem_t Crispness3Menu[] = {
     { -1, "", 0, '\0' },
@@ -610,7 +613,7 @@ enum
     crispness4_next,
     crispness4_prev,
     crispness4_end
-} crispness4_e  [[maybe_unused]];
+} crispness4_e [[maybe_unused]];
 
 
 static menuitem_t Crispness4Menu[] = {
@@ -654,7 +657,7 @@ enum
 {
     rdthsempty1,
     read1_end
-} read_e  [[maybe_unused]];
+} read_e [[maybe_unused]];
 
 menuitem_t ReadMenu1[] = {
     { 1, "", M_ReadThis2, 0 }
@@ -931,22 +934,19 @@ void M_DoSave(int slot)
 static void SetDefaultSaveName(int slot [[maybe_unused]])
 {
     // map from IWAD or PWAD?
-    if (W_IsIWADLump(maplumpinfo) && strcmp(savegamedir, ""))
+    auto sv_saveGameName = std::string(maplumpinfo->name);
+    if (!(W_IsIWADLump(maplumpinfo) && std::strcmp(savegamedir, "")))
     {
-        M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE,
-            "%s", maplumpinfo->name);
-    }
-    else
-    {
-        auto wadname = S_StringDuplicate(W_WadNameForLump(maplumpinfo));
+        auto wadname = std::string(W_WadNameForLump(maplumpinfo));
 
         if (auto ext = wadname.find('.'); ext != std::string::npos)
         {
-            wadname = wadname.substr(0, (wadname.size() - ext) - 1);
+            wadname = wadname.substr(0, ext);
         }
 
-        M_snprintf(savegamestrings[itemOn], SAVESTRINGSIZE, "%s (%s)", maplumpinfo->name, wadname.c_str());
+        sv_saveGameName = fmt::format("{} ({})", sv_saveGameName, wadname);
     }
+    *std::copy(sv_saveGameName.begin(), sv_saveGameName.end(), savegamestrings[itemOn]) = '\0';
     M_ForceUppercase(savegamestrings[itemOn]);
     joypadSave = false;
 }
@@ -1058,9 +1058,9 @@ void M_QuickSave(void)
         return;
     }
     // [crispy] print savegame name in golden letters
-    savegamestring = M_StringJoin({crstr[CR_GOLD],
+    savegamestring = M_StringJoin({ crstr[CR_GOLD],
         savegamestrings[quickSaveSlot],
-        crstr[CR_NONE]});
+        crstr[CR_NONE] });
 
     DEH_snprintf(tempstring, sizeof(tempstring),
         QSPROMPT, savegamestring);
@@ -1103,9 +1103,9 @@ void M_QuickLoad(void)
         return;
     }
     // [crispy] print savegame name in golden letters
-    savegamestring = M_StringJoin({crstr[CR_GOLD],
+    savegamestring = M_StringJoin({ crstr[CR_GOLD],
         savegamestrings[quickSaveSlot],
-        crstr[CR_NONE]});
+        crstr[CR_NONE] });
 
     DEH_snprintf(tempstring, sizeof(tempstring),
         QLPROMPT, savegamestring);
@@ -1379,12 +1379,12 @@ static void M_DrawCrispnessBackground(void)
     pixel_t *dest = I_VideoBuffer;
     for (int y = 0; y < SCREENHEIGHT; y++)
     {
-        auto tileY = y % crispness_background.size();
+        auto  tileY          = y % crispness_background.size();
         auto &backgroundLine = crispness_background.at(tileY);
         for (int x = 0; x < SCREENWIDTH; x++)
         {
             auto tileX = x % backgroundLine.size();
-            *dest++ = colormaps[backgroundLine.at(tileX)];
+            *dest++    = colormaps[backgroundLine.at(tileX)];
         }
     }
 
@@ -3130,17 +3130,17 @@ void M_ForceLoadGame()
 {
     savegwarning =
         savemaplumpinfo ?
-            M_StringJoin({"This savegame requires the file\n",
+            M_StringJoin({ "This savegame requires the file\n",
                 crstr[CR_GOLD], savewadfilename, crstr[CR_NONE], "\n",
                 "to restore ", crstr[CR_GOLD], savemaplumpinfo->name, crstr[CR_NONE], " .\n\n",
                 "Continue to restore from\n",
                 crstr[CR_GOLD], W_WadNameForLump(savemaplumpinfo), crstr[CR_NONE], " ?\n\n",
-                PRESSYN}) :
-            M_StringJoin({"This savegame requires the file\n",
+                PRESSYN }) :
+            M_StringJoin({ "This savegame requires the file\n",
                 crstr[CR_GOLD], savewadfilename, crstr[CR_NONE], "\n",
                 "to restore a map that is\n",
                 "currently not available!\n\n",
-                PRESSKEY});
+                PRESSKEY });
 
     M_StartMessage(savegwarning, M_ForceLoadGameResponse, savemaplumpinfo != NULL);
     messageToPrint = 2;
@@ -3165,9 +3165,9 @@ static void M_ConfirmDeleteGameResponse(int key)
 void M_ConfirmDeleteGame()
 {
     savegwarning =
-        M_StringJoin({"delete savegame\n\n",
+        M_StringJoin({ "delete savegame\n\n",
             crstr[CR_GOLD], savegamestrings[itemOn], crstr[CR_NONE], " ?\n\n",
-            PRESSYN});
+            PRESSYN });
 
     M_StartMessage(savegwarning, M_ConfirmDeleteGameResponse, true);
     messageToPrint = 2;
