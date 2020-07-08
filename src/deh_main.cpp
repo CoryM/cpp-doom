@@ -503,27 +503,19 @@ int DEH_LoadLumpByName(const char *name, bool allow_long, bool allow_error)
 // Check the command line for -deh argument, and others.
 void DEH_ParseCommandLine(void)
 {
-    char *filename;
-    int   p;
-
     //!
     // @arg <files>
     // @category mod
     //
     // Load the given dehacked patch(es)
     //
-
-    p = M_CheckParm("-deh");
-
-    if (p > 0)
-    {
+    if (int p = M_CheckParm("-deh"); p > 0) {
         ++p;
 
         while (p < myargc && myargv[p][0] != '-')
         {
-            filename = D_TryFindWADByName(myargv[p]);
-            DEH_LoadFile(filename);
-            free(filename);
+            auto filename = D_TryFindWADByName(myargv[p]);
+            DEH_LoadFile(filename.c_str());
             ++p;
         }
     }

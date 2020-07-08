@@ -42,14 +42,14 @@ struct iwad_t {
 };
 
 [[nodiscard]] char *         D_FindWADByName(const char *filename);
-[[nodiscard]] char *         D_TryFindWADByName(const char *filename);
+[[nodiscard]] std::string    D_TryFindWADByName(const std::string_view filename);
 [[nodiscard]] char *         D_FindIWAD(int mask, GameMission_t *mission);
 [[nodiscard]] const iwad_t **D_FindAllIWADs(int mask);
 [[nodiscard]] const char *   D_SaveGameIWADName(GameMission_t gamemission);
 [[nodiscard]] const char *   D_SuggestIWADName(GameMission_t mission, GameMode_t mode);
 [[nodiscard]] const char *   D_SuggestGameName(GameMission_t mission, GameMode_t mode);
 
-// Helper function to get Enviroment Varibles into a string_view
+// Helper function to get Environment Variables into a string_view
 [[nodiscard]] std::string env_view(const std::string_view envVar);
 
 void v_iwadDirs_init();

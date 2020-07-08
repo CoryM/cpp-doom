@@ -419,19 +419,17 @@ char *D_FindWADByName(const char *name)
 // DefinedIn: d_iwad.cpp  d_iwad.hpp
 // UsedIn:    deh_main.cpp
 //            w_main.cpp
-char *D_TryFindWADByName(const char *filename)
+std::string D_TryFindWADByName(const std::string_view filename)
 {
-    char *result;
+    char *result = D_FindWADByName(filename.data());
 
-    result = D_FindWADByName(filename);
-
-    if (result != NULL)
+    if (result != nullptr)
     {
-        return result;
+        return std::string(result);
     }
     else
     {
-        return M_StringDuplicate(filename);
+        return std::string(filename);
     }
 }
 
