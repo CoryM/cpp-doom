@@ -374,7 +374,7 @@ void S_Start(void)
     if (musicVolume) // [crispy] do not reset pause state at zero music volume
         mus_paused = 0;
 
-    if (gamemode == commercial)
+    if (gamemode == GameMode_t::commercial)
     {
         const int nmus[] = {
             mus_messag,
@@ -563,7 +563,7 @@ static int S_AdjustSoundParams(mobj_t *listener, mobj_t *source,
     angle_t angle;
 
     // [crispy] proper sound clipping in Doom 2 MAP08 and The Ultimate Doom E4M8 / Sigil E5M8
-    const bool doom1map8 = (gamemap == 8 && ((gamemode != commercial && gameepisode < 4) || !crispy->soundfix));
+    const bool doom1map8 = (gamemap == 8 && ((gamemode != GameMode_t::commercial && gameepisode < 4) || !crispy->soundfix));
 
     // calculate the distance to sound origin
     //  and clip it if necessary
@@ -935,11 +935,11 @@ void S_ChangeMusic(int musicnum, int looping)
     }
 
     // [crispy] prevent music number under- and overflows
-    if (musicnum <= mus_None || (gamemode == commercial && musicnum < mus_runnin) || musicnum >= NUMMUSIC || (gamemode != commercial && musicnum >= mus_runnin) || S_music[musicnum].lumpnum == -1)
+    if (musicnum <= mus_None || (gamemode == GameMode_t::commercial && musicnum < mus_runnin) || musicnum >= NUMMUSIC || (gamemode != GameMode_t::commercial && musicnum >= mus_runnin) || S_music[musicnum].lumpnum == -1)
     {
         const unsigned int umusicnum = (unsigned int)musicnum;
 
-        if (gamemode == commercial)
+        if (gamemode == GameMode_t::commercial)
         {
             musicnum = mus_runnin + (umusicnum % (NUMMUSIC - mus_runnin));
         }

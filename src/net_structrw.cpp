@@ -37,7 +37,7 @@ static struct
 
 void NET_WriteConnectData(net_packet_t *packet, net_connect_data_t *data)
 {
-    NET_WriteInt8(packet, data->gamemode);
+    NET_WriteInt8(packet, static_cast<unsigned int>(data->gamemode));
     NET_WriteInt8(packet, data->gamemission);
     NET_WriteInt8(packet, data->lowres_turn);
     NET_WriteInt8(packet, data->drone);
@@ -163,7 +163,7 @@ void NET_WriteQueryData(net_packet_t *packet, net_querydata_t *query)
     NET_WriteInt8(packet, query->server_state);
     NET_WriteInt8(packet, query->num_players);
     NET_WriteInt8(packet, query->max_players);
-    NET_WriteInt8(packet, query->gamemode);
+    NET_WriteInt8(packet, static_cast<unsigned int>(query->gamemode));
     NET_WriteInt8(packet, query->gamemission);
     NET_WriteString(packet, query->description);
 

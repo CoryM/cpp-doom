@@ -659,13 +659,13 @@ void D_DoAdvanceDemo(void)
     switch (demosequence)
     {
     case 0:
-        if (gamemode == commercial)
+        if (gamemode == GameMode_t::commercial)
             pagetic = TICRATE * 11;
         else
             pagetic = 170;
         gamestate = GS_DEMOSCREEN;
         pagename  = DEH_String("TITLEPIC");
-        if (gamemode == commercial)
+        if (gamemode == GameMode_t::commercial)
             S_StartMusic(mus_dm2ttl);
         else
             S_StartMusic(mus_intro);
@@ -683,7 +683,7 @@ void D_DoAdvanceDemo(void)
         break;
     case 4:
         gamestate = GS_DEMOSCREEN;
-        if (gamemode == commercial)
+        if (gamemode == GameMode_t::commercial)
         {
             pagetic  = TICRATE * 11;
             pagename = DEH_String("TITLEPIC");
@@ -899,15 +899,15 @@ void D_IdentifyVersion(void)
         {
             // Ultimate Doom
 
-            gamemode = retail;
+            gamemode = GameMode_t::retail;
         }
         else if (W_CheckNumForName("E3M1") > 0)
         {
-            gamemode = registered;
+            gamemode = GameMode_t::registered;
         }
         else
         {
-            gamemode = shareware;
+            gamemode = GameMode_t::shareware;
         }
     }
     else
@@ -915,7 +915,7 @@ void D_IdentifyVersion(void)
         int p;
 
         // Doom 2 of some kind.
-        gamemode = commercial;
+        gamemode = GameMode_t::commercial;
 
         // We can manually override the gamemission that we got from the
         // IWAD detection code. This allows us to eg. play Plutonia 2
@@ -951,17 +951,17 @@ void D_SetGameDescription(void)
         {
             gamedescription = GetGameName("Freedoom: Phase 1");
         }
-        else if (gamemode == retail)
+        else if (gamemode == GameMode_t::retail)
         {
             // Ultimate Doom
 
             gamedescription = GetGameName("The Ultimate DOOM");
         }
-        else if (gamemode == registered)
+        else if (gamemode == GameMode_t::registered)
         {
             gamedescription = GetGameName("DOOM Registered");
         }
-        else if (gamemode == shareware)
+        else if (gamemode == GameMode_t::shareware)
         {
             gamedescription = GetGameName("DOOM Shareware");
         }
@@ -1140,8 +1140,8 @@ static void InitGameVersion(void)
 
             gameversion = exe_hacx;
         }
-        else if (gamemode == shareware || gamemode == registered
-                 || (gamemode == commercial && gamemission == doom2))
+        else if (gamemode == GameMode_t::shareware || gamemode == GameMode_t::registered
+                 || (gamemode == GameMode_t::commercial && gamemission == doom2))
         {
             // original
             gameversion = exe_doom_1_9;
@@ -1188,11 +1188,11 @@ static void InitGameVersion(void)
                 }
             }
         }
-        else if (gamemode == retail)
+        else if (gamemode == GameMode_t::retail)
         {
             gameversion = exe_ultimate;
         }
-        else if (gamemode == commercial)
+        else if (gamemode == GameMode_t::commercial)
         {
             // Final Doom: tnt or plutonia
             // Defaults to emulating the first Final Doom executable,
@@ -1212,14 +1212,14 @@ static void InitGameVersion(void)
 
     // The original exe does not support retail - 4th episode not supported
 
-    if (gameversion < exe_ultimate && gamemode == retail)
+    if (gameversion < exe_ultimate && gamemode == GameMode_t::retail)
     {
-        gamemode = registered;
+        gamemode = GameMode_t::registered;
     }
 
     // EXEs prior to the Final Doom exes do not support Final Doom.
 
-    if (gameversion < exe_final && gamemode == commercial
+    if (gameversion < exe_final && gamemode == GameMode_t::commercial
         && (gamemission == pack_tnt || gamemission == pack_plut))
     {
         gamemission = doom2;
@@ -1743,7 +1743,7 @@ void D_DoomMain(void)
 
     if (iwadfile == nullptr)
     {
-        I_Error("Game mode indeterminate.  No IWAD file was found.  Try\n"
+        I_Error("Game mode undetermined.  No IWAD file was found.  Try\n"
                 "specifying one with the '-iwad' command line parameter.\n");
     }
 
@@ -1837,7 +1837,7 @@ void D_DoomMain(void)
     //
     // Disable auto-loading of .wad and .deh files.
     //
-    if (!M_ParmExists("-noautoload") && gamemode != shareware)
+    if (!M_ParmExists("-noautoload") && gamemode != GameMode_t::shareware)
     {
         char *autoload_dir;
 
@@ -2009,7 +2009,7 @@ void D_DoomMain(void)
     W_GenerateHashTable();
 
     // [crispy] allow overriding of special-casing
-    if (!M_ParmExists("-noautoload") && gamemode != shareware)
+    if (!M_ParmExists("-noautoload") && gamemode != GameMode_t::shareware)
     {
         LoadMasterlevelsWad();
         LoadNerveWad();
@@ -2060,13 +2060,13 @@ void D_DoomMain(void)
         };
         int i;
 
-        if (gamemode == shareware)
+        if (gamemode == GameMode_t::shareware)
             I_Error(DEH_String("\nYou cannot -file with the shareware "
                                "version. Register!"));
 
         // Check for fake IWAD with right name,
         // but w/o all the lumps of the registered version.
-        if (gamemode == registered)
+        if (gamemode == GameMode_t::registered)
             for (i = 0; i < 23; i++)
                 if (W_CheckNumForName(name[i]) < 0)
                     I_Error(DEH_String("\nThis is not the registered version."));
@@ -2096,7 +2096,7 @@ void D_DoomMain(void)
 
     // [crispy] check for SSG resources
     crispy->havessg =
-        (gamemode == commercial || (W_CheckNumForName("sht2a0") != -1 &&         // [crispy] wielding/firing sprite sequence
+        (gamemode == GameMode_t::commercial || (W_CheckNumForName("sht2a0") != -1 &&         // [crispy] wielding/firing sprite sequence
                                     I_GetSfxLumpNum(&S_sfx[sfx_dshtgn]) != -1 && // [crispy] firing sound
                                     I_GetSfxLumpNum(&S_sfx[sfx_dbopn]) != -1 &&  // [crispy] opening sound
                                     I_GetSfxLumpNum(&S_sfx[sfx_dbload]) != -1 && // [crispy] reloading sound
@@ -2107,10 +2107,10 @@ void D_DoomMain(void)
     crispy->haved1e5 = (gameversion == exe_ultimate) && (W_CheckNumForName("m_epi5") != -1) && (W_CheckNumForName("e5m1") != -1) && (W_CheckNumForName("wilv40") != -1);
 
     // [crispy] check for presence of E1M10
-    crispy->havee1m10 = (gamemode == retail) && (W_CheckNumForName("e1m10") != -1) && (W_CheckNumForName("sewers") != -1);
+    crispy->havee1m10 = (gamemode == GameMode_t::retail) && (W_CheckNumForName("e1m10") != -1) && (W_CheckNumForName("sewers") != -1);
 
     // [crispy] check for presence of MAP33
-    crispy->havemap33 = (gamemode == commercial) && (W_CheckNumForName("map33") != -1) && (W_CheckNumForName("cwilv32") != -1);
+    crispy->havemap33 = (gamemode == GameMode_t::commercial) && (W_CheckNumForName("map33") != -1) && (W_CheckNumForName("cwilv32") != -1);
 
     // [crispy] change level name for MAP33 if not already changed
     if (crispy->havemap33 && !DEH_HasStringReplacement(PHUSTR_1))
@@ -2209,7 +2209,7 @@ void D_DoomMain(void)
 
     if (p)
     {
-        if (gamemode == commercial)
+        if (gamemode == GameMode_t::commercial)
             startmap = atoi(myargv[p + 1]);
         else
         {
@@ -2321,7 +2321,7 @@ void D_DoomMain(void)
     // Moved this here so that MAP01 isn't constantly looked up
     // in the main loop.
 
-    if (gamemode == commercial && W_CheckNumForName("map01") < 0)
+    if (gamemode == GameMode_t::commercial && W_CheckNumForName("map01") < 0)
         storedemo = true;
 
     if (M_CheckParmWithArgs("-statdump", 1))

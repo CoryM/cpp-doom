@@ -178,8 +178,8 @@ sector_t *GetSectorAtNullAddress(void)
         I_GetMemoryValue(location, &val, 4);
         return val;
     };
-    
-    static sector_t null_sector = 
+
+    static sector_t null_sector =
     {
         .floorheight = GetMemoryValue(0),
         .ceilingheight = GetMemoryValue(4)
@@ -469,7 +469,7 @@ void P_LoadThings(int lump)
         spawn = true;
 
         // Do not spawn cool, new monsters if !commercial
-        if (gamemode != commercial)
+        if (gamemode != GameMode_t::commercial)
         {
             switch (SHORT(mt->type))
             {
@@ -1022,7 +1022,7 @@ int P_GetNumForMap(int episode, int map, bool critical)
     int  lumpnum;
 
     // find map name
-    if (gamemode == commercial)
+    if (gamemode == GameMode_t::commercial)
     {
         if (map < 10)
             DEH_snprintf(lumpname, 9, "map0%i", map);
@@ -1237,7 +1237,7 @@ void P_SetupLevel(int episode,
             }
     }
     // [crispy] support MUSINFO lump (dynamic music changing)
-    if (gamemode != shareware)
+    if (gamemode != GameMode_t::shareware)
     {
         S_ParseMusInfo(lumpname);
     }

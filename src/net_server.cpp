@@ -144,11 +144,11 @@ typedef struct
 } net_client_recv_t;
 
 static net_server_state_t server_state;
-static bool            server_initialized = false;
+static bool               server_initialized = false;
 static net_client_t       clients[MAXNETNODES];
 static net_client_t *     sv_players[NET_MAXPLAYERS];
 static net_context_t *    server_context;
-static unsigned int       sv_gamemode;
+static GameMode_t         sv_gamemode;
 static unsigned int       sv_gamemission;
 static net_gamesettings_t sv_settings;
 
@@ -713,7 +713,7 @@ static void NET_SV_ParseSYN(net_packet_t *packet, net_client_t *client,
 
     // Check the connecting client is playing the same game as all
     // the other clients
-    if (data.gamemode != static_cast<int>(sv_gamemode) || data.gamemission != static_cast<int>(sv_gamemission))
+    if (data.gamemode != sv_gamemode || data.gamemission != static_cast<int>(sv_gamemission))
     {
         char msg[128];
         NET_Log("server: wrong mode/mission, %d != %d || %d != %d",
@@ -1753,7 +1753,7 @@ static void NET_SV_GameEnded(void)
     int i;
 
     server_state = SERVER_WAITING_LAUNCH;
-    sv_gamemode  = indetermined;
+    sv_gamemode  = GameMode_t::undetermined;
 
     for (i = 0; i < MAXNETNODES; ++i)
     {
@@ -1869,7 +1869,7 @@ void NET_SV_Init(void)
     NET_SV_AssignPlayers();
 
     server_state       = SERVER_WAITING_LAUNCH;
-    sv_gamemode        = indetermined;
+    sv_gamemode        = GameMode_t::undetermined;
     server_initialized = true;
 }
 

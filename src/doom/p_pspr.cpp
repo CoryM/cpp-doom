@@ -229,7 +229,7 @@ bool P_CheckAmmo(player_t *player)
     {
         if (player->weaponowned[wp_plasma]
             && player->ammo[am_cell]
-            && (gamemode != shareware))
+            && (gamemode != GameMode_t::shareware))
         {
             player->pendingweapon = wp_plasma;
         }
@@ -265,7 +265,7 @@ bool P_CheckAmmo(player_t *player)
         }
         else if (player->weaponowned[wp_bfg]
                  && player->ammo[am_cell] > 40
-                 && (gamemode != shareware))
+                 && (gamemode != GameMode_t::shareware))
         {
             player->pendingweapon = wp_bfg;
         }

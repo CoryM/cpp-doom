@@ -264,7 +264,7 @@ static bool WeaponSelectable(weapontype_t weapon)
     // These weapons aren't available in shareware.
 
     if ((weapon == wp_plasma || weapon == wp_bfg)
-        && gamemission == doom && gamemode == shareware)
+        && gamemission == doom && gamemode == GameMode_t::shareware)
     {
         return false;
     }
@@ -802,7 +802,7 @@ void G_DoLoadLevel(void)
     // The "Sky never changes in Doom II" bug was fixed in
     // the id Anthology version of doom2.exe for Final Doom.
     // [crispy] correct "Sky never changes in Doom II" bug
-    if ((gamemode == commercial)
+    if ((gamemode == GameMode_t::commercial)
         && (gameversion == exe_final2 || gameversion == exe_chex || true))
     {
         const char *skytexturename;
@@ -1612,7 +1612,7 @@ void G_ExitLevel(void)
 void G_SecretExitLevel(void)
 {
     // IF NO WOLF3D LEVELS, NO SECRET EXIT!
-    if ((gamemode == commercial)
+    if ((gamemode == GameMode_t::commercial)
         && (W_CheckNumForName("map31") < 0))
         secretexit = false;
     else
@@ -1634,7 +1634,7 @@ void G_DoCompleted(void)
     if (automapactive)
         AM_Stop();
 
-    if (gamemode != commercial)
+    if (gamemode != GameMode_t::commercial)
     {
         // Chex Quest ends after 5 levels, rather than 8.
 
@@ -1709,7 +1709,7 @@ void G_DoCompleted(void)
     {
         wminfo.next = gamemap;
     }
-    else if (gamemode == commercial)
+    else if (gamemode == GameMode_t::commercial)
     {
         if (secretexit)
             if (gamemap == 2 && critical->havemap33)
@@ -1772,7 +1772,7 @@ void G_DoCompleted(void)
 
     // Set par time. Exceptions are added for purposes of
     // statcheck regression testing.
-    if (gamemode == commercial)
+    if (gamemode == GameMode_t::commercial)
     {
         // map33 reads its par time from beyond the cpars[] array
         if (gamemap == 33)
@@ -1844,7 +1844,7 @@ void G_DoCompleted(void)
     automapactive = false;
 
     // [crispy] no statdump output for ExM8
-    if (gamemode == commercial || gamemap != 8)
+    if (gamemode == GameMode_t::commercial || gamemap != 8)
     {
         StatCopy(&wminfo);
     }
@@ -1887,7 +1887,7 @@ void G_WorldDone(void)
             break;
         }
     }
-    else if (gamemode == commercial)
+    else if (gamemode == GameMode_t::commercial)
     {
         switch (gamemap)
         {
@@ -2274,7 +2274,7 @@ void G_InitNew(skill_t skill,
             }
         }
 
-        if (episode > 1 && gamemode == shareware)
+        if (episode > 1 && gamemode == GameMode_t::shareware)
         {
             episode = 1;
         }
@@ -2283,7 +2283,7 @@ void G_InitNew(skill_t skill,
             map = 1;
 
         if ((map > 9)
-            && (gamemode != commercial))
+            && (gamemode != GameMode_t::commercial))
         {
             // [crispy] support E1M10 "Sewers"
             if (!crispy->havee1m10 || episode != 1)
@@ -2354,7 +2354,7 @@ void G_InitNew(skill_t skill,
     // restore from a saved game.  This was fixed before the Doom
     // source release, but this IS the way Vanilla DOS Doom behaves.
 
-    if (gamemode == commercial)
+    if (gamemode == GameMode_t::commercial)
     {
         skytexturename = DEH_String("SKY3");
         skytexture     = R_TextureNumForName(skytexturename);

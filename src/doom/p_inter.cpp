@@ -401,7 +401,7 @@ void P_TouchSpecialThing(mobj_t *special,
         break;
 
     case SPR_MEGA:
-        if (gamemode != commercial)
+        if (gamemode != GameMode_t::commercial)
             return;
         player->health     = deh_megasphere_health;
         player->mo->health = player->health;

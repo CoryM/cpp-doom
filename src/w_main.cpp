@@ -29,7 +29,7 @@
 #include "w_wad.hpp"
 #include "z_zone.hpp"
 
-// Parse the command line, merging WAD files that are sppecified.
+// Parse the command line, merging WAD files that are specified.
 // Returns true if at least one file was added.
 bool W_ParseCommandLine(void)
 {
@@ -60,7 +60,6 @@ bool W_ParseCommandLine(void)
     }
 
     // NWT-style merging:
-
     // NWT's -merge option:
 
     //!
@@ -120,7 +119,7 @@ bool W_ParseCommandLine(void)
             modifiedgame = true;
             const auto filename     = D_TryFindWADByName(myargv[p]);
 
-            printf(" merging sprites from %s\n", filename);
+            printf(" merging sprites from %s\n", filename.c_str());
             W_NWTMergeFile(filename.c_str(), W_NWT_MERGE_SPRITES);
         }
     }
@@ -139,7 +138,7 @@ bool W_ParseCommandLine(void)
 
             const auto filename = D_TryFindWADByName(myargv[p]);
 
-            printf(" merging sprites and flats from %s\n", filename);
+            printf(" merging sprites and flats from %s\n", filename.c_str());
             W_NWTMergeFile(filename.c_str(), W_NWT_MERGE_SPRITES | W_NWT_MERGE_FLATS);
         }
     }
@@ -160,7 +159,7 @@ bool W_ParseCommandLine(void)
             const auto filename = D_TryFindWADByName(myargv[p]);
 
             // [crispy] always merge arguments of "-file" parameter
-            printf(" merging %s !\n", filename);
+            printf(" merging %s !\n", filename.c_str());
             W_MergeFile(filename.c_str());
         }
     }
@@ -220,7 +219,7 @@ void W_CheckCorrectIWAD(GameMission_t mission)
                 I_Error("\nYou are trying to use a %s IWAD file with the %s%s binary.\n"
                         "This isn't going to work.\n"
                         "You probably want to use the %s%s binary.\n",
-                    D_SuggestGameName(unique_lumps[i].mission, indetermined),
+                    D_SuggestGameName(unique_lumps[i].mission, GameMode_t::undetermined),
                     PROGRAM_PREFIX, D_GameMissionString(mission),
                     PROGRAM_PREFIX, D_GameMissionString(unique_lumps[i].mission));
             }

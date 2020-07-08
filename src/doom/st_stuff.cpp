@@ -579,7 +579,7 @@ static int ST_cheat_spechits()
 
     // [crispy] trigger tag 666/667 events
     dummy.tag = 666;
-    if (gamemode == commercial)
+    if (gamemode == GameMode_t::commercial)
     {
         if (gamemap == 7 ||
             // [crispy] Master Levels in PC slot 7
@@ -626,7 +626,7 @@ static bool WeaponAvailable(int w)
     if (w == wp_supershotgun && !crispy->havessg)
         return false;
 
-    if ((w == wp_bfg || w == wp_plasma) && gamemode == shareware)
+    if ((w == wp_bfg || w == wp_plasma) && gamemode == GameMode_t::shareware)
         return false;
 
     return true;
@@ -792,7 +792,7 @@ bool ST_Responder(event_t *ev)
                 else
                     // [JN] Fixed: using a proper IDMUS selection for shareware
                     // and registered game versions.
-                    if (gamemode == commercial /* || gameversion < exe_ultimate */)
+                    if (gamemode == GameMode_t::commercial /* || gameversion < exe_ultimate */)
                 {
                     musnum = mus_runnin + (buf[0] - '0') * 10 + buf[1] - '0' - 1;
 
@@ -1148,7 +1148,7 @@ bool ST_Responder(event_t *ev)
 
             cht_GetParam(&cheat_clev, buf);
 
-            if (gamemode == commercial)
+            if (gamemode == GameMode_t::commercial)
             {
                 if (gamemission == pack_nerve)
                     epsd = 2;
@@ -1180,7 +1180,7 @@ bool ST_Responder(event_t *ev)
             if (P_GetNumForMap(epsd, map, false) < 0)
             {
                 // Catch invalid maps.
-                if (gamemode != commercial)
+                if (gamemode != GameMode_t::commercial)
                 {
                     // [crispy] allow IDCLEV0x to work in Doom 1
                     if (epsd == 0)

@@ -1699,7 +1699,7 @@ void A_BossDeath(mobj_t *mo)
     line_s     junk;
     int        i;
 
-    if (gamemode == commercial)
+    if (gamemode == GameMode_t::commercial)
     {
         if (gamemap != 7 &&
             // [crispy] Master Levels in PC slot 7
@@ -1744,7 +1744,7 @@ void A_BossDeath(mobj_t *mo)
     }
 
     // victory!
-    if (gamemode == commercial)
+    if (gamemode == GameMode_t::commercial)
     {
         if (gamemap == 7 ||
             // [crispy] Master Levels in PC slot 7
@@ -2066,7 +2066,7 @@ void A_PlayerScream(mobj_t *mo)
     // Default death sound.
     int sound = sfx_pldeth;
 
-    if ((gamemode == commercial)
+    if ((gamemode == GameMode_t::commercial)
         && (mo->health < -50))
     {
         // IF THE PLAYER DIES

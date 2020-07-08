@@ -689,16 +689,16 @@ static void formatted_printf(int wide, const char *s, ...)
     }
 }
 
-static constexpr const char *GameDescription(int mode, int mission)
+static constexpr const char *GameDescription(GameMode_t mode, int mission)
 {
     switch (mission)
     {
     case doom:
-        if (mode == shareware)
+        if (mode == GameMode_t::shareware)
             return "swdoom";
-        else if (mode == registered)
+        else if (mode == GameMode_t::registered)
             return "regdoom";
-        else if (mode == retail)
+        else if (mode == GameMode_t::retail)
             return "ultdoom";
         else
             return "doom";
@@ -758,10 +758,9 @@ static void NET_QueryPrintCallback(net_addr_t *addr,
     formatted_printf(4, "%i/%i ", data->num_players,
         data->max_players);
 
-    if (data->gamemode != indetermined)
+    if (data->gamemode != GameMode_t::undetermined)
     {
-        printf("(%s) ", GameDescription(data->gamemode,
-                            data->gamemission));
+        printf("(%s) ", GameDescription(data->gamemode, data->gamemission));
     }
 
     if (data->server_state)

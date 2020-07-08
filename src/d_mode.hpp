@@ -47,14 +47,14 @@ typedef enum
 // in: eg. shareware vs. registered.  So doom1.wad and doom.wad are the
 // same mission, but a different mode.
 
-typedef enum
+enum class GameMode_t : int
 {
     shareware,   // Doom/Heretic shareware
     registered,  // Doom/Heretic registered
     commercial,  // Doom II/Hexen
     retail,      // Ultimate Doom
-    indetermined // Unknown.
-} GameMode_t;
+    undetermined // Unknown.
+};
 
 // What version are we emulating?
 
@@ -101,13 +101,12 @@ typedef enum
     sk_nightmare
 } skill_t;
 
-bool     D_ValidGameMode(int mission, int mode);
-bool     D_ValidGameVersion(GameMission_t mission, GameVersion_t version);
-bool     D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode,
-        int episode, int map);
-int         D_GetNumEpisodes(GameMission_t mission, GameMode_t mode);
-bool     D_IsEpisodeMap(GameMission_t mission);
-const char *D_GameMissionString(GameMission_t mission);
-const char *D_GameModeString(GameMode_t mode);
+bool            D_ValidGameMode(int mission, GameMode_t mode);
+bool            D_ValidGameVersion(GameMission_t mission, GameVersion_t version);
+bool            D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode, int episode, int map);
+int             D_GetNumEpisodes(GameMission_t mission, GameMode_t mode);
+bool            D_IsEpisodeMap(GameMission_t mission);
+const char*     D_GameMissionString(GameMission_t mission);
+const char*     D_GameModeString(GameMode_t mode);
 
 #endif /* #ifndef __D_MODE__ */

@@ -127,11 +127,11 @@ void P_InitSwitchList(void)
     // we support more switch textures.
     switch (gamemode)
     {
-    case registered:
-    case retail:
+    case GameMode_t::registered:
+    case GameMode_t::retail:
         episode = 2;
         break;
-    case commercial:
+    case GameMode_t::commercial:
         episode = 3;
         break;
     default:

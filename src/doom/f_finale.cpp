@@ -203,7 +203,7 @@ void F_Ticker(void)
     size_t i;
 
     // check for skipping
-    if ((gamemode == commercial)
+    if ((gamemode == GameMode_t::commercial)
         && (finalecount > 50))
     {
         // go on to the next level
@@ -233,7 +233,7 @@ void F_Ticker(void)
         return;
     }
 
-    if (gamemode == commercial)
+    if (gamemode == GameMode_t::commercial)
         return;
 
     if (finalestage == F_STAGE_TEXT

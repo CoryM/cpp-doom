@@ -1238,7 +1238,7 @@ void M_NewGame(int choice [[maybe_unused]])
 
     if (nervewadfile)
         M_SetupNextMenu(&ExpDef);
-    else if (gamemode == commercial || gameversion == exe_chex)
+    else if (gamemode == GameMode_t::commercial || gameversion == exe_chex)
         M_SetupNextMenu(&NewDef);
     else
         M_SetupNextMenu(&EpiDef);
@@ -1278,7 +1278,7 @@ void M_ChooseSkill(int choice)
 
 void M_Episode(int choice)
 {
-    if ((gamemode == shareware)
+    if ((gamemode == GameMode_t::shareware)
         && choice)
     {
         M_StartMessage(DEH_String(SWSTRING), NULL, false);
@@ -1702,7 +1702,7 @@ void M_QuitResponse(int key)
     // [crispy] play quit sound only if the ENDOOM screen is also shown
     if (!netgame && show_endoom)
     {
-        if (gamemode == commercial)
+        if (gamemode == GameMode_t::commercial)
             S_StartSound(NULL, quitsounds2[(gametic >> 2) & 7]);
         else
             S_StartSound(NULL, quitsounds[(gametic >> 2) & 7]);
@@ -2067,7 +2067,7 @@ static int G_GotoNextLevel(void)
     {
         doom2_next[0] = 2;
 
-        if (gamemode == commercial)
+        if (gamemode == GameMode_t::commercial)
         {
             if (crispy->havemap33)
                 doom2_next[1] = 33;
@@ -2089,10 +2089,10 @@ static int G_GotoNextLevel(void)
         }
         else
         {
-            if (gamemode == shareware)
+            if (gamemode == GameMode_t::shareware)
                 doom_next[0][7] = 11;
 
-            if (gamemode == registered)
+            if (gamemode == GameMode_t::registered)
                 doom_next[2][7] = 11;
 
             if (!crispy->haved1e5)
@@ -2110,7 +2110,7 @@ static int G_GotoNextLevel(void)
     {
         int epsd, map;
 
-        if (gamemode == commercial)
+        if (gamemode == GameMode_t::commercial)
         {
             epsd = gameepisode;
             if (gamemission == pack_nerve)
@@ -3003,7 +3003,7 @@ void M_Init(void)
         ReadDef2.y -= 10;
     }
 
-    if (gamemode == commercial)
+    if (gamemode == GameMode_t::commercial)
     {
         MainMenu[readthis] = MainMenu[quitdoom];
         MainDef.numitems--;

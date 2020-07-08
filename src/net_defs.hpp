@@ -23,6 +23,7 @@
 #include "doomtype.hpp"
 #include "d_ticcmd.hpp"
 #include "sha1.hpp"
+#include "d_mode.hpp"
 
 // Absolute maximum number of "nodes" in the game.  This is different to
 // NET_MAXPLAYERS, as there may be observers that are not participating
@@ -171,7 +172,7 @@ typedef enum
 
 typedef struct
 {
-    int           gamemode;
+    GameMode_t    gamemode;
     int           gamemission;
     int           lowres_turn;
     int           drone;
@@ -248,7 +249,7 @@ typedef struct
     int            server_state;
     int            num_players;
     int            max_players;
-    int            gamemode;
+    GameMode_t     gamemode;
     int            gamemission;
     const char *   description;
     net_protocol_t protocol;

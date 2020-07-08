@@ -30,26 +30,26 @@ static struct
     int           episode;
     int           map;
 } valid_modes[] = {
-    { pack_chex, retail, 1, 5 },
-    { doom, shareware, 1, 9 },
-    { doom, registered, 3, 9 },
-    { doom, retail, 4, 9 },
-    { doom2, commercial, 1, 32 },
-    { pack_tnt, commercial, 1, 32 },
-    { pack_plut, commercial, 1, 32 },
-    { pack_hacx, commercial, 1, 32 },
-    { pack_nerve, commercial, 1, 9 },
-    { pack_master, commercial, 1, 21 },
-    { heretic, shareware, 1, 9 },
-    { heretic, registered, 3, 9 },
-    { heretic, retail, 5, 9 },
-    { hexen, commercial, 1, 60 },
-    { strife, commercial, 1, 34 },
+    { pack_chex,   GameMode_t::retail,     1, 5 },
+    { doom,        GameMode_t::shareware,  1, 9 },
+    { doom,        GameMode_t::registered, 3, 9 },
+    { doom,        GameMode_t::retail,     4, 9 },
+    { doom2,       GameMode_t::commercial, 1, 32 },
+    { pack_tnt,    GameMode_t::commercial, 1, 32 },
+    { pack_plut,   GameMode_t::commercial, 1, 32 },
+    { pack_hacx,   GameMode_t::commercial, 1, 32 },
+    { pack_nerve,  GameMode_t::commercial, 1, 9 },
+    { pack_master, GameMode_t::commercial, 1, 21 },
+    { heretic,     GameMode_t::shareware,  1, 9 },
+    { heretic,     GameMode_t::registered, 3, 9 },
+    { heretic,     GameMode_t::retail,     5, 9 },
+    { hexen,       GameMode_t::commercial, 1, 60 },
+    { strife,      GameMode_t::commercial, 1, 34 },
 };
 
 // Check that a gamemode+gamemission received over the network is valid.
 
-bool D_ValidGameMode(int mission, int mode)
+bool D_ValidGameMode(int mission, GameMode_t mode)
 {
     for (size_t i = 0; i < std::size(valid_modes); ++i)
     {
@@ -69,11 +69,11 @@ bool D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode,
 
     if (mission == heretic)
     {
-        if (mode == retail && episode == 6)
+        if (mode == GameMode_t::retail && episode == 6)
         {
             return map >= 1 && map <= 3;
         }
-        else if (mode == registered && episode == 4)
+        else if (mode == GameMode_t::registered && episode == 4)
         {
             return map == 1;
         }
@@ -214,15 +214,15 @@ const char *D_GameModeString(GameMode_t mode)
 {
     switch (mode)
     {
-    case shareware:
+    case GameMode_t::shareware:
         return "shareware";
-    case registered:
+    case GameMode_t::registered:
         return "registered";
-    case commercial:
+    case GameMode_t::commercial:
         return "commercial";
-    case retail:
+    case GameMode_t::retail:
         return "retail";
-    case indetermined:
+    case GameMode_t::undetermined:
     default:
         return "unknown";
     }

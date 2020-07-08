@@ -414,7 +414,7 @@ void P_PlayerThink(player_t *player)
             //  even if cheated.
             if ((newweapon != wp_plasma
                     && newweapon != wp_bfg)
-                || (gamemode != shareware))
+                || (gamemode != GameMode_t::shareware))
             {
                 player->pendingweapon = newweapon;
             }

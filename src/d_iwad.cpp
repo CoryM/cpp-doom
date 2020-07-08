@@ -30,27 +30,27 @@
 #include "z_zone.hpp"
 
 static const auto a_iwads = std::to_array<iwad_t>({
-    { "doom2.wad", doom2, commercial, "Doom II" },
-    { "plutonia.wad", pack_plut, commercial, "Final Doom: Plutonia Experiment" },
-    { "tnt.wad", pack_tnt, commercial, "Final Doom: TNT: Evilution" },
-    { "doom.wad", doom, retail, "Doom" },
-    { "doom1.wad", doom, shareware, "Doom Shareware" },
-    { "chex.wad", pack_chex, retail, "Chex Quest" },
-    { "hacx.wad", pack_hacx, commercial, "Hacx" },
-    { "freedoom2.wad", doom2, commercial, "Freedoom: Phase 2" },
-    { "freedoom1.wad", doom, retail, "Freedoom: Phase 1" },
-    { "freedm.wad", doom2, commercial, "FreeDM" },
-    { "heretic.wad", heretic, retail, "Heretic" },
-    { "heretic1.wad", heretic, shareware, "Heretic Shareware" },
-    { "hexen.wad", hexen, commercial, "Hexen" },
-    { "strife1.wad", strife, commercial, "Strife" } });
+    { "doom2.wad",     doom2,     GameMode_t::commercial, "Doom II" },
+    { "plutonia.wad",  pack_plut, GameMode_t::commercial, "Final Doom: Plutonia Experiment" },
+    { "tnt.wad",       pack_tnt,  GameMode_t::commercial, "Final Doom: TNT: Evilution" },
+    { "doom.wad",      doom,      GameMode_t::retail,     "Doom" },
+    { "doom1.wad",     doom,      GameMode_t::shareware,  "Doom Shareware" },
+    { "chex.wad",      pack_chex, GameMode_t::retail,     "Chex Quest" },
+    { "hacx.wad",      pack_hacx, GameMode_t::commercial, "Hacx" },
+    { "freedoom2.wad", doom2,     GameMode_t::commercial, "Freedoom: Phase 2" },
+    { "freedoom1.wad", doom,      GameMode_t::retail,     "Freedoom: Phase 1" },
+    { "freedm.wad",    doom2,     GameMode_t::commercial, "FreeDM" },
+    { "heretic.wad",   heretic,   GameMode_t::retail,     "Heretic" },
+    { "heretic1.wad",  heretic,   GameMode_t::shareware,  "Heretic Shareware" },
+    { "hexen.wad",     hexen,     GameMode_t::commercial, "Hexen" },
+    { "strife1.wad",   strife,    GameMode_t::commercial, "Strife" } });
 
-// Helper function to get Enviroment Varibles into a string_view
+// Helper function to get Environment Variables into a string_view
 [[nodiscard]]std::string env_view(const std::string_view envVar)
 {
     // returns a NON OWENING String.  The char* is owned and by the OS
     const char * envCharStar = getenv(envVar.data());
-    // Creating a string with a nullprt is undefined behavour.
+    // Creating a string with a nullprt is undefined behaviour.
     if (envCharStar != nullptr)
     {
         return std::string(envCharStar);
@@ -577,7 +577,7 @@ const char *D_SuggestGameName(GameMission_t mission, GameMode_t mode)
     for (const auto &i : a_iwads)
     {
         if (i.mission == mission
-            && (mode == indetermined || i.mode == mode))
+            && (mode == GameMode_t::undetermined || i.mode == mode))
         {
             return i.description;
         }
