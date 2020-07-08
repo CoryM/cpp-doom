@@ -44,7 +44,7 @@ planefunction_t ceilingfunc;
 //
 
 // Here comes the obnoxious "visplane".
-#define MAXVISPLANES 128
+#define MAXVISPLANES 256
 visplane_t *visplanes = NULL;
 visplane_t *lastvisplane;
 visplane_t *floorplane;
@@ -121,7 +121,7 @@ void R_MapPlane(int y,
     //  angle_t	angle;
     fixed_t distance;
     //  fixed_t	length;
-    int      dx, dy;
+    int dx, dy;
 
 #ifdef RANGECHECK
     if (x2 < x1
@@ -223,8 +223,10 @@ static void R_RaiseVisplanes(visplane_t **vp)
 
         numvisplanes = numvisplanes ? 2 * numvisplanes : MAXVISPLANES;
         visplanes    = static_cast<decltype(visplanes)>(I_Realloc(visplanes, numvisplanes * sizeof(*visplanes)));
-        //memset(visplanes + numvisplanes_old, 0, (numvisplanes - numvisplanes_old) * sizeof(*visplanes));
-        for (int i = numvisplanes_old; i < (numvisplanes + numvisplanes_old); i++) { visplanes[i] = {};};
+        for (int i = numvisplanes_old; i < (numvisplanes + numvisplanes_old); i++)
+        {
+            visplanes[i] = {};
+        };
 
         lastvisplane = visplanes + numvisplanes_old;
         floorplane   = visplanes + (floorplane - visplanes_old);
@@ -242,10 +244,10 @@ static void R_RaiseVisplanes(visplane_t **vp)
 //
 // R_FindPlane
 //
-visplane_t *
-    R_FindPlane(fixed_t height,
-        int             picnum,
-        int             lightlevel)
+visplane_t *R_FindPlane(
+    fixed_t height,
+    int     picnum,
+    int     lightlevel)
 {
     visplane_t *check;
 
@@ -291,10 +293,10 @@ visplane_t *
 //
 // R_CheckPlane
 //
-visplane_t *
-    R_CheckPlane(visplane_t *pl,
-        int                  start,
-        int                  stop)
+visplane_t *R_CheckPlane(
+    visplane_t *pl,
+    int         start,
+    int         stop)
 {
     int intrl;
     int intrh;
@@ -400,11 +402,11 @@ void R_MakeSpans(int x,
 //
 void R_DrawPlanes(void)
 {
-    int         light;
-    int         x;
-    int         stop;
-    int         angle;
-    int         lumpnum;
+    int light;
+    int x;
+    int stop;
+    int angle;
+    int lumpnum;
 
 #ifdef RANGECHECK
     if (ds_p - drawsegs > numdrawsegs)
@@ -501,9 +503,9 @@ void R_DrawPlanes(void)
 
         planezlight = zlight[light];
 
-        pl->top[pl->maxx + 1] = 0xffffffffu; // [crispy] hires / 32-bit integer math
+        pl->top[pl->maxx + 1]              = 0xffffffffu; // [crispy] hires / 32-bit integer math
         pl->top[std::max(pl->minx - 1, 0)] = 0xffffffffu; // [crispy] hires / 32-bit integer math
-        
+
         stop = pl->maxx + 1;
 
         for (x = std::max(pl->minx, 1); x <= stop; x++)
