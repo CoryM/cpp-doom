@@ -58,12 +58,11 @@ void M_MakeDirectory(const char *path)
 }
 
 // Check if a file exists
-
-bool M_FileExists(const char *filename)
+bool M_FileExists(const std::string_view filename)
 {
     FILE *fstream;
 
-    fstream = fopen(filename, "r");
+    fstream = fopen(filename.data(), "r");
 
     if (fstream != NULL)
     {
@@ -81,11 +80,9 @@ bool M_FileExists(const char *filename)
 
 // Check if a file exists by probing for common case variation of its filename.
 // Returns a newly allocated string that the caller is responsible for freeing.
-char *M_FileCaseExists(const char *path)
+char *M_FileCaseExists(const std::string_view path)
 {
-    char *path_dup, *filename, *ext;
-
-    path_dup = M_StringDuplicate(path);
+    char *path_dup = M_StringDuplicate(path);
 
     // 0: actual path
     if (M_FileExists(path_dup))
@@ -93,8 +90,8 @@ char *M_FileCaseExists(const char *path)
         return path_dup;
     }
 
-    filename = strrchr(path_dup, DIR_SEPARATOR);
-    if (filename != NULL)
+    char *filename = strrchr(path_dup, DIR_SEPARATOR);
+    if (filename != nullptr)
     {
         filename++;
     }
@@ -120,10 +117,9 @@ char *M_FileCaseExists(const char *path)
     }
 
     // 3. uppercase basename with lowercase extension, e.g. DOOM2.wad
-    ext = strrchr(path_dup, '.');
-    if (ext != NULL && ext > filename)
+    if (char *ext = strrchr(path_dup, '.'); ext != nullptr && ext > filename)
     {
-        M_ForceLowercase(ext + 1);
+        M_ForceLowercase(ext + 1); // ext points to inside path_dup at the "."
 
         if (M_FileExists(path_dup))
         {
@@ -144,7 +140,7 @@ char *M_FileCaseExists(const char *path)
 
     // 5. no luck
     free(path_dup);
-    return NULL;
+    return nullptr;
 }
 
 //
@@ -571,7 +567,7 @@ int M_vsnprintf(char *buf, size_t buf_len, const char *s, va_list args)
 
     // If truncated, change the final char in the buffer to a \0.
     // A negative result indicates a truncated buffer on Windows.
-    if (result < 0 || result >= buf_len)
+    if (result < 0 || result >= static_cast<int>(buf_len))
     {
         buf[buf_len - 1] = '\0';
         result           = buf_len - 1;
@@ -590,22 +586,3 @@ int M_snprintf(char *buf, size_t buf_len, const char *s, ...)
     va_end(args);
     return result;
 }
-
-#ifdef _WIN32
-
-char *M_OEMToUTF8(const char *oem)
-{
-    unsigned int len = strlen(oem) + 1;
-    wchar_t *    tmp;
-    char *       result;
-
-    tmp = malloc(len * sizeof(wchar_t));
-    MultiByteToWideChar(CP_OEMCP, 0, oem, len, tmp, len);
-    result = malloc(len * 4);
-    WideCharToMultiByte(CP_UTF8, 0, tmp, len, result, len * 4, NULL, NULL);
-    free(tmp);
-
-    return result;
-}
-
-#endif

@@ -88,21 +88,17 @@ struct event_t {
 //
 enum buttoncode_t
 {
-    // Press "Fire".
-    BT_ATTACK = 1,
-    // Use button, to open doors, activate switches.
-    BT_USE = 2,
+    BT_ATTACK = 1,         // Press "Fire".
+    BT_USE = 2,            // Use button, to open doors, activate switches.
 
-    // Flag: game events, not really buttons.
-    BT_SPECIAL     = 128,
+    BT_SPECIAL     = 128,  // Flag: game events, not really buttons.
     BT_SPECIALMASK = 3,
 
-    // Flag, weapon change pending.
-    // If true, the next 3 bits hold weapon num.
-    BT_CHANGE = 4,
-    // The 3bit weapon mask and shift, convenience.
-    BT_WEAPONMASK  = (8 + 16 + 32),
-    BT_WEAPONSHIFT = 3,
+    BT_CHANGE = 4,         // Flag, weapon change pending.
+                           // If true, the next 3 bits hold weapon num.
+
+    BT_WEAPONMASK  = 0b00111000, //(8 + 16 + 32),
+    BT_WEAPONSHIFT = 3,    // The 3bit weapon mask and shift, convenience.
 
     // Pause the game.
     BTS_PAUSE = 1,
@@ -111,7 +107,7 @@ enum buttoncode_t
 
     // Savegame slot numbers
     //  occupy the second byte of buttons.
-    BTS_SAVEMASK  = (4 + 8 + 16),
+    BTS_SAVEMASK  = 0b00011100, // (4 + 8 + 16),
     BTS_SAVESHIFT = 2,
 
 };
