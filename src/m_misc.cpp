@@ -17,12 +17,14 @@
 //      Miscellaneous.
 //
 
-
+#include <algorithm>
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
 #include <cerrno>
+#include <filesystem>
 #include <initializer_list>
 #include <iostream>
 #include <numeric>
@@ -50,103 +52,69 @@
 
 void M_MakeDirectory(const char *path)
 {
-#ifdef _WIN32
-    mkdir(path);
-#else
     mkdir(path, 0755);
-#endif
 }
 
 // Check if a file exists
-bool M_FileExists(const std::string_view filename)
+bool M_FileExists(std::filesystem::path path)
 {
-    FILE *fstream;
-
-    fstream = fopen(filename.data(), "r");
-
-    if (fstream != NULL)
-    {
-        fclose(fstream);
-        return true;
-    }
-    else
-    {
-        // If we can't open because the file is a directory, the
-        // "file" exists at least!
-
-        return errno == EISDIR;
-    }
+    return std::filesystem::is_regular_file(path);
 }
+
+// Check if a directory exists
+bool M_DirExists(std::filesystem::path path)
+{
+    return std::filesystem::is_directory(path);
+}
+
 
 // Check if a file exists by probing for common case variation of its filename.
 // Returns a newly allocated string that the caller is responsible for freeing.
-char *M_FileCaseExists(const std::string_view path)
+std::string M_FileCaseExists(const std::string_view sv_path)
 {
-    char *path_dup = M_StringDuplicate(path);
+    std::vector<std::filesystem::path> pathList;
 
     // 0: actual path
-    if (M_FileExists(path_dup))
-    {
-        return path_dup;
-    }
+    auto path = pathList.emplace_back(std::filesystem::path(sv_path));
 
-    char *filename = strrchr(path_dup, DIR_SEPARATOR);
-    if (filename != nullptr)
-    {
-        filename++;
-    }
-    else
-    {
-        filename = path_dup;
-    }
+    auto transformFileName = [](const auto &path, auto trans){
+      auto q = path; // Copy Path
+      return q.replace_filename(trans(path.filename().string()));
+    };
 
     // 1: lowercase filename, e.g. doom2.wad
-    M_ForceLowercase(filename);
-
-    if (M_FileExists(path_dup))
-    {
-        return path_dup;
-    }
+    pathList.emplace_back(transformFileName(path, S_ForceLowercase));
 
     // 2: uppercase filename, e.g. DOOM2.WAD
-    M_ForceUppercase(filename);
-
-    if (M_FileExists(path_dup))
-    {
-        return path_dup;
-    }
+    pathList.emplace_back(transformFileName(path, S_ForceUppercase));
 
     // 3. uppercase basename with lowercase extension, e.g. DOOM2.wad
-    if (char *ext = strrchr(path_dup, '.'); ext != nullptr && ext > filename)
-    {
-        M_ForceLowercase(ext + 1); // ext points to inside path_dup at the "."
-
-        if (M_FileExists(path_dup))
-        {
-            return path_dup;
-        }
-    }
+    pathList.emplace_back(transformFileName(path, [](const std::string &str){
+      auto p = std::filesystem::path(S_ForceUppercase(str));
+      return p.replace_extension(S_ForceLowercase(p.extension().string()));
+    }));
 
     // 4. lowercase filename with uppercase first letter, e.g. Doom2.wad
-    if (strlen(filename) > 1)
-    {
-        M_ForceLowercase(filename + 1);
+    pathList.emplace_back(transformFileName(path, [](const std::string &str){
+        auto s = S_ForceLowercase(str);
+        s[0] = std::toupper(s[0]);
+        return s;
+    }));
 
-        if (M_FileExists(path_dup))
-        {
-            return path_dup;
+    for (auto &p : pathList) {
+        if (M_FileExists(p)) {
+            return p.string();
         }
     }
 
     // 5. no luck
-    free(path_dup);
-    return nullptr;
+    return std::string();
 }
+
 
 //
 // Determine the length of an open file.
 //
-
 long M_FileLength(FILE *handle)
 {
     long savedpos;
@@ -327,6 +295,13 @@ void M_ForceUppercase(char *text)
         *p = toupper(*p);
     }
 }
+std::string S_ForceUppercase(const std::string_view source)
+{
+    auto dest = std::string(source.size(), '\0');
+    std::transform(source.begin(), source.end(), dest.begin(),
+      [](unsigned char c) -> unsigned char { return std::toupper(c); });
+    return dest;
+}
 
 //---------------------------------------------------------------------------
 //
@@ -335,7 +310,6 @@ void M_ForceUppercase(char *text)
 // Change string to lowercase.
 //
 //---------------------------------------------------------------------------
-
 void M_ForceLowercase(char *text)
 {
     char *p;
@@ -345,6 +319,15 @@ void M_ForceLowercase(char *text)
         *p = tolower(*p);
     }
 }
+
+std::string S_ForceLowercase(const std::string_view source)
+{
+    auto dest = std::string(source.size(), '\0');
+    std::transform(source.begin(), source.end(), dest.begin(),
+      [](unsigned char c) -> unsigned char { return std::tolower(c); });
+    return dest;
+}
+
 
 //
 // M_StrCaseStr

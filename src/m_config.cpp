@@ -727,7 +727,7 @@ static auto doom_defaults_list = std::to_array<default_t> ({
 
 static default_collection_t doom_defaults = {
     doom_defaults_list.data(),
-    std::size(doom_defaults_list),
+    std::ssize(doom_defaults_list),
     NULL
 };
 
@@ -2809,7 +2809,7 @@ char *M_GetSaveGameDir(const char *iwadname)
     if (p)
     {
         savegamedir = myargv[p + 1];
-        if (!M_FileExists(savegamedir))
+        if (!M_DirExists(savegamedir))
         {
             M_MakeDirectory(savegamedir);
         }

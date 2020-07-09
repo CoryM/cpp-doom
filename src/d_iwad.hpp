@@ -41,9 +41,9 @@ struct iwad_t {
     const char *  description;
 };
 
-[[nodiscard]] char *         D_FindWADByName(const char *filename);
+[[nodiscard]] std::string    D_FindWADByName(const std::string_view filename);
 [[nodiscard]] std::string    D_TryFindWADByName(const std::string_view filename);
-[[nodiscard]] char *         D_FindIWAD(int mask, GameMission_t *mission);
+[[nodiscard]] std::string    D_FindIWAD(int mask, GameMission_t *mission);
 [[nodiscard]] const iwad_t **D_FindAllIWADs(int mask);
 [[nodiscard]] const char *   D_SaveGameIWADName(GameMission_t gamemission);
 [[nodiscard]] const char *   D_SuggestIWADName(GameMission_t mission, GameMode_t mode);

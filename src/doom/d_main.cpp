@@ -29,6 +29,7 @@
 #include <array>
 #include <string_view>
 #include <vector>
+#include <string.h> // needed for strdup
 
 #include "../config.hpp"
 #include "../deh_main.hpp"
@@ -1300,7 +1301,7 @@ static void LoadIwadDeh(void)
         if (!M_FileExists(chex_deh))
         {
             free(chex_deh);
-            chex_deh = D_FindWADByName("chex.deh");
+            chex_deh = strdup(D_FindWADByName("chex.deh").c_str());
         }
 
         // Still not found?
@@ -1397,7 +1398,7 @@ static void LoadSigilWad(void)
 
             free(sigil_wad_file);
 
-            sigil_wad_file = D_FindWADByName(sigilWad);
+            sigil_wad_file = strdup(D_FindWADByName(sigilWad).c_str());
 
             if (sigil_wad_file)
             {
@@ -1419,7 +1420,7 @@ static void LoadSigilWad(void)
         if (!M_FileExists(sigil_shreds))
         {
             free(sigil_shreds);
-            sigil_shreds = D_FindWADByName("SIGIL_SHREDS.wad");
+            sigil_shreds = strdup(D_FindWADByName("SIGIL_SHREDS.wad").c_str());
         }
 
         if (sigil_shreds != NULL)
@@ -1494,7 +1495,7 @@ static void LoadNerveWad(void)
         if (!M_FileExists(nervewadfile))
         {
             free(nervewadfile);
-            nervewadfile = D_FindWADByName("nerve.wad");
+            nervewadfile = strdup(D_FindWADByName("nerve.wad").c_str());
         }
 
         if (nervewadfile == NULL)
@@ -1737,7 +1738,7 @@ void D_DoomMain(void)
     I_AtExit(M_SaveDefaults, true); // [crispy] always save configuration at exit
 
     // Find main IWAD file and load it.
-    iwadfile = D_FindIWAD(IWAD_MASK_DOOM, &gamemission);
+    iwadfile = strdup(D_FindIWAD(IWAD_MASK_DOOM, &gamemission).c_str());
 
     // None found?
 

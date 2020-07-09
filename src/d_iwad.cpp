@@ -95,18 +95,19 @@ static bool DirIsFile(const char *path, const char *filename)
            && !strcasecmp(M_BaseName(path), filename);
 }
 
+
 // Check if the specified directory contains the specified IWAD
 // file, returning the full path to the IWAD if found, or NULL
 // if not found.
 // UsedIn:    d_iwad.cpp
 // DefinedIn: d_iwad.cpp
-static char *CheckDirectoryHasIWAD(const std::string_view dir, const std::string_view iwadname)
+static std::string CheckDirectoryHasIWAD(const std::string_view dir, const std::string_view iwadname)
 {
     // As a special case, the "directory" may refer directly to an
     // IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
 
-    char *probe = M_FileCaseExists(dir.data());
-    if (DirIsFile(dir.data(), iwadname.data()) && probe != NULL)
+    auto probe = M_FileCaseExists(dir);
+    if (DirIsFile(dir.data(), iwadname.data()) && !probe.empty())
     {
         return probe;
     }
@@ -117,7 +118,7 @@ static char *CheckDirectoryHasIWAD(const std::string_view dir, const std::string
     if (!strcmp(dir.data(), "."))
     {
         //filename = M_StringDuplicate(iwadname.data());
-        filename = std::string  (iwadname);
+        filename = std::string(iwadname);
     }
     else
     {
@@ -125,24 +126,21 @@ static char *CheckDirectoryHasIWAD(const std::string_view dir, const std::string
         filename = std::string(dir) + DIR_SEPARATOR_S + std::string(iwadname);
     }
 
-    free(probe);
-    probe = M_FileCaseExists(filename.c_str());
-    if (probe != NULL)
+    probe = M_FileCaseExists(filename);
+    if (!probe.empty())
     {
         return probe;
     }
 
-    return NULL;
+    return std::string();
 }
 
 // Search a directory to try to find an IWAD
-// Returns the location of the IWAD if found, otherwise NULL.
+// Returns the location of the IWAD if found, otherwise empty string.
 // UsedIn:    d_iwad.cpp
 // DefinedIn: d_iwad.cpp
-static char *SearchDirectoryForIWAD(const char *dir, int mask, GameMission_t *mission)
+static std::string SearchDirectoryForIWAD(const std::string_view dir, int mask, GameMission_t *mission)
 {
-    char *filename;
-
     for (const auto &i : a_iwads)
     {
         if (((1 << i.mission) & mask) == 0)
@@ -150,9 +148,9 @@ static char *SearchDirectoryForIWAD(const char *dir, int mask, GameMission_t *mi
             continue;
         }
 
-        filename = CheckDirectoryHasIWAD(dir, DEH_String(i.name));
+        auto filename = CheckDirectoryHasIWAD(dir, DEH_String(i.name));
 
-        if (filename != nullptr)
+        if (!filename.empty())
         {
             *mission = i.mission;
 
@@ -160,7 +158,7 @@ static char *SearchDirectoryForIWAD(const char *dir, int mask, GameMission_t *mi
         }
     }
 
-    return NULL;
+    return std::string();
 }
 
 // When given an IWAD with the '-iwad' parameter,
@@ -362,15 +360,12 @@ static void BuildIWADDirList(void)
 // DefinedIn: d_iwad.cpp
 // UsedIn:    d_iwad.cpp / d_iwad.hpp
 //            doom/d_main.cpp
-char *D_FindWADByName(const char *name)
+std::string D_FindWADByName(const std::string_view name)
 {
-    char *path;
-    char *probe;
-
     // Absolute path?
 
-    probe = M_FileCaseExists(name);
-    if (probe != NULL)
+    auto probe = M_FileCaseExists(name);
+    if (!probe.empty())
     {
         return probe;
     }
@@ -386,28 +381,23 @@ char *D_FindWADByName(const char *name)
         // file.
 
         probe = M_FileCaseExists(iwadDir.c_str());
-        if (DirIsFile(iwadDir.c_str(), name) && probe != NULL)
+        if (DirIsFile(iwadDir.c_str(), name.data()) && !probe.empty())
         {
             return probe;
         }
-        free(probe);
 
         // Construct a string for the full path
-
-        path = M_StringJoin({iwadDir, DIR_SEPARATOR_S, name});
+        char *path = M_StringJoin({iwadDir, DIR_SEPARATOR_S, name});
 
         probe = M_FileCaseExists(path);
-        if (probe != NULL)
+        if (!probe.empty())
         {
             return probe;
         }
-
-        free(path);
     }
 
     // File not found
-
-    return NULL;
+    return std::string();
 }
 
 //
@@ -421,16 +411,13 @@ char *D_FindWADByName(const char *name)
 //            w_main.cpp
 std::string D_TryFindWADByName(const std::string_view filename)
 {
-    char *result = D_FindWADByName(filename.data());
+    auto result = D_FindWADByName(filename);
 
-    if (result != nullptr)
+    if (result.empty())
     {
-        return std::string(result);
+        result = std::string(filename);
     }
-    else
-    {
-        return std::string(filename);
-    }
+    return result;
 }
 
 //
@@ -441,9 +428,9 @@ std::string D_TryFindWADByName(const std::string_view filename)
 //
 // DefinedIn: d_iwad.cpp  d_iwad.hpp
 // UsedIn:    doom/d_main.cpp
-char *D_FindIWAD(int mask, GameMission_t *mission)
+std::string D_FindIWAD(int mask, GameMission_t *mission)
 {
-    char *result = nullptr;
+    auto result = std::string();
     // Check for the -iwad parameter
 
     //!
@@ -462,12 +449,12 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
 
         result = D_FindWADByName(iwadfile);
 
-        if (result == nullptr)
+        if (result.empty())
         {
             I_Error("IWAD file '%s' not found!", iwadfile);
         }
 
-        *mission = IdentifyIWADByName(result, mask);
+        *mission = IdentifyIWADByName(result.c_str(), mask);
     }
     else
     {
@@ -478,7 +465,7 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
         for (auto &iwadDir : v_iwadDirs)
         {
             result = SearchDirectoryForIWAD(iwadDir.c_str(), mask, mission);
-            if (result) { break; }
+            if (!result.empty()) { break; }
         }
     }
 
@@ -492,7 +479,6 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
 const iwad_t **D_FindAllIWADs(int mask)
 {
     int   result_len;
-    char *filename;
 
     auto result = create_struct<iwad_t const * [a_iwads.size() + 1]>();
     //    result = malloc(sizeof(iwad_t *) * (arrlen(iwads) + 1));
@@ -507,9 +493,9 @@ const iwad_t **D_FindAllIWADs(int mask)
             continue;
         }
 
-        filename = D_FindWADByName(i.name);
+        auto filename = D_FindWADByName(i.name);
 
-        if (filename != NULL)
+        if (!filename.empty())
         {
             result[result_len] = &i;
             ++result_len;
