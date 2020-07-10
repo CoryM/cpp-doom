@@ -20,6 +20,8 @@
 #ifndef __R_MAIN__
 #define __R_MAIN__
 
+#include <vector>
+
 #include "d_player.hpp"
 #include "r_data.hpp"
 
@@ -64,7 +66,7 @@ extern int LIGHTSCALESHIFT;
 extern int MAXLIGHTZ;
 extern int LIGHTZSHIFT;
 
-extern lighttable_t ***scalelight;
+extern std::vector< std::vector<lighttable_t*> > scalelight;
 extern lighttable_t ** scalelightfixed;
 extern lighttable_t ***zlight;
 

@@ -21,6 +21,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <vector>
 
 
 #include "doomdef.hpp"
@@ -95,7 +96,8 @@ int viewangletox[FINEANGLES / 2];
 angle_t xtoviewangle[MAXWIDTH + 1];
 
 // [crispy] parameterized for smooth diminishing lighting
-lighttable_t ***scalelight      = NULL;
+//lighttable_t ***scalelight      = NULL;
+std::vector< std::vector<lighttable_t*> > scalelight{};
 lighttable_t ** scalelightfixed = NULL;
 lighttable_t ***zlight          = NULL;
 
@@ -491,8 +493,8 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
     fixed_t		z;
     fixed_t		sinv;
     fixed_t		cosv;
-	
-    sinv = finesine[(visangle-rw_normalangle)>>ANGLETOFINESHIFT];	
+
+    sinv = finesine[(visangle-rw_normalangle)>>ANGLETOFINESHIFT];
     dist = FixedDiv (rw_distance, sinv);
     cosv = finecosine[(viewangle-visangle)>>ANGLETOFINESHIFT];
     z = abs(FixedMul (dist, cosv));
@@ -505,7 +507,7 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
     angleb = ANG90 + (visangle-rw_normalangle);
 
     // both sines are allways positive
-    sinea = finesine[anglea>>ANGLETOFINESHIFT];	
+    sinea = finesine[anglea>>ANGLETOFINESHIFT];
     sineb = finesine[angleb>>ANGLETOFINESHIFT];
     num = FixedMul(projection,sineb)<<detailshift;
     den = FixedMul(rw_distance,sinea);
@@ -521,7 +523,7 @@ fixed_t R_ScaleFromGlobalAngle (angle_t visangle)
     }
     else
 	scale = 64*FRACUNIT;
-	
+
     return scale;
 }
 #endif
@@ -559,7 +561,7 @@ void R_InitTables(void)
     float	a;
     float	fv;
     int		t;
-    
+
     // viewangle tangent table
     for (i=0 ; i<FINEANGLES/2 ; i++)
     {
@@ -568,7 +570,7 @@ void R_InitTables(void)
 	t = fv;
 	finetangent[i] = t;
     }
-    
+
     // finesine table
     for (i=0 ; i<5*FINEANGLES/4 ; i++)
     {
@@ -665,13 +667,9 @@ void R_InitLightTables(void)
     int startmap;
     int scale;
 
-    if (scalelight)
+    if (!scalelight.empty())
     {
-        for (i = 0; i < LIGHTLEVELS; i++)
-        {
-            free(scalelight[i]);
-        }
-        free(scalelight);
+        scalelight.clear();
     }
 
     if (scalelightfixed)
@@ -710,7 +708,8 @@ void R_InitLightTables(void)
         LIGHTZSHIFT     = 20;
     }
 
-    scalelight      = static_cast<lighttable_t ***>(malloc(LIGHTLEVELS * sizeof(*scalelight)));
+    //scalelight      = static_cast<lighttable_t ***>(malloc(LIGHTLEVELS * sizeof(*scalelight)));
+    //scalelight.resize(LIGHTLEVELS);
     scalelightfixed = static_cast<lighttable_t **>(malloc(MAXLIGHTSCALE * sizeof(*scalelightfixed)));
     zlight          = static_cast<lighttable_t ***>(malloc(LIGHTLEVELS * sizeof(*zlight)));
 
@@ -862,20 +861,17 @@ void R_ExecuteSetViewSize(void)
 
     // Calculate the light levels to use
     //  for each level / scale combination.
+    scalelight.resize(LIGHTLEVELS, std::vector<lighttable_t*>(MAXLIGHTSCALE, nullptr));
     for (i = 0; i < LIGHTLEVELS; i++)
     {
-        scalelight[i] = static_cast<lighttable_t **>(malloc(MAXLIGHTSCALE * sizeof(**scalelight)));
+        //scalelight[i] = static_cast<lighttable_t **>(malloc(MAXLIGHTSCALE * sizeof(**scalelight)));
 
         startmap = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
         for (j = 0; j < MAXLIGHTSCALE; j++)
         {
             level = startmap - j * HIRESWIDTH / MIN(viewwidth << detailshift, HIRESWIDTH) / DISTMAP;
 
-            if (level < 0)
-                level = 0;
-
-            if (level >= NUMCOLORMAPS)
-                level = NUMCOLORMAPS - 1;
+            level = std::clamp(level, 0, NUMCOLORMAPS - 1);
 
             scalelight[i][j] = colormaps + level * 256;
         }

@@ -916,11 +916,11 @@ void R_AddSprites(sector_t *sec)
     lightnum = (sec->lightlevel >> LIGHTSEGSHIFT) + (extralight * LIGHTBRIGHT);
 
     if (lightnum < 0)
-        spritelights = scalelight[0];
+        spritelights = &scalelight[0][0];
     else if (lightnum >= LIGHTLEVELS)
-        spritelights = scalelight[LIGHTLEVELS - 1];
+        spritelights = &scalelight[LIGHTLEVELS - 1][0];
     else
-        spritelights = scalelight[lightnum];
+        spritelights = &scalelight[lightnum][0];
 
     // Handle all things in sector.
     for (thing = sec->thinglist; thing; thing = thing->snext)
@@ -1062,11 +1062,11 @@ void R_DrawPlayerSprites(void)
         + (extralight * LIGHTBRIGHT);
 
     if (lightnum < 0)
-        spritelights = scalelight[0];
+        spritelights = &scalelight[0][0];
     else if (lightnum >= LIGHTLEVELS)
-        spritelights = scalelight[LIGHTLEVELS - 1];
+        spritelights = &scalelight[LIGHTLEVELS - 1][0];
     else
-        spritelights = scalelight[lightnum];
+        spritelights = &scalelight[lightnum][0];
 
     // clip to screen bounds
     mfloorclip   = screenheightarray;

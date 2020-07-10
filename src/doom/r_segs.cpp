@@ -212,11 +212,11 @@ void R_RenderMaskedSegRange(drawseg_t *ds,
 */
 
     if (lightnum < 0)
-        walllights = scalelight[0];
+        walllights = &scalelight[0][0];
     else if (lightnum >= LIGHTLEVELS)
-        walllights = scalelight[LIGHTLEVELS - 1];
+        walllights = &scalelight[LIGHTLEVELS - 1][0];
     else
-        walllights = scalelight[lightnum];
+        walllights = &scalelight[lightnum][0];
 
     maskedtexturecol = ds->maskedtexturecol;
 
@@ -364,7 +364,7 @@ void R_RenderSegLoop(void)
             // calculate texture offset
             angle         = (rw_centerangle + xtoviewangle[rw_x]) >> ANGLETOFINESHIFT;
             // Angle overflows the finetangent size
-            if (angle >= std::size(finetangent)) angle = std::size(finetangent) - 1; 
+            if (angle >= std::size(finetangent)) angle = std::size(finetangent) - 1;
             texturecolumn = rw_offset - FixedMul(finetangent[angle], rw_distance);
             texturecolumn >>= FRACBITS;
             // calculate lighting
@@ -594,9 +594,9 @@ void R_StoreWallRange(int start,
 
 	    trx = curline->v1->x - viewx;
 	    try = curline->v1->y - viewy;
-			
-	    gxt = FixedMul(trx,viewcos); 
-	    gyt = -FixedMul(try,viewsin); 
+
+	    gxt = FixedMul(trx,viewcos);
+	    gyt = -FixedMul(try,viewsin);
 	    ds_p->scale1 = FixedDiv(projection, gxt-gyt)<<detailshift;
 	}
 #endif
@@ -810,11 +810,11 @@ void R_StoreWallRange(int start,
 */
 
             if (lightnum < 0)
-                walllights = scalelight[0];
+                walllights = &scalelight[0][0];
             else if (lightnum >= LIGHTLEVELS)
-                walllights = scalelight[LIGHTLEVELS - 1];
+                walllights = &scalelight[LIGHTLEVELS - 1][0];
             else
-                walllights = scalelight[lightnum];
+                walllights = &scalelight[lightnum][0];
         }
     }
 
