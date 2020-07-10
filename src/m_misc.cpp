@@ -382,7 +382,7 @@ char *M_StringDuplicate(const std::string_view orig)
 // In trans to using strings / string_view instead of char*
 std::string S_StringDuplicate(const std::string_view orig)
 {
-    return std::string(M_StringDuplicate(orig));
+    return std::string(orig);
 }
 
 //
@@ -511,7 +511,7 @@ bool M_StringEndsWith(const char *s, const char *suffix)
 {
     // Find out how much space we need
     const auto result_len = std::accumulate(il_S.begin(), il_S.end(), 1,
-        [](const auto &len, const auto &sv) { return len + sv.size(); });
+        [](const size_t &len, const auto &sv) { return len + sv.size(); });
 
     // allocate the space
     auto result = static_cast<char *>(malloc(result_len));

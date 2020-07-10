@@ -99,7 +99,7 @@ int ticdup;
 
 fixed_t offsetms;
 
-// Use new client syncronisation code
+// Use new client synchronisation code
 
 static bool new_sync = true;
 
@@ -562,7 +562,7 @@ static void OldNetSync(void)
     frameon++;
 
     // ideally maketic should be 1 - 3 tics above lowtic
-    // if we are consistantly slower, speed up time
+    // if we are consistently slower, speed up time
 
     for (i = 0; i < NET_MAXPLAYERS; i++)
     {
@@ -848,15 +848,8 @@ bool D_NonVanillaRecord(bool conditional, const char *feature)
 // file, as opposed to a WAD.
 static bool IsDemoFile(int lumpnum)
 {
-    char *  lower;
-    bool result;
-
-    lower = M_StringDuplicate(lumpinfo[lumpnum]->wad_file->path);
-    M_ForceLowercase(lower);
-    result = M_StringEndsWith(lower, ".lmp");
-    free(lower);
-
-    return result;
+    const auto lower = S_ForceLowercase(lumpinfo[lumpnum]->wad_file->path);
+    return M_StringEndsWith(lower.c_str(), ".lmp");;
 }
 
 // If the provided conditional value is true, we're trying to play back

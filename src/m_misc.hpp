@@ -47,7 +47,7 @@ void        M_ExtractFileBase(const char *path, char *dest);
 std::string S_ForceUppercase(const std::string_view source);
 std::string S_ForceLowercase(const std::string_view source);
 const char *M_StrCaseStr(const char *haystack, const char *needle);
-std::string S_StringDuplicate(const std::string_view orig);
+inline std::string S_StringDuplicate(const std::string_view orig);
 bool        M_StringCopy(char *dest, const char *src, size_t dest_size);
 bool        M_StringConcat(char *dest, const char *src, size_t dest_size);
 char *      M_StringReplace(const char *haystack, const char *needle, const char *replacement);
