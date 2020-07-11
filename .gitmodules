@@ -1,3 +1,6 @@
 [submodule "quickcheck"]
-	path = quickcheck
+	path = thirdparty/quickcheck
 	url = https://github.com/chocolate-doom/quickcheck.git
+[submodule "thirdparty/fmt"]
+	path = thirdparty/fmt
+	url = https://github.com/fmtlib/fmt.git

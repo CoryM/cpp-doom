@@ -25,7 +25,7 @@ set(PACKAGE_LICENSE "GNU General Public License, version 2")
 
 # Any settings that should apply to all targets in this directory and all
 # subdirectories should go here.  Use judiciously.
-add_compile_options("-Wall" "-march=native" "-mtune=native" "-Wextra" "-pedantic" "-pthread" "-Og")
+add_compile_options("-Wall" "-march=native" "-mtune=native" "-Wextra" "-pedantic" "-pthread" "-Og" "-Wno-unknown-attributes")
 add_link_options("-O2")
 add_compile_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
 add_link_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
@@ -34,7 +34,16 @@ find_package(SDL2 2.0.1 REQUIRED)
 find_package(SDL2_mixer 2.0.0 REQUIRED)
 find_package(SDL2_net 2.0.0 REQUIRED)
 find_package(Catch2 REQUIRED)
-find_package(fmt REQUIRED)
+
+# Check if fmt is installed and use it otherwise use the submodule.
+find_package(fmt 4.0.0 CONFIG QUIET)
+if(fmt_FOUND)
+  link_libraries(fmt::fmt)
+else()
+  message(STATUS "Using fmt submodule")
+  add_subdirectory("${CMAKE_SOURCE_DIR}/thirdparty/fmt")
+  link_libraries(fmt::fmt)
+endif()
 
 # Check for libsamplerate.
 find_package(samplerate)
