@@ -31,7 +31,7 @@
 #define DEH_VANILLA_NUMSTATES 966
 #define DEH_VANILLA_NUMSFX    107
 
-void DEH_ParseCommandLine(void);
+void DEH_ParseCommandLine();
 int  DEH_LoadFile(const char *filename);
 void DEH_AutoLoadPatches(const char *path);
 int  DEH_LoadLump(int lumpnum, bool allow_long, bool allow_error);

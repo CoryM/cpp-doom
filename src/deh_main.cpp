@@ -14,6 +14,7 @@
 //
 // Main dehacked code
 //
+#include <string_view>
 
 #include "deh_main.hpp"
 
@@ -47,13 +48,12 @@ bool deh_apply_cheats = true;
 void DEH_Checksum(sha1_digest_t digest)
 {
     sha1_context_t sha1_context;
-    unsigned int   i;
 
     SHA1_Init(&sha1_context);
 
-    for (i = 0; deh_section_types[i] != NULL; ++i)
+    for (size_t i = 0; deh_section_types[i] != nullptr; ++i)
     {
-        if (deh_section_types[i]->sha1_hash != NULL)
+        if (deh_section_types[i]->sha1_hash != nullptr)
         {
             deh_section_types[i]->sha1_hash(&sha1_context);
         }
@@ -63,20 +63,18 @@ void DEH_Checksum(sha1_digest_t digest)
 }
 
 // Called on startup to call the Init functions
-static void InitializeSections(void)
+static void InitializeSections()
 {
-    unsigned int i;
-
-    for (i = 0; deh_section_types[i] != NULL; ++i)
+    for (unsigned int i = 0; deh_section_types[i] != nullptr; ++i)
     {
-        if (deh_section_types[i]->init != NULL)
+        if (deh_section_types[i]->init != nullptr)
         {
             deh_section_types[i]->init();
         }
     }
 }
 
-static void DEH_Init(void)
+static void DEH_Init()
 {
     //!
     // @category mod
@@ -96,63 +94,72 @@ static void DEH_Init(void)
 }
 
 // Given a section name, get the section structure which corresponds
-static deh_section_t *GetSectionByName(char *name)
+static auto GetSectionByName(char *name) -> deh_section_t *
 {
-    unsigned int i;
-
     // we explicitely do not recognize [STRINGS] sections at all
     // if extended strings are not allowed
-
-    if (!deh_allow_extended_strings && !strncasecmp("[STRINGS]", name, 9))
+    constexpr auto s = std::string_view("[STRINGS]");
+    if (!deh_allow_extended_strings && (0 == strncasecmp(s.data(), name, s.size())))
     {
-        return NULL;
+        return nullptr;
     }
 
-    for (i = 0; deh_section_types[i] != NULL; ++i)
+    for (unsigned int i = 0; deh_section_types[i] != nullptr; ++i)
     {
-        if (!strcasecmp(deh_section_types[i]->name, name))
+        if (strcasecmp(deh_section_types[i]->name, name) == 0)
         {
             return deh_section_types[i];
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // Is the string passed just whitespace?
-static bool IsWhitespace(char *s)
+static auto IsWhitespace(std::string_view s) -> bool
 {
-    for (; *s; ++s)
-    {
-        if (!isspace(*s))
-            return false;
-    }
+    return s.find_first_not_of(' ') == std::string::npos;
 
-    return true;
 }
 
 // Strip whitespace from the start and end of a string
-static char *CleanString(char *s)
+// Does not change the orginal string only points to the
+// "contents" of the string inside.
+static auto CleanString(const std::string_view in_s) -> std::string_view
 {
-    char *strending;
-
-    // Leading whitespace
-
-    while (*s && isspace(*s))
-        ++s;
-
-    // Trailing whitespace
-
-    strending = s + strlen(s) - 1;
-
-    while (strlen(s) > 0 && isspace(*strending))
-    {
-        *strending = '\0';
-        --strending;
+    auto out_s = std::string_view();
+    if (!in_s.empty()) [[likely]] {
+      const auto start = in_s.find_first_not_of(' ');
+      if (start != std::string::npos) [[likely]] {
+        const auto end = in_s.find_last_not_of(' ');
+        const auto *const first = in_s.begin() + start;
+        const auto length = (end - start) + 1;
+        out_s = std::string_view(first, length);
+      }
     }
-
-    return s;
+    return out_s;
 }
+// // Strip whitespace from the start and end of a string
+// static auto CleanString(char *s) -> char *
+// {
+//     // Leading whitespace
+//     while (*s && isspace(*s))
+//     {
+//         ++s;
+//     }
+// 
+//     // Trailing whitespace
+// 
+//     char *strending = s + strlen(s) - 1;
+// 
+//     while (strlen(s) > 0 && isspace(*strending))
+//     {
+//         *strending = '\0';
+//         --strending;
+//     }
+// 
+//     return s;
+// }
 
 // This pattern is used a lot of times in different sections,
 // an assignment is essentially just a statement of the form:
@@ -163,15 +170,12 @@ static char *CleanString(char *s)
 // The string is split on the '=', essentially.
 //
 // Returns true if read correctly
-bool DEH_ParseAssignment(char *line, char **variable_name, char **value)
+auto DEH_ParseAssignment(char *line, char **variable_name, char **value) -> bool
 {
-    char *p;
-
     // find the equals
+    char *p = strchr(line, '=');
 
-    p = strchr(line, '=');
-
-    if (p == NULL)
+    if (p == nullptr)
     {
         return false;
     }
@@ -179,11 +183,11 @@ bool DEH_ParseAssignment(char *line, char **variable_name, char **value)
     // variable name at the start
     // turn the '=' into a \0 to terminate the string here
     *p             = '\0';
-    *variable_name = CleanString(line);
+    *variable_name = const_cast<char *>(CleanString(line).data());
 
     // value immediately follows the '='
 
-    *value = CleanString(p + 1);
+    *value = const_cast<char *>(CleanString(p + 1).data());
 
     return true;
 }
@@ -191,26 +195,23 @@ bool DEH_ParseAssignment(char *line, char **variable_name, char **value)
 extern void DEH_SaveLineStart(deh_context_t *context);
 extern void DEH_RestoreLineStart(deh_context_t *context);
 
-static bool CheckSignatures(deh_context_t *context)
+static auto CheckSignatures(deh_context_t *context) -> bool
 {
-    size_t i;
-    char * line;
-
     // [crispy] save pointer to start of line (should be 0 here)
     DEH_SaveLineStart(context);
 
     // Read the first line
 
-    line = DEH_ReadLine(context, false);
+    char *line = DEH_ReadLine(context, false);
 
-    if (line == NULL)
+    if (line == nullptr)
     {
         return false;
     }
 
     // Check all signatures to see if one matches
 
-    for (i = 0; deh_signatures[i] != NULL; ++i)
+    for (size_t i = 0; deh_signatures[i] != NULL; ++i)
     {
         if (!strcmp(deh_signatures[i], line))
         {
