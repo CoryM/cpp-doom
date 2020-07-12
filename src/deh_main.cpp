@@ -147,17 +147,17 @@ static auto CleanString(const std::string_view in_s) -> std::string_view
 //     {
 //         ++s;
 //     }
-// 
+//
 //     // Trailing whitespace
-// 
+//
 //     char *strending = s + strlen(s) - 1;
-// 
+//
 //     while (strlen(s) > 0 && isspace(*strending))
 //     {
 //         *strending = '\0';
 //         --strending;
 //     }
-// 
+//
 //     return s;
 // }
 

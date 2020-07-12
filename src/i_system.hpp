@@ -20,23 +20,26 @@
 #ifndef __I_SYSTEM__
 #define __I_SYSTEM__
 
+#include <string>
+#include <string_view>
+
 #include "common.hpp"
 
-#include "d_ticcmd.hpp"
 #include "d_event.hpp"
+#include "d_ticcmd.hpp"
 
 
-typedef void (*atexit_func_t)(void);
+typedef void (*atexit_func_t)();
 
 // Called by DoomMain.
-void I_Init(void);
+void I_Init();
 
 // Called by startup code
-// to get the ammount of memory to malloc
+// to get the amount of memory to malloc
 // for the zone management.
-byte *I_ZoneBase(int *size);
+auto I_ZoneBase(size_t *size) -> byte *;
 
-bool I_ConsoleStdout(void);
+auto I_ConsoleStdout() -> bool;
 
 
 // Asynchronous interrupt functions should maintain private queues
@@ -47,25 +50,27 @@ bool I_ConsoleStdout(void);
 // or calls a loadable driver to build it.
 // This ticcmd will then be modified by the gameloop
 // for normal input.
-ticcmd_t *I_BaseTiccmd(void);
+auto I_BaseTiccmd() -> ticcmd_t *;
 
 
 // Called by M_Responder when quit is selected.
 // Clean exit, displays sell blurb.
-void I_Quit(void) NORETURN;
+[[noreturn]] void I_Quit();
 
-void I_Error(const char *error, ...) NORETURN PRINTF_ATTR(1, 2);
+[[noreturn]] [[deprecated("Use void S_Error with fmt")]] void I_Error(const char *error, ...) PRINTF_ATTR(1, 2);
+
+[[noreturn]] void S_Error(std::string_view error);
 
 void I_Tactile(int on, int off, int total);
 
-void *I_Realloc(void *ptr, size_t size);
+auto I_Realloc(void *ptr, size_t size) -> void *;
 
 template <typename DataType>
 auto i_realloc(void *ptr, size_t size) {
   return static_cast<DataType>(I_Realloc(ptr, size));
 }
 
-bool I_GetMemoryValue(unsigned int offset, void *value, int size);
+auto I_GetMemoryValue(unsigned int offset, void *value, int size) -> bool;
 
 // Schedule a function to be called when the program exits.
 // If run_if_error is true, the function is called if the exit
@@ -75,7 +80,7 @@ void I_AtExit(atexit_func_t func, bool run_if_error);
 
 // Add all system-specific config file variable bindings.
 
-void I_BindVariables(void);
+void I_BindVariables();
 
 // Print startup banner copyright message.
 
@@ -87,6 +92,6 @@ void I_PrintBanner(const char *text);
 
 // Print a dividing line for startup banners.
 
-void I_PrintDivider(void);
+void I_PrintDivider();
 
-#endif
+#endif // __I_SYSTEM_HPP__

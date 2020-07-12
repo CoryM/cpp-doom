@@ -16,6 +16,7 @@
 //     to the IWAD type.
 //
 #include <vector>
+#include "fmt/core.h"
 
 #include "d_iwad.hpp" // Includes common.hpp
 
@@ -89,10 +90,10 @@ void v_iwadDirs_init()
 // of the specified name.
 // UsedIn:    d_iwad.cpp
 // DefinedIn: d_iwad.cpp
-static bool DirIsFile(const char *path, const char *filename)
+static auto DirIsFile(const char *path, const char *filename) -> bool
 {
-    return strchr(path, DIR_SEPARATOR) != NULL
-           && !strcasecmp(M_BaseName(path), filename);
+    return strchr(path, DIR_SEPARATOR) != nullptr
+           && (strcasecmp(M_BaseName(path), filename) == 0);
 }
 
 
@@ -451,7 +452,7 @@ std::string D_FindIWAD(int mask, GameMission_t *mission)
 
         if (result.empty())
         {
-            I_Error("IWAD file '%s' not found!", iwadfile);
+            S_Error(fmt::format("IWAD file '{}' not found!", iwadfile));
         }
 
         *mission = IdentifyIWADByName(result.c_str(), mask);
@@ -476,13 +477,11 @@ std::string D_FindIWAD(int mask, GameMission_t *mission)
 //
 // DefinedIn: d_iwad.cpp  d_iwad.hpp
 // UsedIn:    setup/mode.cpp
-const iwad_t **D_FindAllIWADs(int mask)
+auto D_FindAllIWADs(int mask) -> const iwad_t **
 {
-    int   result_len;
-
     auto result = create_struct<iwad_t const * [a_iwads.size() + 1]>();
     //    result = malloc(sizeof(iwad_t *) * (arrlen(iwads) + 1));
-    result_len = 0;
+    int result_len = 0;
 
     // Try to find all IWADs
 
@@ -514,7 +513,7 @@ const iwad_t **D_FindAllIWADs(int mask)
 //
 // DefinedIn: d_iwad.cpp  d_iwad.hpp
 // UsedIn:    doom/d_main.cpp
-const char *D_SaveGameIWADName(GameMission_t gamemission)
+auto D_SaveGameIWADName(GameMission_t gamemission) -> const char *
 {
     // Determine the IWAD name to use for savegames.
     // This determines the directory the savegame files get put into.
@@ -540,7 +539,7 @@ const char *D_SaveGameIWADName(GameMission_t gamemission)
 //
 // DefinedIn: d_iwad.cpp  d_iwad.hpp
 // UsedIn:    setup/multiplayer.cpp
-const char *D_SuggestIWADName(GameMission_t mission, GameMode_t mode)
+auto D_SuggestIWADName(GameMission_t mission, GameMode_t mode) -> const char *
 {
     for (const auto &i : a_iwads)
     {
@@ -558,7 +557,7 @@ const char *D_SuggestIWADName(GameMission_t mission, GameMode_t mode)
 // DefinedIn: d_iwad.cpp  d_iwad.hpp
 // UsedIn:    setup/multiplayer.cpp
 //            w_main.cpp
-const char *D_SuggestGameName(GameMission_t mission, GameMode_t mode)
+auto D_SuggestGameName(GameMission_t mission, GameMode_t mode) -> const char *
 {
     for (const auto &i : a_iwads)
     {

@@ -15,29 +15,29 @@
 // DESCRIPTION:
 //
 
-#include <unistd.h>
-#include "SDL2/SDL.h"
-
+#include "../utils/memory.hpp"
 #include "config.hpp"
-
 #include "deh_str.hpp"
 #include "doomtype.hpp"
+#include "i_joystick.hpp"
+#include "i_sound.hpp"
+#include "i_system.hpp"
+#include "i_timer.hpp"
+#include "i_video.hpp"
 #include "m_argv.hpp"
 #include "m_config.hpp"
 #include "m_misc.hpp"
-#include "i_joystick.hpp"
-#include "i_sound.hpp"
-#include "i_timer.hpp"
-#include "i_video.hpp"
-
-#include "i_system.hpp"
-
-#include "../utils/memory.hpp"
 #include "w_wad.hpp"
 #include "z_zone.hpp"
 
-#define DEFAULT_RAM 16 * 2 /* MiB [crispy] */
-#define MIN_RAM     4 * 4  /* MiB [crispy] */
+#include "SDL2/SDL.h"
+#include "fmt/core.h"
+#include <iostream>
+#include <unistd.h>
+
+
+constexpr size_t DEFAULT_RAM = 16 * 2; /* MiB [crispy] */
+constexpr size_t MIN_RAM     = 4 * 4;  /* MiB [crispy] */
 
 
 typedef struct atexit_listentry_s atexit_listentry_t;
@@ -48,7 +48,7 @@ struct atexit_listentry_s {
     atexit_listentry_t *next;
 };
 
-static atexit_listentry_t *exit_funcs = NULL;
+static atexit_listentry_t *exit_funcs = nullptr;
 
 void I_AtExit(atexit_func_t func, bool run_on_error)
 {
@@ -70,36 +70,35 @@ void I_Tactile(int on [[maybe_unused]], int off [[maybe_unused]], int total [[ma
 // by trying progressively smaller zone sizes until one is found that
 // works.
 
-static byte *AutoAllocMemory(int *size, int default_ram, int min_ram)
+static auto AutoAllocMemory(size_t *size, int default_ram, int min_ram) -> byte *
 {
-    byte *zonemem;
-
     // Allocate the zone memory.  This loop tries progressively smaller
     // zone sizes until a size is found that can be allocated.
     // If we used the -mb command line parameter, only the parameter
     // provided is accepted.
 
-    zonemem = NULL;
+    byte *zonemem = nullptr;
 
-    while (zonemem == NULL)
+    while (zonemem == nullptr)
     {
         // We need a reasonable minimum amount of RAM to start.
 
         if (default_ram < min_ram)
         {
-            I_Error("Unable to allocate %i MiB of RAM for zone", default_ram);
+            S_Error(fmt::format("Unable to allocate {} MiB of RAM for zone", default_ram));
         }
 
         // Try to allocate the zone memory.
-
-        *size = default_ram * 1024 * 1024;
+        constexpr size_t KiloBytes = 1024;
+        constexpr size_t MegaBytes = 1024 * KiloBytes;
+        *size = default_ram * MegaBytes;
 
         zonemem = static_cast<byte *>(malloc(*size));
 
         // Failed to allocate?  Reduce zone size until we reach a size
         // that is acceptable.
 
-        if (zonemem == NULL)
+        if (zonemem == nullptr)
         {
             default_ram -= 1;
         }
@@ -108,9 +107,8 @@ static byte *AutoAllocMemory(int *size, int default_ram, int min_ram)
     return zonemem;
 }
 
-byte *I_ZoneBase(int *size)
+auto I_ZoneBase(size_t *size) -> byte *
 {
-    byte *     zonemem;
     int        min_ram, default_ram;
     int        p;
     static int i = 1;
@@ -141,13 +139,14 @@ byte *I_ZoneBase(int *size)
         min_ram = default_ram + 1;
     }
 
-    zonemem = AutoAllocMemory(size, default_ram * i, min_ram * i);
+    byte *zonemem = AutoAllocMemory(size, default_ram * i, min_ram * i);
 
     // [crispy] if called again, allocate another zone twice as big
     i *= 2;
 
-    printf("zone memory: %p, %d MiB allocated for zone\n",
-        zonemem, *size >> 20); // [crispy] human-understandable zone heap size
+    constexpr size_t MegaByteBitSift = 20;
+    puts(fmt::format("zone memory: {}, {} MiB allocated for zone\n",
+        zonemem, (*size >> MegaByteBitSift)).c_str()); // [crispy] human-understandable zone heap size
 
     return zonemem;
 }
@@ -247,7 +246,6 @@ void I_Quit(void)
 //
 // I_Error
 //
-
 static bool already_quitting = false;
 
 void I_Error(const char *error, ...)
@@ -286,7 +284,7 @@ void I_Error(const char *error, ...)
 
     entry = exit_funcs;
 
-    while (entry != NULL)
+    while (entry != nullptr)
     {
         if (entry->run_on_error)
         {
@@ -321,10 +319,61 @@ void I_Error(const char *error, ...)
     throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
 }
 
+void S_Error(const std::string_view error)
+{
+    if (!already_quitting)
+    {
+        already_quitting = true;
+    }
+    else
+    {
+        std::cerr << "Warning: recursive call to I_Error detected.\n";
+        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+    }
+
+    // Message first.
+    std::cerr << "\nError: " << error;
+
+    // Shutdown. Here might be other errors.
+
+    atexit_listentry_t *entry = exit_funcs;
+
+    while (entry != nullptr)
+    {
+        if (entry->run_on_error)
+        {
+            entry->func();
+        }
+
+        entry = entry->next;
+    }
+
+    //!
+    // @category obscure
+    //
+    // If specified, don't show a GUI window for error messages when the
+    // game exits with an error.
+    //
+    // Pop up a GUI dialog box to show the error message, if the
+    // game was not run from the console (and the user will
+    // therefore be unable to otherwise see the message).
+    if ((!M_ParmExists("-nogui")) && (!I_ConsoleStdout()))
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+            PACKAGE_STRING, error.data(), nullptr);
+    }
+
+    // abort();
+
+    SDL_Quit();
+
+    //exit(-1);
+    throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+}
+
 //
 // I_Realloc
 //
-
 void *I_Realloc(void *ptr, size_t size)
 {
     void *new_ptr;

@@ -44,7 +44,6 @@
 
 #define PRINTF_ATTR(fmt, first) __attribute__((format(printf, fmt, first)))
 #define PRINTF_ARG_ATTR(x)      __attribute__((format_arg(x)))
-#define NORETURN                __attribute__((noreturn))
 
 #define PACKEDPREFIX
 
@@ -60,8 +59,8 @@
 
 
 typedef uint8_t byte;
-typedef uint32_t pixel_t;
-typedef int64_t  dpixel_t;
+using pixel_t = uint32_t;
+using dpixel_t = int64_t;
 
 #define DIR_SEPARATOR   '/'
 #define DIR_SEPARATOR_S "/"
