@@ -44,7 +44,7 @@ typedef struct atexit_listentry_s atexit_listentry_t;
 
 struct atexit_listentry_s {
     atexit_func_t       func;
-    bool             run_on_error;
+    bool                run_on_error;
     atexit_listentry_t *next;
 };
 
@@ -91,7 +91,7 @@ static auto AutoAllocMemory(size_t *size, int default_ram, int min_ram) -> byte 
         // Try to allocate the zone memory.
         constexpr size_t KiloBytes = 1024;
         constexpr size_t MegaBytes = 1024 * KiloBytes;
-        *size = default_ram * MegaBytes;
+        *size                      = default_ram * MegaBytes;
 
         zonemem = static_cast<byte *>(malloc(*size));
 
@@ -145,8 +145,9 @@ auto I_ZoneBase(size_t *size) -> byte *
     i *= 2;
 
     constexpr size_t MegaByteBitSift = 20;
-    puts(fmt::format("zone memory: {}, {} MiB allocated for zone\n",
-        zonemem, (*size >> MegaByteBitSift)).c_str()); // [crispy] human-understandable zone heap size
+    fmt::print("zone memory: {}, {} MiB allocated for zone\n",
+        *zonemem,
+        (*size >> MegaByteBitSift)); // [crispy] human-understandable zone heap size
 
     return zonemem;
 }
@@ -253,7 +254,7 @@ void I_Error(const char *error, ...)
     char                msgbuf[512];
     va_list             argptr;
     atexit_listentry_t *entry;
-    bool             exit_gui_popup;
+    bool                exit_gui_popup;
 
     if (already_quitting)
     {
@@ -484,13 +485,13 @@ bool I_GetMemoryValue(unsigned int offset, void *value, int size)
         return true;
     case 2:
         *((unsigned short *)value) = dos_mem_dump[offset]
-                                  | (dos_mem_dump[offset + 1] << 8);
+                                     | (dos_mem_dump[offset + 1] << 8);
         return true;
     case 4:
         *((unsigned int *)value) = dos_mem_dump[offset]
-                                | (dos_mem_dump[offset + 1] << 8)
-                                | (dos_mem_dump[offset + 2] << 16)
-                                | (dos_mem_dump[offset + 3] << 24);
+                                   | (dos_mem_dump[offset + 1] << 8)
+                                   | (dos_mem_dump[offset + 2] << 16)
+                                   | (dos_mem_dump[offset + 3] << 24);
         return true;
     }
 

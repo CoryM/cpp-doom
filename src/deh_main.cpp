@@ -14,19 +14,19 @@
 //
 // Main dehacked code
 //
-#include <string_view>
-
+#include "d_iwad.hpp"
+#include "deh_defs.hpp"
+#include "deh_io.hpp"
 #include "deh_main.hpp"
-
 #include "doomtype.hpp"
 #include "i_glob.hpp"
 #include "i_system.hpp"
-#include "d_iwad.hpp"
 #include "m_argv.hpp"
 #include "w_wad.hpp"
 
-#include "deh_defs.hpp"
-#include "deh_io.hpp"
+#include <string>
+#include <string_view>
+
 
 extern deh_section_t *deh_section_types[];
 extern const char *   deh_signatures[];
@@ -119,7 +119,6 @@ static auto GetSectionByName(char *name) -> deh_section_t *
 static auto IsWhitespace(std::string_view s) -> bool
 {
     return s.find_first_not_of(' ') == std::string::npos;
-
 }
 
 // Strip whitespace from the start and end of a string
@@ -128,15 +127,17 @@ static auto IsWhitespace(std::string_view s) -> bool
 static auto CleanString(const std::string_view in_s) -> std::string_view
 {
     auto out_s = std::string_view();
-    if (!in_s.empty()) [[likely]] {
-      const auto start = in_s.find_first_not_of(' ');
-      if (start != std::string::npos) [[likely]] {
-        const auto end = in_s.find_last_not_of(' ');
-        const auto *const first = in_s.begin() + start;
-        const auto length = (end - start) + 1;
-        out_s = std::string_view(first, length);
-      }
-    }
+    if (!in_s.empty()) [[likely]]
+        {
+            const auto start = in_s.find_first_not_of(' ');
+            if (start != std::string::npos) [[likely]]
+                {
+                    const auto        end    = in_s.find_last_not_of(' ');
+                    const auto *const first  = in_s.begin() + start;
+                    const auto        length = (end - start) + 1;
+                    out_s                    = std::string_view(first, length);
+                }
+        }
     return out_s;
 }
 // // Strip whitespace from the start and end of a string
@@ -281,7 +282,7 @@ static void DEH_ParseContext(deh_context_t *context)
     deh_section_t *prev_section    = NULL; // [crispy] remember previous line parser
     char           section_name[20];
     void *         tag = NULL;
-    bool        extended;
+    bool           extended;
     char *         line;
 
     // Read the header and check it matches the signature
@@ -510,7 +511,8 @@ void DEH_ParseCommandLine(void)
     //
     // Load the given dehacked patch(es)
     //
-    if (int p = M_CheckParm("-deh"); p > 0) {
+    if (int p = M_CheckParm("-deh"); p > 0)
+    {
         ++p;
 
         while (p < myargc && myargv[p][0] != '-')

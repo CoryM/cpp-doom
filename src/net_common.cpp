@@ -14,22 +14,21 @@
 // Common code shared between the client and server
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstdarg>
-#include <cstring>
-
 #include "doomtype.hpp"
+#include "../utils/memory.hpp"
 #include "d_mode.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "m_argv.hpp"
-
-#include "../utils/memory.hpp"
 #include "net_common.hpp"
 #include "net_io.hpp"
 #include "net_packet.hpp"
 #include "net_structrw.hpp"
+
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 // connections time out after 30 seconds
 
@@ -162,11 +161,11 @@ static void NET_Conn_ParseReliableACK(net_connection_t *conn, net_packet_t *pack
 // Returns true if the packet should be discarded (incorrect sequence)
 
 static bool NET_Conn_ReliablePacket(net_connection_t *conn,
-    net_packet_t *                                       packet)
+    net_packet_t *                                    packet)
 {
     unsigned int  seq;
     net_packet_t *reply;
-    bool       result;
+    bool          result;
 
     // Read the sequence number
 
@@ -429,26 +428,38 @@ unsigned int NET_ExpandTicNum(unsigned int relative, unsigned int b)
 
 // Check that game settings are valid
 
-bool NET_ValidGameSettings(GameMode_t mode, GameMission_t mission,
-    net_gamesettings_t *settings)
+auto NET_ValidGameSettings(GameMode_t mode, GameMission_t mission,
+    net_gamesettings_t *settings) -> bool
 {
     if (settings->ticdup <= 0)
+    {
         return false;
+    }
 
     if (settings->extratics < 0)
+    {
         return false;
+    }
 
     if (settings->deathmatch < 0 || settings->deathmatch > 3)
+    {
         return false;
+    }
 
     if (settings->skill < sk_noitems || settings->skill > sk_nightmare)
+    {
         return false;
+    }
 
     if (!D_ValidGameVersion(mission, static_cast<GameVersion_t>(settings->gameversion)))
+    {
         return false;
+    }
 
     if (!D_ValidEpisodeMap(mission, mode, settings->episode, settings->map))
+    {
         return false;
+    }
 
     return true;
 }

@@ -15,7 +15,6 @@
 //     Find IWAD and initialize according to IWAD type.
 //
 
-#pragma once
 #ifndef __D_IWAD__
 #define __D_IWAD__
 
@@ -24,15 +23,16 @@
 
 #include "d_mode.hpp"
 
-#define IWAD_MASK_DOOM ((1 << doom)        \
-                        | (1 << doom2)     \
-                        | (1 << pack_tnt)  \
-                        | (1 << pack_plut) \
-                        | (1 << pack_chex) \
-                        | (1 << pack_hacx))
-#define IWAD_MASK_HERETIC (1 << heretic)
-#define IWAD_MASK_HEXEN   (1 << hexen)
-#define IWAD_MASK_STRIFE  (1 << strife)
+constexpr unsigned int IWAD_MASK_DOOM = ((1 << GameMission_t::doom)
+                                         | (1 << GameMission_t::doom2)
+                                         | (1 << GameMission_t::pack_tnt)
+                                         | (1 << GameMission_t::pack_plut)
+                                         | (1 << GameMission_t::pack_chex)
+                                         | (1 << GameMission_t::pack_hacx));
+
+constexpr unsigned int IWAD_MASK_HERETIC = (1 << GameMission_t::heretic);
+constexpr unsigned int IWAD_MASK_HEXEN   = (1 << GameMission_t::hexen);
+constexpr unsigned int IWAD_MASK_STRIFE  = (1 << GameMission_t::strife);
 
 struct iwad_t {
     const char *  name;
@@ -41,16 +41,16 @@ struct iwad_t {
     const char *  description;
 };
 
-[[nodiscard]] std::string    D_FindWADByName(const std::string_view filename);
-[[nodiscard]] std::string    D_TryFindWADByName(const std::string_view filename);
-[[nodiscard]] std::string    D_FindIWAD(int mask, GameMission_t *mission);
-[[nodiscard]] const iwad_t **D_FindAllIWADs(int mask);
-[[nodiscard]] const char *   D_SaveGameIWADName(GameMission_t gamemission);
-[[nodiscard]] const char *   D_SuggestIWADName(GameMission_t mission, GameMode_t mode);
-[[nodiscard]] const char *   D_SuggestGameName(GameMission_t mission, GameMode_t mode);
+[[nodiscard]] auto D_FindWADByName(std::string_view filename) -> std::string;
+[[nodiscard]] auto D_TryFindWADByName(std::string_view filename) -> std::string;
+[[nodiscard]] auto D_FindIWAD(int mask, GameMission_t *mission) -> std::string;
+[[nodiscard]] auto D_FindAllIWADs(int mask) -> const iwad_t **;
+[[nodiscard]] auto D_SaveGameIWADName(GameMission_t gamemission) -> const char *;
+[[nodiscard]] auto D_SuggestIWADName(GameMission_t mission, GameMode_t mode) -> const char *;
+[[nodiscard]] auto D_SuggestGameName(GameMission_t mission, GameMode_t mode) -> const char *;
 
 // Helper function to get Environment Variables into a string_view
-[[nodiscard]] std::string env_view(const std::string_view envVar);
+[[nodiscard]] auto env_view(std::string_view envVar) -> std::string;
 
 void v_iwadDirs_init();
 void v_iwadDirs_clear();

@@ -21,12 +21,11 @@
 #define __D_MODE__
 
 
-
 #include "doomtype.hpp"
 
 // The "mission" controls what game we are playing.
 
-typedef enum
+enum GameMission_t : unsigned int
 {
     doom,        // Doom 1
     doom2,       // Doom 2
@@ -41,7 +40,7 @@ typedef enum
     pack_master, // Master Levels for Doom 2
 
     none
-} GameMission_t;
+};
 
 // The "mode" allows more accurate specification of the game mode we are
 // in: eg. shareware vs. registered.  So doom1.wad and doom.wad are the
@@ -58,7 +57,7 @@ enum class GameMode_t : int
 
 // What version are we emulating?
 
-typedef enum
+enum GameVersion_t
 {
     exe_none = 0,
     exe_doom_1_2,   // Doom 1.2: shareware and registered
@@ -77,21 +76,21 @@ typedef enum
     exe_hexen_1_1,  // Hexen 1.1
     exe_strife_1_2, // Strife v1.2
     exe_strife_1_31 // Strife v1.31
-} GameVersion_t;
+};
 
 // What IWAD variant are we using?
 
-typedef enum
+enum GameVariant_t
 {
     vanilla,    // Vanilla Doom
     freedoom,   // FreeDoom: Phase 1 + 2
     freedm,     // FreeDM
     bfgedition, // Doom Classic (Doom 3: BFG Edition)
-} GameVariant_t;
+};
 
 // Skill level.
 
-typedef enum
+enum skill_t
 {
     sk_noitems = -1, // the "-skill 0" hack
     sk_baby    = 0,
@@ -99,14 +98,14 @@ typedef enum
     sk_medium,
     sk_hard,
     sk_nightmare
-} skill_t;
+};
 
-bool            D_ValidGameMode(int mission, GameMode_t mode);
-bool            D_ValidGameVersion(GameMission_t mission, GameVersion_t version);
-bool            D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode, int episode, int map);
-int             D_GetNumEpisodes(GameMission_t mission, GameMode_t mode);
-bool            D_IsEpisodeMap(GameMission_t mission);
-const char*     D_GameMissionString(GameMission_t mission);
-const char*     D_GameModeString(GameMode_t mode);
+auto D_ValidGameMode(int mission, GameMode_t mode) -> bool;
+auto D_ValidGameVersion(GameMission_t mission, GameVersion_t version) -> bool;
+auto D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode, int episode, int map) -> bool;
+auto D_GetNumEpisodes(GameMission_t mission, GameMode_t mode) -> int;
+auto D_IsEpisodeMap(GameMission_t mission) -> bool;
+auto D_GameMissionString(GameMission_t mission) -> const char *;
+auto D_GameModeString(GameMode_t mode) -> const char *;
 
 #endif /* #ifndef __D_MODE__ */
