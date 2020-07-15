@@ -489,7 +489,7 @@ void R_DrawPlanes(void)
         lumpnum = firstflat + (swirling ? pl->picnum : flattranslation[pl->picnum]);
         // [crispy] add support for SMMU swirling flats
         ds_source =
-            static_cast<byte *>(swirling ? R_DistortedFlat(lumpnum) : W_CacheLumpNum(lumpnum, PU_STATIC));
+            static_cast<byte *>(swirling ? R_DistortedFlat(lumpnum) : W_CacheLumpNum(lumpnum, PU::STATIC));
         ds_brightmap = R_BrightmapForFlatNum(lumpnum - firstflat);
 
         planeheight = abs(pl->height - viewz);

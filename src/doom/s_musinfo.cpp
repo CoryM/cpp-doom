@@ -53,32 +53,32 @@
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-static void    CheckOpen(void);
-static void    OpenScript(std::string_view name, int type);
-static void    SC_OpenLump(std::string_view name);
-static void    SC_Close(void);
-static bool    SC_Compare(const std::string_view text);
+static void CheckOpen(void);
+static void OpenScript(std::string_view name, int type);
+static void SC_OpenLump(std::string_view name);
+static void SC_Close(void);
+static bool SC_Compare(const std::string_view text);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
-static char *  sc_String;
-static int     sc_Line;
-static bool sc_End;
-static bool sc_Crossed;
+static char *sc_String;
+static int   sc_Line;
+static bool  sc_End;
+static bool  sc_Crossed;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
-static char    ScriptName[16];
-static char *  ScriptBuffer;
-static char *  ScriptPtr;
-static char *  ScriptEndPtr;
-static char    StringBuffer[MAX_STRING_SIZE];
-static int     ScriptLumpNum;
-static bool ScriptOpen = false;
-static int     ScriptSize;
-static bool AlreadyGot = false;
+static char  ScriptName[16];
+static char *ScriptBuffer;
+static char *ScriptPtr;
+static char *ScriptEndPtr;
+static char  StringBuffer[MAX_STRING_SIZE];
+static int   ScriptLumpNum;
+static bool  ScriptOpen = false;
+static int   ScriptSize;
+static bool  AlreadyGot = false;
 
 // CODE --------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ static void OpenScript(std::string_view name, int type)
     if (type == LUMP_SCRIPT)
     { // Lump script
         ScriptLumpNum = W_GetNumForName(name.data());
-        ScriptBuffer  = (char *)W_CacheLumpNum(ScriptLumpNum, PU_STATIC);
+        ScriptBuffer  = (char *)W_CacheLumpNum(ScriptLumpNum, PU::STATIC);
         ScriptSize    = W_LumpLength(ScriptLumpNum);
         M_StringCopy(ScriptName, name.data(), sizeof(ScriptName));
     }
@@ -156,8 +156,8 @@ static void SC_Close(void)
 
 static bool SC_GetString(void)
 {
-    char *  text;
-    bool foundToken;
+    char *text;
+    bool  foundToken;
 
     CheckOpen();
     if (AlreadyGot)

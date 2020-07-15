@@ -189,7 +189,7 @@ int EV_DoCeiling(line_s *line,
 
         // new door thinker
         rtn     = 1;
-        ceiling = zmalloc<decltype(ceiling)>(sizeof(*ceiling), PU_LEVSPEC, 0);
+        ceiling = zmalloc<decltype(ceiling)>(sizeof(*ceiling), PU::LEVSPEC, 0);
         P_AddThinker(&ceiling->thinker);
         sec->specialdata               = ceiling;
         ceiling->thinker.function.acp1 = (actionf_p1)T_MoveCeiling;
@@ -207,13 +207,13 @@ int EV_DoCeiling(line_s *line,
             break;
 
         case silentCrushAndRaise:
-        [[fallthrough]];
+            [[fallthrough]];
         case crushAndRaise:
             ceiling->crush     = true;
             ceiling->topheight = sec->ceilingheight;
-        [[fallthrough]];
+            [[fallthrough]];
         case lowerAndCrush:
-        [[fallthrough]];
+            [[fallthrough]];
         case lowerToFloor:
             ceiling->bottomheight = sec->floorheight;
             if (type != lowerToFloor)

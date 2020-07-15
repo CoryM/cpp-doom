@@ -57,13 +57,12 @@
 // Animating textures and planes
 // There is another local_anim_t used in wi_stuff, unrelated.
 //
-struct local_anim_t
-{
-    bool  istexture = false;
-    int   picnum  = 0;
-    int   basepic = 0;
-    int   numpics = 0;
-    int   speed   = 0;
+struct local_anim_t {
+    bool istexture = false;
+    int  picnum    = 0;
+    int  basepic   = 0;
+    int  numpics   = 0;
+    int  speed     = 0;
 };
 
 //
@@ -133,8 +132,8 @@ animdef_t animdefs_vanilla[] = {
 };
 
 // [crispy] remove MAXANIMS limit
-local_anim_t *      anims;
-local_anim_t *      lastanim;
+local_anim_t *anims;
+local_anim_t *lastanim;
 static size_t maxanims;
 
 
@@ -149,16 +148,16 @@ extern line_s *linespeciallist[MAXLINEANIMS];
 
 void P_InitPicAnims(void)
 {
-    int     i;
+    int  i;
     bool init_swirl = false;
 
     // [crispy] add support for ANIMATED lumps
-    animdef_t *   animdefs;
+    animdef_t *animdefs;
     const bool from_lump = (W_CheckNumForName("ANIMATED") != -1);
 
     if (from_lump)
     {
-        animdefs = cache_lump_name<animdef_t *>("ANIMATED", PU_STATIC);
+        animdefs = cache_lump_name<animdef_t *>("ANIMATED", PU::STATIC);
     }
     else
     {
@@ -1183,14 +1182,14 @@ void P_PlayerInSpecialSector(player_t *player)
 // Animate planes, scroll walls, etc.
 //
 bool levelTimer;
-int     levelTimeCount;
+int  levelTimeCount;
 
 void P_UpdateSpecials(void)
 {
     local_anim_t *anim;
-    int     pic;
-    int     i;
-    line_s *line;
+    int           pic;
+    int           i;
+    line_s *      line;
 
 
     //	LEVEL TIMER
@@ -1477,7 +1476,7 @@ int EV_DoDonut(line_s *line)
             }
 
             //	Spawn rising slime
-            floor = zmalloc<decltype(floor)>(sizeof(*floor), PU_LEVSPEC, 0);
+            floor = zmalloc<decltype(floor)>(sizeof(*floor), PU::LEVSPEC, 0);
             P_AddThinker(&floor->thinker);
             s2->specialdata              = floor;
             floor->thinker.function.acp1 = (actionf_p1)T_MoveFloor;
@@ -1491,7 +1490,7 @@ int EV_DoDonut(line_s *line)
             floor->floordestheight       = s3_floorheight;
 
             //	Spawn lowering donut-hole
-            floor = zmalloc<decltype(floor)>(sizeof(*floor), PU_LEVSPEC, 0);
+            floor = zmalloc<decltype(floor)>(sizeof(*floor), PU::LEVSPEC, 0);
             P_AddThinker(&floor->thinker);
             s1->specialdata              = floor;
             floor->thinker.function.acp1 = (actionf_p1)T_MoveFloor;

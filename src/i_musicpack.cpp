@@ -16,28 +16,29 @@
 //	System interface for music.
 //
 
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_mixer.h"
-
+#include "config.hpp"
+#include "deh_str.hpp"
+#include "doomtype.hpp"
+#include "gusconf.hpp"
 #include "i_glob.hpp"
 #include "i_midipipe.hpp"
-
-#include "config.hpp"
-#include "doomtype.hpp"
-#include "memio.hpp"
-#include "mus2mid.hpp"
-
-#include "deh_str.hpp"
-#include "gusconf.hpp"
 #include "i_sound.hpp"
-#include "i_system.hpp"
 #include "i_swap.hpp"
+#include "i_system.hpp"
 #include "m_argv.hpp"
 #include "m_config.hpp"
 #include "m_misc.hpp"
+#include "memio.hpp"
+#include "mus2mid.hpp"
 #include "sha1.hpp"
 #include "w_wad.hpp"
 #include "z_zone.hpp"
+
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_mixer.h"
+
+#include <string>
+#include <string_view>
 
 #define MID_HEADER_MAGIC "MThd"
 #define MUS_HEADER_MAGIC "MUS\x1a"
@@ -79,7 +80,7 @@ typedef struct
 // Structure containing parsed metadata read from a digital music track:
 typedef struct
 {
-    bool      valid;
+    bool         valid;
     unsigned int samplerate_hz;
     int          start_time, end_time;
 } file_metadata_t;
@@ -368,18 +369,16 @@ static unsigned int ParseVorbisTime(unsigned int samplerate_hz, char *value)
 // in the metadata structure as appropriate.
 static void ParseVorbisComment(file_metadata_t *metadata, char *comment)
 {
-    char *eq, *key, *value;
+    char *eq = strchr(comment, '=');
 
-    eq = strchr(comment, '=');
-
-    if (eq == NULL)
+    if (eq == nullptr)
     {
         return;
     }
 
-    key   = comment;
-    *eq   = '\0';
-    value = eq + 1;
+    char *key   = comment;
+    *eq         = '\0';
+    char *value = eq + 1;
 
     if (!strcmp(key, LOOP_START_TAG))
     {
@@ -433,13 +432,13 @@ static void ParseVorbisComments(file_metadata_t *metadata, FILE *fs)
 
         // Read actual comment data into string buffer.
         auto comment = std::string(comment_len, '\0');
-        if (fread(comment.data(), 1, comment_len, fs) < comment_len)
+        if (std::fread(&comment[0], 1, comment_len, fs) < comment_len)
         {
             break;
         }
 
         // Parse comment string.
-        ParseVorbisComment(metadata, comment.data());
+        ParseVorbisComment(metadata, &comment[0]);
     }
 }
 
@@ -467,7 +466,7 @@ static void ParseFlacFile(file_metadata_t *metadata, FILE *fs)
     byte         header[4];
     unsigned int block_type;
     size_t       block_len;
-    bool      last_block;
+    bool         last_block;
 
     for (;;)
     {
@@ -692,7 +691,7 @@ static char *GetFullPath(const char *musicdir, const char *path)
 
     // Copy config filename and cut off the filename to just get the
     // parent dir.
-    result = M_StringJoin({musicdir, systemized_path});
+    result = M_StringJoin({ musicdir, systemized_path });
     free(systemized_path);
 
     return result;
@@ -922,7 +921,7 @@ static void LoadSubstituteConfigs(void)
     // $configdir/music to look for .cfg files.
     if (strcmp(music_pack_path, "") != 0)
     {
-        musicdir = M_StringJoin({music_pack_path, DIR_SEPARATOR_S});
+        musicdir = M_StringJoin({ music_pack_path, DIR_SEPARATOR_S });
     }
     else if (!strcmp(configdir, ""))
     {
@@ -930,7 +929,7 @@ static void LoadSubstituteConfigs(void)
     }
     else
     {
-        musicdir = M_StringJoin({configdir, "music", DIR_SEPARATOR_S});
+        musicdir = M_StringJoin({ configdir, "music", DIR_SEPARATOR_S });
     }
 
     // Load all music packs, by searching for .cfg files.
@@ -978,15 +977,15 @@ static void LoadSubstituteConfigs(void)
 
 static bool IsMusicLump(int lumpnum)
 {
-    byte *  data;
-    bool result;
+    byte *data;
+    bool  result;
 
     if (W_LumpLength(lumpnum) < 4)
     {
         return false;
     }
 
-    data = static_cast<byte *>(W_CacheLumpNum(lumpnum, PU_STATIC));
+    data = static_cast<byte *>(W_CacheLumpNum(lumpnum, PU::STATIC));
 
     result = memcmp(data, MUS_HEADER_MAGIC, 4) == 0
              || memcmp(data, MID_HEADER_MAGIC, 4) == 0;
@@ -1031,7 +1030,7 @@ static void DumpSubstituteConfig(char *filename)
         }
 
         // Calculate hash.
-        data = static_cast<byte *>(W_CacheLumpNum(lumpnum, PU_STATIC));
+        data = static_cast<byte *>(W_CacheLumpNum(lumpnum, PU::STATIC));
         SHA1_Init(&context);
         SHA1_Update(&context, data, W_LumpLength(lumpnum));
         SHA1_Final(digest, &context);

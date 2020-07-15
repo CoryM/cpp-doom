@@ -149,7 +149,7 @@ void P_CreateBlockMap(void)
                     count += bmap[i].n + 2; // 1 header word + 1 trailer word + blocklist
 
             // Allocate blockmap lump with computed count
-            blockmaplump = zmalloc<decltype(blockmaplump)>(sizeof(*blockmaplump) * count, PU_LEVEL, 0);
+            blockmaplump = zmalloc<decltype(blockmaplump)>(sizeof(*blockmaplump) * count, PU::LEVEL, 0);
         }
 
         // Now compress the blockmap.
@@ -180,7 +180,7 @@ void P_CreateBlockMap(void)
     // [crispy] copied over from P_LoadBlockMap()
     {
         int count  = sizeof(*blocklinks) * bmapwidth * bmapheight;
-        blocklinks = zmalloc<decltype(blocklinks)>(count, PU_LEVEL, 0);
+        blocklinks = zmalloc<decltype(blocklinks)>(count, PU::LEVEL, 0);
         memset(blocklinks, 0, count);
         blockmap = blockmaplump + 4;
     }

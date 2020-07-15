@@ -29,8 +29,7 @@
 
 #define MAX_INSTRUMENTS 256
 
-struct gus_config_t
-{
+struct gus_config_t {
     char *       patch_names[MAX_INSTRUMENTS];
     int          used[MAX_INSTRUMENTS];
     int          mapping[MAX_INSTRUMENTS];
@@ -214,7 +213,7 @@ static char *ReadDMXConfig(void)
     }
 
     len  = W_LumpLength(lumpnum);
-    data = zmalloc<char *>(len + 1, PU_STATIC, NULL);
+    data = zmalloc<char *>(len + 1, PU::STATIC, nullptr);
     W_ReadLump(lumpnum, data);
 
     data[len] = '\0';

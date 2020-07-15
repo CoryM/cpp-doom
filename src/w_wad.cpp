@@ -149,7 +149,7 @@ wad_file_t *W_AddFile(const char *filename)
         // them back.  Effectively we're constructing a "fake WAD directory"
         // here, as it would appear on disk.
 
-        fileinfo          = zmalloc<decltype(fileinfo)>(sizeof(filelump_t), PU_STATIC, 0);
+        fileinfo          = zmalloc<decltype(fileinfo)>(sizeof(filelump_t), PU::STATIC, 0);
         fileinfo->filepos = LONG(0);
         fileinfo->size    = LONG(wad_file->length);
 
@@ -193,7 +193,7 @@ wad_file_t *W_AddFile(const char *filename)
 
         header.infotableofs = LONG(header.infotableofs);
         length              = header.numlumps * sizeof(filelump_t);
-        fileinfo            = zmalloc<decltype(fileinfo)>(length, PU_STATIC, 0);
+        fileinfo            = zmalloc<decltype(fileinfo)>(length, PU::STATIC, 0);
 
         W_Read(wad_file, header.infotableofs, fileinfo, length);
         numfilelumps = header.numlumps;
@@ -386,12 +386,12 @@ void W_ReadLump(lumpindex_t lump, void *dest)
 // the lump data.
 //
 // 'tag' is the type of zone memory buffer to allocate for the lump
-// (usually PU_STATIC or PU_CACHE).  If the lump is loaded as
-// PU_STATIC, it should be released back using W_ReleaseLumpNum
+// (usually PU::STATIC or PU::CACHE).  If the lump is loaded as
+// PU::STATIC, it should be released back using W_ReleaseLumpNum
 // when no longer needed (do not use Z_ChangeTag).
 //
 
-void *W_CacheLumpNum(lumpindex_t lumpnum, int tag)
+void *W_CacheLumpNum(lumpindex_t lumpnum, PU tag)
 {
     void *      result;
     lumpinfo_t *lump;
@@ -437,7 +437,7 @@ void *W_CacheLumpNum(lumpindex_t lumpnum, int tag)
 //
 // W_CacheLumpName
 //
-void *W_CacheLumpName(const char *name, int tag)
+void *W_CacheLumpName(const char *name, PU tag)
 {
     return W_CacheLumpNum(W_GetNumForName(name), tag);
 }
@@ -469,7 +469,7 @@ void W_ReleaseLumpNum(lumpindex_t lumpnum)
     }
     else
     {
-        Z_ChangeTag(lump->cache, PU_CACHE);
+        Z_ChangeTag(lump->cache, PU::CACHE);
     }
 }
 
@@ -495,10 +495,10 @@ void W_Profile (void)
     FILE*	f;
     int		j;
     char	name[9];
-	
-	
+
+
     for (i=0 ; i<numlumps ; i++)
-    {	
+    {
 	ptr = lumpinfo[i].cache;
 	if (!ptr)
 	{
@@ -508,7 +508,7 @@ void W_Profile (void)
 	else
 	{
 	    block = (memblock_s *) ( (byte *)ptr - sizeof(memblock_s));
-	    if (block->tag < PU_PURGELEVEL)
+	    if (block->tag < PU::PURGELEVEL)
 		ch = 'S';
 	    else
 		ch = 'P';
@@ -516,7 +516,7 @@ void W_Profile (void)
 	info[i][profilecount] = ch;
     }
     profilecount++;
-	
+
     f = fopen ("waddump.txt","w");
     name[8] = 0;
 
@@ -559,7 +559,7 @@ void W_GenerateHashTable(void)
     // Generate hash table
     if (numlumps > 0)
     {
-        lumphash = zmalloc<decltype(lumphash)>(sizeof(lumpindex_t) * numlumps, PU_STATIC, NULL);
+        lumphash = zmalloc<decltype(lumphash)>(sizeof(lumpindex_t) * numlumps, PU::STATIC, NULL);
 
         for (i = 0; i < numlumps; ++i)
         {

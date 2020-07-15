@@ -26,13 +26,13 @@ static int total_packet_memory = 0;
 
 net_packet_t *NET_NewPacket(int initial_size)
 {
-    net_packet_t *packet = zmalloc<net_packet_t *>(sizeof(net_packet_t), PU_STATIC, 0);
+    net_packet_t *packet = zmalloc<net_packet_t *>(sizeof(net_packet_t), PU::STATIC, 0);
 
     if (initial_size == 0)
         initial_size = 256;
 
     packet->alloced = initial_size;
-    packet->data    = zmalloc<byte *>(initial_size, PU_STATIC, 0);
+    packet->data    = zmalloc<byte *>(initial_size, PU::STATIC, 0);
     packet->len     = 0;
     packet->pos     = 0;
 
@@ -241,7 +241,7 @@ static void NET_IncreasePacket(net_packet_t *packet)
 
     packet->alloced *= 2;
 
-    auto *newdata = zmalloc<byte *>(packet->alloced, PU_STATIC, 0);
+    auto *newdata = zmalloc<byte *>(packet->alloced, PU::STATIC, 0);
 
     memcpy(newdata, packet->data, packet->len);
 

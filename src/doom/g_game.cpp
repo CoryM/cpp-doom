@@ -100,7 +100,7 @@ gamestate_t oldgamestate;
 gameaction_t gameaction;
 gamestate_t  gamestate;
 skill_t      gameskill;
-bool      respawnmonsters;
+bool         respawnmonsters;
 int          gameepisode;
 int          gamemap;
 
@@ -115,13 +115,13 @@ bool usergame;  // ok to save / end game
 
 bool timingdemo; // if true, exit with report on completion
 bool nodrawers;  // for comparative timing purposes
-int     starttime;  // for comparative timing purposes
+int  starttime;  // for comparative timing purposes
 
 bool viewactive;
 
 int      deathmatch; // only if started as net death
-bool  netgame;    // only true if packets are broadcast
-bool  playeringame[MAXPLAYERS];
+bool     netgame;    // only true if packets are broadcast
+bool     playeringame[MAXPLAYERS];
 player_t players[MAXPLAYERS];
 
 bool turbodetected[MAXPLAYERS];
@@ -134,22 +134,22 @@ int extrakills;                          // [crispy] count spawned monsters
 int totalleveltimes;                     // [crispy] CPhipps - total time for all completed levels
 int demostarttic;                        // [crispy] fix revenant internal demo bug
 
-char *  demoname;
-char *  orig_demoname; // [crispy] the name originally chosen for the demo, i.e. without "-00000"
-bool demorecording;
-bool longtics;    // cph's doom 1.91 longtics hack
-bool lowres_turn; // low resolution turning for longtics
-bool demoplayback;
-bool netdemo;
-byte *  demobuffer;
-byte *  demo_p;
-byte *  demoend;
-bool singledemo; // quit after playing a demo from cmdline
+char *demoname;
+char *orig_demoname; // [crispy] the name originally chosen for the demo, i.e. without "-00000"
+bool  demorecording;
+bool  longtics;    // cph's doom 1.91 longtics hack
+bool  lowres_turn; // low resolution turning for longtics
+bool  demoplayback;
+bool  netdemo;
+byte *demobuffer;
+byte *demo_p;
+byte *demoend;
+bool  singledemo; // quit after playing a demo from cmdline
 
 bool precache = true; // if true, load all graphics at start
 
 bool testcontrols = false; // Invoked by setup to test controls
-int     testcontrols_mousespeed;
+int  testcontrols_mousespeed;
 
 
 wbstartstruct_t wminfo; // parms for world map / intermission
@@ -203,8 +203,8 @@ static const struct
 #define MAX_JOY_BUTTONS 20
 
 static bool gamekeydown[NUMKEYS];
-static int     turnheld; // for accelerative turning
-static int     lookheld; // [crispy] for accelerative looking
+static int  turnheld; // for accelerative turning
+static int  lookheld; // [crispy] for accelerative looking
 
 static bool  mousearray[MAX_MOUSE_BUTTONS + 1];
 static bool *mousebuttons = &mousearray[1]; // allow [-1]
@@ -214,18 +214,18 @@ int mousex;
 int mousex2;
 int mousey;
 
-static int     dclicktime;
+static int  dclicktime;
 static bool dclickstate;
-static int     dclicks;
-static int     dclicktime2;
+static int  dclicks;
+static int  dclicktime2;
 static bool dclickstate2;
-static int     dclicks2;
+static int  dclicks2;
 
 // joystick values are repeated
-static int      joyxmove;
-static int      joyymove;
-static int      joystrafemove;
-static int      joylook; // [crispy]
+static int   joyxmove;
+static int   joyymove;
+static int   joystrafemove;
+static int   joylook; // [crispy]
 static bool  joyarray[MAX_JOY_BUTTONS + 1];
 static bool *joybuttons = &joyarray[1]; // allow [-1]
 
@@ -338,8 +338,8 @@ bool speedkeydown(void)
 //
 void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
 {
-    bool         strafe;
-    bool         bstrafe;
+    bool            strafe;
+    bool            bstrafe;
     int             speed;
     int             tspeed;
     int             lspeed;
@@ -1366,9 +1366,8 @@ void G_PlayerReborn(int player)
 //
 void P_SpawnPlayer(mapthing_t *mthing);
 
-bool
-    G_CheckSpot(int playernum,
-        mapthing_t *mthing)
+bool G_CheckSpot(int playernum,
+    mapthing_t *     mthing)
 {
     fixed_t      x;
     fixed_t      y;
@@ -1598,7 +1597,7 @@ static int npars[9] = {
 //
 // G_DoCompleted
 //
-bool      secretexit;
+bool         secretexit;
 extern char *pagename;
 
 void G_ExitLevel(void)
@@ -1892,17 +1891,19 @@ void G_WorldDone(void)
         switch (gamemap)
         {
         case 15:
-        [[fallthrough]];
+            [[fallthrough]];
         case 31:
-            if (!secretexit){
-                break;}
-        [[fallthrough]];
+            if (!secretexit)
+            {
+                break;
+            }
+            [[fallthrough]];
         case 6:
-        [[fallthrough]];
+            [[fallthrough]];
         case 11:
-        [[fallthrough]];
+            [[fallthrough]];
         case 20:
-        [[fallthrough]];
+            [[fallthrough]];
         case 30:
             F_StartFinale();
             break;
@@ -1930,7 +1931,7 @@ void G_DoWorldDone(void)
 // Can be called by the startup code or the menu task.
 //
 extern bool setsizeneeded;
-void           R_ExecuteSetViewSize(void);
+void        R_ExecuteSetViewSize(void);
 
 
 void G_LoadGame(char *name)
@@ -2478,7 +2479,7 @@ static void IncreaseDemoBuffer(void)
     // Generate a new buffer twice the size
     new_length = current_length * 2;
 
-    new_demobuffer = zmalloc<decltype(new_demobuffer)>(new_length, PU_STATIC, 0);
+    new_demobuffer = zmalloc<decltype(new_demobuffer)>(new_length, PU::STATIC, 0);
     new_demop      = new_demobuffer + (demo_p - demobuffer);
 
     // Copy over the old data
@@ -2568,7 +2569,7 @@ void G_RecordDemo(char *name)
 
     usergame      = false;
     demoname_size = strlen(name) + 5 + 6; // [crispy] + 6 for "-00000"
-    demoname      = zmalloc<decltype(demoname)>(demoname_size, PU_STATIC, NULL);
+    demoname      = zmalloc<decltype(demoname)>(demoname_size, PU::STATIC, NULL);
     M_snprintf(demoname, demoname_size, "%s.lmp", name);
 
     // [crispy] prevent overriding demos by adding a file name suffix
@@ -2591,7 +2592,7 @@ void G_RecordDemo(char *name)
     i = M_CheckParmWithArgs("-maxdemo", 1);
     if (i)
         maxsize = atoi(myargv[i + 1]) * 1024;
-    demobuffer = zmalloc<decltype(demobuffer)>(maxsize, PU_STATIC, NULL);
+    demobuffer = zmalloc<decltype(demobuffer)>(maxsize, PU::STATIC, NULL);
     demoend    = demobuffer + maxsize;
 
     demorecording = true;
@@ -2723,7 +2724,7 @@ void G_DoPlayDemo(void)
     skill_t skill;
     int     i, lumpnum, episode, map;
     int     demoversion;
-    bool olddemo = false;
+    bool    olddemo = false;
     int     lumplength; // [crispy]
 
     // [crispy] in demo continue mode free the obsolete demo buffer
@@ -2735,7 +2736,7 @@ void G_DoPlayDemo(void)
 
     lumpnum    = W_GetNumForName(defdemoname);
     gameaction = ga_nothing;
-    demobuffer = cache_lump_num<byte *>(lumpnum, PU_STATIC);
+    demobuffer = cache_lump_num<byte *>(lumpnum, PU::STATIC);
     demo_p     = demobuffer;
 
     // [crispy] ignore empty demo lumps

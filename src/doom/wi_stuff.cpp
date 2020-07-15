@@ -128,8 +128,7 @@ typedef struct
 // Animation.
 // There is another anim_t used in p_spec.
 //
-struct anim_t
-{
+struct anim_t {
     animenum_t type;
 
     // period in tics between animations
@@ -167,7 +166,6 @@ struct anim_t
 
     // used by RANDOM and LEVEL when animating
     int state;
-
 };
 
 
@@ -483,11 +481,11 @@ void WI_drawOnLnode(int n,
     patch_t *           c[])
 {
 
-    int     i;
-    int     left;
-    int     top;
-    int     right;
-    int     bottom;
+    int  i;
+    int  left;
+    int  top;
+    int  right;
+    int  bottom;
     bool fits = false;
 
     i = 0;
@@ -711,7 +709,7 @@ void WI_drawPercent(int x,
 void WI_drawTime(int x,
     int              y,
     int              t,
-    bool          suck)
+    bool             suck)
 {
 
     int div;
@@ -811,8 +809,8 @@ void WI_updateShowNextLoc(void)
 void WI_drawShowNextLoc(void)
 {
 
-    int            i;
-    int            last;
+    int         i;
+    int         last;
     extern bool secretexit; // [crispy] Master Level support
 
     WI_slamBackground();
@@ -1567,7 +1565,7 @@ void WI_drawStats(void)
     // [crispy] draw total time after level time and par time
     if (sp_state > 8)
     {
-        const int     ttime = wbs->totaltimes / TICRATE;
+        const int  ttime = wbs->totaltimes / TICRATE;
         const bool wide  = (ttime > 61 * 59) || (SP_TIMEX + SHORT(total->width) >= ORIGWIDTH / 4);
 
         V_DrawPatch(SP_TIMEX, SP_TIMEY + 16, total);
@@ -1861,7 +1859,7 @@ static void WI_loadCallback(const char *name, patch_t **variable)
 {
     // [crispy] prevent crashes with maps without map title graphics lump
     if (W_CheckNumForName(name) != -1)
-        *variable = cache_lump_name<patch_t *>(name, PU_STATIC);
+        *variable = cache_lump_name<patch_t *>(name, PU::STATIC);
     else
         *variable = NULL;
 }
@@ -1872,7 +1870,7 @@ void WI_loadData(void)
     {
         NUMCMAPS   = (crispy->havemap33) ? 33 : 32;
         lnames     = (patch_t **)Z_Malloc(sizeof(patch_t *) * NUMCMAPS,
-            PU_STATIC, NULL);
+            PU::STATIC, NULL);
         num_lnames = NUMCMAPS;
     }
     else
@@ -1880,7 +1878,7 @@ void WI_loadData(void)
         // [crispy] support E1M10 "Sewers"
         int nummaps = crispy->havee1m10 ? NUMMAPS + 1 : NUMMAPS;
         lnames      = (patch_t **)Z_Malloc(sizeof(patch_t *) * nummaps,
-            PU_STATIC, NULL);
+            PU::STATIC, NULL);
         num_lnames  = nummaps;
     }
 
@@ -1890,10 +1888,10 @@ void WI_loadData(void)
     // them with the status bar code
 
     // your face
-    star = cache_lump_name<patch_t *>(DEH_String("STFST01"), PU_STATIC);
+    star = cache_lump_name<patch_t *>(DEH_String("STFST01"), PU::STATIC);
 
     // dead face
-    bstar = cache_lump_name<patch_t *>(DEH_String("STFDEAD0"), PU_STATIC);
+    bstar = cache_lump_name<patch_t *>(DEH_String("STFDEAD0"), PU::STATIC);
 }
 
 static void WI_unloadCallback(const char *name, patch_t **variable)

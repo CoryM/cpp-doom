@@ -61,15 +61,15 @@ static bool sound_initialized = false;
 
 static allocated_sound_t *channels_playing[NUM_CHANNELS];
 
-static int     mixer_freq;
-static Uint16  mixer_format;
-static int     mixer_channels;
-static bool use_sfx_prefix;
+static int    mixer_freq;
+static Uint16 mixer_format;
+static int    mixer_channels;
+static bool   use_sfx_prefix;
 static bool (*ExpandSoundData)(sfxinfo_t *sfxinfo,
-    byte *                                   data,
-    int                                      samplerate,
-    int                                      bits,
-    int                                      length) = NULL;
+    byte *                                data,
+    int                                   samplerate,
+    int                                   bits,
+    int                                   length) = NULL;
 
 // Doubly-linked list of allocated sounds.
 // When a sound is played, it is moved to the head, so that the oldest
@@ -402,10 +402,10 @@ static int SRC_ConversionMode(void)
 // DWF 2008-02-10 with cleanups by Simon Howard.
 
 static bool ExpandSoundData_SRC(sfxinfo_t *sfxinfo,
-    byte *                                    data,
-    int                                       samplerate,
-    int                                       bits,
-    int                                       length)
+    byte *                                 data,
+    int                                    samplerate,
+    int                                    bits,
+    int                                    length)
 {
     SRC_DATA src_data;
     uint32_t i, abuf_index = 0, clipped = 0;
@@ -610,10 +610,10 @@ static void WriteWAV(char *filename, byte *data,
 // Returns number of clipped samples (always 0).
 
 static bool ExpandSoundData_SDL(sfxinfo_t *sfxinfo,
-    byte *                                    data,
-    int                                       samplerate,
-    int                                       bits,
-    int                                       length)
+    byte *                                 data,
+    int                                    samplerate,
+    int                                    bits,
+    int                                    length)
 {
     SDL_AudioCVT       convertor;
     allocated_sound_t *snd;
@@ -747,7 +747,7 @@ static bool CacheSFX(sfxinfo_t *sfxinfo)
     // need to load the sound
 
     lumpnum    = sfxinfo->lumpnum;
-    auto *data = cache_lump_num<byte *>(lumpnum, PU_STATIC);
+    auto *data = cache_lump_num<byte *>(lumpnum, PU::STATIC);
     lumplen    = W_LumpLength(lumpnum);
 
     // [crispy] Check if this is a valid RIFF wav file

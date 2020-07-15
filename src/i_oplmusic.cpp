@@ -884,7 +884,7 @@ static const unsigned int volume_mapping_table[] = {
 };
 
 static opl_driver_ver_t opl_drv_ver       = opl_doom_1_9;
-static bool          music_initialized = false;
+static bool             music_initialized = false;
 
 //static bool musicpaused = false;
 static int start_music_volume;
@@ -916,7 +916,7 @@ static opl_channel_data_t channels[MIDI_CHANNELS_PER_TRACK];
 static opl_track_data_t *tracks;
 static unsigned int      num_tracks     = 0;
 static unsigned int      running_tracks = 0;
-static bool           song_looping;
+static bool              song_looping;
 
 // Tempo control variables
 
@@ -944,7 +944,7 @@ static bool opl_stereo_correct = false;
 
 static bool LoadInstrumentTable(void)
 {
-    auto *lump = cache_lump_name<byte *>(DEH_String("genmidi"), PU_STATIC);
+    auto *lump = cache_lump_name<byte *>(DEH_String("genmidi"), PU::STATIC);
 
     // DMX does not check header
 
@@ -996,7 +996,7 @@ static void VoiceKeyOff(opl_voice_t *voice);
 static void ReleaseVoice(int index)
 {
     opl_voice_t *voice;
-    bool      double_voice;
+    bool         double_voice;
     int          i;
 
     // Doom 2 1.666 OPL crash emulation.
@@ -1543,7 +1543,7 @@ static void KeyOnEvent(opl_track_data_t *track, midi_event_t *event)
     genmidi_instr_t *   instrument;
     opl_channel_data_t *channel;
     unsigned int        note, key, volume, voicenum;
-    bool             double_voice;
+    bool                double_voice;
 
     /*
     printf("note on: channel %i, %i, %i\n",

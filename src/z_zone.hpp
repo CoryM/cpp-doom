@@ -29,41 +29,44 @@
 // ZONE MEMORY
 // PU - purge tags.
 
-enum
+enum class PU
 {
-    PU_STATIC = 1, // static entire execution time
-    PU_SOUND,      // static while playing
-    PU_MUSIC,      // static while playing
-    PU_FREE,       // a free block
-    PU_LEVEL,      // static until level exited
-    PU_LEVSPEC,    // a special thinker in a level
+    STATIC = 1, // static entire execution time
+    SOUND,      // static while playing
+    MUSIC,      // static while playing
+    FREE,       // a free block
+    LEVEL,      // static until level exited
+    LEVSPEC,    // a special thinker in a level
 
-    // Tags >= PU_PURGELEVEL are purgable whenever needed.
+    // Tags >= PU::PURGELEVEL are purgable whenever needed.
 
-    PU_PURGELEVEL,
-    PU_CACHE,
+    PURGELEVEL,
+    CACHE,
 
     // Total number of different tag types
 
-    PU_NUM_TAGS
+    NUM_TAGS,
+    ZERO         = 0,
+    LASTPURGABLE = LEVSPEC
 };
 
 
-void         Z_Init(void);
-void *       Z_Malloc(int size, int tag, void *ptr);
-void         Z_Free(void *ptr);
-void         Z_FreeTags(int lowtag, int hightag);
-void         Z_DumpHeap(int lowtag, int hightag);
-void         Z_FileDumpHeap(FILE *f);
-void         Z_CheckHeap(void);
-void         Z_ChangeTag2(void *ptr, int tag, const char *file, int line);
-void         Z_ChangeUser(void *ptr, void **user);
-int          Z_FreeMemory(void);
-unsigned int Z_ZoneSize(void);
+void Z_Init();
+auto Z_Malloc(size_t size, PU tag, void *user) -> void *;
+void Z_Free(void *ptr);
+void Z_FreeTags(PU lowtag, PU hightag);
+void Z_DumpHeap(PU lowtag, PU hightag);
+void Z_FileDumpHeap(FILE *f);
+void Z_CheckHeap();
+void Z_ChangeTag2(void *ptr, PU tag, const char *file, int line);
+void Z_ChangeUser(void *ptr, void **user);
+auto Z_FreeMemory() -> int;
+auto Z_ZoneSize() -> unsigned int;
 
 template <typename DataType>
-auto z_malloc(int size, int tag, void *ptr) {
-  return static_cast<DataType>(Z_Malloc(size, tag, ptr));
+auto z_malloc(size_t size, PU tag, void *ptr)
+{
+    return static_cast<DataType>(Z_Malloc(size, tag, ptr));
 }
 
 //

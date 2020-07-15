@@ -545,7 +545,7 @@ void AM_loadPics(void)
     for (i = 0; i < 10; i++)
     {
         DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
-        marknums[i] = cache_lump_name<patch_t *>(namebuf, PU_STATIC);
+        marknums[i] = cache_lump_name<patch_t *>(namebuf, PU::STATIC);
     }
 }
 
@@ -681,8 +681,7 @@ void AM_maxOutWindowScale(void)
 //
 // Handle events (user inputs) in automap mode
 //
-bool
-    AM_Responder(event_t *ev)
+bool AM_Responder(event_t *ev)
 {
 
     int         rc;
@@ -1021,9 +1020,8 @@ void AM_clearFB(int color)
 // faster reject and precalculated slopes.  If the speed is needed,
 // use a hash algorithm to handle  the common cases.
 //
-bool
-    AM_clipMline(mline_t *ml,
-        fline_t *         fl)
+bool AM_clipMline(mline_t *ml,
+    fline_t *              fl)
 {
     enum
     {
@@ -1621,7 +1619,8 @@ void AM_drawPlayers(void)
     }
 }
 
-void AM_drawThings(int colors, int colorrange [[maybe_unused]]) {
+void AM_drawThings(int colors, int colorrange [[maybe_unused]])
+{
     int        i;
     mobj_t *   t;
     keycolor_t key;

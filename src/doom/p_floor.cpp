@@ -44,11 +44,11 @@ result_e
     T_MovePlane(sector_t *sector,
         fixed_t           speed,
         fixed_t           dest,
-        bool           crush,
+        bool              crush,
         int               floorOrCeiling,
         int               direction)
 {
-    bool flag;
+    bool    flag;
     fixed_t lastpos;
 
     // [AM] Store old sector heights for interpolation.
@@ -299,7 +299,7 @@ void EV_DoGoobers(void)
             sec->specialdata = NULL;
         }
 
-        floor = zmalloc<decltype(floor)>(sizeof(*floor), PU_LEVSPEC, 0);
+        floor = zmalloc<decltype(floor)>(sizeof(*floor), PU::LEVSPEC, 0);
         P_AddThinker(&floor->thinker);
         sec->specialdata             = floor;
         floor->thinker.function.acp1 = (actionf_p1)T_MoveGoobers;
@@ -338,7 +338,7 @@ int EV_DoFloor(line_s *line,
 
         // new floor thinker
         rtn   = 1;
-        floor = zmalloc<decltype(floor)>(sizeof(*floor), PU_LEVSPEC, 0);
+        floor = zmalloc<decltype(floor)>(sizeof(*floor), PU::LEVSPEC, 0);
         P_AddThinker(&floor->thinker);
         sec->specialdata             = floor;
         floor->thinker.function.acp1 = (actionf_p1)T_MoveFloor;
@@ -531,7 +531,7 @@ int EV_BuildStairs(line_s *line,
 
         // new floor thinker
         rtn   = 1;
-        floor = zmalloc<decltype(floor)>(sizeof(*floor), PU_LEVSPEC, 0);
+        floor = zmalloc<decltype(floor)>(sizeof(*floor), PU::LEVSPEC, 0);
         P_AddThinker(&floor->thinker);
         sec->specialdata             = floor;
         floor->thinker.function.acp1 = (actionf_p1)T_MoveFloor;
@@ -590,7 +590,7 @@ int EV_BuildStairs(line_s *line,
 
                 sec    = tsec;
                 secnum = newsecnum;
-                floor  = zmalloc<decltype(floor)>(sizeof(*floor), PU_LEVSPEC, 0);
+                floor  = zmalloc<decltype(floor)>(sizeof(*floor), PU::LEVSPEC, 0);
 
                 P_AddThinker(&floor->thinker);
 

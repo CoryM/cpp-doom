@@ -39,7 +39,7 @@
 
 #define DEFAULT_PORT 2342
 
-static bool    initted = false;
+static bool       initted = false;
 static int        port    = DEFAULT_PORT;
 static UDPsocket  udpsocket;
 static UDPpacket *recvpacket;
@@ -60,7 +60,7 @@ static void NET_SDL_InitAddrTable(void)
     addr_table_size = 16;
 
     addr_table = zmalloc<decltype(addr_table)>(sizeof(addrpair_t *) * addr_table_size,
-        PU_STATIC, 0);
+        PU::STATIC, 0);
     memset(addr_table, 0, sizeof(addrpair_t *) * addr_table_size);
 }
 
@@ -115,7 +115,7 @@ static net_addr_t *NET_SDL_FindAddress(IPaddress *addr)
 
         new_addr_table_size = addr_table_size * 2;
         new_addr_table      = zmalloc<decltype(new_addr_table)>(sizeof(addrpair_t *) * new_addr_table_size,
-            PU_STATIC, 0);
+            PU::STATIC, 0);
         memset(new_addr_table, 0, sizeof(addrpair_t *) * new_addr_table_size);
         memcpy(new_addr_table, addr_table,
             sizeof(addrpair_t *) * addr_table_size);
@@ -126,7 +126,7 @@ static net_addr_t *NET_SDL_FindAddress(IPaddress *addr)
 
     // Add a new entry
 
-    new_entry = zmalloc<decltype(new_entry)>(sizeof(addrpair_t), PU_STATIC, 0);
+    new_entry = zmalloc<decltype(new_entry)>(sizeof(addrpair_t), PU::STATIC, 0);
 
     new_entry->sdl_addr          = *addr;
     new_entry->net_addr.refcount = 0;

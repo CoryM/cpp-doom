@@ -77,9 +77,9 @@ std::string M_FileCaseExists(const std::string_view sv_path)
     // 0: actual path
     auto path = pathList.emplace_back(std::filesystem::path(sv_path));
 
-    auto transformFileName = [](const auto &path, auto trans){
-      auto q = path; // Copy Path
-      return q.replace_filename(trans(path.filename().string()));
+    auto transformFileName = [](const auto &path, auto trans) {
+        auto q = path; // Copy Path
+        return q.replace_filename(trans(path.filename().string()));
     };
 
     // 1: lowercase filename, e.g. doom2.wad
@@ -89,20 +89,22 @@ std::string M_FileCaseExists(const std::string_view sv_path)
     pathList.emplace_back(transformFileName(path, S_ForceUppercase));
 
     // 3. uppercase basename with lowercase extension, e.g. DOOM2.wad
-    pathList.emplace_back(transformFileName(path, [](const std::string &str){
-      auto p = std::filesystem::path(S_ForceUppercase(str));
-      return p.replace_extension(S_ForceLowercase(p.extension().string()));
+    pathList.emplace_back(transformFileName(path, [](const std::string &str) {
+        auto p = std::filesystem::path(S_ForceUppercase(str));
+        return p.replace_extension(S_ForceLowercase(p.extension().string()));
     }));
 
     // 4. lowercase filename with uppercase first letter, e.g. Doom2.wad
-    pathList.emplace_back(transformFileName(path, [](const std::string &str){
+    pathList.emplace_back(transformFileName(path, [](const std::string &str) {
         auto s = S_ForceLowercase(str);
-        s[0] = std::toupper(s[0]);
+        s[0]   = std::toupper(s[0]);
         return s;
     }));
 
-    for (auto &p : pathList) {
-        if (M_FileExists(p)) {
+    for (auto &p : pathList)
+    {
+        if (M_FileExists(p))
+        {
             return p.string();
         }
     }
@@ -176,7 +178,7 @@ int M_ReadFile(const char *name, byte **buffer)
 
     length = M_FileLength(handle);
 
-    buf   = zmalloc<byte *>(length + 1, PU_STATIC, NULL);
+    buf   = zmalloc<byte *>(length + 1, PU::STATIC, NULL);
     count = fread(buf, 1, length, handle);
     fclose(handle);
 
@@ -299,7 +301,7 @@ std::string S_ForceUppercase(const std::string_view source)
 {
     auto dest = std::string(source.size(), '\0');
     std::transform(source.begin(), source.end(), dest.begin(),
-      [](unsigned char c) -> unsigned char { return std::toupper(c); });
+        [](unsigned char c) -> unsigned char { return std::toupper(c); });
     return dest;
 }
 
@@ -324,7 +326,7 @@ std::string S_ForceLowercase(const std::string_view source)
 {
     auto dest = std::string(source.size(), '\0');
     std::transform(source.begin(), source.end(), dest.begin(),
-      [](unsigned char c) -> unsigned char { return std::tolower(c); });
+        [](unsigned char c) -> unsigned char { return std::tolower(c); });
     return dest;
 }
 

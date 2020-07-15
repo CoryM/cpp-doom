@@ -42,7 +42,7 @@ slidename_t	slideFrameNames[MAXSLIDEDOORS] =
 {
     {"GDOORF1","GDOORF2","GDOORF3","GDOORF4",	// front
      "GDOORB1","GDOORB2","GDOORB3","GDOORB4"},	// back
-	 
+
     {"\0","\0","\0","\0"}
 };
 #endif
@@ -277,7 +277,7 @@ int EV_DoDoor(line_s *line,
 
         // new door thinker
         rtn  = 1;
-        door = zmalloc<decltype(door)>(sizeof(*door), PU_LEVSPEC, 0);
+        door = zmalloc<decltype(door)>(sizeof(*door), PU::LEVSPEC, 0);
         P_AddThinker(&door->thinker);
         sec->specialdata = door;
 
@@ -502,7 +502,7 @@ void EV_VerticalDoor(line_s *line,
 
 
     // new door thinker
-    door = zmalloc<decltype(door)>(sizeof(*door), PU_LEVSPEC, 0);
+    door = zmalloc<decltype(door)>(sizeof(*door), PU::LEVSPEC, 0);
     P_AddThinker(&door->thinker);
     sec->specialdata            = door;
     door->thinker.function.acp1 = (actionf_p1)T_VerticalDoor;
@@ -552,7 +552,7 @@ void P_SpawnDoorCloseIn30(sector_t *sec)
 {
     vldoor_t *door;
 
-    door = zmalloc<decltype(door)>(sizeof(*door), PU_LEVSPEC, 0);
+    door = zmalloc<decltype(door)>(sizeof(*door), PU::LEVSPEC, 0);
 
     P_AddThinker(&door->thinker);
 
@@ -574,7 +574,7 @@ void P_SpawnDoorRaiseIn5Mins(sector_t *sec, int secnum [[maybe_unused]])
 {
     vldoor_t *door;
 
-    door = zmalloc<decltype(door)>(sizeof(*door), PU_LEVSPEC, 0);
+    door = zmalloc<decltype(door)>(sizeof(*door), PU::LEVSPEC, 0);
 
     P_AddThinker(&door->thinker);
 
@@ -612,16 +612,16 @@ void P_InitSlidingDoorFrames(void)
     int		f2;
     int		f3;
     int		f4;
-	
+
     // DOOM II ONLY...
     if ( gamemode != commercial)
 	return;
-	
+
     for (i = 0;i < MAXSLIDEDOORS; i++)
     {
 	if (!slideFrameNames[i].frontFrame1[0])
 	    break;
-			
+
 	f1 = R_TextureNumForName(slideFrameNames[i].frontFrame1);
 	f2 = R_TextureNumForName(slideFrameNames[i].frontFrame2);
 	f3 = R_TextureNumForName(slideFrameNames[i].frontFrame3);
@@ -631,7 +631,7 @@ void P_InitSlidingDoorFrames(void)
 	slideFrames[i].frontFrames[1] = f2;
 	slideFrames[i].frontFrames[2] = f3;
 	slideFrames[i].frontFrames[3] = f4;
-		
+
 	f1 = R_TextureNumForName(slideFrameNames[i].backFrame1);
 	f2 = R_TextureNumForName(slideFrameNames[i].backFrame2);
 	f3 = R_TextureNumForName(slideFrameNames[i].backFrame3);
@@ -653,14 +653,14 @@ int P_FindSlidingDoorType(line_s*	line)
 {
     int		i;
     int		val;
-	
+
     for (i = 0;i < MAXSLIDEDOORS;i++)
     {
 	val = sides[line->sidenum[0]].midtexture;
 	if (val == slideFrames[i].frontFrames[0])
 	    return i;
     }
-	
+
     return -1;
 }
 
@@ -677,14 +677,14 @@ void T_SlidingDoor (slidedoor_t*	door)
 		sides[door->line->sidenum[0]].midtexture = 0;
 		sides[door->line->sidenum[1]].midtexture = 0;
 		door->line->flags &= ML_BLOCKING^0xff;
-					
+
 		if (door->type == sdt_openOnly)
 		{
 		    door->frontsector->specialdata = NULL;
 		    P_RemoveThinker (&door->thinker);
 		    break;
 		}
-					
+
 		door->timer = SDOORWAIT;
 		door->status = sd_waiting;
 	    }
@@ -692,7 +692,7 @@ void T_SlidingDoor (slidedoor_t*	door)
 	    {
 		// IF DOOR NEEDS TO ANIMATE TO NEXT FRAME...
 		door->timer = SWAITTICS;
-					
+
 		sides[door->line->sidenum[0]].midtexture =
 		    slideFrames[door->whichDoorIndex].
 		    frontFrames[door->frame];
@@ -702,7 +702,7 @@ void T_SlidingDoor (slidedoor_t*	door)
 	    }
 	}
 	break;
-			
+
       case sd_waiting:
 	// IF DOOR IS DONE WAITING...
 	if (!door->timer--)
@@ -720,7 +720,7 @@ void T_SlidingDoor (slidedoor_t*	door)
 	    door->timer = SWAITTICS;
 	}
 	break;
-			
+
       case sd_closing:
 	if (!door->timer--)
 	{
@@ -736,7 +736,7 @@ void T_SlidingDoor (slidedoor_t*	door)
 	    {
 		// IF DOOR NEEDS TO ANIMATE TO NEXT FRAME...
 		door->timer = SWAITTICS;
-					
+
 		sides[door->line->sidenum[0]].midtexture =
 		    slideFrames[door->whichDoorIndex].
 		    frontFrames[door->frame];
@@ -758,11 +758,11 @@ EV_SlidingDoor
 {
     sector_t*		sec;
     slidedoor_t*	door;
-	
+
     // DOOM II ONLY...
     if (gamemode != commercial)
 	return;
-    
+
     // Make sure door isn't already being animated
     sec = line->frontsector;
     door = NULL;
@@ -770,7 +770,7 @@ EV_SlidingDoor
     {
 	if (!thing->player)
 	    return;
-			
+
 	door = sec->specialdata;
 	if (door->type == sdt_openAndClose)
 	{
@@ -780,21 +780,21 @@ EV_SlidingDoor
 	else
 	    return;
     }
-    
+
     // Init sliding door vars
     if (!door)
     {
-	door = zmalloc<decltype(door)> (sizeof(*door), PU_LEVSPEC, 0);
+	door = zmalloc<decltype(door)> (sizeof(*door), PU::LEVSPEC, 0);
 	P_AddThinker (&door->thinker);
 	sec->specialdata = door;
-		
+
 	door->type = sdt_openAndClose;
 	door->status = sd_opening;
 	door->whichDoorIndex = P_FindSlidingDoorType(line);
 
 	if (door->whichDoorIndex < 0)
 	    I_Error("EV_SlidingDoor: Can't use texture for sliding door!");
-			
+
 	door->frontsector = sec;
 	door->backsector = line->backsector;
 	door->thinker.function = T_SlidingDoor;

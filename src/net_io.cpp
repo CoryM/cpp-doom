@@ -35,7 +35,7 @@ net_addr_t net_broadcast_addr;
 
 net_context_t *NET_NewContext(void)
 {
-    auto *context        = zmalloc<net_context_t *>(sizeof(net_context_t), PU_STATIC, 0);
+    auto *context        = zmalloc<net_context_t *>(sizeof(net_context_t), PU::STATIC, 0);
     context->num_modules = 0;
 
     return context;
@@ -87,8 +87,8 @@ void NET_SendBroadcast(net_context_t *context, net_packet_t *packet)
 }
 
 bool NET_RecvPacket(net_context_t *context,
-    net_addr_t **                     addr,
-    net_packet_t **                   packet)
+    net_addr_t **                  addr,
+    net_packet_t **                packet)
 {
     int i;
 

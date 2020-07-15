@@ -56,10 +56,10 @@
 // Blending table used for fuzzpatch, etc.
 // Only used in Heretic/Hexen
 
-byte *  tinttable      = NULL;
-byte *  tranmap        = NULL;
-byte *  dp_translation = NULL;
-bool dp_translucent = false;
+byte *          tinttable      = NULL;
+byte *          tranmap        = NULL;
+byte *          dp_translation = NULL;
+bool            dp_translucent = false;
 extern pixel_t *colormaps;
 
 // villsa [STRIFE] Blending table used for Strife
@@ -188,7 +188,7 @@ static inline pixel_t drawpatchpx11(const pixel_t dest, const pixel_t source)
 }
 
 // [crispy] array of function pointers holding the different rendering functions
-typedef pixel_t       drawpatchpx_t(const pixel_t dest, const pixel_t source);
+typedef pixel_t             drawpatchpx_t(const pixel_t dest, const pixel_t source);
 static drawpatchpx_t *const drawpatchpx_a[2][2] = { { drawpatchpx11, drawpatchpx10 }, { drawpatchpx01, drawpatchpx00 } };
 
 static fixed_t dx, dxi, dy, dyi;
@@ -670,7 +670,7 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
 
 void V_LoadTintTable(void)
 {
-    tinttable = cache_lump_name<byte *>("TINTTAB", PU_STATIC);
+    tinttable = cache_lump_name<byte *>("TINTTAB", PU::STATIC);
 }
 
 //
@@ -681,7 +681,7 @@ void V_LoadTintTable(void)
 
 void V_LoadXlaTable(void)
 {
-    xlatab = cache_lump_name<byte *>("XLATAB", PU_STATIC);
+    xlatab = cache_lump_name<byte *>("XLATAB", PU::STATIC);
 }
 
 //
@@ -911,7 +911,7 @@ void WritePCXfile(char *filename, pixel_t *data,
     pcx_t *pcx;
     byte * pack;
 
-    pcx = zmalloc<decltype(pcx)>(width * height * 2 + 1000, PU_STATIC, NULL);
+    pcx = zmalloc<decltype(pcx)>(width * height * 2 + 1000, PU::STATIC, NULL);
 
     pcx->manufacturer   = 0x0a; // PCX id
     pcx->version        = 5;    // 256 color
@@ -1152,7 +1152,7 @@ void V_ScreenShot(const char *format)
     {
         WritePNGfile(lbmname, I_VideoBuffer,
             SCREENWIDTH, SCREENHEIGHT,
-            cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
+            cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU::CACHE));
     }
     else
 #endif
@@ -1160,7 +1160,7 @@ void V_ScreenShot(const char *format)
         // save the pcx file
         WritePCXfile(lbmname, I_VideoBuffer,
             SCREENWIDTH, SCREENHEIGHT,
-            cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
+            cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU::CACHE));
     }
 }
 
@@ -1180,9 +1180,9 @@ static void DrawAcceleratingBox(int speed)
     int redline_x;
     int linelen;
 
-    red         = I_MapRGB(0xff, 0x00, 0x00);
-    white       = I_MapRGB(0xff, 0xff, 0xff);
-    yellow      = I_MapRGB(0xff, 0xff, 0x00);
+    red    = I_MapRGB(0xff, 0x00, 0x00);
+    white  = I_MapRGB(0xff, 0xff, 0xff);
+    yellow = I_MapRGB(0xff, 0xff, 0x00);
 
     // Calculate the position of the red threshold line when calibrating
     // acceleration.  This is 1/3 of the way along the box.
@@ -1240,7 +1240,7 @@ static void DrawNonAcceleratingBox(int speed)
     int white;
     int linelen;
 
-    white       = I_MapRGB(0xff, 0xff, 0xff);
+    white = I_MapRGB(0xff, 0xff, 0xff);
 
     if (speed > max_seen_speed)
     {

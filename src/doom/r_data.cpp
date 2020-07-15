@@ -268,7 +268,7 @@ void R_GenerateComposite(int texnum)
     texture = textures[texnum];
 
     block = zmalloc<decltype(block)>(texturecompositesize[texnum],
-        PU_STATIC,
+        PU::STATIC,
         &texturecomposite[texnum]);
 
     collump = texturecolumnlump[texnum];
@@ -287,7 +287,7 @@ void R_GenerateComposite(int texnum)
          i < texture->patchcount;
          i++, patch++)
     {
-        realpatch = cache_lump_num<patch_t *>(patch->patch, PU_CACHE);
+        realpatch = cache_lump_num<patch_t *>(patch->patch, PU::CACHE);
         x1        = patch->originx;
         x2        = x1 + SHORT(realpatch->width);
 
@@ -370,7 +370,7 @@ void R_GenerateComposite(int texnum)
 
     // Now that the texture has been built in column cache,
     //  it is purgable from zone memory.
-    Z_ChangeTag(block, PU_CACHE);
+    Z_ChangeTag(block, PU::CACHE);
 }
 
 
@@ -411,8 +411,8 @@ void R_GenerateLookup(int texnum)
     //  that are covered by more than one patch.
     // Fill in the lump / offset, so columns
     //  with only a single patch are all done.
-    patchcount = (byte *)Z_Malloc(texture->width, PU_STATIC, &patchcount);
-    postcount  = (byte *)Z_Malloc(texture->width, PU_STATIC, &postcount);
+    patchcount = (byte *)Z_Malloc(texture->width, PU::STATIC, &patchcount);
+    postcount  = (byte *)Z_Malloc(texture->width, PU::STATIC, &postcount);
     memset(patchcount, 0, texture->width);
     memset(postcount, 0, texture->width);
     patch = texture->patches;
@@ -421,7 +421,7 @@ void R_GenerateLookup(int texnum)
          i < texture->patchcount;
          i++, patch++)
     {
-        realpatch = cache_lump_num<patch_t *>(patch->patch, PU_CACHE);
+        realpatch = cache_lump_num<patch_t *>(patch->patch, PU::CACHE);
         x1        = patch->originx;
         x2        = x1 + SHORT(realpatch->width);
 
@@ -460,7 +460,7 @@ void R_GenerateLookup(int texnum)
         for (i = texture->patchcount, patch = texture->patches; --i >= 0;)
         {
             int            pat       = patch->patch;
-            const patch_t *realpatch = cache_lump_num<const patch_t *>(pat, PU_CACHE);
+            const patch_t *realpatch = cache_lump_num<const patch_t *>(pat, PU::CACHE);
             int            x, x1 = patch++->originx, x2 = x1 + SHORT(realpatch->width);
             const int *    cofs = realpatch->columnofs - x1;
 
@@ -556,7 +556,7 @@ void R_GenerateLookup(int texnum)
 byte *
     R_GetColumn(int tex,
         int         col,
-        bool     opaque)
+        bool        opaque)
 {
     int lump;
     int ofs;
@@ -569,7 +569,7 @@ byte *
 
     // [crispy] single-patched mid-textures on two-sided walls
     if (lump > 0 && !opaque)
-        return (byte *)W_CacheLumpNum(lump, PU_CACHE) + ofs2;
+        return (byte *)W_CacheLumpNum(lump, PU::CACHE) + ofs2;
 
     if (!texturecomposite[tex])
         R_GenerateComposite(tex);
@@ -584,7 +584,7 @@ static void GenerateTextureHashTable(void)
     int         i;
     int         key;
 
-    textures_hashtable = zmalloc<decltype(textures_hashtable)>(sizeof(texture_t *) * numtextures, PU_STATIC, 0);
+    textures_hashtable = zmalloc<decltype(textures_hashtable)>(sizeof(texture_t *) * numtextures, PU::STATIC, 0);
 
     memset(textures_hashtable, 0, sizeof(texture_t *) * numtextures);
 
@@ -707,7 +707,7 @@ void R_InitTextures(void)
             }
 
             pnameslumps[numpnameslumps].lumpnum       = i;
-            pnameslumps[numpnameslumps].names         = W_CacheLumpNum(pnameslumps[numpnameslumps].lumpnum, PU_STATIC);
+            pnameslumps[numpnameslumps].names         = W_CacheLumpNum(pnameslumps[numpnameslumps].lumpnum, PU::STATIC);
             pnameslumps[numpnameslumps].nummappatches = LONG(*((int *)pnameslumps[numpnameslumps].names));
 
             // [crispy] accumulated number of patches in the lookup tables
@@ -746,7 +746,7 @@ void R_InitTextures(void)
 
     // [crispy] fill up the patch lookup table
     name[8]     = 0;
-    patchlookup = zmalloc<decltype(patchlookup)>(nummappatches * sizeof(*patchlookup), PU_STATIC, NULL);
+    patchlookup = zmalloc<decltype(patchlookup)>(nummappatches * sizeof(*patchlookup), PU::STATIC, NULL);
     for (i = 0, k = 0; i < numpnameslumps; i++)
     {
         for (j = 0; j < pnameslumps[i].nummappatches; j++)
@@ -769,7 +769,7 @@ void R_InitTextures(void)
     numtextures = 0;
     for (i = 0; i < numtexturelumps; i++)
     {
-        texturelumps[i].maptex      = cache_lump_num<int *>(texturelumps[i].lumpnum, PU_STATIC);
+        texturelumps[i].maptex      = cache_lump_num<int *>(texturelumps[i].lumpnum, PU::STATIC);
         texturelumps[i].maxoff      = W_LumpLength(texturelumps[i].lumpnum);
         texturelumps[i].numtextures = LONG(*texturelumps[i].maptex);
 
@@ -801,15 +801,15 @@ void R_InitTextures(void)
     // [crispy] pointer to (i.e. actually before) the first texture file
     texturelump = texturelumps - 1; // [crispy] gets immediately increased below
 
-    textures             = zmalloc<decltype(textures)>(numtextures * sizeof(*textures), PU_STATIC, 0);
-    texturecolumnlump    = zmalloc<decltype(texturecolumnlump)>(numtextures * sizeof(*texturecolumnlump), PU_STATIC, 0);
-    texturecolumnofs     = zmalloc<decltype(texturecolumnofs)>(numtextures * sizeof(*texturecolumnofs), PU_STATIC, 0);
-    texturecolumnofs2    = zmalloc<decltype(texturecolumnofs2)>(numtextures * sizeof(*texturecolumnofs2), PU_STATIC, 0);
-    texturecomposite     = zmalloc<decltype(texturecomposite)>(numtextures * sizeof(*texturecomposite), PU_STATIC, 0);
-    texturecompositesize = zmalloc<decltype(texturecompositesize)>(numtextures * sizeof(*texturecompositesize), PU_STATIC, 0);
-    texturewidthmask     = zmalloc<decltype(texturewidthmask)>(numtextures * sizeof(*texturewidthmask), PU_STATIC, 0);
-    textureheight        = zmalloc<decltype(textureheight)>(numtextures * sizeof(*textureheight), PU_STATIC, 0);
-    texturebrightmap     = zmalloc<decltype(texturebrightmap)>(numtextures * sizeof(*texturebrightmap), PU_STATIC, 0);
+    textures             = zmalloc<decltype(textures)>(numtextures * sizeof(*textures), PU::STATIC, 0);
+    texturecolumnlump    = zmalloc<decltype(texturecolumnlump)>(numtextures * sizeof(*texturecolumnlump), PU::STATIC, 0);
+    texturecolumnofs     = zmalloc<decltype(texturecolumnofs)>(numtextures * sizeof(*texturecolumnofs), PU::STATIC, 0);
+    texturecolumnofs2    = zmalloc<decltype(texturecolumnofs2)>(numtextures * sizeof(*texturecolumnofs2), PU::STATIC, 0);
+    texturecomposite     = zmalloc<decltype(texturecomposite)>(numtextures * sizeof(*texturecomposite), PU::STATIC, 0);
+    texturecompositesize = zmalloc<decltype(texturecompositesize)>(numtextures * sizeof(*texturecompositesize), PU::STATIC, 0);
+    texturewidthmask     = zmalloc<decltype(texturewidthmask)>(numtextures * sizeof(*texturewidthmask), PU::STATIC, 0);
+    textureheight        = zmalloc<decltype(textureheight)>(numtextures * sizeof(*textureheight), PU::STATIC, 0);
+    texturebrightmap     = zmalloc<decltype(texturebrightmap)>(numtextures * sizeof(*texturebrightmap), PU::STATIC, 0);
 
     totalwidth = 0;
 
@@ -857,7 +857,7 @@ void R_InitTextures(void)
 
         texture = textures[i] = zmalloc<decltype(texture)>(sizeof(texture_t)
                                                                + sizeof(texpatch_t) * (SHORT(mtexture->patchcount) - 1),
-            PU_STATIC, 0);
+            PU::STATIC, 0);
 
         texture->width      = SHORT(mtexture->width);
         texture->height     = SHORT(mtexture->height);
@@ -892,9 +892,9 @@ void R_InitTextures(void)
                 patch->patch = 0;
             }
         }
-        texturecolumnlump[i] = zmalloc<short *>(texture->width * sizeof(**texturecolumnlump), PU_STATIC, 0);
-        texturecolumnofs[i]  = zmalloc<unsigned *>(texture->width * sizeof(**texturecolumnofs), PU_STATIC, 0);
-        texturecolumnofs2[i] = zmalloc<unsigned *>(texture->width * sizeof(**texturecolumnofs2), PU_STATIC, 0);
+        texturecolumnlump[i] = zmalloc<short *>(texture->width * sizeof(**texturecolumnlump), PU::STATIC, 0);
+        texturecolumnofs[i]  = zmalloc<unsigned *>(texture->width * sizeof(**texturecolumnofs), PU::STATIC, 0);
+        texturecolumnofs2[i] = zmalloc<unsigned *>(texture->width * sizeof(**texturecolumnofs2), PU::STATIC, 0);
 
         j = 1;
         while (j * 2 <= texture->width)
@@ -921,7 +921,7 @@ void R_InitTextures(void)
         R_GenerateLookup(i);
 
     // Create translation table for global animation.
-    texturetranslation = zmalloc<decltype(texturetranslation)>((numtextures + 1) * sizeof(*texturetranslation), PU_STATIC, 0);
+    texturetranslation = zmalloc<decltype(texturetranslation)>((numtextures + 1) * sizeof(*texturetranslation), PU::STATIC, 0);
 
     for (i = 0; i < numtextures; i++)
         texturetranslation[i] = i;
@@ -942,7 +942,7 @@ void R_InitFlats(void)
     numflats  = lastflat - firstflat + 1;
 
     // Create translation table for global animation.
-    flattranslation = zmalloc<decltype(flattranslation)>((numflats + 1) * sizeof(*flattranslation), PU_STATIC, 0);
+    flattranslation = zmalloc<decltype(flattranslation)>((numflats + 1) * sizeof(*flattranslation), PU::STATIC, 0);
 
     for (i = 0; i < numflats; i++)
         flattranslation[i] = i;
@@ -964,16 +964,16 @@ void R_InitSpriteLumps(void)
     lastspritelump  = W_GetNumForName(DEH_String("S_END")) - 1;
 
     numspritelumps  = lastspritelump - firstspritelump + 1;
-    spritewidth     = zmalloc<decltype(spritewidth)>(numspritelumps * sizeof(*spritewidth), PU_STATIC, 0);
-    spriteoffset    = zmalloc<decltype(spriteoffset)>(numspritelumps * sizeof(*spriteoffset), PU_STATIC, 0);
-    spritetopoffset = zmalloc<decltype(spritetopoffset)>(numspritelumps * sizeof(*spritetopoffset), PU_STATIC, 0);
+    spritewidth     = zmalloc<decltype(spritewidth)>(numspritelumps * sizeof(*spritewidth), PU::STATIC, 0);
+    spriteoffset    = zmalloc<decltype(spriteoffset)>(numspritelumps * sizeof(*spriteoffset), PU::STATIC, 0);
+    spritetopoffset = zmalloc<decltype(spritetopoffset)>(numspritelumps * sizeof(*spritetopoffset), PU::STATIC, 0);
 
     for (i = 0; i < numspritelumps; i++)
     {
         if (!(i & 63))
             printf(".");
 
-        patch              = cache_lump_num<patch_t *>(firstspritelump + i, PU_CACHE);
+        patch              = cache_lump_num<patch_t *>(firstspritelump + i, PU::CACHE);
         spritewidth[i]     = SHORT(patch->width) << FRACBITS;
         spriteoffset[i]    = SHORT(patch->leftoffset) << FRACBITS;
         spritetopoffset[i] = SHORT(patch->topoffset) << FRACBITS;
@@ -986,9 +986,9 @@ void R_InitSpriteLumps(void)
 //
 void R_InitColormaps(void)
 {
-    byte *playpal;
-    int c, i, j = 0;
-    byte r, g, b;
+    byte *        playpal;
+    int           c, i, j = 0;
+    byte          r, g, b;
     extern byte **gamma2table;
 
     // [crispy] intermediate gamma levels
@@ -998,12 +998,12 @@ void R_InitColormaps(void)
         I_SetGammaTable();
     }
 
-    //playpal = cache_lump_name<patch_t *>("PLAYPAL", PU_STATIC);
-    playpal = cache_lump_name<byte *>("PLAYPAL", PU_STATIC);
+    //playpal = cache_lump_name<patch_t *>("PLAYPAL", PU::STATIC);
+    playpal = cache_lump_name<byte *>("PLAYPAL", PU::STATIC);
 
     if (!colormaps)
     {
-        colormaps = (lighttable_t *)Z_Malloc((NUMCOLORMAPS + 1) * 256 * sizeof(lighttable_t), PU_STATIC, 0);
+        colormaps = (lighttable_t *)Z_Malloc((NUMCOLORMAPS + 1) * 256 * sizeof(lighttable_t), PU::STATIC, 0);
     }
 
     if (crispy->truecolor)
@@ -1033,8 +1033,8 @@ void R_InitColormaps(void)
     }
     else
     {
-        //byte *const colormap = cache_lump_name<patch_t *>("COLORMAP", PU_STATIC);
-        byte *const colormap = cache_lump_name<byte *>("COLORMAP", PU_STATIC);
+        //byte *const colormap = cache_lump_name<patch_t *>("COLORMAP", PU::STATIC);
+        byte *const colormap = cache_lump_name<byte *>("COLORMAP", PU::STATIC);
 
         for (c = 0; c <= NUMCOLORMAPS; c++)
         {
@@ -1053,10 +1053,10 @@ void R_InitColormaps(void)
 
     // [crispy] initialize color translation and color strings tables
     {
-        byte *      playpal = cache_lump_name<byte *>("PLAYPAL", PU_STATIC);
+        byte *      playpal = cache_lump_name<byte *>("PLAYPAL", PU::STATIC);
         char        c[3];
         int         i, j;
-        bool     keepgray = false;
+        bool        keepgray = false;
         extern byte V_Colorize(byte * playpal, int cr, byte source, bool keepgray109);
 
         if (!crstr)
@@ -1216,7 +1216,7 @@ void R_PrecacheLevel(void)
         return;
 
     // Precache flats.
-    flatpresent = zmalloc<decltype(flatpresent)>(numflats, PU_STATIC, NULL);
+    flatpresent = zmalloc<decltype(flatpresent)>(numflats, PU::STATIC, NULL);
     memset(flatpresent, 0, numflats);
 
     for (i = 0; i < numsectors; i++)
@@ -1233,14 +1233,14 @@ void R_PrecacheLevel(void)
         {
             lump = firstflat + i;
             flatmemory += lumpinfo[lump]->size;
-            W_CacheLumpNum(lump, PU_CACHE);
+            W_CacheLumpNum(lump, PU::CACHE);
         }
     }
 
     Z_Free(flatpresent);
 
     // Precache textures.
-    texturepresent = zmalloc<decltype(texturepresent)>(numtextures, PU_STATIC, NULL);
+    texturepresent = zmalloc<decltype(texturepresent)>(numtextures, PU::STATIC, NULL);
     memset(texturepresent, 0, numtextures);
 
     for (i = 0; i < numsides; i++)
@@ -1273,14 +1273,14 @@ void R_PrecacheLevel(void)
         {
             lump = texture->patches[j].patch;
             texturememory += lumpinfo[lump]->size;
-            W_CacheLumpNum(lump, PU_CACHE);
+            W_CacheLumpNum(lump, PU::CACHE);
         }
     }
 
     Z_Free(texturepresent);
 
     // Precache sprites.
-    spritepresent = zmalloc<decltype(spritepresent)>(numsprites, PU_STATIC, NULL);
+    spritepresent = zmalloc<decltype(spritepresent)>(numsprites, PU::STATIC, NULL);
     memset(spritepresent, 0, numsprites);
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
@@ -1302,7 +1302,7 @@ void R_PrecacheLevel(void)
             {
                 lump = firstspritelump + sf->lump[k];
                 spritememory += lumpinfo[lump]->size;
-                W_CacheLumpNum(lump, PU_CACHE);
+                W_CacheLumpNum(lump, PU::CACHE);
             }
         }
     }

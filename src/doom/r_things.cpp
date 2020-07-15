@@ -58,7 +58,7 @@ typedef struct
 } maskdraw_t;
 
 
-static degenmobj_t laserspot_m = { };
+static degenmobj_t laserspot_m = {};
 degenmobj_t *      laserspot   = &laserspot_m;
 
 // [crispy] extendable, but the last char element must be zero,
@@ -110,7 +110,7 @@ const char *  spritename;
 void R_InstallSpriteLump(int lump,
     unsigned                 frame,
     char                     rot,
-    bool                  flipped)
+    bool                     flipped)
 {
     int r;
     // [crispy] support 16 sprite rotations
@@ -219,7 +219,7 @@ void R_InitSpriteDefs(const char **namelist)
     if (!numsprites)
         return;
 
-    sprites = zmalloc<decltype(sprites)>(numsprites * sizeof(*sprites), PU_STATIC, NULL);
+    sprites = zmalloc<decltype(sprites)>(numsprites * sizeof(*sprites), PU::STATIC, NULL);
 
     start = firstspritelump - 1;
     end   = lastspritelump + 1;
@@ -307,7 +307,7 @@ void R_InitSpriteDefs(const char **namelist)
 
         // allocate space for the frames present and copy sprtemp to it
         sprites[i].numframes    = maxframe;
-        sprites[i].spriteframes = zmalloc<decltype(sprites[i].spriteframes)>(maxframe * sizeof(spriteframe_t), PU_STATIC, NULL);
+        sprites[i].spriteframes = zmalloc<decltype(sprites[i].spriteframes)>(maxframe * sizeof(spriteframe_t), PU::STATIC, NULL);
         memcpy(sprites[i].spriteframes, sprtemp, maxframe * sizeof(spriteframe_t));
     }
 }
@@ -464,7 +464,7 @@ void R_DrawVisSprite(vissprite_t *vis,
     patch_t * patch;
 
 
-    patch = cache_lump_num<patch_t *>(vis->patch + firstspritelump, PU_CACHE);
+    patch = cache_lump_num<patch_t *>(vis->patch + firstspritelump, PU::CACHE);
 
     // [crispy] brightmaps for select sprites
     dc_colormap[0] = vis->colormap[0];
@@ -506,7 +506,7 @@ void R_DrawVisSprite(vissprite_t *vis,
     for (dc_x = vis->x1; dc_x <= vis->x2; dc_x++, frac += vis->xiscale)
     {
         static bool error = false;
-        texturecolumn        = frac >> FRACBITS;
+        texturecolumn     = frac >> FRACBITS;
 #ifdef RANGECHECK
         if (texturecolumn < 0 || texturecolumn >= SHORT(patch->width))
         {
@@ -523,7 +523,7 @@ void R_DrawVisSprite(vissprite_t *vis,
         R_DrawMaskedColumn(column);
     }
 
-    colfunc = basecolfunc;
+    colfunc   = basecolfunc;
     blendfunc = I_BlendOver;
 }
 
@@ -555,7 +555,7 @@ void R_ProjectSprite(mobj_t *thing)
     int            lump;
 
     unsigned rot;
-    bool  flip;
+    bool     flip;
 
     int index;
 
@@ -847,7 +847,7 @@ static void R_DrawLSprite(void)
     if (lump != laserpatch[crispy->crosshairtype].l)
     {
         lump  = laserpatch[crispy->crosshairtype].l;
-        patch = cache_lump_num<patch_t *>(lump, PU_STATIC);
+        patch = cache_lump_num<patch_t *>(lump, PU::STATIC);
     }
 
     P_LineLaser(viewplayer->mo, viewangle,
@@ -877,7 +877,7 @@ static void R_DrawLSprite(void)
     vis->brightmap                      = dc_brightmap;
     vis->translation                    = R_LaserspotColor();
     vis->mobjflags |= MF_TRANSLUCENT;
-    vis->blendfunc = I_BlendAdd;
+    vis->blendfunc  = I_BlendAdd;
     vis->xiscale    = FixedDiv(FRACUNIT, xscale);
     vis->texturemid = laserspot->z - viewz;
     vis->scale      = xscale << detailshift;
@@ -939,7 +939,7 @@ void R_DrawPSprite(pspdef_t *psp, psprnum_t psprnum) // [crispy] differentiate g
     spritedef_t *  sprdef;
     spriteframe_t *sprframe;
     int            lump;
-    bool        flip;
+    bool           flip;
     vissprite_t *  vis;
     vissprite_t    avis;
 

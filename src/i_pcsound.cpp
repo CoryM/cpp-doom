@@ -33,7 +33,7 @@
 static bool pcs_initialized = false;
 
 static SDL_mutex *sound_lock;
-static bool    use_sfx_prefix;
+static bool       use_sfx_prefix;
 
 static uint8_t *    current_sound_lump      = NULL;
 static uint8_t *    current_sound_pos       = NULL;
@@ -229,7 +229,7 @@ static bool CachePCSLump(sfxinfo_t *sfxinfo)
 
     // Load from WAD
 
-    current_sound_lump = cache_lump_num<uint8_t *>(sfxinfo->lumpnum, PU_STATIC);
+    current_sound_lump = cache_lump_num<uint8_t *>(sfxinfo->lumpnum, PU::STATIC);
     lumplen            = W_LumpLength(sfxinfo->lumpnum);
 
     // Read header

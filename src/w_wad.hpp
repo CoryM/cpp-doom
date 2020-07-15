@@ -20,11 +20,10 @@
 #ifndef __W_WAD__
 #define __W_WAD__
 
-#include <cstdio>
-
 #include "doomtype.hpp"
 #include "w_file.hpp"
-
+#include "z_zone.hpp"
+#include <cstdio>
 
 //
 // TYPES
@@ -62,8 +61,8 @@ lumpindex_t W_CheckNumForNameFromTo(const char *name, int from, int to);
 int  W_LumpLength(lumpindex_t lump);
 void W_ReadLump(lumpindex_t lump, void *dest);
 
-void *W_CacheLumpNum(lumpindex_t lump, int tag);
-void *W_CacheLumpName(const char *name, int tag);
+void *W_CacheLumpNum(lumpindex_t lump, PU tag);
+void *W_CacheLumpName(const char *name, PU tag);
 
 void W_GenerateHashTable(void);
 
@@ -73,6 +72,6 @@ void W_ReleaseLumpNum(lumpindex_t lump);
 void W_ReleaseLumpName(const char *name);
 
 const char *W_WadNameForLump(const lumpinfo_t *lump);
-bool     W_IsIWADLump(const lumpinfo_t *lump);
+bool        W_IsIWADLump(const lumpinfo_t *lump);
 
 #endif

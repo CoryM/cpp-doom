@@ -25,7 +25,7 @@
 #include "p_local.hpp"
 #include "i_swap.hpp" // [crispy] SHORT()
 #include "w_wad.hpp"  // [crispy] W_CheckNumForName()
-#include "z_zone.hpp" // [crispy] PU_STATIC
+#include "z_zone.hpp" // [crispy] PU::STATIC
 
 #include "g_game.hpp"
 
@@ -111,11 +111,11 @@ void P_InitSwitchList(void)
 
     // [crispy] add support for SWITCHES lumps
     switchlist_t *alphSwitchList;
-    bool       from_lump;
+    bool          from_lump;
 
     if ((from_lump = (W_CheckNumForName("SWITCHES") != -1)))
     {
-        alphSwitchList = cache_lump_name<switchlist_t *>("SWITCHES", PU_STATIC);
+        alphSwitchList = cache_lump_name<switchlist_t *>("SWITCHES", PU::STATIC);
     }
     else
     {
@@ -252,11 +252,11 @@ void P_StartButton(line_s *line,
 void P_ChangeSwitchTexture(line_s *line,
     int                            useAgain)
 {
-    int     texTop;
-    int     texMid;
-    int     texBot;
-    int     i;
-    int     sound;
+    int  texTop;
+    int  texMid;
+    int  texBot;
+    int  i;
+    int  sound;
     bool playsound = false;
 
     if (!useAgain)
@@ -330,10 +330,9 @@ void P_ChangeSwitchTexture(line_s *line,
 // Called when a thing uses a special line.
 // Only the front sides of lines are usable.
 //
-bool
-    P_UseSpecialLine(mobj_t *thing,
-        line_s *             line,
-        int                  side)
+bool P_UseSpecialLine(mobj_t *thing,
+    line_s *                  line,
+    int                       side)
 {
 
     // Err...

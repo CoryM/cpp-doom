@@ -16,31 +16,25 @@
 //	The status bar widget code.
 //
 
-
-#include <cstdio>
-#include <cctype>
-
-#include "../deh_main.hpp"
-#include "doomdef.hpp"
-
-#include "../z_zone.hpp"
-#include "../v_video.hpp"
-
-#include "../i_swap.hpp"
-#include "i_system.hpp"
-
-#include "w_wad.hpp"
-
-#include "st_stuff.hpp"
-#include "st_lib.hpp"
-#include "r_local.hpp"
-
 #include "../../utils/lump.hpp"
+#include "../deh_main.hpp"
+#include "../i_swap.hpp"
+#include "../i_system.hpp"
+#include "../v_video.hpp"
+#include "../w_wad.hpp"
+#include "../z_zone.hpp"
+#include "doomdef.hpp"
+#include "r_local.hpp"
+#include "st_lib.hpp"
+#include "st_stuff.hpp"
 #include "v_trans.hpp" // [crispy] colored status bar widgets
+
+#include <cctype>
+#include <cstdio>
 
 // in AM_map.c
 extern bool automapactive;
-extern int     screenblocks;
+extern int  screenblocks;
 
 
 //
@@ -52,7 +46,7 @@ patch_t *sttminus;
 void STlib_init(void)
 {
     if (W_CheckNumForName(DEH_String("STTMINUS")) >= 0)
-        sttminus = cache_lump_name<patch_t *>(DEH_String("STTMINUS"), PU_STATIC);
+        sttminus = cache_lump_name<patch_t *>(DEH_String("STTMINUS"), PU::STATIC);
     else
         sttminus = NULL;
 }
@@ -64,7 +58,7 @@ void STlib_initNum(st_number_t *n,
     int                         y,
     patch_t **                  pl,
     int *                       num,
-    bool *                   on,
+    bool *                      on,
     int                         width)
 {
     n->x      = x;
@@ -83,7 +77,7 @@ void STlib_initNum(st_number_t *n,
 // Note: worth the trouble?
 //
 void STlib_drawNum(st_number_t *n,
-    bool                     refresh)
+    bool                        refresh)
 {
 
     int numdigits = n->width;
@@ -150,7 +144,7 @@ void STlib_drawNum(st_number_t *n,
 
 //
 void STlib_updateNum(st_number_t *n,
-    bool                       refresh)
+    bool                          refresh)
 {
     if (*n->on) STlib_drawNum(n, refresh);
 }
@@ -162,7 +156,7 @@ void STlib_initPercent(st_percent_t *p,
     int                              y,
     patch_t **                       pl,
     int *                            num,
-    bool *                        on,
+    bool *                           on,
     patch_t *                        percent)
 {
     STlib_initNum(&p->n, x, y, pl, num, on, 3);
@@ -200,7 +194,7 @@ void STlib_initMultIcon(st_multicon_t *i,
     int                                y,
     patch_t **                         il,
     int *                              inum,
-    bool *                          on)
+    bool *                             on)
 {
     i->x       = x;
     i->y       = y;
@@ -212,7 +206,7 @@ void STlib_initMultIcon(st_multicon_t *i,
 
 
 void STlib_updateMultIcon(st_multicon_t *mi,
-    bool                              refresh)
+    bool                                 refresh)
 {
     int w;
     int h;
@@ -246,8 +240,8 @@ void STlib_initBinIcon(st_binicon_t *b,
     int                              x,
     int                              y,
     patch_t *                        i,
-    bool *                        val,
-    bool *                        on)
+    bool *                           val,
+    bool *                           on)
 {
     b->x      = x;
     b->y      = y;
@@ -259,7 +253,7 @@ void STlib_initBinIcon(st_binicon_t *b,
 
 
 void STlib_updateBinIcon(st_binicon_t *bi,
-    bool                            refresh)
+    bool                               refresh)
 {
     int x;
     int y;

@@ -63,7 +63,7 @@
 #include "../../utils/lump.hpp"
 #include "v_trans.hpp" // [crispy] colored cheat messages
 
-extern int     screenblocks;  // [crispy] for the Crispy HUD
+extern int  screenblocks;  // [crispy] for the Crispy HUD
 extern bool inhelpscreens; // [crispy] prevent palette changes
 
 //
@@ -536,9 +536,9 @@ static int ST_cheat_massacre()
 // [crispy] trigger all special lines available on the map
 static int ST_cheat_spechits()
 {
-    int     i, speciallines = 0;
-    bool origcards[NUMCARDS];
-    line_s  dummy;
+    int    i, speciallines = 0;
+    bool   origcards[NUMCARDS];
+    line_s dummy;
 
     // [crispy] temporarily give all keys
     for (i = 0; i < NUMCARDS; i++)
@@ -688,7 +688,7 @@ bool ST_Responder(event_t *ev)
             if (cht_CheckCheatSP(&cheat_god, ev->data2))
             {
                 // [crispy] dead players are first respawned at the current position
-                mapthing_t mt = { };
+                mapthing_t mt = {};
                 if (plyr->playerstate == PST_DEAD)
                 {
                     signed int  an;
@@ -1011,12 +1011,12 @@ bool ST_Responder(event_t *ev)
 
                     for (i = 0; i < NUMWEAPONS; i++)
                     {
-                        oldweaponsowned[i] = false;
+                        oldweaponsowned[i]   = false;
                         plyr->weaponowned[i] = false;
                     }
-                    oldweaponsowned[wp_fist] = true;
-                    plyr->weaponowned[wp_fist] = true;
-                    oldweaponsowned[wp_pistol] = true;
+                    oldweaponsowned[wp_fist]     = true;
+                    plyr->weaponowned[wp_fist]   = true;
+                    oldweaponsowned[wp_pistol]   = true;
                     plyr->weaponowned[wp_pistol] = true;
 
                     for (i = 0; i < NUMAMMO; i++)
@@ -1320,7 +1320,7 @@ void       ST_updateFaceWidget(void)
     angle_t    diffang;
     static int lastattackdown = -1;
     static int priority       = 0;
-    bool    doevilgrin;
+    bool       doevilgrin;
 
     // [crispy] fix status bar face hysteresis
     int painoffset;
@@ -1675,7 +1675,7 @@ enum class hudcolor_t
     hudcolor_health,
     hudcolor_frags,
     hudcolor_armor
-} ;
+};
 
 // [crispy] return ammo/health/armor widget color
 static byte *ST_WidgetColor(hudcolor_t hudcolor)
@@ -1784,7 +1784,7 @@ static inline void ST_DrawGibbedPlayerSprites(void)
     }
 
     sprframe = &sprdef->spriteframes[state->frame & FF_FRAMEMASK];
-    patch    = cache_lump_num<patch_t *>(sprframe->lump[0] + firstspritelump, PU_CACHE);
+    patch    = cache_lump_num<patch_t *>(sprframe->lump[0] + firstspritelump, PU::CACHE);
 
     if (plyr->mo->flags & MF_TRANSLATION)
     {
@@ -1797,7 +1797,7 @@ static inline void ST_DrawGibbedPlayerSprites(void)
 
 void ST_drawWidgets(bool refresh)
 {
-    int     i;
+    int  i;
     bool gibbed = false;
 
     // used by w_arms[] widgets
@@ -1829,7 +1829,7 @@ void ST_drawWidgets(bool refresh)
                 }
             }
 
-            patch = cache_lump_num<patch_t *>(lump, PU_CACHE);
+            patch = cache_lump_num<patch_t *>(lump, PU::CACHE);
 
             // [crispy] (23,179) is the center of the Ammo widget
             V_DrawPatch(ST_AMMOX - 21 - SHORT(patch->width) / 2 + SHORT(patch->leftoffset),
@@ -2039,7 +2039,7 @@ static void ST_loadUnloadGraphics(load_callback_t callback)
 
 static void ST_loadCallback(const char *lumpname, patch_t **variable)
 {
-    *variable = cache_lump_name<patch_t *>(lumpname, PU_STATIC);
+    *variable = cache_lump_name<patch_t *>(lumpname, PU::STATIC);
 }
 
 void ST_loadGraphics(void)
@@ -2065,7 +2065,7 @@ void ST_loadData(void)
         lumpnum = W_CheckNumForName(lumpname);
 
         keys[i] = static_cast<patch_t *>(
-            (lumpnum != -1) ? cache_lump_num<patch_t *>(lumpnum, PU_STATIC) : keys[i - 3]);
+            (lumpnum != -1) ? cache_lump_num<patch_t *>(lumpnum, PU::STATIC) : keys[i - 3]);
     }
 }
 
@@ -2301,7 +2301,7 @@ void ST_Start(void)
         char namebuf[8];
 
         DEH_snprintf(namebuf, 7, "STFB%d", consoleplayer);
-        faceback = static_cast<patch_t *>(W_CacheLumpName(namebuf, PU_STATIC));
+        faceback = static_cast<patch_t *>(W_CacheLumpName(namebuf, PU::STATIC));
     }
 }
 
@@ -2333,7 +2333,7 @@ void ST_Init(void)
     }
 
     ST_loadData();
-    st_backing_screen = (pixel_t *)Z_Malloc(MAXWIDTH * (ST_HEIGHT << 1) * sizeof(*st_backing_screen), PU_STATIC, 0);
+    st_backing_screen = (pixel_t *)Z_Malloc(MAXWIDTH * (ST_HEIGHT << 1) * sizeof(*st_backing_screen), PU::STATIC, 0);
 }
 
 // [crispy] Demo Timer widget

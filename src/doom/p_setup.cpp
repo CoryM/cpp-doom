@@ -17,33 +17,25 @@
 //	set up initial state and misc. LUTs.
 //
 
-
-#include <cmath>
-
-#include "../z_zone.hpp"
-
-#include "../deh_main.hpp"
-#include "../i_swap.hpp"
-#include "m_argv.hpp"
-#include "m_bbox.hpp"
-#include "m_misc.hpp" // [crispy] M_StringJoin()
-
-#include "g_game.hpp"
-
-#include "i_system.hpp"
-#include "w_wad.hpp"
-
-#include "doomdef.hpp"
-#include "p_local.hpp"
-
-#include "s_sound.hpp"
-#include "s_musinfo.hpp" // [crispy] S_ParseMusInfo()
-
-#include "doomstat.hpp"
-
 #include "../../utils/lump.hpp"
 #include "../../utils/memory.hpp"
+#include "../deh_main.hpp"
+#include "../i_swap.hpp"
+#include "../i_system.hpp"
+#include "../m_argv.hpp"
+#include "../m_bbox.hpp"
+#include "../m_misc.hpp" // [crispy] M_StringJoin()
+#include "../w_wad.hpp"
+#include "../z_zone.hpp"
+#include "doomdef.hpp"
+#include "doomstat.hpp"
+#include "g_game.hpp"
 #include "p_extnodes.hpp" // [crispy] support extended node formats
+#include "p_local.hpp"
+#include "s_musinfo.hpp" // [crispy] S_ParseMusInfo()
+#include "s_sound.hpp"
+
+#include <cmath>
 
 void P_SpawnMapThing(mapthing_t *mthing);
 
@@ -111,7 +103,7 @@ byte *rejectmatrix;
 mapthing_t  deathmatchstarts[MAX_DEATHMATCH_STARTS];
 mapthing_t *deathmatch_p;
 mapthing_t  playerstarts[MAXPLAYERS];
-bool     playerstartsingame[MAXPLAYERS];
+bool        playerstartsingame[MAXPLAYERS];
 
 // [crispy] recalculate seg offsets
 // adapted from prboom-plus/src/p_setup.c:474-482
@@ -143,10 +135,10 @@ void P_LoadVertexes(int lump)
     numvertexes = W_LumpLength(lump) / sizeof(mapvertex_t);
 
     // Allocate zone memory for buffer.
-    vertexes = zmalloc<decltype(vertexes)>(numvertexes * sizeof(vertex_t), PU_LEVEL, 0);
+    vertexes = zmalloc<decltype(vertexes)>(numvertexes * sizeof(vertex_t), PU::LEVEL, 0);
 
     // Load data into cache.
-    data = cache_lump_num<byte *>(lump, PU_STATIC);
+    data = cache_lump_num<byte *>(lump, PU::STATIC);
 
     ml = (mapvertex_t *)data;
     li = vertexes;
@@ -173,15 +165,14 @@ void P_LoadVertexes(int lump)
 //
 sector_t *GetSectorAtNullAddress(void)
 {
-    auto GetMemoryValue = [](auto location){
+    auto GetMemoryValue = [](auto location) {
         int32_t val = 0;
         I_GetMemoryValue(location, &val, 4);
         return val;
     };
 
-    static sector_t null_sector =
-    {
-        .floorheight = GetMemoryValue(0),
+    static sector_t null_sector = {
+        .floorheight   = GetMemoryValue(0),
         .ceilingheight = GetMemoryValue(4)
     };
 
@@ -203,9 +194,9 @@ void P_LoadSegs(int lump)
     int       sidenum;
 
     numsegs = W_LumpLength(lump) / sizeof(mapseg_t);
-    segs    = zmalloc<decltype(segs)>(numsegs * sizeof(seg_t), PU_LEVEL, 0);
+    segs    = zmalloc<decltype(segs)>(numsegs * sizeof(seg_t), PU::LEVEL, 0);
     memset(segs, 0, numsegs * sizeof(seg_t));
-    data = cache_lump_num<byte *>(lump, PU_STATIC);
+    data = cache_lump_num<byte *>(lump, PU::STATIC);
 
     ml = (mapseg_t *)data;
     li = segs;
@@ -319,8 +310,8 @@ void P_LoadSubsectors(int lump)
     subsector_t *   ss;
 
     numsubsectors = W_LumpLength(lump) / sizeof(mapsubsector_t);
-    subsectors    = zmalloc<decltype(subsectors)>(numsubsectors * sizeof(subsector_t), PU_LEVEL, 0);
-    data          = cache_lump_num<byte *>(lump, PU_STATIC);
+    subsectors    = zmalloc<decltype(subsectors)>(numsubsectors * sizeof(subsector_t), PU::LEVEL, 0);
+    data          = cache_lump_num<byte *>(lump, PU::STATIC);
 
     // [crispy] fail on missing subsectors
     if (!data || !numsubsectors)
@@ -350,9 +341,12 @@ void P_LoadSectors(int lump)
         I_Error("P_LoadSectors: No sectors in map!");
 
     numsectors = W_LumpLength(lump) / sizeof(mapsector_t);
-    sectors    = zmalloc<decltype(sectors)>(numsectors * sizeof(sector_t), PU_LEVEL, 0);
-    for (int i = 0; i < numsectors; i++) { sectors[i] = {}; }
-    auto data = cache_lump_num<byte *>(lump, PU_STATIC);
+    sectors    = zmalloc<decltype(sectors)>(numsectors * sizeof(sector_t), PU::LEVEL, 0);
+    for (int i = 0; i < numsectors; i++)
+    {
+        sectors[i] = {};
+    }
+    auto data = cache_lump_num<byte *>(lump, PU::STATIC);
 
     // [crispy] fail on missing sectors
     if (!data || !numsectors)
@@ -400,8 +394,8 @@ void P_LoadNodes(int lump)
     node_t *   no;
 
     numnodes = W_LumpLength(lump) / sizeof(mapnode_t);
-    nodes    = zmalloc<decltype(nodes)>(numnodes * sizeof(node_t), PU_LEVEL, 0);
-    data     = cache_lump_num<byte *>(lump, PU_STATIC);
+    nodes    = zmalloc<decltype(nodes)>(numnodes * sizeof(node_t), PU::LEVEL, 0);
+    data     = cache_lump_num<byte *>(lump, PU::STATIC);
 
     // [crispy] warn about missing nodes
     if (!data || !numnodes)
@@ -458,9 +452,9 @@ void P_LoadThings(int lump)
     mapthing_t *mt;
     mapthing_t  spawnthing;
     int         numthings;
-    bool     spawn;
+    bool        spawn;
 
-    data      = cache_lump_num<byte *>(lump, PU_STATIC);
+    data      = cache_lump_num<byte *>(lump, PU::STATIC);
     numthings = W_LumpLength(lump) / sizeof(mapthing_t);
 
     mt = (mapthing_t *)data;
@@ -531,9 +525,12 @@ void P_LoadLineDefs(int lump)
     int           warn, warn2; // [crispy] warn about invalid linedefs
 
     numlines = W_LumpLength(lump) / sizeof(maplinedef_t);
-    lines    = zmalloc<decltype(lines)>(numlines * sizeof(line_s), PU_LEVEL, 0);
-    for (int i = 0; i < numlines; i++) { lines[i] = {}; } // initilize lines
-    data = cache_lump_num<byte *>(lump, PU_STATIC);
+    lines    = zmalloc<decltype(lines)>(numlines * sizeof(line_s), PU::LEVEL, 0);
+    for (int i = 0; i < numlines; i++)
+    {
+        lines[i] = {};
+    } // initilize lines
+    data = cache_lump_num<byte *>(lump, PU::STATIC);
 
     mld  = (maplinedef_t *)data;
     ld   = lines;
@@ -673,9 +670,9 @@ void P_LoadSideDefs(int lump)
     side_t *      sd;
 
     numsides = W_LumpLength(lump) / sizeof(mapsidedef_t);
-    sides    = zmalloc<decltype(sides)>(numsides * sizeof(side_t), PU_LEVEL, 0);
+    sides    = zmalloc<decltype(sides)>(numsides * sizeof(side_t), PU::LEVEL, 0);
     memset(sides, 0, numsides * sizeof(side_t));
-    data = cache_lump_num<byte *>(lump, PU_STATIC);
+    data = cache_lump_num<byte *>(lump, PU::STATIC);
 
     msd = (mapsidedef_t *)data;
     sd  = sides;
@@ -713,9 +710,9 @@ bool P_LoadBlockMap(int lump)
 
     // [crispy] remove BLOCKMAP limit
     // adapted from boom202s/P_SETUP.C:1025-1076
-    wadblockmaplump = zmalloc<decltype(wadblockmaplump)>(lumplen, PU_LEVEL, NULL);
+    wadblockmaplump = zmalloc<decltype(wadblockmaplump)>(lumplen, PU::LEVEL, NULL);
     W_ReadLump(lump, wadblockmaplump);
-    blockmaplump = zmalloc<decltype(blockmaplump)>(sizeof(*blockmaplump) * count, PU_LEVEL, NULL);
+    blockmaplump = zmalloc<decltype(blockmaplump)>(sizeof(*blockmaplump) * count, PU::LEVEL, NULL);
     blockmap     = blockmaplump + 4;
 
     blockmaplump[0] = SHORT(wadblockmaplump[0]);
@@ -743,7 +740,7 @@ bool P_LoadBlockMap(int lump)
     // Clear out mobj chains
 
     count      = sizeof(*blocklinks) * bmapwidth * bmapheight;
-    blocklinks = zmalloc<decltype(blocklinks)>(count, PU_LEVEL, 0);
+    blocklinks = zmalloc<decltype(blocklinks)>(count, PU::LEVEL, 0);
     memset(blocklinks, 0, count);
 
     // [crispy] (re-)create BLOCKMAP if necessary
@@ -793,7 +790,7 @@ void P_GroupLines(void)
     }
 
     // build line tables for each sector
-    linebuffer = zmalloc<decltype(linebuffer)>(totallines * sizeof(line_s *), PU_LEVEL, 0);
+    linebuffer = zmalloc<decltype(linebuffer)>(totallines * sizeof(line_s *), PU::LEVEL, 0);
 
     for (i = 0; i < numsectors; ++i)
     {
@@ -937,7 +934,7 @@ static void PadRejectArray(byte *array, unsigned int len)
     unsigned int rejectpad[4] = {
         0,       // Size
         0,       // Part of z_zone block header
-        50,      // PU_LEVEL
+        50,      // PU::LEVEL
         0x1d4a11 // DOOM_CONST_ZONEID
     };
 
@@ -994,11 +991,11 @@ static void P_LoadReject(int lumpnum)
 
     if (lumplen >= minlength)
     {
-        rejectmatrix = cache_lump_num<byte *>(lumpnum, PU_LEVEL);
+        rejectmatrix = cache_lump_num<byte *>(lumpnum, PU::LEVEL);
     }
     else
     {
-        rejectmatrix = zmalloc<decltype(rejectmatrix)>(minlength, PU_LEVEL, &rejectmatrix);
+        rejectmatrix = zmalloc<decltype(rejectmatrix)>(minlength, PU::LEVEL, &rejectmatrix);
         W_ReadLump(lumpnum, rejectmatrix);
 
         PadRejectArray(rejectmatrix + lumplen, minlength - lumplen);
@@ -1066,7 +1063,7 @@ void P_SetupLevel(int episode,
     int         i;
     char        lumpname[9];
     int         lumpnum;
-    bool     crispy_validblockmap;
+    bool        crispy_validblockmap;
     mapformat_t crispy_mapformat;
 
     totalkills = totalitems = totalsecret = wminfo.maxfrags = 0;
@@ -1118,7 +1115,7 @@ void P_SetupLevel(int episode,
     }
     musinfo.from_savegame = false;
 
-    Z_FreeTags(PU_LEVEL, PU_PURGELEVEL - 1);
+    Z_FreeTags(PU::LEVEL, PU::LASTPURGABLE);
 
     // UNUSED W_Profile ();
     P_InitThinkers();
@@ -1162,10 +1159,9 @@ void P_SetupLevel(int episode,
                   ttime  = (totalleveltimes + savedleveltime) / TICRATE;
         char *rfn_str;
 
-        rfn_str = M_StringJoin({
-            respawnparm ? " -respawn" : "",
+        rfn_str = M_StringJoin({ respawnparm ? " -respawn" : "",
             fastparm ? " -fast" : "",
-            nomonsters ? " -nomonsters" : ""});
+            nomonsters ? " -nomonsters" : "" });
 
         fprintf(stderr, "P_SetupLevel: %s (%s) %s%s %d:%02d:%02d/%d:%02d:%02d ",
             maplumpinfo->name, W_WadNameForLump(maplumpinfo),
@@ -1282,7 +1278,7 @@ static void P_InitActualHeights(void)
 
         sprframe = &sprdef->spriteframes[state->frame & FF_FRAMEMASK];
         lump     = sprframe->lump[0];
-        patch    = cache_lump_num<patch_t *>(lump + firstspritelump, PU_CACHE);
+        patch    = cache_lump_num<patch_t *>(lump + firstspritelump, PU::CACHE);
 
         // [crispy] round to the next integer multiple of 8
         mobjinfo[i].actualheight = ((patch->height + 7) & (~7)) << FRACBITS;

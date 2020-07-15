@@ -52,9 +52,8 @@ int test;
 
 #define MOBJ_CYCLE_LIMIT 1000000
 
-bool
-    P_SetMobjState(mobj_t *mobj,
-        statenum_t         state)
+bool P_SetMobjState(mobj_t *mobj,
+    statenum_t              state)
 {
     state_t *st;
     int      cycle_counter = 0;
@@ -611,11 +610,11 @@ void P_MobjThinker(mobj_t *mobj)
 //
 // P_SpawnMobj
 //
-static mobj_t * P_SpawnMobjSafe(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type, bool safe)
+static mobj_t *P_SpawnMobjSafe(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type, bool safe)
 {
-    mobj_t *mobj = zmalloc<decltype(mobj)>(sizeof(*mobj), PU_LEVEL, NULL);
-    *mobj = {};
-    auto info = &mobjinfo[type];
+    mobj_t *mobj = zmalloc<decltype(mobj)>(sizeof(*mobj), PU::LEVEL, NULL);
+    *mobj        = {};
+    auto info    = &mobjinfo[type];
 
     mobj->type   = type;
     mobj->info   = info;
@@ -632,9 +631,9 @@ static mobj_t * P_SpawnMobjSafe(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type
     mobj->lastlook = safe ? Crispy_Random() % MAXPLAYERS : P_Random() % MAXPLAYERS;
     // do not set the state with P_SetMobjState,
     // because action routines can not be called yet
-    auto st = &states[safe ? 
-                    P_LatestSafeState(static_cast<statenum_t>(info->spawnstate)) :
-                    info->spawnstate];
+    auto st = &states[safe ?
+                          P_LatestSafeState(static_cast<statenum_t>(info->spawnstate)) :
+                          info->spawnstate];
 
     mobj->state  = st;
     mobj->tics   = st->tics;
@@ -999,7 +998,7 @@ void P_SpawnMapThing(mapthing_t *mthing)
     if (mobj->flags & MF_COUNTITEM)
         totalitems++;
 
-    mobj->angle = ANG45 * ( static_cast<angle_t>( mthing->angle ) / 45 );
+    mobj->angle = ANG45 * (static_cast<angle_t>(mthing->angle) / 45);
     if (mthing->options & MTF_AMBUSH)
         mobj->flags |= MF_AMBUSH;
 
@@ -1049,7 +1048,7 @@ void P_SpawnPuff(fixed_t x,
 void P_SpawnPuffSafe(fixed_t x,
     fixed_t                  y,
     fixed_t                  z,
-    bool                  safe)
+    bool                     safe)
 {
     mobj_t *th;
 

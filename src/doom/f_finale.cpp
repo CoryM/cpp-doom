@@ -106,10 +106,10 @@ const char * finaletext;
 const char * finaleflat;
 static char *finaletext_rw;
 
-void    F_StartCast(void);
-void    F_CastTicker(void);
+void F_StartCast(void);
+void F_CastTicker(void);
 bool F_CastResponder(event_t *ev);
-void    F_CastDrawer(void);
+void F_CastDrawer(void);
 
 
 //
@@ -285,7 +285,7 @@ void F_TextWrite(void)
     int        cy;
 
     // erase the entire screen to a tiled background
-    auto *src  = cache_lump_name<byte *>(finaleflat, PU_CACHE);
+    auto *src  = cache_lump_name<byte *>(finaleflat, PU::CACHE);
     auto *dest = I_VideoBuffer;
 
     for (y = 0; y < SCREENHEIGHT; y++)
@@ -382,13 +382,13 @@ castinfo_t castorder[] = {
 int                castnum;
 int                casttics;
 state_t *          caststate;
-bool            castdeath;
+bool               castdeath;
 int                castframes;
 int                castonmelee;
-bool            castattacking;
+bool               castattacking;
 static signed char castangle; // [crispy] turnable cast
 static signed char castskip;  // [crispy] skippable cast
-static bool     castflip;  // [crispy] flippable death sequence
+static bool        castflip;  // [crispy] flippable death sequence
 
 // [crispy] randomize seestate and deathstate sounds in the cast
 static int F_RandomizeSound(int sound)
@@ -430,8 +430,8 @@ static int F_RandomizeSound(int sound)
 
 typedef struct
 {
-    actionf_t     action;
-    const int     sound;
+    actionf_t  action;
+    const int  sound;
     const bool early;
 } actionsound_t;
 
@@ -478,8 +478,7 @@ static int F_SoundForState(int st)
         {
             const actionsound_t *const as = &actionsounds[i];
 
-            if ((!as->early && castaction == reinterpret_cast<void *>(as->action.acv)) ||
-                 (as->early && nextaction == reinterpret_cast<void *>(as->action.acv)))
+            if ((!as->early && castaction == reinterpret_cast<void *>(as->action.acv)) || (as->early && nextaction == reinterpret_cast<void *>(as->action.acv)))
             {
                 return as->sound;
             }
@@ -797,11 +796,11 @@ void F_CastDrawer(void)
     spritedef_t *  sprdef;
     spriteframe_t *sprframe;
     int            lump;
-    bool        flip;
+    bool           flip;
     patch_t *      patch;
 
     // erase the entire screen to a background
-    V_DrawPatchFullScreen(cache_lump_name<patch_t *>(DEH_String("BOSSBACK"), PU_CACHE), false);
+    V_DrawPatchFullScreen(cache_lump_name<patch_t *>(DEH_String("BOSSBACK"), PU::CACHE), false);
 
     F_CastPrint(DEH_String(castorder[castnum].name));
 
@@ -813,10 +812,10 @@ void F_CastDrawer(void)
         return;
     }
     sprframe = &sprdef->spriteframes[caststate->frame & FF_FRAMEMASK];
-    lump     = sprframe->lump[castangle];                     // [crispy] turnable cast
+    lump     = sprframe->lump[castangle];                  // [crispy] turnable cast
     flip     = (bool)sprframe->flip[castangle] ^ castflip; // [crispy] turnable cast, flippable death sequence
 
-    patch = cache_lump_num<patch_t *>(lump + firstspritelump, PU_CACHE);
+    patch = cache_lump_num<patch_t *>(lump + firstspritelump, PU::CACHE);
     if (flip)
         V_DrawPatchFlipped(ORIGWIDTH / 2, 170, patch);
     else
@@ -882,8 +881,8 @@ void F_BunnyScroll(void)
         V_DrawFilledBox(0, 0, SCREENWIDTH, SCREENHEIGHT, 0);
     }
 
-    auto *p1 = cache_lump_name<patch_t *>(DEH_String("PFUB2"), PU_LEVEL);
-    auto *p2 = cache_lump_name<patch_t *>(DEH_String("PFUB1"), PU_LEVEL);
+    auto *p1 = cache_lump_name<patch_t *>(DEH_String("PFUB2"), PU::LEVEL);
+    auto *p2 = cache_lump_name<patch_t *>(DEH_String("PFUB1"), PU::LEVEL);
 
     V_MarkRect(0, 0, SCREENWIDTH, SCREENHEIGHT);
 
@@ -908,7 +907,7 @@ void F_BunnyScroll(void)
     {
         V_DrawPatch((ORIGWIDTH - 13 * 8) / 2,
             (ORIGHEIGHT - 8 * 8) / 2,
-            cache_lump_name<patch_t *>(DEH_String("END0"), PU_CACHE));
+            cache_lump_name<patch_t *>(DEH_String("END0"), PU::CACHE));
         laststage = 0;
         return;
     }
@@ -925,7 +924,7 @@ void F_BunnyScroll(void)
     DEH_snprintf(name, 10, "END%i", stage);
     V_DrawPatch((ORIGWIDTH - 13 * 8) / 2,
         (ORIGHEIGHT - 8 * 8) / 2,
-        cache_lump_name<patch_t *>(name, PU_CACHE));
+        cache_lump_name<patch_t *>(name, PU::CACHE));
 }
 
 static void F_ArtScreenDrawer(void)
@@ -970,7 +969,7 @@ static void F_ArtScreenDrawer(void)
 
         lumpname = DEH_String(lumpname);
 
-        V_DrawPatchFullScreen(cache_lump_name<patch_t *>(lumpname, PU_CACHE), false);
+        V_DrawPatchFullScreen(cache_lump_name<patch_t *>(lumpname, PU::CACHE), false);
     }
 }
 

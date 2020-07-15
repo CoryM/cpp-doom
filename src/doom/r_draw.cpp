@@ -367,7 +367,7 @@ void R_DrawFuzzColumn(void)
     pixel_t *dest;
     fixed_t  frac;
     fixed_t  fracstep;
-    bool  cutoff = false;
+    bool     cutoff = false;
 
     // Adjust borders. Low...
     if (!dc_yl)
@@ -439,7 +439,7 @@ void R_DrawFuzzColumnLow(void)
     fixed_t  frac;
     fixed_t  fracstep;
     int      x;
-    bool  cutoff = false;
+    bool     cutoff = false;
 
     // Adjust borders. Low...
     if (!dc_yl)
@@ -487,8 +487,8 @@ void R_DrawFuzzColumnLow(void)
         //  a pixel that is either one column
         //  left or right of the current one.
         // Add index from colormap to index.
-        *dest                 = I_BlendDark(dest[fuzzoffset[fuzzpos]], 0xc0);
-        *dest2                = I_BlendDark(dest2[fuzzoffset[fuzzpos]], 0xc0);
+        *dest  = I_BlendDark(dest[fuzzoffset[fuzzpos]], 0xc0);
+        *dest2 = I_BlendDark(dest2[fuzzoffset[fuzzpos]], 0xc0);
 
         // Clamp table lookup index.
         if (++fuzzpos == FUZZTABLE)
@@ -504,8 +504,8 @@ void R_DrawFuzzColumnLow(void)
     // draw one extra line using only pixels of that line and the one above
     if (cutoff)
     {
-        *dest                 = I_BlendDark(dest[(fuzzoffset[fuzzpos] - FUZZOFF) / 2], 0xc0);
-        *dest2                = I_BlendDark(dest2[(fuzzoffset[fuzzpos] - FUZZOFF) / 2], 0xc0);
+        *dest  = I_BlendDark(dest[(fuzzoffset[fuzzpos] - FUZZOFF) / 2], 0xc0);
+        *dest2 = I_BlendDark(dest2[(fuzzoffset[fuzzpos] - FUZZOFF) / 2], 0xc0);
     }
 }
 
@@ -709,7 +709,7 @@ void R_InitTranslationTables(void)
 {
     int i;
 
-    translationtables = zmalloc<decltype(translationtables)>(256 * 3, PU_STATIC, 0);
+    translationtables = zmalloc<decltype(translationtables)>(256 * 3, PU::STATIC, 0);
 
     // translate just the 16 green colors
     for (i = 0; i < 256; i++)
@@ -1033,7 +1033,7 @@ void R_FillBackScreen(void)
     if (background_buffer == NULL)
     {
         background_buffer = zmalloc<decltype(background_buffer)>(MAXWIDTH * (MAXHEIGHT - SBARHEIGHT) * sizeof(*background_buffer),
-            PU_STATIC, NULL);
+            PU::STATIC, NULL);
     }
 
     if (gamemode == GameMode_t::commercial)
@@ -1041,7 +1041,7 @@ void R_FillBackScreen(void)
     else
         name = name1;
 
-    src  = cache_lump_name<byte *>(name, PU_CACHE);
+    src  = cache_lump_name<byte *>(name, PU::CACHE);
     dest = background_buffer;
 
     for (y = 0; y < SCREENHEIGHT - SBARHEIGHT; y++)
@@ -1056,19 +1056,19 @@ void R_FillBackScreen(void)
 
     V_UseBuffer(background_buffer);
 
-    patch = cache_lump_name<patch_t *>(DEH_String("brdr_t"), PU_CACHE);
+    patch = cache_lump_name<patch_t *>(DEH_String("brdr_t"), PU::CACHE);
 
     for (x = 0; x < (scaledviewwidth >> crispy->hires); x += 8)
         V_DrawPatch((viewwindowx >> crispy->hires) + x, (viewwindowy >> crispy->hires) - 8, patch);
-    patch = cache_lump_name<patch_t *>(DEH_String("brdr_b"), PU_CACHE);
+    patch = cache_lump_name<patch_t *>(DEH_String("brdr_b"), PU::CACHE);
 
     for (x = 0; x < (scaledviewwidth >> crispy->hires); x += 8)
         V_DrawPatch((viewwindowx >> crispy->hires) + x, (viewwindowy >> crispy->hires) + (viewheight >> crispy->hires), patch);
-    patch = cache_lump_name<patch_t *>(DEH_String("brdr_l"), PU_CACHE);
+    patch = cache_lump_name<patch_t *>(DEH_String("brdr_l"), PU::CACHE);
 
     for (y = 0; y < (viewheight >> crispy->hires); y += 8)
         V_DrawPatch((viewwindowx >> crispy->hires) - 8, (viewwindowy >> crispy->hires) + y, patch);
-    patch = cache_lump_name<patch_t *>(DEH_String("brdr_r"), PU_CACHE);
+    patch = cache_lump_name<patch_t *>(DEH_String("brdr_r"), PU::CACHE);
 
     for (y = 0; y < (viewheight >> crispy->hires); y += 8)
         V_DrawPatch((viewwindowx >> crispy->hires) + (scaledviewwidth >> crispy->hires), (viewwindowy >> crispy->hires) + y, patch);
@@ -1076,19 +1076,19 @@ void R_FillBackScreen(void)
     // Draw beveled edge.
     V_DrawPatch((viewwindowx >> crispy->hires) - 8,
         (viewwindowy >> crispy->hires) - 8,
-        cache_lump_name<patch_t *>(DEH_String("brdr_tl"), PU_CACHE));
+        cache_lump_name<patch_t *>(DEH_String("brdr_tl"), PU::CACHE));
 
     V_DrawPatch((viewwindowx >> crispy->hires) + (scaledviewwidth >> crispy->hires),
         (viewwindowy >> crispy->hires) - 8,
-        cache_lump_name<patch_t *>(DEH_String("brdr_tr"), PU_CACHE));
+        cache_lump_name<patch_t *>(DEH_String("brdr_tr"), PU::CACHE));
 
     V_DrawPatch((viewwindowx >> crispy->hires) - 8,
         (viewwindowy >> crispy->hires) + (viewheight >> crispy->hires),
-        cache_lump_name<patch_t *>(DEH_String("brdr_bl"), PU_CACHE));
+        cache_lump_name<patch_t *>(DEH_String("brdr_bl"), PU::CACHE));
 
     V_DrawPatch((viewwindowx >> crispy->hires) + (scaledviewwidth >> crispy->hires),
         (viewwindowy >> crispy->hires) + (viewheight >> crispy->hires),
-        cache_lump_name<patch_t *>(DEH_String("brdr_br"), PU_CACHE));
+        cache_lump_name<patch_t *>(DEH_String("brdr_br"), PU::CACHE));
 
     V_RestoreBuffer();
 }

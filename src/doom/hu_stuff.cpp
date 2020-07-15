@@ -104,9 +104,9 @@ static hu_textline_t w_coordx;
 static hu_textline_t w_coordy;
 static hu_textline_t w_coorda;
 static hu_textline_t w_fps;
-bool              chat_on;
+bool                 chat_on;
 static hu_itext_t    w_chat;
-static bool       always_off = false;
+static bool          always_off = false;
 static char          chat_dest[MAXPLAYERS];
 static hu_itext_t    w_inputbuffer[MAXPLAYERS];
 
@@ -436,7 +436,7 @@ void HU_Init(void)
     for (i = 0; i < HU_FONTSIZE; i++)
     {
         DEH_snprintf(buffer, 9, "STCFN%.3d", j++);
-        hu_font[i] = (patch_t *)W_CacheLumpName(buffer, PU_STATIC);
+        hu_font[i] = (patch_t *)W_CacheLumpName(buffer, PU::STATIC);
     }
 
     if (gameversion == exe_chex)
@@ -470,7 +470,7 @@ void HU_Init(void)
             DEH_snprintf(buffer, 9, "STCFN%.3d", toupper(laserpatch[i].c));
             laserpatch[i].l = W_GetNumForName(buffer);
 
-            patch = cache_lump_num<patch_t *>(laserpatch[i].l, PU_STATIC);
+            patch = cache_lump_num<patch_t *>(laserpatch[i].l, PU::STATIC);
 
             laserpatch[i].w -= SHORT(patch->leftoffset);
             laserpatch[i].h -= SHORT(patch->topoffset);
@@ -484,7 +484,7 @@ void HU_Init(void)
 
         if (!patch)
         {
-            patch = cache_lump_num<patch_t *>(laserpatch[i].l, PU_STATIC);
+            patch = cache_lump_num<patch_t *>(laserpatch[i].l, PU::STATIC);
         }
 
         laserpatch[i].w += SHORT(patch->width) / 2;
@@ -718,7 +718,7 @@ void HU_Start(void)
     {
         char *m;
 
-        ptr = M_StringJoin({crstr[CR_GOLD], W_WadNameForLump(maplumpinfo), ": ", crstr[CR_GRAY], maplumpinfo->name});
+        ptr = M_StringJoin({ crstr[CR_GOLD], W_WadNameForLump(maplumpinfo), ": ", crstr[CR_GRAY], maplumpinfo->name });
         m   = ptr;
 
         while (*m)
@@ -780,7 +780,7 @@ static void HU_DrawCrosshair(void)
     if (lump != laserpatch[crispy->crosshairtype].l)
     {
         lump  = laserpatch[crispy->crosshairtype].l;
-        patch = cache_lump_num<patch_t *>(lump, PU_STATIC);
+        patch = cache_lump_num<patch_t *>(lump, PU::STATIC);
     }
 
     dp_translucent = true;
@@ -1131,13 +1131,13 @@ static void StopChatInput(void)
 bool HU_Responder(event_t *ev)
 {
 
-    static char    lastmessage[HU_MAXLINELENGTH + 1];
-    const char *   macromessage;
-    bool        eatkey  = false;
-    static bool altdown = false;
-    unsigned char  c;
-    int            i;
-    int            numplayers;
+    static char   lastmessage[HU_MAXLINELENGTH + 1];
+    const char *  macromessage;
+    bool          eatkey  = false;
+    static bool   altdown = false;
+    unsigned char c;
+    int           i;
+    int           numplayers;
 
     static int num_nobrainers = 0;
 

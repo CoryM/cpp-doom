@@ -157,7 +157,7 @@ int EV_DoPlat(line_s *line,
 
         // Find lowest & highest floors around sector
         rtn  = 1;
-        plat = zmalloc<decltype(plat)>(sizeof(*plat), PU_LEVSPEC, 0);
+        plat = zmalloc<decltype(plat)>(sizeof(*plat), PU::LEVSPEC, 0);
         P_AddThinker(&plat->thinker);
 
         plat->type                  = type;

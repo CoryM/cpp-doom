@@ -49,9 +49,9 @@ struct deh_context_s {
     int linenum;
 
     // Used by DEH_ReadLine:
-    bool last_was_newline;
-    char *  readbuffer;
-    int     readbuffer_size;
+    bool  last_was_newline;
+    char *readbuffer;
+    int   readbuffer_size;
 
     // Error handling.
     bool had_error;
@@ -64,12 +64,12 @@ static deh_context_t *DEH_NewContext(void)
 {
     deh_context_t *context;
 
-    context = zmalloc<decltype(context)>(sizeof(*context), PU_STATIC, NULL);
+    context = zmalloc<decltype(context)>(sizeof(*context), PU::STATIC, nullptr);
 
     // Initial read buffer size of 128 bytes
 
     context->readbuffer_size  = 128;
-    context->readbuffer       = zmalloc<decltype(context->readbuffer)>(context->readbuffer_size, PU_STATIC, NULL);
+    context->readbuffer       = zmalloc<decltype(context->readbuffer)>(context->readbuffer_size, PU::STATIC, NULL);
     context->linenum          = 0;
     context->last_was_newline = true;
 
@@ -109,7 +109,7 @@ deh_context_t *DEH_OpenLump(int lumpnum)
 
     context->type             = DEH_INPUT_LUMP;
     context->lumpnum          = lumpnum;
-    context->input_buffer     = cache_lump_num<unsigned char *>(lumpnum, PU_STATIC);
+    context->input_buffer     = cache_lump_num<unsigned char *>(lumpnum, PU::STATIC);
     context->input_buffer_len = W_LumpLength(lumpnum);
     context->input_buffer_pos = 0;
 
@@ -207,7 +207,7 @@ static void IncreaseReadBuffer(deh_context_t *context)
     int   newbuffer_size;
 
     newbuffer_size = context->readbuffer_size * 2;
-    newbuffer      = zmalloc<decltype(newbuffer)>(newbuffer_size, PU_STATIC, NULL);
+    newbuffer      = zmalloc<decltype(newbuffer)>(newbuffer_size, PU::STATIC, NULL);
 
     memcpy(newbuffer, context->readbuffer, context->readbuffer_size);
 
@@ -255,8 +255,8 @@ void DEH_RestoreLineStart(deh_context_t *context)
 
 char *DEH_ReadLine(deh_context_t *context, bool extended)
 {
-    int     c;
-    int     pos;
+    int  c;
+    int  pos;
     bool escaped = false;
 
     for (pos = 0;;)

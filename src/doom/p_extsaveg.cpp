@@ -154,7 +154,7 @@ static void P_ReadFireFlicker(const char *key)
     {
         fireflicker_t *flick;
 
-        flick = zmalloc<decltype(flick)>(sizeof(*flick), PU_LEVEL, NULL);
+        flick = zmalloc<decltype(flick)>(sizeof(*flick), PU::LEVEL, NULL);
 
         flick->sector   = &sectors[sector];
         flick->count    = count;
@@ -417,7 +417,7 @@ static void P_ReadMusInfo(const char *key)
         if ((i = W_CheckNumForName(lump)) > 0)
         {
             //memset(&musinfo, 0, sizeof(musinfo));
-            musinfo = {};
+            musinfo               = {};
             musinfo.current_item  = i;
             musinfo.from_savegame = true;
             S_ChangeMusInfoMusic(i, true);

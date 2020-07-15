@@ -167,22 +167,22 @@ void D_ProcessEvents(void)
 //
 
 // wipegamestate can be set to -1 to force a wipe on the next draw
-gamestate_t    wipegamestate = GS_DEMOSCREEN;
+gamestate_t wipegamestate = GS_DEMOSCREEN;
 extern bool setsizeneeded;
-extern int     showMessages;
-void           R_ExecuteSetViewSize(void);
+extern int  showMessages;
+void        R_ExecuteSetViewSize(void);
 
 bool D_Display(void)
 {
-    static bool     viewactivestate    = false;
-    static bool     menuactivestate    = false;
-    static bool     inhelpscreensstate = false;
-    static bool     fullscreen         = false;
+    static bool        viewactivestate    = false;
+    static bool        menuactivestate    = false;
+    static bool        inhelpscreensstate = false;
+    static bool        fullscreen         = false;
     static gamestate_t oldgamestate { GS_FORCE_WIPE };
     static int         borderdrawcount;
     int                y;
-    bool            wipe;
-    bool            redrawsbar;
+    bool               wipe;
+    bool               redrawsbar;
 
     redrawsbar = false;
 
@@ -262,7 +262,8 @@ bool D_Display(void)
         HU_Drawer();
 
     // clean up border stuff
-    if (gamestate != oldgamestate && gamestate != GS_LEVEL) {
+    if (gamestate != oldgamestate && gamestate != GS_LEVEL)
+    {
         I_SetPalette(0);
     }
 
@@ -323,7 +324,7 @@ bool D_Display(void)
         else
             y = (viewwindowy >> crispy->hires) + 4;
         V_DrawPatchDirect((viewwindowx >> crispy->hires) + ((scaledviewwidth >> crispy->hires) - 68) / 2 - DELTAWIDTH, y,
-            cache_lump_name<patch_t *>(DEH_String("M_PAUSE"), PU_CACHE));
+            cache_lump_name<patch_t *>(DEH_String("M_PAUSE"), PU::CACHE));
     }
 
 
@@ -480,9 +481,9 @@ bool D_GrabMouseCallback(void)
 //
 void D_RunFrame()
 {
-    int            nowtime;
-    int            tics;
-    static int     wipestart;
+    int         nowtime;
+    int         tics;
+    static int  wipestart;
     static bool wipe;
 
     if (wipe)
@@ -610,7 +611,7 @@ void D_PageTicker(void)
 //
 void D_PageDrawer(void)
 {
-    V_DrawPatchFullScreen(cache_lump_name<patch_t *>(pagename, PU_CACHE), crispy->fliplevels);
+    V_DrawPatchFullScreen(cache_lump_name<patch_t *>(pagename, PU::CACHE), crispy->fliplevels);
 }
 
 
@@ -799,7 +800,7 @@ static const char *GetGameName(const char *gamename)
             // We also need to cut off spaces to get the basic name
 
             const auto newgamename_size = strlen(deh_sub) + 10;
-            auto *     newgamename      = zmalloc<char *>(newgamename_size, PU_STATIC, 0);
+            auto *     newgamename      = zmalloc<char *>(newgamename_size, PU::STATIC, 0);
             version                     = G_VanillaVersionCode();
             M_snprintf(newgamename, newgamename_size, deh_sub,
                 version / 100, version % 100);
@@ -1083,12 +1084,12 @@ static constexpr struct
 
 static void InitGameVersion(void)
 {
-    byte *  demolump;
-    char    demolumpname[6];
-    int     demoversion;
-    int     p;
-    int     i;
-    bool status;
+    byte *demolump;
+    char  demolumpname[6];
+    int   demoversion;
+    int   p;
+    int   i;
+    bool  status;
 
     //!
     // @arg <version>
@@ -1153,7 +1154,7 @@ static void InitGameVersion(void)
                 M_snprintf(demolumpname, 6, "demo%i", i);
                 if (W_CheckNumForName(demolumpname) > 0)
                 {
-                    demolump    = cache_lump_name<byte *>(demolumpname, PU_STATIC);
+                    demolump    = cache_lump_name<byte *>(demolumpname, PU::STATIC);
                     demoversion = demolump[0];
                     W_ReleaseLumpName(demolumpname);
                     status = true;
@@ -1259,7 +1260,7 @@ static void D_Endoom(void)
         return;
     }
 
-    endoom = cache_lump_name<byte *>(DEH_String("ENDOOM"), PU_STATIC);
+    endoom = cache_lump_name<byte *>(DEH_String("ENDOOM"), PU::STATIC);
 
     I_Endoom(endoom);
 }
@@ -1293,8 +1294,8 @@ static void LoadIwadDeh(void)
         char *chex_deh = NULL;
 
         // Look for chex.deh in the same directory as the IWAD file.
-        auto dirname  = M_DirName(iwadfile);
-        chex_deh = M_StringJoin({dirname, DIR_SEPARATOR_S, "chex.deh"});
+        auto dirname = M_DirName(iwadfile);
+        chex_deh     = M_StringJoin({ dirname, DIR_SEPARATOR_S, "chex.deh" });
 
         // If the dehacked patch isn't found, try searching the WAD
         // search path instead.  We might find it...
@@ -1329,24 +1330,20 @@ static void LoadSigilWad(void)
         const std::string_view new_name;
     };
 
-    constexpr auto a_sigilLumps = std::to_array< s_sigilLumps >({
-        {"CREDIT",  "SIGCREDI"},
-        {"HELP1",   "SIGHELP1"},
-        {"TITLEPIC","SIGTITLE"},
-        {"DEHACKED","SIG_DEH" },
-        {"DEMO1",   "SIGDEMO1"},
-        {"DEMO2",   "SIGDEMO2"},
-        {"DEMO3",   "SIGDEMO3"},
-        {"DEMO4",   "SIGDEMO4"},
-        {"D_INTER", "D_SIGINT"},
-        {"D_INTRO", "D_SIGTIT"}
-    });
+    constexpr auto a_sigilLumps = std::to_array<s_sigilLumps>({ { "CREDIT", "SIGCREDI" },
+        { "HELP1", "SIGHELP1" },
+        { "TITLEPIC", "SIGTITLE" },
+        { "DEHACKED", "SIG_DEH" },
+        { "DEMO1", "SIGDEMO1" },
+        { "DEMO2", "SIGDEMO2" },
+        { "DEMO3", "SIGDEMO3" },
+        { "DEMO4", "SIGDEMO4" },
+        { "D_INTER", "D_SIGINT" },
+        { "D_INTRO", "D_SIGTIT" } });
 
-    constexpr auto a_textureFiles = std::array<const char * const, 3>({
-        "PNAMES",
+    constexpr auto a_textureFiles = std::array<const char *const, 3>({ "PNAMES",
         "TEXTURE1",
-        "TEXTURE2"
-    });
+        "TEXTURE2" });
 
 
     // [crispy] don't load SIGIL.wad if another PWAD already provides E5M1
@@ -1376,20 +1373,18 @@ static void LoadSigilWad(void)
 
     if (gameversion == exe_ultimate)
     {
-        constexpr auto a_sigilWads = std::to_array<const char * const>({
-            "SIGIL_v1_21.wad",
+        constexpr auto a_sigilWads    = std::to_array<const char *const>({ "SIGIL_v1_21.wad",
             "SIGIL_v1_2.wad",
-            "SIGIL.wad"
-        });
-        char *sigil_wad_file = nullptr, *sigil_shreds = nullptr;
+            "SIGIL.wad" });
+        char *         sigil_wad_file = nullptr, *sigil_shreds = nullptr;
 
         auto dirname = M_DirName(iwadfile);
-        sigil_shreds  = M_StringJoin({dirname, DIR_SEPARATOR_S, "SIGIL_SHREDS.wad"});
+        sigil_shreds = M_StringJoin({ dirname, DIR_SEPARATOR_S, "SIGIL_SHREDS.wad" });
 
         // [crispy] load SIGIL.WAD
-        for ( auto &sigilWad : a_sigilWads)
+        for (auto &sigilWad : a_sigilWads)
         {
-            sigil_wad_file = M_StringJoin({dirname, DIR_SEPARATOR_S, sigilWad});
+            sigil_wad_file = M_StringJoin({ dirname, DIR_SEPARATOR_S, sigilWad });
 
             if (M_FileExists(sigil_wad_file))
             {
@@ -1485,7 +1480,7 @@ static void LoadNerveWad(void)
         if (strrchr(iwadfile, DIR_SEPARATOR) != NULL)
         {
             auto dir     = M_DirName(iwadfile);
-            nervewadfile = M_StringJoin({dir, DIR_SEPARATOR_S, "nerve.wad"});
+            nervewadfile = M_StringJoin({ dir, DIR_SEPARATOR_S, "nerve.wad" });
         }
         else
         {
@@ -1689,7 +1684,7 @@ void D_DoomMain(void)
     if (devparm)
         DEH_printf(D_DEVSTR);
 
-        // find which dir to use for config files
+    // find which dir to use for config files
 
     {
         // Auto-detect the configuration dir.
@@ -2098,10 +2093,10 @@ void D_DoomMain(void)
     // [crispy] check for SSG resources
     crispy->havessg =
         (gamemode == GameMode_t::commercial || (W_CheckNumForName("sht2a0") != -1 &&         // [crispy] wielding/firing sprite sequence
-                                    I_GetSfxLumpNum(&S_sfx[sfx_dshtgn]) != -1 && // [crispy] firing sound
-                                    I_GetSfxLumpNum(&S_sfx[sfx_dbopn]) != -1 &&  // [crispy] opening sound
-                                    I_GetSfxLumpNum(&S_sfx[sfx_dbload]) != -1 && // [crispy] reloading sound
-                                    I_GetSfxLumpNum(&S_sfx[sfx_dbcls]) != -1     // [crispy] closing sound
+                                                I_GetSfxLumpNum(&S_sfx[sfx_dshtgn]) != -1 && // [crispy] firing sound
+                                                I_GetSfxLumpNum(&S_sfx[sfx_dbopn]) != -1 &&  // [crispy] opening sound
+                                                I_GetSfxLumpNum(&S_sfx[sfx_dbload]) != -1 && // [crispy] reloading sound
+                                                I_GetSfxLumpNum(&S_sfx[sfx_dbcls]) != -1     // [crispy] closing sound
              ));
 
     // [crispy] check for presence of a 5th episode

@@ -975,7 +975,7 @@ void S_ChangeMusic(int musicnum, int looping)
         music->lumpnum = W_GetNumForName(namebuf);
     }
 
-    music->data = W_CacheLumpNum(music->lumpnum, PU_STATIC);
+    music->data = W_CacheLumpNum(music->lumpnum, PU::STATIC);
 
     handle        = I_RegisterSong(music->data, W_LumpLength(music->lumpnum));
     music->handle = handle;
@@ -1030,7 +1030,7 @@ void S_ChangeMusInfoMusic(int lumpnum, int looping)
 
     music->lumpnum = lumpnum;
 
-    music->data   = W_CacheLumpNum(music->lumpnum, PU_STATIC);
+    music->data   = W_CacheLumpNum(music->lumpnum, PU::STATIC);
     music->handle = I_RegisterSong(music->data, W_LumpLength(music->lumpnum));
 
     I_PlaySong(music->handle, looping);
