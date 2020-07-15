@@ -1,5 +1,5 @@
 ---
-Checks:          '*,-google-*,*,-google-*,-zircon-*,-openmp-*,-fuchsia-*,-darwin-*,-objc-*,-clang-analyzer-osx-*,-android-*,-abseil-*,-llvm-header-guard,-clang-diagnostic-error'
+Checks:          '*,-google-*,*,-google-*,-zircon-*,-openmp-*,-fuchsia-*,-darwin-*,-objc-*,-clang-analyzer-osx-*,-android-*,-abseil-*,-llvm-header-guard,-clang-diagnostic-error,-cppcoreguidelines-pro-type-reinterpret-cast'
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false
