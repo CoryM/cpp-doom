@@ -120,7 +120,7 @@ char *NET_AddrToString(net_addr_t *addr)
 
 void NET_ReferenceAddress(net_addr_t *addr)
 {
-    if (addr == NULL)
+    if (addr == nullptr)
     {
         return;
     }
@@ -130,7 +130,7 @@ void NET_ReferenceAddress(net_addr_t *addr)
 
 void NET_ReleaseAddress(net_addr_t *addr)
 {
-    if (addr == NULL)
+    if (addr == nullptr)
     {
         return;
     }

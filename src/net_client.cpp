@@ -14,20 +14,15 @@
 // Network client code
 //
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "config.hpp"
-#include "doomtype.hpp"
 #include "deh_main.hpp"
 #include "deh_str.hpp"
+#include "doomtype.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "m_argv.hpp"
-#include "m_fixed.hpp"
 #include "m_config.hpp"
+#include "m_fixed.hpp"
 #include "m_misc.hpp"
 #include "net_client.hpp"
 #include "net_common.hpp"
@@ -35,14 +30,20 @@
 #include "net_gui.hpp"
 #include "net_io.hpp"
 #include "net_packet.hpp"
+#include "net_petname.hpp"
 #include "net_query.hpp"
 #include "net_server.hpp"
 #include "net_structrw.hpp"
-#include "net_petname.hpp"
 #include "w_checksum.hpp"
 #include "w_wad.hpp"
 
-extern void D_ReceiveTic(ticcmd_t *ticcmds, bool *playeringame);
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+
+extern void D_ReceiveTic(const ticcmd_t *ticcmds, const bool *playeringame);
 
 typedef enum
 {
@@ -62,42 +63,32 @@ typedef enum
 
 // Type of structure used in the receive window
 
-typedef struct
-{
+struct net_server_recv_t {
     // Whether this tic has been received yet
-
     bool active;
 
     // Last time we sent a resend request for this tic
-
     unsigned int resend_time;
 
     // Tic data from server
-
     net_full_ticcmd_t cmd;
-
-} net_server_recv_t;
+};
 
 // Type of structure used in the send window
 
-typedef struct
-{
+struct net_server_send_t {
     // Whether this slot is active yet
-
     bool active;
 
     // The tic number
-
     unsigned int seq;
 
     // Time the command was generated
-
     unsigned int time;
 
     // Ticcmd diff
-
     net_ticdiff_t cmd;
-} net_server_send_t;
+};
 
 extern fixed_t offsetms;
 
@@ -111,7 +102,7 @@ static net_context_t *   client_context;
 static net_gamesettings_t settings;
 
 // Why did the server reject us?
-char *net_client_reject_reason = NULL;
+char *net_client_reject_reason = nullptr;
 
 // true if the client code is in use
 
@@ -120,7 +111,7 @@ bool net_client_connected;
 // true if we have received waiting data from the server,
 // and the wait data that was received.
 
-bool        net_client_received_wait_data;
+bool           net_client_received_wait_data;
 net_waitdata_t net_client_wait_data;
 
 // Waiting at the initial wait screen for the game to be launched?
@@ -129,7 +120,7 @@ bool net_waiting_for_launch = false;
 
 // Name that we send to the server
 
-char *net_player_name = NULL;
+char *net_player_name = nullptr;
 
 // Connected but not participating in the game (observer)
 
@@ -152,7 +143,7 @@ static net_server_recv_t recvwindow[BACKUPTICS];
 // Whether we need to send an acknowledgement and
 // when gamedata was last received.
 
-static bool      need_to_acknowledge;
+static bool         need_to_acknowledge;
 static unsigned int gamedata_recv_time;
 
 // The latency (time between when we sent our command and we got all
@@ -176,7 +167,7 @@ unsigned int net_local_is_freedoom;
 
 static void NET_CL_Disconnected(void)
 {
-    D_ReceiveTic(NULL, NULL);
+    D_ReceiveTic(nullptr, nullptr);
 }
 
 // Called when a packet is received from the server containing game
@@ -649,7 +640,7 @@ static void NET_CL_CheckResends(void)
     int          i;
     int          resend_start, resend_end;
     unsigned int nowtime;
-    bool      maybe_deadlocked;
+    bool         maybe_deadlocked;
 
     nowtime          = I_GetTimeMS();
     maybe_deadlocked = nowtime - gamedata_recv_time > 1000;
@@ -660,7 +651,7 @@ static void NET_CL_CheckResends(void)
     for (i = 0; i < BACKUPTICS; ++i)
     {
         net_server_recv_t *recvobj;
-        bool            need_resend;
+        bool               need_resend;
 
         recvobj = &recvwindow[i];
 
@@ -1063,8 +1054,8 @@ static void NET_CL_SendSYN(net_connect_data_t *data)
 // Connect to a server
 bool NET_CL_Connect(net_addr_t *addr, net_connect_data_t *data)
 {
-    int     start_time;
-    int     last_send_time;
+    int  start_time;
+    int  last_send_time;
     bool sent_hole_punch;
 
     server_addr = addr;

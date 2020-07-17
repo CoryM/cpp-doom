@@ -20,34 +20,32 @@
 
 #include <cstdio>
 
-#include "doomtype.hpp"
-#include "d_ticcmd.hpp"
-#include "sha1.hpp"
 #include "d_mode.hpp"
+#include "d_ticcmd.hpp"
+#include "doomtype.hpp"
+#include "sha1.hpp"
+
 
 // Absolute maximum number of "nodes" in the game.  This is different to
 // NET_MAXPLAYERS, as there may be observers that are not participating
 // (eg. left/right monitors)
 
-#define MAXNETNODES 16
+constexpr int MAXNETNODES = 16;
 
 // The maximum number of players, multiplayer/networking.
 // This is the maximum supported by the networking code; individual games
 // have their own values for MAXPLAYERS that can be smaller.
 
-#define NET_MAXPLAYERS 8
+constexpr int NET_MAXPLAYERS = 8;
 
 // Maximum length of a player's name.
 
-#define MAXPLAYERNAME 30
+constexpr int MAXPLAYERNAME = 30;
 
 // Networking and tick handling related.
 
-#define BACKUPTICS 128
+constexpr int BACKUPTICS = 128;
 
-struct net_addr_t;
-struct net_module_t;
-struct net_packet_t;
 struct net_addr_t;
 struct net_context_t;
 
@@ -61,11 +59,11 @@ struct net_packet_t {
 struct net_module_t {
     // Initialize this module for use as a client
 
-    bool (*InitClient)(void);
+    bool (*InitClient)();
 
     // Initialize this module for use as a server
 
-    bool (*InitServer)(void);
+    bool (*InitServer)();
 
     // Send a packet
 
@@ -91,9 +89,8 @@ struct net_module_t {
 };
 
 // net_addr_t
-
 struct net_addr_t {
-    net_module_t *mod   = nullptr;
+    net_module_t *mod      = nullptr;
     int           refcount = 0;
     void *        handle   = nullptr;
 };
@@ -237,7 +234,7 @@ typedef struct
 {
     signed int    latency;
     unsigned int  seq;
-    bool       playeringame[NET_MAXPLAYERS];
+    bool          playeringame[NET_MAXPLAYERS];
     net_ticdiff_t cmds[NET_MAXPLAYERS];
 } net_full_ticcmd_t;
 

@@ -16,11 +16,10 @@
 //      Timer functions.
 //
 
+#include "doomtype.hpp"
+#include "i_timer.hpp"
 
 #include "SDL2/SDL.h"
-
-#include "i_timer.hpp"
-#include "doomtype.hpp"
 
 //
 // I_GetTime
@@ -29,50 +28,51 @@
 
 static Uint32 basetime = 0;
 
-int I_GetTime(void)
+auto I_GetTime() -> uint32_t
 {
-    Uint32 ticks;
-
-    ticks = SDL_GetTicks();
+    auto ticks = static_cast<uint32_t>(SDL_GetTicks());
 
     if (basetime == 0)
+    {
         basetime = ticks;
+    }
 
     ticks -= basetime;
 
-    return (ticks * TICRATE) / 1000;
-}
+    return (ticks * TICRATE) / TICBase;
+};
 
 //
 // Same as I_GetTime, but returns time in milliseconds
 //
 
-int I_GetTimeMS(void)
+auto I_GetTimeMS() -> uint32_t
 {
-    Uint32 ticks;
-
-    ticks = SDL_GetTicks();
+    auto ticks = static_cast<uint32_t>(SDL_GetTicks());
 
     if (basetime == 0)
+    {
         basetime = ticks;
+    }
 
     return ticks - basetime;
 }
 
 // Sleep for a specified number of ms
 
-void I_Sleep(int ms)
+void I_Sleep(uint32_t ms)
 {
     SDL_Delay(ms);
 }
 
 void I_WaitVBL(int count)
 {
-    I_Sleep((count * 1000) / 70);
+    constexpr uint32_t magicNumber = 70;
+    I_Sleep((count * TICBase) / magicNumber);
 }
 
 
-void I_InitTimer(void)
+void I_InitTimer()
 {
     // initialize timer
 

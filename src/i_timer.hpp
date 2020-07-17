@@ -20,20 +20,23 @@
 #ifndef __I_TIMER__
 #define __I_TIMER__
 
-#define TICRATE 35
+#include <cstdint>
+
+constexpr uint32_t TICRATE = 35;
+constexpr uint32_t TICBase = 1000;
 
 // Called by D_DoomLoop,
 // returns current time in tics.
-int I_GetTime(void);
+auto I_GetTime() -> uint32_t;
 
 // returns current time in ms
-int I_GetTimeMS(void);
+auto I_GetTimeMS() -> uint32_t;
 
 // Pause for a specified number of ms
-void I_Sleep(int ms);
+void I_Sleep(uint32_t ms);
 
 // Initialize timer
-void I_InitTimer(void);
+void I_InitTimer();
 
 // Wait for vertical retrace or pause a bit.
 void I_WaitVBL(int count);
