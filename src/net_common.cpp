@@ -25,6 +25,8 @@
 #include "net_packet.hpp"
 #include "net_structrw.hpp"
 
+#include "fmt/core.h"
+
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
@@ -480,10 +482,10 @@ void NET_OpenLog(void)
     p = M_CheckParmWithArgs("-netlog", 1);
     if (p > 0)
     {
-        net_debug = fopen(myargv[p + 1], "w");
-        if (net_debug == NULL)
+        net_debug = fopen(M_GetArgument(p + 1), "w");
+        if (net_debug == nullptr)
         {
-            I_Error("Failed to open %s to write debug log.", myargv[p + 1]);
+            S_Error(fmt::format("Failed to open %s to write debug log.", M_GetArgument(p + 1)));
         }
         I_AtExit(CloseLog, true);
     }
@@ -493,12 +495,12 @@ void NET_Log(const char *fmt, ...)
 {
     va_list args;
 
-    if (net_debug == NULL)
+    if (net_debug == nullptr)
     {
         return;
     }
 
-    fprintf(net_debug, "%8d: ", I_GetTimeMS());
+    fmt::print(net_debug, "{}: ", I_GetTimeMS());
     va_start(args, fmt);
     vfprintf(net_debug, fmt, args);
     va_end(args);

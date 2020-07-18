@@ -333,7 +333,7 @@ static void BuildIWADDirList()
 
     // Next check the directory where the executable is located. This might
     // be different from the current directory.
-    v_iwadDirs.emplace_back(M_DirName(myargv[0]));
+    v_iwadDirs.emplace_back(M_DirName(M_GetExecutableName()));
 
     // Add DOOMWADDIR if it is in the environment
     char *env = getenv("DOOMWADDIR");
@@ -447,7 +447,7 @@ auto D_FindIWAD(int mask, GameMission_t *mission) -> std::string
     {
         // Search through IWAD dirs for an IWAD with the given name.
 
-        char *iwadfile = myargv[iwadparm + 1];
+        char *iwadfile = M_GetArgument(iwadparm + 1);
 
         result = D_FindWADByName(iwadfile);
 

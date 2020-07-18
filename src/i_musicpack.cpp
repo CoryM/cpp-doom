@@ -36,6 +36,7 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_mixer.h"
+#include "fmt/core.h"
 
 #include <string>
 #include <string_view>
@@ -947,8 +948,7 @@ static void LoadSubstituteConfigs(void)
 
     if (subst_music_len > 0)
     {
-        printf("Loaded %u music substitutions from config files.\n",
-            subst_music_len);
+        fmt::print("Loaded {} music substitutions from config files.\n", subst_music_len);
     }
 
     old_music_len = subst_music_len;
@@ -1101,7 +1101,7 @@ static bool I_MP_InitMusic(void)
 
     if (i > 0)
     {
-        DumpSubstituteConfig(myargv[i + 1]);
+        DumpSubstituteConfig(M_GetArgument(i + 1));
     }
 
     // If we're in GENMIDI mode, try to load sound packs.

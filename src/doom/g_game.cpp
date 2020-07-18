@@ -14,68 +14,53 @@
 //
 // DESCRIPTION:  none
 //
-
-
-#include <cstring>
-#include <cstdlib>
-#include <cmath>
-#include <string_view>
-
-#include "doomdef.hpp"
-#include "../doomkeys.hpp"
-#include "doomstat.hpp"
-
-#include "deh_main.hpp"
-#include "deh_misc.hpp"
-#include "deh_bexpars.hpp" // [crispy] bex_pars[]
-
-#include "z_zone.hpp"
-#include "f_finale.hpp"
-#include "m_argv.hpp"
-#include "m_controls.hpp"
-#include "m_misc.hpp"
-#include "m_menu.hpp"
-#include "m_random.hpp"
-#include "i_system.hpp"
-#include "i_timer.hpp"
-#include "i_input.hpp"
-#include "i_swap.hpp"
-#include "i_video.hpp"
-
-#include "p_setup.hpp"
-#include "p_saveg.hpp"
-#include "p_extsaveg.hpp"
-#include "p_tick.hpp"
-
-#include "d_main.hpp"
-
-#include "wi_stuff.hpp"
-#include "hu_stuff.hpp"
-#include "st_stuff.hpp"
-#include "am_map.hpp"
-#include "statdump.hpp"
-
-// Needs access to LFB.
-#include "v_video.hpp"
-
-#include "w_wad.hpp"
-
-#include "p_local.hpp"
-
-#include "s_sound.hpp"
-
-// Data.
-#include "dstrings.hpp"
-#include "sounds.hpp"
-
-// SKY handling - still the wrong place.
-#include "r_data.hpp"
-#include "r_sky.hpp"
+#include "g_game.hpp"
 
 #include "../../utils/lump.hpp"
 #include "../../utils/memory.hpp"
-#include "g_game.hpp"
+#include "../deh_main.hpp"
+#include "../doomkeys.hpp"
+#include "am_map.hpp"
+#include "d_main.hpp"
+#include "deh_bexpars.hpp" // [crispy] bex_pars[]
+#include "deh_misc.hpp"
+#include "doomdef.hpp"
+#include "doomstat.hpp"
+#include "dstrings.hpp"
+#include "f_finale.hpp"
+#include "hu_stuff.hpp"
+#include "i_input.hpp"
+#include "i_swap.hpp"
+#include "i_system.hpp"
+#include "i_timer.hpp"
+#include "i_video.hpp"
+#include "m_argv.hpp"
+#include "m_controls.hpp"
+#include "m_menu.hpp"
+#include "m_misc.hpp"
+#include "m_random.hpp"
+#include "p_extsaveg.hpp"
+#include "p_local.hpp"
+#include "p_saveg.hpp"
+#include "p_setup.hpp"
+#include "p_tick.hpp"
+#include "r_data.hpp"
+#include "r_sky.hpp"
+#include "s_sound.hpp"
+#include "sounds.hpp"
+#include "st_stuff.hpp"
+#include "statdump.hpp"
 #include "v_trans.hpp" // [crispy] colored "always run" message
+#include "v_video.hpp"
+#include "w_wad.hpp"
+#include "wi_stuff.hpp"
+#include "z_zone.hpp"
+
+#include <cmath>
+#include <cstdlib>
+#include <cstring>
+#include <string_view>
+
 
 #define SAVEGAMESIZE 0x2c000
 
@@ -85,13 +70,13 @@ void G_PlayerReborn(int player);
 
 void G_DoReborn(int playernum);
 
-void G_DoLoadLevel(void);
-void G_DoNewGame(void);
-void G_DoPlayDemo(void);
-void G_DoCompleted(void);
-void G_DoVictory(void);
-void G_DoWorldDone(void);
-void G_DoSaveGame(void);
+void G_DoLoadLevel();
+void G_DoNewGame();
+void G_DoPlayDemo();
+void G_DoCompleted();
+void G_DoVictory();
+void G_DoWorldDone();
+void G_DoSaveGame();
 
 // Gamestate the last time G_Ticker was called.
 
@@ -2591,7 +2576,7 @@ void G_RecordDemo(char *name)
 
     i = M_CheckParmWithArgs("-maxdemo", 1);
     if (i)
-        maxsize = atoi(myargv[i + 1]) * 1024;
+        maxsize = atoi(M_GetArgument(i + 1)) * 1024;
     demobuffer = zmalloc<decltype(demobuffer)>(maxsize, PU::STATIC, NULL);
     demoend    = demobuffer + maxsize;
 

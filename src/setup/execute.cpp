@@ -13,42 +13,27 @@
 //
 
 // Code for invoking Doom
+#include "../../textscreen/textscreen.hpp"
+#include "../common.hpp"
+#include "../config.hpp"
+#include "execute.hpp"
+#include "m_argv.hpp"
+#include "m_config.hpp"
+#include "m_misc.hpp"
+#include "mode.hpp"
+
+#include <cctype>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cctype>
 #include <stdexcept>
-
 #include <sys/types.h>
-
-#include "common.hpp"
-
-#ifdef _WIN32
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <process.h>
-#include <shellapi.h>
-
-#else
-
 #include <sys/wait.h>
 #include <unistd.h>
 
-#endif
 
-#include "../../textscreen/textscreen.hpp"
-
-#include "../config.hpp"
-#include "execute.hpp"
-#include "mode.hpp"
-#include "m_argv.hpp"
-#include "m_config.hpp"
-#include "m_misc.hpp"
-
-struct execute_context_s
-{
+struct execute_context_s {
     char *response_file;
     FILE *stream;
 };
@@ -75,7 +60,7 @@ static char *TempFile(const char *s)
     tempdir = "/tmp";
 #endif
 
-    return M_StringJoin({tempdir, DIR_SEPARATOR_S, s});
+    return M_StringJoin({ tempdir, DIR_SEPARATOR_S, s });
 }
 
 static int ArgumentNeedsEscape(char *arg)
@@ -101,15 +86,15 @@ void PassThroughArguments(execute_context_t *context)
 {
     int i;
 
-    for (i = 1; i < myargc; ++i)
+    for (i = 1; i < M_GetArgumentCount(); ++i)
     {
-        if (ArgumentNeedsEscape(myargv[i]))
+        if (ArgumentNeedsEscape(M_GetArgument(i)))
         {
-            AddCmdLineParameter(context, "\"%s\"", myargv[i]);
+            AddCmdLineParameter(context, "\"%s\"", M_GetArgument(i));
         }
         else
         {
-            AddCmdLineParameter(context, "%s", myargv[i]);
+            AddCmdLineParameter(context, "%s", M_GetArgument(i));
         }
     }
 }
@@ -121,7 +106,7 @@ execute_context_t *NewExecuteContext(void)
     result = static_cast<execute_context_t *>(malloc(sizeof(execute_context_t)));
 
     result->response_file = TempFile("chocolat.rsp");
-    result->stream = fopen(result->response_file, "w");
+    result->stream        = fopen(result->response_file, "w");
 
     if (result->stream == NULL)
     {
@@ -177,8 +162,8 @@ static unsigned int WaitForProcessExit(HANDLE subprocess)
 static void ConcatWCString(wchar_t *buf, const char *value)
 {
     MultiByteToWideChar(CP_OEMCP, 0,
-                        value, strlen(value) + 1,
-                        buf + wcslen(buf), strlen(value) + 1);
+        value, strlen(value) + 1,
+        buf + wcslen(buf), strlen(value) + 1);
 }
 
 // Build the command line string, a wide character string of the form:
@@ -187,7 +172,7 @@ static void ConcatWCString(wchar_t *buf, const char *value)
 
 static wchar_t *BuildCommandLine(const char *program, const char *arg)
 {
-    wchar_t exe_path[MAX_PATH];
+    wchar_t  exe_path[MAX_PATH];
     wchar_t *result;
     wchar_t *sep;
 
@@ -198,7 +183,7 @@ static wchar_t *BuildCommandLine(const char *program, const char *arg)
     // Allocate buffer to contain result string.
 
     result = calloc(wcslen(exe_path) + strlen(program) + strlen(arg) + 6,
-                    sizeof(wchar_t));
+        sizeof(wchar_t));
 
     wcscpy(result, L"\"");
 
@@ -230,10 +215,10 @@ static wchar_t *BuildCommandLine(const char *program, const char *arg)
 
 static int ExecuteCommand(const char *program, const char *arg)
 {
-    STARTUPINFOW startup_info;
+    STARTUPINFOW        startup_info;
     PROCESS_INFORMATION proc_info;
-    wchar_t *command;
-    int result = 0;
+    wchar_t *           command;
+    int                 result = 0;
 
     command = BuildCommandLine(program, arg);
 
@@ -244,8 +229,8 @@ static int ExecuteCommand(const char *program, const char *arg)
     startup_info.cb = sizeof(startup_info);
 
     if (!CreateProcessW(NULL, command,
-                        NULL, NULL, FALSE, 0, NULL, NULL,
-                        &startup_info, &proc_info))
+            NULL, NULL, FALSE, 0, NULL, NULL,
+            &startup_info, &proc_info))
     {
         result = -1;
     }
@@ -271,7 +256,7 @@ bool OpenFolder(const char *path)
     char *cmd;
     int result;
 
-    cmd = M_StringJoin({"xdg-open \"", path, "\""});
+    cmd = M_StringJoin({ "xdg-open \"", path, "\"" });
     result = system(cmd);
     free(cmd);
 
@@ -288,7 +273,7 @@ static char *GetFullExePath(const char *program)
     size_t result_len;
     unsigned int path_len;
 
-    sep = strrchr(myargv[0], DIR_SEPARATOR);
+    sep = strrchr(M_GetArgument(0), DIR_SEPARATOR);
 
     if (sep == NULL)
     {
@@ -296,11 +281,11 @@ static char *GetFullExePath(const char *program)
     }
     else
     {
-        path_len = sep - myargv[0] + 1;
+        path_len = sep - M_GetArgument(0) + 1;
         result_len = strlen(program) + path_len + 1;
         result = static_cast<char *>(malloc(result_len));
 
-        M_StringCopy(result, myargv[0], result_len);
+        M_StringCopy(result, M_GetArgument(0), result_len);
         result[path_len] = '\0';
 
         M_StringConcat(result, program, result_len);
@@ -325,7 +310,7 @@ static int ExecuteCommand(const char *program, const char *arg)
         argv[1] = arg;
         argv[2] = NULL;
 
-        execvp(argv[0], (char **) argv);
+        execvp(argv[0], (char **)argv);
 
         //exit(0x80);
         throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
@@ -353,13 +338,13 @@ static int ExecuteCommand(const char *program, const char *arg)
 int ExecuteDoom(execute_context_t *context)
 {
     char *response_file_arg;
-    int result;
+    int   result;
 
     fclose(context->stream);
 
     // Build the command line
 
-    response_file_arg = M_StringJoin({"@", context->response_file});
+    response_file_arg = M_StringJoin({ "@", context->response_file });
 
     // Run Doom
 
@@ -378,18 +363,18 @@ int ExecuteDoom(execute_context_t *context)
 static void TestCallback(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(data))
 {
     execute_context_t *exec;
-    char *main_cfg;
-    char *extra_cfg;
-    txt_window_t *testwindow;
+    char *             main_cfg;
+    char *             extra_cfg;
+    txt_window_t *     testwindow;
 
     testwindow = TXT_MessageBox("Starting Doom",
-                                "Starting Doom to test the\n"
-                                "settings.  Please wait.");
+        "Starting Doom to test the\n"
+        "settings.  Please wait.");
     TXT_DrawDesktop();
 
     // Save temporary configuration files with the current configuration
 
-    main_cfg = TempFile("tmp.cfg");
+    main_cfg  = TempFile("tmp.cfg");
     extra_cfg = TempFile("extratmp.cfg");
 
     M_SaveDefaultsAlternate(main_cfg, extra_cfg);

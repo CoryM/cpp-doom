@@ -23,9 +23,9 @@
 
 #ifndef DOXYGEN
 
-#define TXT_UNCAST_ARG_NAME(name) uncast_ ## name
-#define TXT_UNCAST_ARG(name)   void * TXT_UNCAST_ARG_NAME(name)
-#define TXT_CAST_ARG(type, name)  type *name = (type *) uncast_ ## name
+#define TXT_UNCAST_ARG_NAME(name) uncast_##name
+#define TXT_UNCAST_ARG(name)      void *TXT_UNCAST_ARG_NAME(name)
+#define TXT_CAST_ARG(type, name)  type *name = (type *)uncast_##name
 
 #else
 
@@ -35,19 +35,19 @@
 
 #include <memory>
 
-typedef enum
+enum txt_vert_align_t
 {
     TXT_VERT_TOP,
     TXT_VERT_CENTER,
     TXT_VERT_BOTTOM,
-} txt_vert_align_t;
+};
 
-typedef enum
+enum txt_horiz_align_t
 {
     TXT_HORIZ_LEFT,
     TXT_HORIZ_CENTER,
     TXT_HORIZ_RIGHT,
-} txt_horiz_align_t;
+};
 
 /**
  * A GUI widget.
@@ -60,7 +60,7 @@ typedef enum
  * when a signal occurs using the @ref TXT_SignalConnect function.
  */
 
-typedef struct txt_widget_class_s txt_widget_class_t;
+typedef struct txt_widget_class_s   txt_widget_class_t;
 typedef struct txt_callback_table_s txt_callback_table_t;
 
 typedef void (*TxtWidgetSizeCalc)(TXT_UNCAST_ARG(widget));
@@ -73,30 +73,28 @@ typedef void (*TxtWidgetLayoutFunc)(TXT_UNCAST_ARG(widget));
 typedef int (*TxtWidgetSelectableFunc)(TXT_UNCAST_ARG(widget));
 typedef void (*TxtWidgetFocusFunc)(TXT_UNCAST_ARG(widget), int focused);
 
-struct txt_widget_class_s
-{
-    TxtWidgetSelectableFunc selectable = nullptr;
-    TxtWidgetSizeCalc size_calc        = nullptr;
-    TxtWidgetDrawer drawer             = nullptr;
-    TxtWidgetKeyPress key_press        = nullptr;
-    TxtWidgetDestroy destructor        = nullptr;
-    TxtMousePressFunc mouse_press      = nullptr;
-    TxtWidgetLayoutFunc layout         = nullptr;
-    TxtWidgetFocusFunc focus_change    = nullptr;
+struct txt_widget_class_s {
+    TxtWidgetSelectableFunc selectable   = nullptr;
+    TxtWidgetSizeCalc       size_calc    = nullptr;
+    TxtWidgetDrawer         drawer       = nullptr;
+    TxtWidgetKeyPress       key_press    = nullptr;
+    TxtWidgetDestroy        destructor   = nullptr;
+    TxtMousePressFunc       mouse_press  = nullptr;
+    TxtWidgetLayoutFunc     layout       = nullptr;
+    TxtWidgetFocusFunc      focus_change = nullptr;
 };
 
-struct txt_widget_s
-{
-    txt_widget_class_t *widget_class;
+struct txt_widget_s {
+    txt_widget_class_t *                  widget_class;
     std::shared_ptr<txt_callback_table_t> callback_table;
-    int visible;
-    txt_horiz_align_t align;
-    int focused;
+    int                                   visible;
+    txt_horiz_align_t                     align;
+    int                                   focused;
 
     // These are set automatically when the window is drawn and should
     // not be set manually.
 
-    int x, y;
+    int          x, y;
     unsigned int w, h;
 
     // Pointer up to parent widget that contains this widget.
@@ -108,12 +106,12 @@ void TXT_InitWidget(TXT_UNCAST_ARG(widget), txt_widget_class_t *widget_class);
 void TXT_CalcWidgetSize(TXT_UNCAST_ARG(widget));
 void TXT_DrawWidget(TXT_UNCAST_ARG(widget));
 void TXT_EmitSignal(TXT_UNCAST_ARG(widget), const char *signal_name);
-int TXT_WidgetKeyPress(TXT_UNCAST_ARG(widget), int key);
+int  TXT_WidgetKeyPress(TXT_UNCAST_ARG(widget), int key);
 void TXT_WidgetMousePress(TXT_UNCAST_ARG(widget), int x, int y, int b);
 void TXT_DestroyWidget(TXT_UNCAST_ARG(widget));
 void TXT_LayoutWidget(TXT_UNCAST_ARG(widget));
-int TXT_AlwaysSelectable(TXT_UNCAST_ARG(widget));
-int TXT_NeverSelectable(TXT_UNCAST_ARG(widget));
+int  TXT_AlwaysSelectable(TXT_UNCAST_ARG(widget));
+int  TXT_NeverSelectable(TXT_UNCAST_ARG(widget));
 void TXT_SetWidgetFocus(TXT_UNCAST_ARG(widget), int focused);
 
 /**
@@ -126,7 +124,7 @@ void TXT_SetWidgetFocus(TXT_UNCAST_ARG(widget), int focused);
  */
 
 void TXT_SignalConnect(TXT_UNCAST_ARG(widget), const char *signal_name,
-                       TxtWidgetSignalFunc func, void *user_data);
+    TxtWidgetSignalFunc func, void *user_data);
 
 /**
  * Set the policy for how a widget should be aligned within a table.
@@ -176,4 +174,3 @@ void TXT_SetWidgetBG(TXT_UNCAST_ARG(widget));
 int TXT_ContainsWidget(TXT_UNCAST_ARG(haystack), TXT_UNCAST_ARG(needle));
 
 #endif /* #ifndef TXT_WIDGET_H */
-

@@ -32,7 +32,9 @@
 
 #include "SDL2/SDL.h"
 #include "fmt/core.h"
+
 #include <iostream>
+#include <string_view>
 #include <unistd.h>
 
 
@@ -124,7 +126,7 @@ auto I_ZoneBase(size_t *size) -> byte *
 
     if (p > 0)
     {
-        default_ram = atoi(myargv[p + 1]);
+        default_ram = M_GetArgumentAsInt(p + 1);
         min_ram     = default_ram;
     }
     else
@@ -446,15 +448,15 @@ bool I_GetMemoryValue(unsigned int offset, void *value, int size)
 
         if (p > 0)
         {
-            if (!strcasecmp(myargv[p + 1], "dos622"))
+            if (!strcasecmp(M_GetArgument(p + 1), "dos622"))
             {
                 dos_mem_dump = mem_dump_dos622;
             }
-            if (!strcasecmp(myargv[p + 1], "dos71"))
+            if (!strcasecmp(M_GetArgument(p + 1), "dos71"))
             {
                 dos_mem_dump = mem_dump_win98;
             }
-            else if (!strcasecmp(myargv[p + 1], "dosbox"))
+            else if (!strcasecmp(M_GetArgument(p + 1), "dosbox"))
             {
                 dos_mem_dump = mem_dump_dosbox;
             }
@@ -464,12 +466,13 @@ bool I_GetMemoryValue(unsigned int offset, void *value, int size)
                 {
                     ++p;
 
-                    if (p >= myargc || myargv[p][0] == '-')
+                    if (p >= M_GetArgumentCount() || M_GetArgument(p)[0] == '-')
                     {
                         break;
                     }
 
-                    M_StrToInt(myargv[p], &val);
+                    //M_StrToInt(myargv[p], &val);
+                    val                  = M_GetArgumentAsInt(p);
                     mem_dump_custom[i++] = (unsigned char)val;
                 }
 

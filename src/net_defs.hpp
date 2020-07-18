@@ -112,7 +112,7 @@ struct net_addr_t {
 // to use, so the order matters.
 // NOTE: The values in this enum do not have any special value outside of
 // the program they're compiled in. What matters is the string representation.
-typedef enum
+enum net_protocol_t
 {
     // Protocol introduced with Chocolate Doom v3.0. Each compatibility-
     // breaking change to the network protocol will produce a new protocol
@@ -124,11 +124,11 @@ typedef enum
 
     NET_NUM_PROTOCOLS,
     NET_PROTOCOL_UNKNOWN,
-} net_protocol_t;
+};
 
 // packet types
 
-typedef enum
+enum net_packet_type_t
 {
     NET_PACKET_TYPE_SYN,
     NET_PACKET_TYPE_ACK, // deprecated
@@ -147,7 +147,7 @@ typedef enum
     NET_PACKET_TYPE_QUERY_RESPONSE,
     NET_PACKET_TYPE_LAUNCH,
     NET_PACKET_TYPE_NAT_HOLE_PUNCH,
-} net_packet_type_t;
+};
 
 typedef enum
 {
@@ -240,17 +240,16 @@ typedef struct
 
 // Data sent in response to server queries
 
-typedef struct
-{
-    const char *   version;
-    int            server_state;
-    int            num_players;
-    int            max_players;
-    GameMode_t     gamemode;
-    int            gamemission;
-    const char *   description;
-    net_protocol_t protocol;
-} net_querydata_t;
+struct net_querydata_t {
+    const char *   version      = nullptr;
+    int            server_state = 0;
+    int            num_players  = 0;
+    int            max_players  = 0;
+    GameMode_t     gamemode     = GameMode_t::undetermined;
+    int            gamemission  = 0;
+    const char *   description  = nullptr;
+    net_protocol_t protocol     = NET_PROTOCOL_UNKNOWN;
+};
 
 // Data sent by the server while waiting for the game to start.
 

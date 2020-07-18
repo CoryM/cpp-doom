@@ -64,7 +64,7 @@ typedef enum
 
 typedef struct
 {
-    bool          active;
+    bool             active;
     int              player_number;
     net_addr_t *     addr;
     net_connection_t connection;
@@ -1061,7 +1061,7 @@ static void NET_SV_CheckResends(net_client_t *client)
     for (i = 0; i < BACKUPTICS; ++i)
     {
         net_client_recv_t *recvobj;
-        bool            need_resend;
+        bool               need_resend;
 
         recvobj = &recvwindow[i][player];
 
@@ -1409,7 +1409,7 @@ void NET_SV_SendQueryResponse(net_addr_t *addr)
 
     if (p > 0)
     {
-        querydata.description = myargv[p + 1];
+        querydata.description = M_GetArgument(p + 1);
     }
     else
     {
@@ -1427,25 +1427,21 @@ void NET_SV_SendQueryResponse(net_addr_t *addr)
 
 static void NET_SV_ParseHolePunch(net_packet_t *packet)
 {
-    const char *  addr_string;
-    net_packet_t *sendpacket;
-    net_addr_t *  addr;
-
-    addr_string = NET_ReadString(packet);
-    if (addr_string == NULL)
+    const auto *addr_string = NET_ReadString(packet);
+    if (addr_string == nullptr)
     {
         NET_Log("server: error: hole punch request but no address provided");
         return;
     }
 
-    addr = NET_ResolveAddress(server_context, addr_string);
-    if (addr == NULL)
+    auto *addr = NET_ResolveAddress(server_context, addr_string);
+    if (addr == nullptr)
     {
         NET_Log("server: error: failed to resolve address: %s", addr_string);
         return;
     }
 
-    sendpacket = NET_NewPacket(16);
+    auto *sendpacket = NET_NewPacket(16);
     NET_WriteInt16(sendpacket, NET_PACKET_TYPE_NAT_HOLE_PUNCH);
     NET_SendPacket(addr, sendpacket);
     NET_FreePacket(sendpacket);
@@ -1992,9 +1988,9 @@ void NET_SV_Run(void)
 
 void NET_SV_Shutdown(void)
 {
-    int     i;
+    int  i;
     bool running;
-    int     start_time;
+    int  start_time;
 
     if (!server_initialized)
     {

@@ -16,34 +16,32 @@
 //	Main program, simply calls D_DoomMain high level loop.
 //
 
-#include <iostream>
-
-#include "SDL2/SDL_mixer.h"
-
 #include "config.hpp"
 #include "crispy.hpp"
-
+#include "d_iwad.hpp"
 #include "doomtype.hpp"
 #include "i_system.hpp"
 #include "m_argv.hpp"
 #include "m_misc.hpp" // [crispy] M_snprintf()
-#include "d_iwad.hpp"
+
+#include "SDL2/SDL_mixer.h"
+
+#include <iostream>
 
 //
 // D_DoomMain()
 // Not a globally visible function, just included for source reference,
 // calls all startup code, parses command line options.
 //
-
-void D_DoomMain(void);
+void D_DoomMain();
 
 auto main(int argc, char **argv) -> int
 {
     try
     {
         // save arguments
-        myargc = argc;
-        myargv = argv;
+        myArgs = c_Arguments(argc, argv);
+        M_SetArgument(argc, argv);
 
         v_iwadDirs_init();
 

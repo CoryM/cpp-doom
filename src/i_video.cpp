@@ -79,7 +79,7 @@ static int           pane_alpha;
 static unsigned int  rmask, gmask, bmask, amask; // [crispy] moved up here
 static const uint8_t blend_alpha = 0xa8;
 extern pixel_t *     colormaps; // [crispy] evil hack to get FPS dots working as in Vanilla
-static bool palette_to_set;
+static bool          palette_to_set;
 
 // display has been set up?
 
@@ -88,7 +88,7 @@ static bool initialized = false;
 // disable mouse?
 
 static bool nomouse  = false;
-int            usemouse = 1;
+int         usemouse = 1;
 
 // Save screenshots in PNG format.
 
@@ -149,7 +149,7 @@ static int startup_delay = 1000;
 // Grab the mouse? (int type for config code). nograbmouse_override allows
 // this to be temporarily disabled via the command line.
 
-static int     grabmouse            = true;
+static int  grabmouse            = true;
 static bool nograbmouse_override = false;
 
 // The screen buffer; this is modified to draw things to the screen
@@ -186,7 +186,7 @@ static bool window_focused = true;
 
 // Window resize state.
 
-static bool      need_resize = false;
+static bool         need_resize = false;
 static unsigned int last_resize_time;
 #define RESIZE_DELAY 500
 
@@ -916,7 +916,7 @@ void I_InitWindowTitle(void)
 {
     char *buf;
 
-    buf = M_StringJoin({window_title, " - ", PACKAGE_STRING});
+    buf = M_StringJoin({ window_title, " - ", PACKAGE_STRING });
     SDL_SetWindowTitle(screen, buf);
     free(buf);
 }
@@ -1012,7 +1012,7 @@ void I_GraphicsCheckCommandLine(void)
 
     if (i > 0)
     {
-        window_width = atoi(myargv[i + 1]);
+        window_width = M_GetArgumentAsInt(i + 1);
         fullscreen   = false;
     }
 
@@ -1027,7 +1027,7 @@ void I_GraphicsCheckCommandLine(void)
 
     if (i > 0)
     {
-        window_height = atoi(myargv[i + 1]);
+        window_height = M_GetArgumentAsInt(i + 1);
         fullscreen    = false;
     }
 
@@ -1044,7 +1044,7 @@ void I_GraphicsCheckCommandLine(void)
     {
         int w, h, s;
 
-        s = sscanf(myargv[i + 1], "%ix%i", &w, &h);
+        s = sscanf(M_GetArgument(i + 1), "%ix%i", &w, &h);
         if (s == 2)
         {
             window_width  = w;
@@ -1110,7 +1110,7 @@ static void SetSDLVideoDriver(void)
     {
         char *env_string;
 
-        env_string = M_StringJoin({"SDL_VIDEODRIVER=", video_driver});
+        env_string = M_StringJoin({ "SDL_VIDEODRIVER=", video_driver });
         putenv(env_string);
         free(env_string);
     }
@@ -1181,8 +1181,8 @@ void I_GetWindowPosition(int *x, int *y, int w, int h)
 
 static void SetVideoMode(void)
 {
-    int w, h;
-    int x, y;
+    int             w, h;
+    int             x, y;
     int             unused_bpp;
     int             window_flags = 0, renderer_flags = 0;
     SDL_DisplayMode mode;
@@ -1427,7 +1427,7 @@ void I_GetScreenDimensions(void)
 void I_InitGraphics(void)
 {
     SDL_Event dummy;
-    char *env;
+    char *    env;
 
     // Pass through the XSCREENSAVER_WINDOW environment variable to
     // SDL_WINDOWID, to embed the SDL window into the Xscreensaver
@@ -1535,7 +1535,7 @@ void I_ReInitGraphics(int reinit)
         SDL_FreeSurface(argbbuffer);
         SDL_PixelFormatEnumToMasks(pixel_format, &unused_bpp,
             &rmask, &gmask, &bmask, &amask);
-        argbbuffer = SDL_CreateRGBSurface(0, SCREENWIDTH, SCREENHEIGHT, 32, rmask, gmask, bmask, amask);
+        argbbuffer    = SDL_CreateRGBSurface(0, SCREENWIDTH, SCREENHEIGHT, 32, rmask, gmask, bmask, amask);
         I_VideoBuffer = static_cast<pixel_t *>(argbbuffer->pixels);
         V_RestoreBuffer();
 

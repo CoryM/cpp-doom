@@ -17,25 +17,22 @@
 //    start the game.
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cctype>
-
+#include "../textscreen/textscreen.hpp"
 #include "config.hpp"
 #include "doomkeys.hpp"
-
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "i_video.hpp"
 #include "m_argv.hpp"
 #include "m_misc.hpp"
-
 #include "net_client.hpp"
 #include "net_gui.hpp"
 #include "net_query.hpp"
 #include "net_server.hpp"
 
-#include "../textscreen/textscreen.hpp"
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
 static txt_window_t *window;
 static int           old_max_players;
@@ -43,7 +40,7 @@ static txt_label_t * player_labels[NET_MAXPLAYERS];
 static txt_label_t * ip_labels[NET_MAXPLAYERS];
 static txt_label_t * drone_label;
 static txt_label_t * master_msg_label;
-static bool       had_warning;
+static bool          had_warning;
 
 // Number of players we expect to be in the game. When the number is
 // reached, we auto-start the game (if we're the controller). If
@@ -61,7 +58,7 @@ static void StartGame(TXT_UNCAST_ARG(widget) [[maybe_unused]], TXT_UNCAST_ARG(un
     NET_CL_LaunchGame();
 }
 
-static void OpenWaitDialog(void)
+static void OpenWaitDialog()
 {
     txt_window_action_t *cancel;
 
@@ -257,8 +254,8 @@ static void CloseWindow(TXT_UNCAST_ARG(widget) [[maybe_unused]], TXT_UNCAST_ARG(
 
 static void CheckSHA1Sums(void)
 {
-    bool              correct_wad, correct_deh;
-    bool              same_freedoom;
+    bool                 correct_wad, correct_deh;
+    bool                 same_freedoom;
     txt_window_t *       window;
     txt_window_action_t *cont_button;
 
@@ -365,11 +362,11 @@ static void ParseCommandLineArgs(void)
     i = M_CheckParmWithArgs("-nodes", 1);
     if (i > 0)
     {
-        expected_nodes = atoi(myargv[i + 1]);
+        expected_nodes = atoi(M_GetArgument(i + 1));
     }
 }
 
-static void CheckAutoLaunch(void)
+static void CheckAutoLaunch()
 {
     int nodes;
 

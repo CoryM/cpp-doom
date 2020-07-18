@@ -16,21 +16,23 @@
 // DESCRIPTION:
 //    Configuration file interface.
 //
-#include <cassert>
-
-#include "m_config.hpp"
 
 #include "config.hpp"
-
-#include "doomtype.hpp"
 #include "doomkeys.hpp"
+#include "doomtype.hpp"
 #include "i_system.hpp"
 #include "m_argv.hpp"
+#include "m_config.hpp"
 #include "m_misc.hpp"
-
 #include "z_zone.hpp"
 
 #include "SDL2/SDL.h"
+#include "fmt/core.h"
+
+#include <array>
+#include <cassert>
+#include <string_view>
+
 
 //
 // DEFAULTS
@@ -57,8 +59,7 @@ enum class default_type_t
     DEFAULT_KEY,
 };
 
-struct default_t
-{
+struct default_t {
     // Name of the variable
     const char *name;
 
@@ -88,14 +89,16 @@ struct default_t
     bool bound;
 };
 
-struct default_collection_t
-{
+struct default_collection_t {
     default_t * defaults;
     int         numdefaults;
     const char *filename;
 };
 
-#define CONFIG_VARIABLE_GENERIC(name, type) { #name, { NULL }, type, 0, 0, false }
+#define CONFIG_VARIABLE_GENERIC(name, type) \
+    {                                       \
+#name, { NULL }, type, 0, 0, false  \
+    }
 
 #define CONFIG_VARIABLE_KEY(name) \
     CONFIG_VARIABLE_GENERIC(name, default_type_t::DEFAULT_KEY)
@@ -110,7 +113,7 @@ struct default_collection_t
 
 //! @begin_config_file default
 
-static auto doom_defaults_list = std::to_array<default_t> ({
+static auto doom_defaults_list = std::to_array<default_t>({
     //!
     // Mouse sensitivity.  This value is used to multiply input mouse
     // movement to control the effect of moving the mouse.
@@ -728,7 +731,7 @@ static auto doom_defaults_list = std::to_array<default_t> ({
 static default_collection_t doom_defaults = {
     doom_defaults_list.data(),
     std::ssize(doom_defaults_list),
-    NULL
+    nullptr
 };
 
 //! @begin_config_file extended
@@ -2350,7 +2353,7 @@ static int ParseIntParameter(const char *strparm)
     {
         unsigned int unsigned_parm = 0;
         sscanf(strparm + 2, "%x", &unsigned_parm);
-        parm = static_cast<int>(unsigned_parm);    // possible narrowing conversion
+        parm = static_cast<int>(unsigned_parm); // possible narrowing conversion
     }
     else
     {
@@ -2532,12 +2535,12 @@ void M_LoadDefaults(void)
 
     if (i)
     {
-        doom_defaults.filename = myargv[i + 1];
+        doom_defaults.filename = M_GetArgument(i + 1);
         printf("	default file: %s\n", doom_defaults.filename);
     }
     else
     {
-        doom_defaults.filename = M_StringJoin({configdir, default_main_config});
+        doom_defaults.filename = M_StringJoin({ configdir, default_main_config });
     }
 
     printf("saving config in %s\n", doom_defaults.filename);
@@ -2553,13 +2556,13 @@ void M_LoadDefaults(void)
 
     if (i)
     {
-        extra_defaults.filename = myargv[i + 1];
+        extra_defaults.filename = M_GetArgument(i + 1);
         printf("        extra configuration file: %s\n",
             extra_defaults.filename);
     }
     else
     {
-        extra_defaults.filename = M_StringJoin({configdir, default_extra_config});
+        extra_defaults.filename = M_StringJoin({ configdir, default_extra_config });
     }
 
     LoadDefaultCollection(&doom_defaults);
@@ -2771,7 +2774,7 @@ void M_SetMusicPackDir(void)
     }
 
     prefdir         = SDL_GetPrefPath("", PACKAGE_TARNAME);
-    music_pack_path = M_StringJoin({prefdir, "music-packs"});
+    music_pack_path = M_StringJoin({ prefdir, "music-packs" });
 
     M_MakeDirectory(prefdir);
     M_MakeDirectory(music_pack_path);
@@ -2779,7 +2782,7 @@ void M_SetMusicPackDir(void)
 
     // We write a README file with some basic instructions on how to use
     // the directory.
-    readme_path = M_StringJoin({music_pack_path, DIR_SEPARATOR_S, "README.txt"});
+    readme_path = M_StringJoin({ music_pack_path, DIR_SEPARATOR_S, "README.txt" });
     M_WriteFile(readme_path, MUSIC_PACK_README, strlen(MUSIC_PACK_README));
 
     free(readme_path);
@@ -2808,16 +2811,16 @@ char *M_GetSaveGameDir(const char *iwadname)
     p = M_CheckParmWithArgs("-savedir", 1);
     if (p)
     {
-        savegamedir = myargv[p + 1];
+        savegamedir = M_GetArgument(p + 1);
         if (!M_DirExists(savegamedir))
         {
             M_MakeDirectory(savegamedir);
         }
 
         // add separator at end just in case
-        savegamedir = M_StringJoin({savegamedir, DIR_SEPARATOR_S});
+        savegamedir = M_StringJoin({ savegamedir, DIR_SEPARATOR_S });
 
-        printf("Save directory changed to %s.\n", savegamedir);
+        fmt::print("Save directory changed to {}.\n", savegamedir);
     }
     // If not "doing" a configuration directory (Windows), don't "do"
     // a savegame directory, either.
@@ -2829,12 +2832,12 @@ char *M_GetSaveGameDir(const char *iwadname)
     {
         // ~/.local/share/chocolate-doom/savegames
 
-        topdir = M_StringJoin({configdir, "savegames"});
+        topdir = M_StringJoin({ configdir, "savegames" });
         M_MakeDirectory(topdir);
 
         // eg. ~/.local/share/chocolate-doom/savegames/doom2.wad/
 
-        savegamedir = M_StringJoin({topdir, DIR_SEPARATOR_S, iwadname, DIR_SEPARATOR_S});
+        savegamedir = M_StringJoin({ topdir, DIR_SEPARATOR_S, iwadname, DIR_SEPARATOR_S });
 
         M_MakeDirectory(savegamedir);
 
@@ -2856,13 +2859,13 @@ char *M_GetAutoloadDir(const char *iwadname)
     {
         char *prefdir;
         prefdir       = SDL_GetPrefPath("", PACKAGE_TARNAME);
-        autoload_path = M_StringJoin({prefdir, "autoload"});
+        autoload_path = M_StringJoin({ prefdir, "autoload" });
         SDL_free(prefdir);
     }
 
     M_MakeDirectory(autoload_path.data());
 
-    result = M_StringJoin({autoload_path.data(), DIR_SEPARATOR_S, iwadname});
+    result = M_StringJoin({ autoload_path.data(), DIR_SEPARATOR_S, iwadname });
     M_MakeDirectory(result);
 
     // TODO: Add README file

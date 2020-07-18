@@ -515,9 +515,9 @@ void DEH_ParseCommandLine(void)
     {
         ++p;
 
-        while (p < myargc && myargv[p][0] != '-')
+        while (p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-')
         {
-            auto filename = D_TryFindWADByName(myargv[p]);
+            auto filename = D_TryFindWADByName(M_GetArgument(p));
             DEH_LoadFile(filename.c_str());
             ++p;
         }

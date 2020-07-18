@@ -14,17 +14,80 @@
 //
 // DESCRIPTION:
 //
+#include "m_argv.hpp" // haleyjd 20110212: warning fix
 
 #include "common.hpp"
-
-#include "doomtype.hpp"
 #include "d_iwad.hpp"
+#include "doomtype.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
-#include "m_argv.hpp" // haleyjd 20110212: warning fix
+
+#include "fmt/core.h"
+
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <span>
 
 int    myargc;
 char **myargv;
+
+constexpr size_t MAXARGVS = 100;
+
+
+c_Arguments::c_Arguments(int newArgC, char **newArgV)
+{
+    importArguments(std::span(newArgV, newArgC));
+}
+
+
+void c_Arguments::importArguments(const std::span<char *> &arrayOfArgs)
+{
+    for (auto &a : arrayOfArgs)
+    {
+        m_Args.emplace_back(std::string(a));
+    }
+}
+
+
+auto c_Arguments::at(const size_t pos) -> std::string
+{
+    return m_Args.at(pos);
+}
+
+
+void at(size_t pos);
+
+void M_SetArgument(const int newArgC, char **newArgV)
+{
+    myargc = newArgC;
+    myargv = newArgV;
+}
+
+
+auto M_GetArgument(const int arg) -> std::string_view
+{
+    return myArgs.at(arg);
+    // if (arg < 0 || arg > myargc)
+    // {
+    //     return nullptr;
+    // }
+    // return myargv[arg];
+}
+
+auto M_GetArgumentAsInt(int arg) -> int
+{
+    if (arg < 0 || arg > myargc)
+    {
+        return 0;
+    }
+    return atoi(myargv[arg]);
+}
+
+auto M_GetArgumentCount() -> int
+{
+    return myargc;
+}
 
 
 //
@@ -33,16 +96,14 @@ char **myargv;
 // in the program's command line arguments.
 // Returns the argument number (1 to argc-1)
 // or 0 if not present
-//
-
-int M_CheckParmWithArgs(const char *check, int num_args)
+auto M_CheckParmWithArgs(const char *check, int num_args) -> int
 {
-    int i;
-
-    for (i = 1; i < myargc - num_args; i++)
+    for (int i = 1; i < myargc - num_args; i++)
     {
-        if (!strcasecmp(check, myargv[i]))
+        if (strcasecmp(check, myargv[i]) == 0)
+        {
             return i;
+        }
     }
 
     return 0;
@@ -55,87 +116,90 @@ int M_CheckParmWithArgs(const char *check, int num_args)
 // line arguments, false if not.
 //
 
-bool M_ParmExists(const char *check)
+auto M_ParmExists(const char *check) -> bool
 {
     return M_CheckParm(check) != 0;
 }
 
-int M_CheckParm(const char *check)
+auto M_CheckParm(const char *check) -> int
 {
     return M_CheckParmWithArgs(check, 0);
 }
 
-#define MAXARGVS 100
 
 static void LoadResponseFile(int argv_index, const char *filename)
 {
-    FILE * handle;
-    int    size;
-    char * infile;
-    char * file;
-    char **newargv;
-    int    newargc;
-    int    i, k;
-
     // Read the response file into memory
-    handle = fopen(filename, "rb");
+    auto handle = std::ifstream(filename, std::ios::binary);
 
-    if (handle == NULL)
+    if (!handle.is_open())
     {
-        printf("\nNo such response file!");
+        fmt::print("\nNo such response file!");
         //exit(1);
         throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
     }
 
-    printf("Found response file %s!\n", filename);
+    fmt::print("Found response file {}!\n", filename);
 
-    size = M_FileLength(handle);
+    auto GetFileSize = [](auto &fileHandle) {
+        auto currentPos = fileHandle.tellg(); // Save current stream postion
+
+        fileHandle.seekg(0, std::ios_base::end); // Goto the end of the stream
+        auto endPos = fileHandle.tellg();        // Save the postion at the end
+
+        fileHandle.seekg(0, std::ios_base::beg); // Goto the start of the stream
+        auto startPos = fileHandle.tellg();      // Save the postion of the stream
+
+        fileHandle.seekg(currentPos, std::ios_base::beg); // Restore file postion
+        return (endPos - startPos);
+    };
+
+    auto size = GetFileSize(handle);
+    fmt::print("file size : {}\n", size);
 
     // Read in the entire file
     // Allocate one byte extra - this is in case there is an argument
     // at the end of the response file, in which case a '\0' will be
     // needed.
 
-    file = static_cast<char *>(malloc(size + 1));
+    auto *file = static_cast<char *>(malloc(size + 1));
 
-    i = 0;
-
-    while (i < size)
+    for (int i = 0; i < size; i++)
     {
-        k = fread(file + i, 1, size - i, handle);
+        //auto k = fread(file + i, 1, size - i, handle);
+        handle.get(&file[i], size - i);
+        auto k = handle.gcount();
 
         if (k < 0)
         {
-            I_Error("Failed to read full contents of '%s'", filename);
+            S_Error(fmt::format("Failed to read full contents of '{}'", filename));
         }
 
         i += k;
     }
 
-    fclose(handle);
+    handle.close();
 
     // Create new arguments list array
 
-    newargv = static_cast<char **>(malloc(sizeof(char *) * MAXARGVS));
-    newargc = 0;
+    auto **newargv = static_cast<char **>(malloc(sizeof(char *) * MAXARGVS));
+    int    newargc = 0;
     memset(newargv, 0, sizeof(char *) * MAXARGVS);
 
     // Copy all the arguments in the list up to the response file
 
-    for (i = 0; i < argv_index; ++i)
+    for (int i = 0; i < argv_index; ++i, ++newargc)
     {
         newargv[i] = myargv[i];
-        ++newargc;
     }
 
-    infile = file;
-    k      = 0;
+    auto *infile = file;
 
-    while (k < size)
+    for (int k = 0; k < size;)
     {
         // Skip past space characters to the next argument
 
-        while (k < size && isspace(infile[k]))
+        while (k < size && (std::isspace(infile[k]) != 0))
         {
             ++k;
         }
@@ -165,8 +229,7 @@ static void LoadResponseFile(int argv_index, const char *filename)
 
             if (k >= size || infile[k] == '\n')
             {
-                I_Error("Quotes unclosed in response file '%s'",
-                    filename);
+                S_Error(fmt::format("Quotes unclosed in response file '{}'", filename));
             }
 
             // Cut off the string at the closing quote
@@ -195,7 +258,7 @@ static void LoadResponseFile(int argv_index, const char *filename)
 
     // Add arguments following the response file argument
 
-    for (i = argv_index + 1; i < myargc; ++i)
+    for (int i = argv_index + 1; i < myargc; ++i)
     {
         newargv[newargc] = myargv[i];
         ++newargc;
@@ -204,24 +267,22 @@ static void LoadResponseFile(int argv_index, const char *filename)
     myargv = newargv;
     myargc = newargc;
 
-#if 0
     // Disabled - Vanilla Doom does not do this.
     // Display arguments
 
-    printf("%d command-line args:\n", myargc);
+    fmt::print("{} command-line args:\n", myargc);
 
-    for (k=1; k<myargc; k++)
+    for (int k = 0; k < myargc; k++)
     {
-        printf("'%s'\n", myargv[k]);
+        fmt::print("{}:'{}'\n", k, myargv[k]);
     }
-#endif
 }
 
 //
 // Find a Response File
 //
 
-void M_FindResponseFile(void)
+void M_FindResponseFile()
 {
     int i;
 
@@ -253,7 +314,7 @@ void M_FindResponseFile(void)
         // an argument beginning with a '-' is encountered, we keep something
         // that starts with a '-'.
         myargv[i] = "-_";
-        LoadResponseFile(i + 1, myargv[i + 1]);
+        LoadResponseFile(i + 1, M_GetArgument(i + 1));
     }
 }
 

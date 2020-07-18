@@ -15,10 +15,6 @@
 //     Networking module which uses SDL_net
 //
 
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-
 #include "../utils/memory.hpp"
 #include "doomtype.hpp"
 #include "i_system.hpp"
@@ -29,6 +25,13 @@
 #include "net_packet.hpp"
 #include "net_sdl.hpp"
 #include "z_zone.hpp"
+
+#include "SDL/SDL_net.h"
+#include "fmt/core.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 //
 // NETWORKING
@@ -172,15 +175,15 @@ static bool NET_SDL_InitClient(void)
 
     p = M_CheckParmWithArgs("-port", 1);
     if (p > 0)
-        port = atoi(myargv[p + 1]);
+        port = M_GetArgumentAsInt(p + 1);
 
     SDLNet_Init();
 
     udpsocket = SDLNet_UDP_Open(0);
 
-    if (udpsocket == NULL)
+    if (udpsocket == nullptr)
     {
-        I_Error("NET_SDL_InitClient: Unable to open a socket!");
+        S_Error("NET_SDL_InitClient: Unable to open a socket!");
     }
 
     recvpacket = SDLNet_AllocPacket(1500);
@@ -203,15 +206,15 @@ static bool NET_SDL_InitServer(void)
 
     p = M_CheckParmWithArgs("-port", 1);
     if (p > 0)
-        port = atoi(myargv[p + 1]);
+        port = M_GetArgumentAsInt(p + 1);
 
     SDLNet_Init();
 
     udpsocket = SDLNet_UDP_Open(port);
 
-    if (udpsocket == NULL)
+    if (udpsocket == nullptr)
     {
-        I_Error("NET_SDL_InitServer: Unable to bind to port %i", port);
+        S_Error(fmt::format("NET_SDL_InitServer: Unable to bind to port {}", port));
     }
 
     recvpacket = SDLNet_AllocPacket(1500);

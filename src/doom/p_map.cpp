@@ -126,10 +126,9 @@ bool PIT_StompThing(mobj_t *thing)
 //
 // P_TeleportMove
 //
-bool
-    P_TeleportMove(mobj_t *thing,
-        fixed_t            x,
-        fixed_t            y)
+bool P_TeleportMove(mobj_t *thing,
+    fixed_t                 x,
+    fixed_t                 y)
 {
     int xl;
     int xh;
@@ -280,8 +279,8 @@ bool PIT_CheckLine(line_s *ld)
 bool PIT_CheckThing(mobj_t *thing)
 {
     fixed_t blockdist;
-    bool solid;
-    bool unblocking = false;
+    bool    solid;
+    bool    unblocking = false;
     int     damage;
 
     if (!(thing->flags & (MF_SOLID | MF_SPECIAL | MF_SHOOTABLE)))
@@ -486,10 +485,9 @@ bool PIT_CheckThing(mobj_t *thing)
 //  speciallines[]
 //  numspeciallines
 //
-bool
-    P_CheckPosition(mobj_t *thing,
-        fixed_t             x,
-        fixed_t             y)
+bool P_CheckPosition(mobj_t *thing,
+    fixed_t                  x,
+    fixed_t                  y)
 {
     int          xl;
     int          xh;
@@ -561,10 +559,9 @@ bool
 // Attempt to move to a new position,
 // crossing special lines unless MF_TELEPORT is set.
 //
-bool
-    P_TryMove(mobj_t *thing,
-        fixed_t       x,
-        fixed_t       y)
+bool P_TryMove(mobj_t *thing,
+    fixed_t            x,
+    fixed_t            y)
 {
     fixed_t oldx;
     fixed_t oldy;
@@ -923,8 +920,7 @@ extern degenmobj_t *laserspot;
 // PTR_AimTraverse
 // Sets linetaget and aimslope when a target is aimed at.
 //
-bool
-    PTR_AimTraverse(intercept_t *in)
+bool PTR_AimTraverse(intercept_t *in)
 {
     line_s *li;
     mobj_t *th;
@@ -1029,7 +1025,7 @@ bool PTR_ShootTraverse(intercept_t *in)
     if (in->isaline)
     {
         bool safe = false;
-        li           = in->d.line;
+        li        = in->d.line;
 
         // [crispy] laser spot does not shoot any line
         if (li->special && la_damage > INT_MIN)
@@ -1577,9 +1573,8 @@ bool PIT_ChangeSector(mobj_t *thing)
 //
 // P_ChangeSector
 //
-bool
-    P_ChangeSector(sector_t *sector,
-        bool              crunch)
+bool P_ChangeSector(sector_t *sector,
+    bool                      crunch)
 {
     int x;
     int y;
@@ -1624,7 +1619,7 @@ static void SpechitOverrun(line_s *ld)
 
         if (p > 0)
         {
-            M_StrToInt(myargv[p + 1], (int *)&baseaddr);
+            M_StrToInt(M_GetArgument(p + 1), (int *)&baseaddr);
         }
         else
         {

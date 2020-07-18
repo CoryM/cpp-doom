@@ -16,9 +16,6 @@
 //     Common code to parse command line, identifying WAD files to load.
 //
 
-#include <cstdlib>
-#include <string_view>
-
 #include "config.hpp"
 #include "d_iwad.hpp"
 #include "i_glob.hpp"
@@ -29,9 +26,15 @@
 #include "w_wad.hpp"
 #include "z_zone.hpp"
 
+#include "fmt/core.h"
+
+#include <cstdlib>
+#include <string_view>
+
+
 // Parse the command line, merging WAD files that are specified.
 // Returns true if at least one file was added.
-bool W_ParseCommandLine(void)
+auto W_ParseCommandLine() -> bool
 {
     bool modifiedgame = false;
 
@@ -47,14 +50,14 @@ bool W_ParseCommandLine(void)
     //
     if (int p = M_CheckParmWithArgs("-merge", 1); p > 0)
     {
-        for (p = p + 1; p < myargc && myargv[p][0] != '-'; ++p)
+        for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
 
             modifiedgame = true;
 
-            const auto filename = D_TryFindWADByName(myargv[p]);
+            const auto filename = D_TryFindWADByName(M_GetArgument(p));
 
-            printf(" merging %s\n", filename.c_str());
+            fmt::print(" merging {}\n", filename);
             W_MergeFile(filename.c_str());
         }
     }
@@ -71,11 +74,11 @@ bool W_ParseCommandLine(void)
 
     if (int p = M_CheckParmWithArgs("-nwtmerge", 1); p > 0)
     {
-        for (p = p + 1; p < myargc && myargv[p][0] != '-'; ++p)
+        for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
             modifiedgame = true;
 
-            const auto filename = D_TryFindWADByName(myargv[p]);
+            const auto filename = D_TryFindWADByName(M_GetArgument(p));
 
             printf(" performing NWT-style merge of %s\n", filename.c_str());
             W_NWTDashMerge(filename.c_str());
@@ -94,11 +97,11 @@ bool W_ParseCommandLine(void)
 
     if (int p = M_CheckParmWithArgs("-af", 1); p > 0)
     {
-        for (p = p + 1; p < myargc && myargv[p][0] != '-'; ++p)
+        for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
             modifiedgame = true;
 
-            const auto filename = D_TryFindWADByName(myargv[p]);
+            const auto filename = D_TryFindWADByName(M_GetArgument(p));
 
             printf(" merging flats from %s\n", filename.c_str());
             W_NWTMergeFile(filename.c_str(), W_NWT_MERGE_FLATS);
@@ -114,10 +117,10 @@ bool W_ParseCommandLine(void)
     //
     if (int p = M_CheckParmWithArgs("-as", 1); p > 0)
     {
-        for (p = p + 1; p < myargc && myargv[p][0] != '-'; ++p)
+        for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
-            modifiedgame = true;
-            const auto filename     = D_TryFindWADByName(myargv[p]);
+            modifiedgame        = true;
+            const auto filename = D_TryFindWADByName(M_GetArgument(p));
 
             printf(" merging sprites from %s\n", filename.c_str());
             W_NWTMergeFile(filename.c_str(), W_NWT_MERGE_SPRITES);
@@ -132,11 +135,11 @@ bool W_ParseCommandLine(void)
     //
     if (int p = M_CheckParmWithArgs("-aa", 1); p > 0)
     {
-        for (p = p + 1; p < myargc && myargv[p][0] != '-'; ++p)
+        for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
             modifiedgame = true;
 
-            const auto filename = D_TryFindWADByName(myargv[p]);
+            const auto filename = D_TryFindWADByName(M_GetArgument(p));
 
             printf(" merging sprites and flats from %s\n", filename.c_str());
             W_NWTMergeFile(filename.c_str(), W_NWT_MERGE_SPRITES | W_NWT_MERGE_FLATS);
@@ -154,12 +157,12 @@ bool W_ParseCommandLine(void)
         // the parms after p are wadfile/lump names,
         // until end of parms or another - preceded parm
         modifiedgame = true; // homebrew levels
-        while (++p != myargc && myargv[p][0] != '-')
+        while (++p != M_GetArgumentCount() && M_GetArgument(p)[0] != '-')
         {
-            const auto filename = D_TryFindWADByName(myargv[p]);
+            const auto filename = D_TryFindWADByName(M_GetArgument(p));
 
             // [crispy] always merge arguments of "-file" parameter
-            printf(" merging %s !\n", filename.c_str());
+            fmt::print(" merging {} !\n", filename);
             W_MergeFile(filename.c_str());
         }
     }
