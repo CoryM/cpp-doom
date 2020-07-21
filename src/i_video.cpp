@@ -63,18 +63,18 @@ static const char *window_title = "";
 // is upscaled by an integer factor UPSCALE using "nearest" scaling and which
 // in turn is finally rendered to screen using "linear" scaling.
 
-static SDL_Surface *argbbuffer       = NULL;
-static SDL_Texture *texture          = NULL;
-static SDL_Texture *texture_upscaled = NULL;
+static SDL_Surface *argbbuffer       = nullptr;
+static SDL_Texture *texture          = nullptr;
+static SDL_Texture *texture_upscaled = nullptr;
 
 static uint32_t pixel_format;
 
 // palette
 
-static SDL_Texture * curpane = NULL;
-static SDL_Texture * redpane = NULL;
-static SDL_Texture * yelpane = NULL;
-static SDL_Texture * grnpane = NULL;
+static SDL_Texture * curpane = nullptr;
+static SDL_Texture * redpane = nullptr;
+static SDL_Texture * yelpane = nullptr;
+static SDL_Texture * grnpane = nullptr;
 static int           pane_alpha;
 static unsigned int  rmask, gmask, bmask, amask; // [crispy] moved up here
 static const uint8_t blend_alpha = 0xa8;
@@ -958,7 +958,7 @@ void I_GraphicsCheckCommandLine(void)
     // Disable blitting the screen.
     //
 
-    noblit = M_CheckParm("-noblit");
+    noblit = M_ParmExists("-noblit");
 
     //!
     // @category video
@@ -977,7 +977,7 @@ void I_GraphicsCheckCommandLine(void)
     // Run in a window.
     //
 
-    if (M_CheckParm("-window") || M_CheckParm("-nofullscreen"))
+    if (M_ParmExists("-window") || M_ParmExists("-nofullscreen"))
     {
         fullscreen = false;
     }
@@ -988,7 +988,7 @@ void I_GraphicsCheckCommandLine(void)
     // Run in fullscreen mode.
     //
 
-    if (M_CheckParm("-fullscreen"))
+    if (M_ParmExists("-fullscreen"))
     {
         fullscreen = true;
     }
@@ -999,7 +999,7 @@ void I_GraphicsCheckCommandLine(void)
     // Disable the mouse.
     //
 
-    nomouse = M_CheckParm("-nomouse") > 0;
+    nomouse = M_ParmExists("-nomouse");
 
     //!
     // @category video
@@ -1008,7 +1008,7 @@ void I_GraphicsCheckCommandLine(void)
     // Specify the screen width, in pixels. Implies -window.
     //
 
-    i = M_CheckParmWithArgs("-width", 1);
+    i = M_CheckParm("-width", 1);
 
     if (i > 0)
     {
@@ -1023,7 +1023,7 @@ void I_GraphicsCheckCommandLine(void)
     // Specify the screen height, in pixels. Implies -window.
     //
 
-    i = M_CheckParmWithArgs("-height", 1);
+    i = M_CheckParm("-height", 1);
 
     if (i > 0)
     {
@@ -1038,13 +1038,13 @@ void I_GraphicsCheckCommandLine(void)
     // Specify the dimensions of the window. Implies -window.
     //
 
-    i = M_CheckParmWithArgs("-geometry", 1);
+    i = M_CheckParm("-geometry", 1);
 
     if (i > 0)
     {
         int w, h, s;
 
-        s = sscanf(M_GetArgument(i + 1), "%ix%i", &w, &h);
+        s = sscanf(M_GetArgument(i + 1).data(), "%ix%i", &w, &h);
         if (s == 2)
         {
             window_width  = w;
@@ -1059,7 +1059,7 @@ void I_GraphicsCheckCommandLine(void)
     // Don't scale up the screen. Implies -window.
     //
 
-    if (M_CheckParm("-1"))
+    if (M_ParmExists("-1"))
     {
         SetScaleFactor(1);
     }
@@ -1070,7 +1070,7 @@ void I_GraphicsCheckCommandLine(void)
     // Double up the screen to 2x its normal size. Implies -window.
     //
 
-    if (M_CheckParm("-2"))
+    if (M_ParmExists("-2"))
     {
         SetScaleFactor(2);
     }
@@ -1081,7 +1081,7 @@ void I_GraphicsCheckCommandLine(void)
     // Double up the screen to 3x its normal size. Implies -window.
     //
 
-    if (M_CheckParm("-3"))
+    if (M_ParmExists("-3"))
     {
         SetScaleFactor(3);
     }

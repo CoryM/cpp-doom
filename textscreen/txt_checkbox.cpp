@@ -12,10 +12,9 @@
 // GNU General Public License for more details.
 //
 
-#include <cstdlib>
-#include <cstring>
-
-#include "doomkeys.hpp"
+#include "../src/doomkeys.hpp"
+#include "../src/m_misc.hpp"
+#include "../utils/memory.hpp"
 
 #include "txt_checkbox.hpp"
 #include "txt_gui.hpp"
@@ -23,7 +22,10 @@
 #include "txt_main.hpp"
 #include "txt_utf8.hpp"
 #include "txt_window.hpp"
-#include "../utils/memory.hpp"
+
+#include <cstdlib>
+#include <cstring>
+
 
 static void TXT_CheckBoxSizeCalc(TXT_UNCAST_ARG(checkbox))
 {
@@ -39,8 +41,8 @@ static void TXT_CheckBoxDrawer(TXT_UNCAST_ARG(checkbox))
 {
     TXT_CAST_ARG(txt_checkbox_t, checkbox);
     txt_saved_colors_t colors;
-    int i;
-    int w;
+    int                i;
+    int                w;
 
     w = checkbox->widget.w;
 
@@ -67,7 +69,7 @@ static void TXT_CheckBoxDrawer(TXT_UNCAST_ARG(checkbox))
     TXT_SetWidgetBG(checkbox);
     TXT_DrawString(checkbox->label);
 
-    for (i = TXT_UTF8_Strlen(checkbox->label); i < w-4; ++i)
+    for (i = TXT_UTF8_Strlen(checkbox->label); i < w - 4; ++i)
     {
         TXT_DrawString(" ");
     }
@@ -90,7 +92,7 @@ static int TXT_CheckBoxKeyPress(TXT_UNCAST_ARG(checkbox), int key)
         TXT_EmitSignal(checkbox, "changed");
         return 1;
     }
-    
+
     return 0;
 }
 
@@ -106,8 +108,7 @@ static void TXT_CheckBoxMousePress(TXT_UNCAST_ARG(checkbox), int x [[maybe_unuse
     }
 }
 
-txt_widget_class_t txt_checkbox_class =
-{
+txt_widget_class_t txt_checkbox_class = {
     TXT_AlwaysSelectable,
     TXT_CheckBoxSizeCalc,
     TXT_CheckBoxDrawer,
@@ -122,7 +123,7 @@ txt_checkbox_t *TXT_NewCheckBox(const char *label, int *variable)
     auto *checkbox = create_struct<txt_checkbox_t>();
 
     TXT_InitWidget(checkbox, &txt_checkbox_class);
-    checkbox->label = strdup(label);
+    checkbox->label    = M_StringDuplicate(label);
     checkbox->variable = variable;
     checkbox->inverted = 0;
 
@@ -133,9 +134,8 @@ txt_checkbox_t *TXT_NewInvertedCheckBox(const char *label, int *variable)
 {
     txt_checkbox_t *result;
 
-    result = TXT_NewCheckBox(label, variable);
+    result           = TXT_NewCheckBox(label, variable);
     result->inverted = 1;
 
     return result;
 }
-

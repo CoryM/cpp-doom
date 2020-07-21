@@ -12,16 +12,19 @@
 // GNU General Public License for more details.
 //
 
-#include <cstdlib>
-#include <cstring>
-
+#include "../src/m_misc.hpp"
 #include "../utils/memory.hpp"
+
 #include "txt_gui.hpp"
 #include "txt_io.hpp"
 #include "txt_label.hpp"
 #include "txt_main.hpp"
 #include "txt_utf8.hpp"
 #include "txt_window.hpp"
+
+#include <cstdlib>
+#include <cstring>
+
 
 static void TXT_LabelSizeCalc(TXT_UNCAST_ARG(label))
 {
@@ -35,7 +38,7 @@ static void TXT_LabelDrawer(TXT_UNCAST_ARG(label))
 {
     TXT_CAST_ARG(txt_label_t, label);
     unsigned int x, y;
-    int origin_x, origin_y;
+    int          origin_x, origin_y;
     unsigned int align_indent = 0;
     unsigned int w, sw;
 
@@ -52,22 +55,22 @@ static void TXT_LabelDrawer(TXT_UNCAST_ARG(label))
 
     TXT_GetXY(&origin_x, &origin_y);
 
-    for (y=0; y<label->h; ++y)
+    for (y = 0; y < label->h; ++y)
     {
         // Calculate the amount to indent this line due to the align
         // setting
         sw = TXT_UTF8_Strlen(label->lines[y]);
         switch (label->widget.align)
         {
-            case TXT_HORIZ_LEFT:
-                align_indent = 0;
-                break;
-            case TXT_HORIZ_CENTER:
-                align_indent = (label->w - sw) / 2;
-                break;
-            case TXT_HORIZ_RIGHT:
-                align_indent = label->w - sw;
-                break;
+        case TXT_HORIZ_LEFT:
+            align_indent = 0;
+            break;
+        case TXT_HORIZ_CENTER:
+            align_indent = (label->w - sw) / 2;
+            break;
+        case TXT_HORIZ_RIGHT:
+            align_indent = label->w - sw;
+            break;
         }
 
         // Draw this line
@@ -76,7 +79,7 @@ static void TXT_LabelDrawer(TXT_UNCAST_ARG(label))
 
         // Gap at the start
 
-        for (x=0; x<align_indent; ++x)
+        for (x = 0; x < align_indent; ++x)
         {
             TXT_DrawString(" ");
         }
@@ -88,7 +91,7 @@ static void TXT_LabelDrawer(TXT_UNCAST_ARG(label))
 
         // Gap at the end
 
-        for (; x<w; ++x)
+        for (; x < w; ++x)
         {
             TXT_DrawString(" ");
         }
@@ -103,8 +106,7 @@ static void TXT_LabelDestructor(TXT_UNCAST_ARG(label))
     free(label->lines);
 }
 
-txt_widget_class_t txt_label_class =
-{
+txt_widget_class_t txt_label_class = {
     TXT_NeverSelectable,
     TXT_LabelSizeCalc,
     TXT_LabelDrawer,
@@ -116,7 +118,7 @@ txt_widget_class_t txt_label_class =
 
 void TXT_SetLabel(txt_label_t *label, const char *value)
 {
-    char *p;
+    char *       p;
     unsigned int y;
 
     // Free back the old label
@@ -126,7 +128,7 @@ void TXT_SetLabel(txt_label_t *label, const char *value)
 
     // Set the new value
 
-    label->label = strdup(value);
+    label->label = M_StringDuplicate(value);
 
     // Work out how many lines in this label
 
@@ -142,23 +144,23 @@ void TXT_SetLabel(txt_label_t *label, const char *value)
 
     // Split into lines
 
-    label->lines = static_cast<char **>(malloc(sizeof(char *) * label->h));
+    label->lines    = static_cast<char **>(malloc(sizeof(char *) * label->h));
     label->lines[0] = label->label;
-    y = 1;
+    y               = 1;
 
     for (p = label->label; *p != '\0'; ++p)
     {
         if (*p == '\n')
         {
             label->lines[y] = p + 1;
-            *p = '\0';
+            *p              = '\0';
             ++y;
         }
     }
 
     label->w = 0;
 
-    for (y=0; y<label->h; ++y)
+    for (y = 0; y < label->h; ++y)
     {
         unsigned int line_len;
 
@@ -196,4 +198,3 @@ void TXT_SetBGColor(txt_label_t *label, txt_color_t color)
 {
     label->bgcolor = color;
 }
-

@@ -15,19 +15,19 @@
 // Dedicated server code.
 //
 
-#include <cstdio>
-#include <cstdlib>
-
 #include "doomtype.hpp"
-
 #include "i_system.hpp"
 #include "i_timer.hpp"
-
 #include "m_argv.hpp"
-
 #include "net_common.hpp"
 #include "net_sdl.hpp"
 #include "net_server.hpp"
+
+#include "fmt/core.h"
+
+#include <cstdio>
+#include <cstdlib>
+
 
 //
 // People can become confused about how dedicated servers work.  Game
@@ -66,19 +66,19 @@ static const char *not_dedicated_options[] = {
     NULL,
 };
 
-static void CheckForClientOptions(void)
+static void CheckForClientOptions()
 {
     int i;
 
-    for (i = 0; not_dedicated_options[i] != NULL; ++i)
+    for (i = 0; not_dedicated_options[i] != nullptr; ++i)
     {
-        if (M_CheckParm(not_dedicated_options[i]) > 0)
+        if (M_ParmExists(not_dedicated_options[i]))
         {
-            I_Error("The command line parameter '%s' was specified to a "
-                    "dedicated server.\nGame parameters should be specified "
-                    "to the first player to join a server, \nnot to the "
-                    "server itself. ",
-                not_dedicated_options[i]);
+            S_Error(fmt::format("The command line parameter '{}' was specified to a "
+                                "dedicated server.\nGame parameters should be specified "
+                                "to the first player to join a server, \nnot to the "
+                                "server itself. ",
+                not_dedicated_options[i]));
         }
     }
 }

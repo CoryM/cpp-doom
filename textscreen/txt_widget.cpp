@@ -12,16 +12,19 @@
 // GNU General Public License for more details.
 //
 
-#include <cstdlib>
-#include <cstring>
-
 #include "../utils/memory.hpp"
+#include "../src/m_misc.hpp"
+
 #include "txt_desktop.hpp"
 #include "txt_gui.hpp"
 #include "txt_io.hpp"
 #include "txt_widget.hpp"
-#include <vector>
+
+#include <cstdlib>
+#include <cstring>
 #include <memory>
+#include <vector>
+
 
 typedef struct
 {
@@ -82,7 +85,7 @@ void TXT_SignalConnect(TXT_UNCAST_ARG(widget),
 
 
     auto &callback       = table->callbacks.emplace_back();
-    callback.signal_name = strdup(signal_name);
+    callback.signal_name = M_StringDuplicate(signal_name);
     callback.func        = func;
     callback.user_data   = user_data;
 }

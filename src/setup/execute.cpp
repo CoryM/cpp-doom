@@ -63,13 +63,11 @@ static char *TempFile(const char *s)
     return M_StringJoin({ tempdir, DIR_SEPARATOR_S, s });
 }
 
-static int ArgumentNeedsEscape(char *arg)
+static int ArgumentNeedsEscape(const std::string_view &arg)
 {
-    char *p;
-
-    for (p = arg; *p != '\0'; ++p)
+    for (auto &p : arg)
     {
-        if (isspace(*p))
+        if (isspace(p))
         {
             return 1;
         }
@@ -90,11 +88,11 @@ void PassThroughArguments(execute_context_t *context)
     {
         if (ArgumentNeedsEscape(M_GetArgument(i)))
         {
-            AddCmdLineParameter(context, "\"%s\"", M_GetArgument(i));
+            AddCmdLineParameter(context, "\"%s\"", M_GetArgument(i).data());
         }
         else
         {
-            AddCmdLineParameter(context, "%s", M_GetArgument(i));
+            AddCmdLineParameter(context, "%s", M_GetArgument(i).data());
         }
     }
 }
@@ -273,19 +271,19 @@ static char *GetFullExePath(const char *program)
     size_t result_len;
     unsigned int path_len;
 
-    sep = strrchr(M_GetArgument(0), DIR_SEPARATOR);
+    sep = strrchr(M_StringDuplicate(M_GetArgument(0)), DIR_SEPARATOR);
 
-    if (sep == NULL)
+    if (sep == nullptr)
     {
         result = M_StringDuplicate(program);
     }
     else
     {
-        path_len = sep - M_GetArgument(0) + 1;
+        path_len = sep - M_GetArgument(0).data() + 1;
         result_len = strlen(program) + path_len + 1;
         result = static_cast<char *>(malloc(result_len));
 
-        M_StringCopy(result, M_GetArgument(0), result_len);
+        M_StringCopy(result, M_GetArgument(0).data(), result_len);
         result[path_len] = '\0';
 
         M_StringConcat(result, program, result_len);

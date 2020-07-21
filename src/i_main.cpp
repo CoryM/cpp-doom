@@ -25,6 +25,7 @@
 #include "m_misc.hpp" // [crispy] M_snprintf()
 
 #include "SDL2/SDL_mixer.h"
+#include "fmt/core.h"
 
 #include <iostream>
 
@@ -56,10 +57,9 @@ auto main(int argc, char **argv) -> int
         }
 
         {
-            char        buf[16];
             SDL_version version;
             SDL_GetVersion(&version);
-            M_snprintf(buf, sizeof(buf), "%d.%d.%d", version.major, version.minor, version.patch);
+            auto buf           = fmt::format("{}.{}.{}", version.major, version.minor, version.patch);
             crispy->sdlversion = M_StringDuplicate(buf);
             crispy->platform   = SDL_GetPlatform();
         }

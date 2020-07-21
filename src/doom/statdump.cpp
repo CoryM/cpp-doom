@@ -333,7 +333,7 @@ void StatDump(void)
     // from statdump.exe (see ctrlapi.zip in the /idgames archive).
     //
 
-    i = M_CheckParmWithArgs("-statdump", 1);
+    i = M_CheckParm("-statdump", 1);
 
     if (i > 0)
     {
@@ -346,9 +346,9 @@ void StatDump(void)
 
         // Allow "-" as output file, for stdout.
 
-        if (strcmp(M_GetArgument(i + 1), "-") != 0)
+        if (strcmp(M_GetArgument(i + 1).data(), "-") != 0)
         {
-            dumpfile = fopen(M_GetArgument(i + 1), "w");
+            dumpfile = fopen(M_GetArgument(i + 1).data(), "w");
         }
         else
         {

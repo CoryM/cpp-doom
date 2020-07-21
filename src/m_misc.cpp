@@ -25,6 +25,7 @@
 #include <cctype>
 #include <cerrno>
 #include <filesystem>
+#include <fmt/core.h>
 #include <initializer_list>
 #include <iostream>
 #include <numeric>
@@ -369,20 +370,21 @@ const char *M_StrCaseStr(const char *haystack, const char *needle)
 // Safe version of strdup() that checks the string was successfully
 // allocated.
 //
-char *M_StringDuplicate(const std::string_view orig)
+auto M_StringDuplicate(const std::string_view orig) -> char *
 {
-    char *result = strdup(orig.data());
+    auto *result        = static_cast<char *>(malloc(orig.size() + 1));
+    result[orig.size()] = '\0';
 
-    if (result == nullptr)
+    if (std::strncpy(result, orig.data(), orig.size()) == nullptr)
     {
-        I_Error("Failed to duplicate string (length %" PRIuPTR ")\n",
-            std::size(orig));
+        S_Error(fmt::format("Failed to duplicate string (length {})\n", orig.size()));
     }
 
     return result;
 }
+
 // In trans to using strings / string_view instead of char*
-std::string S_StringDuplicate(const std::string_view orig)
+auto S_StringDuplicate(const std::string_view orig) -> std::string
 {
     return std::string(orig);
 }
@@ -391,23 +393,19 @@ std::string S_StringDuplicate(const std::string_view orig)
 // String replace function.
 //
 
-char *M_StringReplace(const char *haystack, const char *needle,
-    const char *replacement)
+auto M_StringReplace(const char *haystack, const char *needle,
+    const char *replacement) -> char *
 {
-    char *      result, *dst;
-    const char *p;
-    size_t      needle_len = strlen(needle);
-    size_t      result_len, dst_len;
-
     // Iterate through occurrences of 'needle' and calculate the size of
     // the new string.
-    result_len = strlen(haystack) + 1;
-    p          = haystack;
+    auto  needle_len = strlen(needle);
+    auto  result_len = strlen(haystack) + 1;
+    auto *p          = haystack;
 
     for (;;)
     {
         p = strstr(p, needle);
-        if (p == NULL)
+        if (p == nullptr)
         {
             break;
         }
@@ -418,16 +416,16 @@ char *M_StringReplace(const char *haystack, const char *needle,
 
     // Construct new string.
 
-    result = static_cast<char *>(malloc(result_len));
-    if (result == NULL)
+    auto *result = static_cast<char *>(malloc(result_len));
+    if (result == nullptr)
     {
-        I_Error("M_StringReplace: Failed to allocate new string");
-        return NULL;
+        S_Error("M_StringReplace: Failed to allocate new string");
+        return nullptr;
     }
 
-    dst     = result;
-    dst_len = result_len;
-    p       = haystack;
+    auto *dst     = result;
+    auto  dst_len = result_len;
+    p             = haystack;
 
     while (*p != '\0')
     {

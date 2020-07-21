@@ -1615,11 +1615,12 @@ static void SpechitOverrun(line_s *ld)
         // Use the specified magic value when emulating spechit overruns.
         //
 
-        p = M_CheckParmWithArgs("-spechit", 1);
+        p = M_CheckParm("-spechit", 1);
 
         if (p > 0)
         {
-            M_StrToInt(M_GetArgument(p + 1), (int *)&baseaddr);
+            //M_StrToInt(M_GetArgument(p + 1).data(), (int *)&baseaddr);
+            baseaddr = M_GetArgumentAsInt(p + 1);
         }
         else
         {

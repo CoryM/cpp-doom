@@ -70,8 +70,8 @@ static void PlayerQuitGame(player_t *player)
 
 static void RunTic(ticcmd_t *cmds, bool *ingame)
 {
-    extern bool advancedemo;
-    unsigned int   i;
+    extern bool  advancedemo;
+    unsigned int i;
 
     // Check for player quits.
 
@@ -168,7 +168,7 @@ static void InitConnectData(net_connect_data_t *connect_data)
     // Run as the left screen in three screen mode.
     //
 
-    if (M_CheckParm("-left") > 0)
+    if (M_ParmExists("-left"))
     {
         viewangleoffset     = ANG90;
         connect_data->drone = true;
@@ -180,7 +180,7 @@ static void InitConnectData(net_connect_data_t *connect_data)
     // Run as the right screen in three screen mode.
     //
 
-    if (M_CheckParm("-right") > 0)
+    if (M_ParmExists("-right"))
     {
         viewangleoffset     = ANG270;
         connect_data->drone = true;
@@ -234,7 +234,7 @@ void D_ConnectNetGame(void)
     // demos.
     //
 
-    if (M_CheckParm("-solo-net") > 0)
+    if (M_ParmExists("-solo-net"))
     {
         netgame = true;
     }
@@ -271,7 +271,7 @@ void D_CheckNetGame(void)
     {
         // Gross hack to work like Vanilla:
 
-        if (timelimit == 20 && M_CheckParm("-avg"))
+        if (timelimit == 20 && M_ParmExists("-avg"))
         {
             DEH_printf("Austin Virtual Gaming: Levels will end "
                        "after 20 minutes\n");

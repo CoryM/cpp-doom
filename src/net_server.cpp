@@ -1376,9 +1376,7 @@ static void NET_SV_ParseResendRequest(net_packet_t *packet, net_client_t *client
 
 void NET_SV_SendQueryResponse(net_addr_t *addr)
 {
-    net_packet_t *  reply;
     net_querydata_t querydata;
-    int             p;
 
     // Version
 
@@ -1404,12 +1402,9 @@ void NET_SV_SendQueryResponse(net_addr_t *addr)
     //
     // When starting a network server, specify a name for the server.
     //
-
-    p = M_CheckParmWithArgs("-servername", 1);
-
-    if (p > 0)
+    if (int p = M_CheckParm("-servername", 1); p > 0)
     {
-        querydata.description = M_GetArgument(p + 1);
+        querydata.description = M_GetArgument(p + 1).data();
     }
     else
     {
@@ -1418,7 +1413,7 @@ void NET_SV_SendQueryResponse(net_addr_t *addr)
 
     // Send it and we're done.
     NET_Log("server: sending query response to %s", NET_AddrToString(addr));
-    reply = NET_NewPacket(64);
+    auto *reply = NET_NewPacket(64);
     NET_WriteInt16(reply, NET_PACKET_TYPE_QUERY_RESPONSE);
     NET_WriteQueryData(reply, &querydata);
     NET_SendPacket(addr, reply);
@@ -1907,18 +1902,18 @@ void NET_SV_RegisterWithMaster(void)
     // Implies -server.
     //
 
-    if (!M_CheckParm("-privateserver"))
+    if (!M_ParmExists("-privateserver"))
     {
         master_server = NET_Query_ResolveMaster(server_context);
     }
     else
     {
-        master_server = NULL;
+        master_server = nullptr;
     }
 
     // Send request.
 
-    if (master_server != NULL)
+    if (master_server != nullptr)
     {
         NET_Query_AddToMaster(master_server);
         master_refresh_time = I_GetTimeMS();
@@ -1929,7 +1924,7 @@ void NET_SV_RegisterWithMaster(void)
 // Run server code to check for new packets/send packets as the server
 // requires
 
-void NET_SV_Run(void)
+void NET_SV_Run()
 {
     net_addr_t *  addr;
     net_packet_t *packet;
@@ -1947,7 +1942,7 @@ void NET_SV_Run(void)
         NET_ReleaseAddress(addr);
     }
 
-    if (master_server != NULL)
+    if (master_server != nullptr)
     {
         UpdateMasterServer();
     }
@@ -1977,7 +1972,7 @@ void NET_SV_Run(void)
 
         for (i = 0; i < NET_MAXPLAYERS; ++i)
         {
-            if (sv_players[i] != NULL && ClientConnected(sv_players[i]))
+            if (sv_players[i] != nullptr && ClientConnected(sv_players[i]))
             {
                 NET_SV_CheckResends(sv_players[i]);
             }
@@ -1986,7 +1981,7 @@ void NET_SV_Run(void)
     }
 }
 
-void NET_SV_Shutdown(void)
+void NET_SV_Shutdown()
 {
     int  i;
     bool running;

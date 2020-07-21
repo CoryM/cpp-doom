@@ -326,24 +326,17 @@ static void OpenGameSelectDialog(GameSelectCallback callback)
 
 void SetupMission(GameSelectCallback callback)
 {
-    mission_config_t *config;
-    char *            mission_name;
-    int               p;
-
     //!
     // @arg <game>
     //
     // Specify the game to configure the settings for.  Valid
     // values are 'doom', 'heretic', 'hexen' and 'strife'.
     //
-
-    p = M_CheckParm("-game");
-
-    if (p > 0)
+    if (int p = M_CheckParm("-game"); p > 0)
     {
-        mission_name = M_GetArgument(p + 1);
+        auto *mission_name = M_StringDuplicate(M_GetArgument(p + 1));
 
-        config = GetMissionForName(mission_name);
+        auto *config = GetMissionForName(mission_name);
 
         if (config == nullptr)
         {

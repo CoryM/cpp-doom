@@ -118,7 +118,7 @@ wad_file_t *W_AddFile(const char *filename)
     {
         if (reloadname != nullptr)
         {
-            I_Error("Prefixing a WAD filename with '~' indicates that the "
+            S_Error("Prefixing a WAD filename with '~' indicates that the "
                     "WAD should be reloaded\n"
                     "on each level restart, for use by level authors for "
                     "rapid development. You\n"
@@ -126,7 +126,7 @@ wad_file_t *W_AddFile(const char *filename)
                     "file in the -file list.");
         }
 
-        reloadname = strdup(filename);
+        reloadname = M_StringDuplicate(filename);
         reloadlump = numlumps;
         ++filename;
     }

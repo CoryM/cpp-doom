@@ -191,38 +191,32 @@ static void InitMusicModule()
 
 void I_InitSound(bool use_sfx_prefix)
 {
-    bool nosound, nosfx, nomusic, nomusicpacks;
-
     //!
     // @vanilla
     //
     // Disable all sound output.
     //
-
-    nosound = M_CheckParm("-nosound") > 0;
+    bool nosound = M_ParmExists("-nosound");
 
     //!
     // @vanilla
     //
     // Disable sound effects.
     //
-
-    nosfx = M_CheckParm("-nosfx") > 0;
+    bool nosfx = M_ParmExists("-nosfx");
 
     //!
     // @vanilla
     //
     // Disable music.
     //
-
-    nomusic = M_CheckParm("-nomusic") > 0;
+    bool nomusic = M_ParmExists("-nomusic");
 
     //!
     //
     // Disable substitution music packs.
     //
-
-    nomusicpacks = M_ParmExists("-nomusicpacks");
+    bool nomusicpacks = M_ParmExists("-nomusicpacks");
 
     // Auto configure the music pack directory.
     M_SetMusicPackDir();

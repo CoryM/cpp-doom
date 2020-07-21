@@ -118,7 +118,6 @@ static auto CheckDirectoryHasIWAD(const std::string_view dir, const std::string_
     std::string filename;
     if (strcmp(dir.data(), ".") == 0)
     {
-        //filename = M_StringDuplicate(iwadname.data());
         filename = std::string(iwadname);
     }
     else
@@ -441,13 +440,13 @@ auto D_FindIWAD(int mask, GameMission_t *mission) -> std::string
     // @arg <file>
     //
 
-    int iwadparm = M_CheckParmWithArgs("-iwad", 1);
+    int iwadparm = M_CheckParm("-iwad", 1);
 
-    if (iwadparm != 0)
+    if (iwadparm != c_Arguments::NotFound)
     {
         // Search through IWAD dirs for an IWAD with the given name.
 
-        char *iwadfile = M_GetArgument(iwadparm + 1);
+        auto iwadfile = M_GetArgument(iwadparm + 1);
 
         result = D_FindWADByName(iwadfile);
 

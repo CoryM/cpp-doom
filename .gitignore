@@ -57,8 +57,7 @@ GPATH
 GRTAGS
 GTAGS
 /HTML/
-.vscode/settings.json
-.vscode/c_cpp_properties.json
+.vscode/
 
 #ignore Doxygen generated files
 /doxy/*
@@ -67,3 +66,4 @@ GTAGS
 *.wad
 *.pk3
 *.mm
+compile_commands.json

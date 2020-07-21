@@ -3086,7 +3086,7 @@ void M_Init(void)
         }
     }
 
-    opldev = M_CheckParm("-opldev") > 0;
+    opldev = M_ParmExists("-opldev");
 }
 
 // [crispy] extended savegames

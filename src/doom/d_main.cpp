@@ -18,70 +18,60 @@
 //	parse command line parameters, configure game parameters (turbo),
 //	and call the startup functions.
 //
+#include "../../utils/lump.hpp"
+#include "../../utils/memory.hpp"
+#include "../config.hpp"
+#include "../d_iwad.hpp"
+#include "../deh_main.hpp"
+#include "../i_endoom.hpp"
+#include "../i_input.hpp"
+#include "../i_joystick.hpp"
+#include "../i_system.hpp"
+#include "../i_timer.hpp"
+#include "../i_video.hpp"
+#include "../m_argv.hpp"
+#include "../m_config.hpp"
+#include "../m_controls.hpp"
+#include "../m_misc.hpp"
+#include "../net_client.hpp"
+#include "../net_dedicated.hpp"
+#include "../net_query.hpp"
+#include "../v_diskicon.hpp"
+#include "../v_video.hpp"
+#include "../w_main.hpp"
+#include "../w_wad.hpp"
+#include "../z_zone.hpp"
 
+#include "am_map.hpp"
+#include "d_main.hpp"
+#include "doomdef.hpp"
+#include "doomstat.hpp"
+#include "dstrings.hpp"
+#include "f_finale.hpp"
+#include "f_wipe.hpp"
+#include "g_game.hpp"
+#include "hu_stuff.hpp"
+#include "m_menu.hpp"
+#include "p_saveg.hpp"
+#include "p_setup.hpp"
+#include "r_local.hpp"
+#include "s_sound.hpp"
+#include "sounds.hpp"
+#include "st_stuff.hpp"
+#include "statdump.hpp"
+#include "wi_stuff.hpp"
 
+#include "fmt/core.h"
+
+#include <array>
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime> // [crispy] time_t, time(), struct tm, localtime()
-
-#include <array>
 #include <string_view>
 #include <vector>
-#include <string.h> // needed for strdup
 
-#include "../config.hpp"
-#include "../deh_main.hpp"
-#include "doomdef.hpp"
-#include "doomstat.hpp"
-
-#include "dstrings.hpp"
-#include "sounds.hpp"
-
-#include "d_iwad.hpp"
-
-#include "z_zone.hpp"
-#include "w_main.hpp"
-#include "w_wad.hpp"
-#include "s_sound.hpp"
-#include "v_diskicon.hpp"
-#include "v_video.hpp"
-
-#include "f_finale.hpp"
-#include "f_wipe.hpp"
-
-#include "m_argv.hpp"
-#include "m_config.hpp"
-#include "m_controls.hpp"
-#include "m_misc.hpp"
-#include "m_menu.hpp"
-#include "p_saveg.hpp"
-
-#include "i_endoom.hpp"
-#include "i_input.hpp"
-#include "i_joystick.hpp"
-#include "i_system.hpp"
-#include "i_timer.hpp"
-#include "i_video.hpp"
-
-#include "g_game.hpp"
-
-#include "hu_stuff.hpp"
-#include "wi_stuff.hpp"
-#include "st_stuff.hpp"
-#include "am_map.hpp"
-#include "net_client.hpp"
-#include "net_dedicated.hpp"
-#include "net_query.hpp"
-
-#include "p_setup.hpp"
-#include "r_local.hpp"
-#include "statdump.hpp"
-
-#include "../../utils/lump.hpp"
-#include "../../utils/memory.hpp"
-#include "d_main.hpp"
 
 //
 // D-DoomLoop()
@@ -92,7 +82,7 @@
 //  calls all ?_Responder, ?_Ticker, and ?_Drawer,
 //  calls I_GetTime, I_StartFrame, and I_StartTic
 //
-void D_DoomLoop(void);
+void D_DoomLoop();
 
 // Location where savegames are stored
 
@@ -341,7 +331,7 @@ void EnableLoadingDisk(void) // [crispy] un-static
 
     if (show_diskicon)
     {
-        if (M_CheckParm("-cdrom") > 0)
+        if (M_ParmExists("-cdrom") > 0)
         {
             disk_lump_name = DEH_String("STCDROM");
         }
@@ -931,10 +921,10 @@ void D_IdentifyVersion(void)
         // detecting it based on the filename. Valid values are: "doom2",
         // "tnt" and "plutonia".
         //
-        p = M_CheckParmWithArgs("-pack", 1);
+        p = M_CheckParm("-pack", 1);
         if (p > 0)
         {
-            SetMissionForPackName(M_GetArgument(p + 1));
+            SetMissionForPackName(M_GetArgument(p + 1).data());
         }
     }
 }
@@ -1100,13 +1090,13 @@ static void InitGameVersion(void)
     // "hacx" and "chex".
     //
 
-    p = M_CheckParmWithArgs("-gameversion", 1);
+    p = M_CheckParm("-gameversion", 1);
 
-    if (p)
+    if (p != c_Arguments::NotFound)
     {
         for (i = 0; gameversions[i].description != NULL; ++i)
         {
-            if (!strcmp(M_GetArgument(p + 1), gameversions[i].cmdline))
+            if (!strcmp(M_GetArgument(p + 1).data(), gameversions[i].cmdline))
             {
                 gameversion = gameversions[i].version;
                 break;
@@ -1255,7 +1245,7 @@ static void D_Endoom(void)
     // game has actually started.
 
     if (!show_endoom || !main_loop_started
-        || screensaver_mode || M_CheckParm("-testcontrols") > 0)
+        || screensaver_mode || M_ParmExists("-testcontrols"))
     {
         return;
     }
@@ -1302,13 +1292,13 @@ static void LoadIwadDeh(void)
         if (!M_FileExists(chex_deh))
         {
             free(chex_deh);
-            chex_deh = strdup(D_FindWADByName("chex.deh").c_str());
+            chex_deh = M_StringDuplicate(D_FindWADByName("chex.deh"));
         }
 
         // Still not found?
-        if (chex_deh == NULL)
+        if (chex_deh == nullptr)
         {
-            I_Error("Unable to find Chex Quest dehacked file (chex.deh).\n"
+            S_Error("Unable to find Chex Quest dehacked file (chex.deh).\n"
                     "The dehacked file is required in order to emulate\n"
                     "chex.exe correctly.  It can be found in your nearest\n"
                     "/idgames repository mirror at:\n\n"
@@ -1317,7 +1307,7 @@ static void LoadIwadDeh(void)
 
         if (!DEH_LoadFile(chex_deh))
         {
-            I_Error("Failed to load chex.deh needed for emulating chex.exe.");
+            S_Error("Failed to load chex.deh needed for emulating chex.exe.");
         }
     }
 }
@@ -1393,7 +1383,7 @@ static void LoadSigilWad(void)
 
             free(sigil_wad_file);
 
-            sigil_wad_file = strdup(D_FindWADByName(sigilWad).c_str());
+            sigil_wad_file = M_StringDuplicate(D_FindWADByName(sigilWad));
 
             if (sigil_wad_file)
             {
@@ -1415,7 +1405,7 @@ static void LoadSigilWad(void)
         if (!M_FileExists(sigil_shreds))
         {
             free(sigil_shreds);
-            sigil_shreds = strdup(D_FindWADByName("SIGIL_SHREDS.wad").c_str());
+            sigil_shreds = M_StringDuplicate(D_FindWADByName("SIGIL_SHREDS.wad"));
         }
 
         if (sigil_shreds != NULL)
@@ -1490,10 +1480,10 @@ static void LoadNerveWad(void)
         if (!M_FileExists(nervewadfile))
         {
             free(nervewadfile);
-            nervewadfile = strdup(D_FindWADByName("nerve.wad").c_str());
+            nervewadfile = M_StringDuplicate(D_FindWADByName("nerve.wad"));
         }
 
-        if (nervewadfile == NULL)
+        if (nervewadfile == nullptr)
         {
             return;
         }
@@ -1559,7 +1549,7 @@ void D_DoomMain(void)
     // in the game itself.
     //
 
-    if (M_CheckParm("-dedicated") > 0)
+    if (M_ParmExists("-dedicated"))
     {
         printf("Dedicated server mode.\n");
         NET_DedicatedServer();
@@ -1574,7 +1564,7 @@ void D_DoomMain(void)
     // servers.
     //
 
-    if (M_CheckParm("-search"))
+    if (M_ParmExists("-search"))
     {
         NET_MasterQuery();
         //exit(0);
@@ -1589,11 +1579,9 @@ void D_DoomMain(void)
     // address.
     //
 
-    p = M_CheckParmWithArgs("-query", 1);
-
-    if (p)
+    if (p = M_CheckParm("-query", 1); p != c_Arguments::NotFound)
     {
-        NET_QueryAddress(M_GetArgument(p + 1));
+        NET_QueryAddress(M_StringDuplicate(M_GetArgument(p + 1)));
         //exit(0);
         throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
     }
@@ -1604,7 +1592,7 @@ void D_DoomMain(void)
     // Search the local LAN for running servers.
     //
 
-    if (M_CheckParm("-localsearch"))
+    if (M_ParmExists("-localsearch"))
     {
         NET_LANQuery();
         //exit(0);
@@ -1618,7 +1606,7 @@ void D_DoomMain(void)
     // Disable monsters.
     //
 
-    nomonsters = M_CheckParm("-nomonsters");
+    nomonsters = M_ParmExists("-nomonsters");
 
     //!
     // @category game
@@ -1627,7 +1615,7 @@ void D_DoomMain(void)
     // Monsters respawn after being killed.
     //
 
-    respawnparm = M_CheckParm("-respawn");
+    respawnparm = M_ParmExists("-respawn");
 
     //!
     // @category game
@@ -1636,7 +1624,7 @@ void D_DoomMain(void)
     // Monsters move faster.
     //
 
-    fastparm = M_CheckParm("-fast");
+    fastparm = M_ParmExists("-fast");
 
     //!
     // @vanilla
@@ -1645,7 +1633,7 @@ void D_DoomMain(void)
     // directory.
     //
 
-    devparm = M_CheckParm("-devparm");
+    devparm = M_ParmExists("-devparm");
 
     I_DisplayFPSDots(devparm);
 
@@ -1656,7 +1644,7 @@ void D_DoomMain(void)
     // Start a deathmatch game.
     //
 
-    if (M_CheckParm("-deathmatch"))
+    if (M_ParmExists("-deathmatch"))
         deathmatch = 1;
 
     //!
@@ -1667,7 +1655,7 @@ void D_DoomMain(void)
     // all items respawn after 30 seconds.
     //
 
-    if (M_CheckParm("-altdeath"))
+    if (M_ParmExists("-altdeath"))
         deathmatch = 2;
 
     //!
@@ -1678,7 +1666,7 @@ void D_DoomMain(void)
     // all items respawn after 30 seconds.
     //
 
-    if (M_CheckParm("-dm3"))
+    if (M_ParmExists("-dm3"))
         deathmatch = 3;
 
     if (devparm)
@@ -1700,7 +1688,7 @@ void D_DoomMain(void)
     // x defaults to 200.  Values are rounded up to 10 and down to 400.
     //
 
-    if ((p = M_CheckParm("-turbo")))
+    if (p = M_CheckParm("-turbo"); p != c_Arguments::NotFound)
     {
         int        scale = 200;
         extern int forwardmove[2];
@@ -1733,7 +1721,7 @@ void D_DoomMain(void)
     I_AtExit(M_SaveDefaults, true); // [crispy] always save configuration at exit
 
     // Find main IWAD file and load it.
-    iwadfile = strdup(D_FindIWAD(IWAD_MASK_DOOM, &gamemission).c_str());
+    iwadfile = M_StringDuplicate(D_FindIWAD(IWAD_MASK_DOOM, &gamemission));
 
     // None found?
 
@@ -1874,23 +1862,19 @@ void D_DoomMain(void)
     // merges PWADs into the main IWAD and writes the merged data into <file>
     //
 
-    p = M_CheckParm("-mergedump");
-
-    if (p)
+    if (p = M_CheckParm("-mergedump"); p != c_Arguments::NotFound)
     {
-        p = M_CheckParmWithArgs("-mergedump", 1);
-
-        if (p)
+        if (p = M_CheckParm("-mergedump", 1); p != c_Arguments::NotFound)
         {
             int merged;
 
-            if (M_StringEndsWith(M_GetArgument(p + 1), ".wad"))
+            if (M_StringEndsWith(M_GetArgument(p + 1).data(), ".wad"))
             {
-                M_StringCopy(file, M_GetArgument(p + 1), sizeof(file));
+                M_StringCopy(file, M_GetArgument(p + 1).data(), sizeof(file));
             }
             else
             {
-                DEH_snprintf(file, sizeof(file), "%s.wad", M_GetArgument(p + 1));
+                DEH_snprintf(file, sizeof(file), "%s.wad", M_GetArgument(p + 1).data());
             }
 
             merged = W_MergeDump(file);
@@ -1911,15 +1895,15 @@ void D_DoomMain(void)
 
     p = M_CheckParm("-lumpdump");
 
-    if (p)
+    if (p != c_Arguments::NotFound)
     {
-        p = M_CheckParmWithArgs("-lumpdump", 1);
+        p = M_CheckParm("-lumpdump", 1);
 
-        if (p)
+        if (p != c_Arguments::NotFound)
         {
             int dumped;
 
-            M_StringCopy(file, M_GetArgument(p + 1), sizeof(file));
+            M_StringCopy(file, M_GetArgument(p + 1).data(), sizeof(file));
 
             dumped = W_LumpDump(file);
 
@@ -1949,9 +1933,9 @@ void D_DoomMain(void)
     // Play back the demo named demo.lmp.
     //
 
-    p = M_CheckParmWithArgs("-playdemo", 1);
+    p = M_CheckParm("-playdemo", 1);
 
-    if (!p)
+    if (p == c_Arguments::NotFound)
     {
         //!
         // @arg <demo>
@@ -1961,19 +1945,19 @@ void D_DoomMain(void)
         // Play back the demo named demo.lmp, determining the framerate
         // of the screen.
         //
-        p = M_CheckParmWithArgs("-timedemo", 1);
+        p = M_CheckParm("-timedemo", 1);
     }
 
-    if (p)
+    if (p != c_Arguments::NotFound)
     {
-        char *uc_filename = strdup(M_GetArgument(p + 1));
+        char *uc_filename = M_StringDuplicate(M_GetArgument(p + 1));
         M_ForceUppercase(uc_filename);
 
         // With Vanilla you have to specify the file without extension,
         // but make that optional.
         if (M_StringEndsWith(uc_filename, ".LMP"))
         {
-            M_StringCopy(file, M_GetArgument(p + 1), sizeof(file));
+            M_StringCopy(file, M_GetArgument(p + 1).data(), sizeof(file));
         }
         else
         {
@@ -1993,7 +1977,7 @@ void D_DoomMain(void)
             // the demo in the same way as Vanilla Doom.  This makes
             // tricks like "-playdemo demo1" possible.
 
-            M_StringCopy(demolumpname, M_GetArgument(p + 1), sizeof(demolumpname));
+            M_StringCopy(demolumpname, M_GetArgument(p + 1).data(), sizeof(demolumpname));
         }
 
         printf("Playing demo %s.\n", file);
@@ -2035,14 +2019,17 @@ void D_DoomMain(void)
             }
         }
 
-        printf("  loaded %i DEHACKED lumps from PWAD files.\n", loaded);
+        fmt::print("  loaded {} DEHACKED lumps from PWAD files.\n", loaded);
     }
 
     // Set the gamedescription string. This is only possible now that
     // we've finished loading Dehacked patches.
     D_SetGameDescription();
 
-    savegamedir = M_GetSaveGameDir(D_SaveGameIWADName(gamemission));
+    {
+        auto *v     = D_SaveGameIWADName(gamemission);
+        savegamedir = M_GetSaveGameDir(v);
+    }
 
     // Check for -file in shareware
     if (modifiedgame && (gamevariant != freedoom))
@@ -2135,9 +2122,9 @@ void D_DoomMain(void)
     // 0 disables all monsters.
     //
 
-    p = M_CheckParmWithArgs("-skill", 1);
+    p = M_CheckParm("-skill", 1);
 
-    if (p)
+    if (p != c_Arguments::NotFound)
     {
         // todo does this need error handling?
         startskill = static_cast<skill_t>(M_GetArgument(p + 1)[0] - '1');
@@ -2152,9 +2139,9 @@ void D_DoomMain(void)
     // Start playing on episode n (1-4)
     //
 
-    p = M_CheckParmWithArgs("-episode", 1);
+    p = M_CheckParm("-episode", 1);
 
-    if (p)
+    if (p != c_Arguments::NotFound)
     {
         startepisode = M_GetArgument(p + 1)[0] - '0';
         startmap     = 1;
@@ -2171,9 +2158,9 @@ void D_DoomMain(void)
     // For multiplayer games: exit each level after n minutes.
     //
 
-    p = M_CheckParmWithArgs("-timer", 1);
+    p = M_CheckParm("-timer", 1);
 
-    if (p)
+    if (p != c_Arguments::NotFound)
     {
         timelimit = M_GetArgumentAsInt(p + 1);
     }
@@ -2183,11 +2170,7 @@ void D_DoomMain(void)
     // @vanilla
     //
     // Austin Virtual Gaming: end levels after 20 minutes.
-    //
-
-    p = M_CheckParm("-avg");
-
-    if (p)
+    if (M_ParmExists("-avg"))
     {
         timelimit = 20;
     }
@@ -2201,9 +2184,9 @@ void D_DoomMain(void)
     // (Doom 2)
     //
 
-    p = M_CheckParmWithArgs("-warp", 1);
+    p = M_CheckParm("-warp", 1);
 
-    if (p)
+    if (p != c_Arguments::NotFound)
     {
         if (gamemode == GameMode_t::commercial)
             startmap = M_GetArgumentAsInt(p + 1);
@@ -2229,10 +2212,7 @@ void D_DoomMain(void)
 
     // Undocumented:
     // Invoked by setup to test the controls.
-
-    p = M_CheckParm("-testcontrols");
-
-    if (p > 0)
+    if (M_ParmExists("-testcontrols"))
     {
         startepisode = 1;
         startmap     = 1;
@@ -2251,17 +2231,13 @@ void D_DoomMain(void)
     }
 #endif
 
-    p = M_CheckParm("-fliplevels");
-
-    if (p > 0)
+    if (M_ParmExists("-fliplevels") > 0)
     {
         crispy->fliplevels  = !crispy->fliplevels;
         crispy->flipweapons = !crispy->flipweapons;
     }
 
-    p = M_CheckParm("-flipweapons");
-
-    if (p > 0)
+    if (M_ParmExists("-flipweapons"))
     {
         crispy->flipweapons = !crispy->flipweapons;
     }
@@ -2278,9 +2254,9 @@ void D_DoomMain(void)
     // Load the game in slot s.
     //
 
-    p = M_CheckParmWithArgs("-loadgame", 1);
+    p = M_CheckParm("-loadgame", 1);
 
-    if (p)
+    if (p != c_Arguments::NotFound)
     {
         startloadgame = M_GetArgumentAsInt(p + 1);
     }
@@ -2320,7 +2296,7 @@ void D_DoomMain(void)
     if (gamemode == GameMode_t::commercial && W_CheckNumForName("map01") < 0)
         storedemo = true;
 
-    if (M_CheckParmWithArgs("-statdump", 1))
+    if (M_CheckParm("-statdump", 1) != c_Arguments::NotFound)
     {
         I_AtExit(StatDump, true);
         DEH_printf("External statistics registered.\n");
@@ -2334,16 +2310,16 @@ void D_DoomMain(void)
     // Record a demo named x.lmp.
     //
 
-    p = M_CheckParmWithArgs("-record", 1);
+    p = M_CheckParm("-record", 1);
 
-    if (p)
+    if (p != c_Arguments::NotFound)
     {
-        G_RecordDemo(M_GetArgument(p + 1));
+        G_RecordDemo(M_StringDuplicate(M_GetArgument(p + 1)));
         autostart = true;
     }
 
-    p = M_CheckParmWithArgs("-playdemo", 1);
-    if (p)
+    p = M_CheckParm("-playdemo", 1);
+    if (p != c_Arguments::NotFound)
     {
         singledemo = true; // quit after one demo
         G_DeferedPlayDemo(demolumpname);
@@ -2351,8 +2327,8 @@ void D_DoomMain(void)
     }
     crispy->demowarp = 0; // [crispy] we don't play a demo, so don't skip maps
 
-    p = M_CheckParmWithArgs("-timedemo", 1);
-    if (p)
+    p = M_CheckParm("-timedemo", 1);
+    if (p != c_Arguments::NotFound)
     {
         G_TimeDemo(demolumpname);
         D_DoomLoop(); // never returns

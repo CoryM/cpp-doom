@@ -1036,9 +1036,9 @@ bool G_Responder(event_t *ev)
 // [crispy] re-read game parameters from command line
 static void G_ReadGameParms(void)
 {
-    respawnparm = M_CheckParm("-respawn");
-    fastparm    = M_CheckParm("-fast");
-    nomonsters  = M_CheckParm("-nomonsters");
+    respawnparm = M_ParmExists("-respawn");
+    fastparm    = M_ParmExists("-fast");
+    nomonsters  = M_ParmExists("-nomonsters");
 }
 
 // [crispy] take a screenshot after rendering the next frame
@@ -2574,9 +2574,9 @@ void G_RecordDemo(char *name)
     // Specify the demo buffer size (KiB)
     //
 
-    i = M_CheckParmWithArgs("-maxdemo", 1);
+    i = M_CheckParm("-maxdemo", 1);
     if (i)
-        maxsize = atoi(M_GetArgument(i + 1)) * 1024;
+        maxsize = M_GetArgumentAsInt(i + 1) * 1024;
     demobuffer = zmalloc<decltype(demobuffer)>(maxsize, PU::STATIC, NULL);
     demoend    = demobuffer + maxsize;
 
@@ -2800,8 +2800,7 @@ void G_DoPlayDemo(void)
     for (i = 0; i < MAXPLAYERS; i++)
         playeringame[i] = *demo_p++;
 
-    if (playeringame[1] || M_CheckParm("-solo-net") > 0
-        || M_CheckParm("-netdemo") > 0)
+    if (playeringame[1] || M_ParmExists("-solo-net") || M_ParmExists("-netdemo"))
     {
         netgame = true;
         netdemo = true;
@@ -2865,7 +2864,7 @@ void G_TimeDemo(char *name)
     // Disable rendering the screen entirely.
     //
 
-    nodrawers = M_CheckParm("-nodraw");
+    nodrawers = M_ParmExists("-nodraw");
 
     timingdemo = true;
     singletics = true;

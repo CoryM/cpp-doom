@@ -677,14 +677,6 @@ static char *GetFullPath(const char *musicdir, const char *path)
         return M_StringDuplicate(path);
     }
 
-#ifdef _WIN32
-    // d:\path\...
-    if (isalpha(path[0]) && path[1] == ':' && path[2] == DIR_SEPARATOR)
-    {
-        return M_StringDuplicate(path);
-    }
-#endif
-
     // Paths in the substitute filenames can contain Unix-style /
     // path separators, but we should convert this to the separator
     // for the native platform.
@@ -1097,11 +1089,11 @@ static bool I_MP_InitMusic(void)
     // Read all MIDI files from loaded WAD files, dump an example substitution
     // music config file to the specified filename and quit.
     //
-    i = M_CheckParmWithArgs("-dumpsubstconfig", 1);
+    i = M_CheckParm("-dumpsubstconfig", 1);
 
     if (i > 0)
     {
-        DumpSubstituteConfig(M_GetArgument(i + 1));
+        DumpSubstituteConfig(const_cast<char *>(M_GetArgument(i + 1).data()));
     }
 
     // If we're in GENMIDI mode, try to load sound packs.

@@ -349,11 +349,11 @@ void D_StartNetGame(net_gamesettings_t *settings,
     // packets.
     //
 
-    auto i = M_CheckParmWithArgs("-extratics", 1);
+    auto i = M_CheckParm("-extratics", 1);
 
     if (i > 0)
     {
-        settings->extratics = atoi(M_GetArgument(i + 1));
+        settings->extratics = M_GetArgumentAsInt(i + 1);
     }
     else
     {
@@ -368,11 +368,11 @@ void D_StartNetGame(net_gamesettings_t *settings,
     // the amount of network bandwidth needed.
     //
 
-    i = M_CheckParmWithArgs("-dup", 1);
+    i = M_CheckParm("-dup", 1);
 
     if (i > 0)
     {
-        settings->ticdup = atoi(M_GetArgument(i + 1));
+        settings->ticdup = M_GetArgumentAsInt(i + 1);
     }
     else
     {
@@ -435,8 +435,8 @@ auto D_InitNetGame(net_connect_data_t *connect_data) -> bool
     // Start a multiplayer server, listening for connections.
     //
 
-    if (M_CheckParm("-server") > 0
-        || M_CheckParm("-privateserver") > 0)
+    if (M_ParmExists("-server")
+        || M_ParmExists("-privateserver"))
     {
         NET_SV_Init();
         NET_SV_AddModule(&net_loop_server_module);
@@ -476,12 +476,12 @@ auto D_InitNetGame(net_connect_data_t *connect_data) -> bool
         // address.
         //
 
-        i = M_CheckParmWithArgs("-connect", 1);
+        i = M_CheckParm("-connect", 1);
 
         if (i > 0)
         {
             net_sdl_module.InitClient();
-            addr = net_sdl_module.ResolveAddress(M_GetArgument(i + 1));
+            addr = net_sdl_module.ResolveAddress(M_GetArgument(i + 1).data());
             NET_ReferenceAddress(addr);
 
             if (addr == nullptr)
@@ -494,7 +494,7 @@ auto D_InitNetGame(net_connect_data_t *connect_data) -> bool
 
     if (addr != nullptr)
     {
-        if (M_CheckParm("-drone") > 0)
+        if (M_ParmExists("-drone"))
         {
             connect_data->drone = true;
         }

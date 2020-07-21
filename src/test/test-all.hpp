@@ -6,6 +6,7 @@
 #include "d_iwad_test.hpp"
 #include "test-fmt.hpp"
 #include "test-d_event.hpp"
+#include "test-m_argv.hpp"
 
 
 #endif

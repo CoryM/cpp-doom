@@ -12,10 +12,9 @@
 // GNU General Public License for more details.
 //
 
-#include <cstdlib>
-#include <cstring>
-
-#include "doomkeys.hpp"
+#include "../src/doomkeys.hpp"
+#include "../src/m_misc.hpp"
+#include "../utils/memory.hpp"
 
 #include "txt_button.hpp"
 #include "txt_gui.hpp"
@@ -23,7 +22,10 @@
 #include "txt_main.hpp"
 #include "txt_utf8.hpp"
 #include "txt_window.hpp"
-#include "../utils/memory.hpp"
+
+#include <cstdlib>
+#include <cstring>
+
 
 static void TXT_ButtonSizeCalc(TXT_UNCAST_ARG(button))
 {
@@ -67,7 +69,7 @@ static int TXT_ButtonKeyPress(TXT_UNCAST_ARG(button), int key)
         TXT_EmitSignal(button, "pressed");
         return 1;
     }
-    
+
     return 0;
 }
 
@@ -83,8 +85,7 @@ static void TXT_ButtonMousePress(TXT_UNCAST_ARG(button), int x [[maybe_unused]],
     }
 }
 
-txt_widget_class_t txt_button_class =
-{
+txt_widget_class_t txt_button_class = {
     TXT_AlwaysSelectable,
     TXT_ButtonSizeCalc,
     TXT_ButtonDrawer,
@@ -97,7 +98,7 @@ txt_widget_class_t txt_button_class =
 void TXT_SetButtonLabel(txt_button_t *button, const char *label)
 {
     free(button->label);
-    button->label = strdup(label);
+    button->label = M_StringDuplicate(label);
 }
 
 txt_button_t *TXT_NewButton(const char *label)
@@ -105,7 +106,7 @@ txt_button_t *TXT_NewButton(const char *label)
     auto *button = create_struct<txt_button_t>();
 
     TXT_InitWidget(button, &txt_button_class);
-    button->label = strdup(label);
+    button->label = M_StringDuplicate(label);
 
     return button;
 }
@@ -113,7 +114,7 @@ txt_button_t *TXT_NewButton(const char *label)
 // Button with a callback set automatically
 
 txt_button_t *TXT_NewButton2(const char *label, TxtWidgetSignalFunc func,
-                             void *user_data)
+    void *user_data)
 {
     txt_button_t *button;
 
@@ -123,4 +124,3 @@ txt_button_t *TXT_NewButton2(const char *label, TxtWidgetSignalFunc func,
 
     return button;
 }
-

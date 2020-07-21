@@ -359,10 +359,10 @@ static void ParseCommandLineArgs(void)
     // Autostart the netgame when n nodes (clients) have joined the server.
     //
 
-    i = M_CheckParmWithArgs("-nodes", 1);
+    i = M_CheckParm("-nodes", 1);
     if (i > 0)
     {
-        expected_nodes = atoi(M_GetArgument(i + 1));
+        expected_nodes = M_GetArgumentAsInt(i + 1);
     }
 }
 

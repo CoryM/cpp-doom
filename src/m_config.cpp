@@ -2531,11 +2531,11 @@ void M_LoadDefaults(void)
     // default.
     //
 
-    i = M_CheckParmWithArgs("-config", 1);
+    i = M_CheckParm("-config", 1);
 
-    if (i)
+    if (i != c_Arguments::NotFound)
     {
-        doom_defaults.filename = M_GetArgument(i + 1);
+        doom_defaults.filename = M_GetArgument(i + 1).data();
         printf("	default file: %s\n", doom_defaults.filename);
     }
     else
@@ -2543,7 +2543,7 @@ void M_LoadDefaults(void)
         doom_defaults.filename = M_StringJoin({ configdir, default_main_config });
     }
 
-    printf("saving config in %s\n", doom_defaults.filename);
+    fmt::print("saving config in {}\n", doom_defaults.filename);
 
     //!
     // @arg <file>
@@ -2552,13 +2552,12 @@ void M_LoadDefaults(void)
     // the default.
     //
 
-    i = M_CheckParmWithArgs("-extraconfig", 1);
+    i = M_CheckParm("-extraconfig", 1);
 
-    if (i)
+    if (i != c_Arguments::NotFound)
     {
-        extra_defaults.filename = M_GetArgument(i + 1);
-        printf("        extra configuration file: %s\n",
-            extra_defaults.filename);
+        extra_defaults.filename = M_GetArgument(i + 1).data();
+        fmt::print("        extra configuration file: {}\n", extra_defaults.filename);
     }
     else
     {
@@ -2579,16 +2578,16 @@ static default_t *GetDefaultForName(const char *name)
 
     result = SearchCollection(&doom_defaults, name);
 
-    if (result == NULL)
+    if (result == nullptr)
     {
         result = SearchCollection(&extra_defaults, name);
     }
 
     // Not found? Internal error.
 
-    if (result == NULL)
+    if (result == nullptr)
     {
-        I_Error("Unknown configuration variable: '%s'", name);
+        S_Error(fmt::format("Unknown configuration variable: '{}'", name));
     }
 
     return result;
@@ -2704,8 +2703,6 @@ float M_GetFloatVariable(const char *name)
 
 static char *GetDefaultConfigDir(void)
 {
-#if !defined(_WIN32) || defined(_WIN32_WCE)
-
     // Configuration settings are stored in an OS-appropriate path
     // determined by SDL.  On typical Unix systems, this might be
     // ~/.local/share/chocolate-doom.  On Windows, we behave like
@@ -2718,7 +2715,6 @@ static char *GetDefaultConfigDir(void)
         SDL_free(result);
         return copy;
     }
-#endif /* #ifndef _WIN32 */
     return M_StringDuplicate("");
 }
 
@@ -2733,7 +2729,7 @@ void M_SetConfigDir(const char *dir)
 {
     // Use the directory that was passed, or find the default.
 
-    if (dir != NULL)
+    if (dir != nullptr)
     {
         configdir = dir;
     }
@@ -2742,9 +2738,9 @@ void M_SetConfigDir(const char *dir)
         configdir = GetDefaultConfigDir();
     }
 
-    if (strcmp(configdir, "") != 0)
+    if (configdir != nullptr)
     {
-        printf("Using %s for configuration and saves\n", configdir);
+        fmt::print("Using {} for configuration and saves\n", configdir);
     }
 
     // Make the directory if it doesn't already exist:
@@ -2763,12 +2759,11 @@ void M_SetConfigDir(const char *dir)
 // the directory if necessary.
 void M_SetMusicPackDir(void)
 {
-    const char *current_path;
-    char *      prefdir, *music_pack_path, *readme_path;
+    char *prefdir, *music_pack_path, *readme_path;
 
-    current_path = M_GetStringVariable("music_pack_path");
+    auto *current_path = M_GetStringVariable("music_pack_path");
 
-    if (current_path != NULL && strlen(current_path) > 0)
+    if (current_path != nullptr && strlen(current_path) > 0)
     {
         return;
     }
@@ -2808,10 +2803,10 @@ char *M_GetSaveGameDir(const char *iwadname)
     // does not exist then it will automatically be created.
     //
 
-    p = M_CheckParmWithArgs("-savedir", 1);
-    if (p)
+    p = M_CheckParm("-savedir", 1);
+    if (p != c_Arguments::NotFound)
     {
-        savegamedir = M_GetArgument(p + 1);
+        std::strcpy(savegamedir, M_GetArgument(p + 1).data());
         if (!M_DirExists(savegamedir))
         {
             M_MakeDirectory(savegamedir);

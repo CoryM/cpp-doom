@@ -82,7 +82,7 @@ static void DEH_Init()
     // Ignore cheats in dehacked files.
     //
 
-    if (M_CheckParm("-nocheats") > 0)
+    if (M_ParmExists("-nocheats"))
     {
         deh_apply_cheats = false;
     }

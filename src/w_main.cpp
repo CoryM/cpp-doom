@@ -48,7 +48,7 @@ auto W_ParseCommandLine() -> bool
     // Simulates the behavior of deutex's -merge option, merging a PWAD
     // into the main IWAD.  Multiple files may be specified.
     //
-    if (int p = M_CheckParmWithArgs("-merge", 1); p > 0)
+    if (int p = M_CheckParm("-merge", 1); p > 0)
     {
         for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
@@ -72,7 +72,7 @@ auto W_ParseCommandLine() -> bool
     // Simulates the behavior of NWT's -merge option.  Multiple files
     // may be specified.
 
-    if (int p = M_CheckParmWithArgs("-nwtmerge", 1); p > 0)
+    if (int p = M_CheckParm("-nwtmerge", 1); p > 0)
     {
         for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
@@ -95,7 +95,7 @@ auto W_ParseCommandLine() -> bool
     // the main IWAD directory.  Multiple files may be specified.
     //
 
-    if (int p = M_CheckParmWithArgs("-af", 1); p > 0)
+    if (int p = M_CheckParm("-af", 1); p > 0)
     {
         for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
@@ -115,7 +115,7 @@ auto W_ParseCommandLine() -> bool
     // Simulates the behavior of NWT's -as option, merging sprites
     // into the main IWAD directory.  Multiple files may be specified.
     //
-    if (int p = M_CheckParmWithArgs("-as", 1); p > 0)
+    if (int p = M_CheckParm("-as", 1); p > 0)
     {
         for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
@@ -133,7 +133,7 @@ auto W_ParseCommandLine() -> bool
     //
     // Equivalent to "-af <files> -as <files>".
     //
-    if (int p = M_CheckParmWithArgs("-aa", 1); p > 0)
+    if (int p = M_CheckParm("-aa", 1); p > 0)
     {
         for (p = p + 1; p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-'; ++p)
         {
@@ -152,7 +152,7 @@ auto W_ParseCommandLine() -> bool
     //
     // Load the specified PWAD files.
     //
-    if (int p = M_CheckParmWithArgs("-file", 1); p)
+    if (int p = M_CheckParm("-file", 1); p)
     {
         // the parms after p are wadfile/lump names,
         // until end of parms or another - preceded parm

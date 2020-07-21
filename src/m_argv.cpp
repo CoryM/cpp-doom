@@ -28,9 +28,11 @@
 #include <iostream>
 #include <memory>
 #include <span>
+#include <string_view>
 
-int    myargc;
-char **myargv;
+int         myargc;
+char **     myargv;
+c_Arguments myArgs;
 
 constexpr size_t MAXARGVS = 100;
 
@@ -50,13 +52,46 @@ void c_Arguments::importArguments(const std::span<char *> &arrayOfArgs)
 }
 
 
-auto c_Arguments::at(const size_t pos) -> std::string
+auto c_Arguments::at(const int pos) -> std::string_view
 {
-    return m_Args.at(pos);
+    auto result = std::string_view();
+    if (pos >= 0)
+    {
+        result = m_Args.at(pos);
+    }
+    return result;
 }
 
+auto c_Arguments::asInt32(const int pos) -> int
+{
+    int result = 0;
+    if (pos >= 0)
+    {
+        result = atoi(m_Args.at(pos).data());
+    }
+    return result;
+}
 
-void at(size_t pos);
+auto c_Arguments::size() -> size_t
+{
+    return m_Args.size();
+}
+
+auto c_Arguments::find(const std::string_view findMe, const int num_args) -> int
+{
+    int        index = c_Arguments::NotFound;
+    const auto it    = std::find(m_Args.begin(), m_Args.end(), findMe);
+    // Consider it found IF we did not reach the end AND we have enough args remaining
+    if (it != m_Args.end())
+    {
+        if (static_cast<int>(m_Args.end() - it) > num_args)
+        {
+            index = static_cast<int>(it - m_Args.begin());
+        }
+    }
+    return index;
+}
+
 
 void M_SetArgument(const int newArgC, char **newArgV)
 {
@@ -68,25 +103,16 @@ void M_SetArgument(const int newArgC, char **newArgV)
 auto M_GetArgument(const int arg) -> std::string_view
 {
     return myArgs.at(arg);
-    // if (arg < 0 || arg > myargc)
-    // {
-    //     return nullptr;
-    // }
-    // return myargv[arg];
 }
 
-auto M_GetArgumentAsInt(int arg) -> int
+auto M_GetArgumentAsInt(int arg) -> int32_t
 {
-    if (arg < 0 || arg > myargc)
-    {
-        return 0;
-    }
-    return atoi(myargv[arg]);
+    return myArgs.asInt32(arg);
 }
 
 auto M_GetArgumentCount() -> int
 {
-    return myargc;
+    return myArgs.size();
 }
 
 
@@ -94,20 +120,13 @@ auto M_GetArgumentCount() -> int
 // M_CheckParm
 // Checks for the given parameter
 // in the program's command line arguments.
-// Returns the argument number (1 to argc-1)
-// or 0 if not present
-auto M_CheckParmWithArgs(const char *check, int num_args) -> int
+// Returns the argument number (0 to argc-1)
+// or c_Arguments::NotFound (-1) if not present
+auto M_CheckParm(const std::string_view check, int num_args /* = 0 */) -> int
 {
-    for (int i = 1; i < myargc - num_args; i++)
-    {
-        if (strcasecmp(check, myargv[i]) == 0)
-        {
-            return i;
-        }
-    }
-
-    return 0;
+    return myArgs.find(check, num_args);
 }
+
 
 //
 // M_ParmExists
@@ -115,17 +134,10 @@ auto M_CheckParmWithArgs(const char *check, int num_args) -> int
 // Returns true if the given parameter exists in the program's command
 // line arguments, false if not.
 //
-
 auto M_ParmExists(const char *check) -> bool
 {
-    return M_CheckParm(check) != 0;
+    return M_CheckParm(check) != c_Arguments::NotFound;
 }
-
-auto M_CheckParm(const char *check) -> int
-{
-    return M_CheckParmWithArgs(check, 0);
-}
-
 
 static void LoadResponseFile(int argv_index, const char *filename)
 {
@@ -304,7 +316,7 @@ void M_FindResponseFile()
         // line replacing this argument. A response file can also be loaded
         // using the abbreviated syntax '@filename.rsp'.
         //
-        i = M_CheckParmWithArgs("-response", 1);
+        i = M_CheckParm("-response", 1);
         if (i <= 0)
         {
             break;
@@ -314,7 +326,7 @@ void M_FindResponseFile()
         // an argument beginning with a '-' is encountered, we keep something
         // that starts with a '-'.
         myargv[i] = "-_";
-        LoadResponseFile(i + 1, M_GetArgument(i + 1));
+        LoadResponseFile(i + 1, M_GetArgument(i + 1).data());
     }
 }
 

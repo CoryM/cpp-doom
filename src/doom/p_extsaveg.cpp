@@ -66,7 +66,7 @@ static void P_ReadWadFileName(const char *key)
         {
             if (sscanf(line, "%*s %s", string) == 1)
             {
-                savewadfilename = strdup(string);
+                savewadfilename = M_StringDuplicate(string);
             }
         }
     }

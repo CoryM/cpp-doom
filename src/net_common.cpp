@@ -479,10 +479,10 @@ void NET_OpenLog(void)
 {
     int p;
 
-    p = M_CheckParmWithArgs("-netlog", 1);
+    p = M_CheckParm("-netlog", 1);
     if (p > 0)
     {
-        net_debug = fopen(M_GetArgument(p + 1), "w");
+        net_debug = fopen(M_GetArgument(p + 1).data(), "w");
         if (net_debug == nullptr)
         {
             S_Error(fmt::format("Failed to open %s to write debug log.", M_GetArgument(p + 1)));

@@ -703,7 +703,7 @@ bool P_LoadBlockMap(int lump)
     short *wadblockmaplump;
 
     // [crispy] (re-)create BLOCKMAP if necessary
-    if (M_CheckParm("-blockmap") || lump >= static_cast<int>(numlumps) || (lumplen = W_LumpLength(lump)) < 8 || (count = lumplen / 2) >= 0x10000)
+    if (M_ParmExists("-blockmap") || lump >= static_cast<int>(numlumps) || (lumplen = W_LumpLength(lump)) < 8 || (count = lumplen / 2) >= 0x10000)
     {
         return false;
     }
@@ -961,7 +961,7 @@ static void PadRejectArray(byte *array, unsigned int len)
 
         // Pad remaining space with 0 (or 0xff, if specified on command line).
 
-        if (M_CheckParm("-reject_pad_with_ff"))
+        if (M_ParmExists("-reject_pad_with_ff"))
         {
             padvalue = 0xff;
         }

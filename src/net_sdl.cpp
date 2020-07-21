@@ -58,7 +58,7 @@ static int          addr_table_size = -1;
 
 // Initializes the address table
 
-static void NET_SDL_InitAddrTable(void)
+static void NET_SDL_InitAddrTable()
 {
     addr_table_size = 16;
 
@@ -96,7 +96,9 @@ static net_addr_t *NET_SDL_FindAddress(IPaddress *addr)
         }
 
         if (empty_entry < 0 && addr_table[i] == NULL)
+        {
             empty_entry = i;
+        }
     }
 
     // Was not found in list.  We need to add it.
@@ -155,15 +157,15 @@ static void NET_SDL_FreeAddress(net_addr_t *addr)
         }
     }
 
-    I_Error("NET_SDL_FreeAddress: Attempted to remove an unused address!");
+    S_Error("NET_SDL_FreeAddress: Attempted to remove an unused address!");
 }
 
 static bool NET_SDL_InitClient(void)
 {
-    int p;
-
     if (initted)
+    {
         return true;
+    }
 
     //!
     // @category net
@@ -173,9 +175,10 @@ static bool NET_SDL_InitClient(void)
     // the default (2342).
     //
 
-    p = M_CheckParmWithArgs("-port", 1);
-    if (p > 0)
+    if (int p = M_CheckParm("-port", 1); p > 0)
+    {
         port = M_GetArgumentAsInt(p + 1);
+    }
 
     SDLNet_Init();
 
@@ -202,11 +205,15 @@ static bool NET_SDL_InitServer(void)
     int p;
 
     if (initted)
+    {
         return true;
+    }
 
-    p = M_CheckParmWithArgs("-port", 1);
+    p = M_CheckParm("-port", 1);
     if (p > 0)
+    {
         port = M_GetArgumentAsInt(p + 1);
+    }
 
     SDLNet_Init();
 
@@ -290,7 +297,9 @@ static bool NET_SDL_RecvPacket(net_addr_t **addr, net_packet_t **packet)
     // no packets received
 
     if (result == 0)
+    {
         return false;
+    }
 
     // Put the data into a new packet structure
 

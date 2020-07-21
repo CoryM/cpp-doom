@@ -461,13 +461,13 @@ static void NET_CL_ParseSYN(net_packet_t *packet)
 static void SetRejectReason(const char *s)
 {
     free(net_client_reject_reason);
-    if (s != NULL)
+    if (s != nullptr)
     {
-        net_client_reject_reason = strdup(s);
+        std::strcpy(net_client_reject_reason, s);
     }
     else
     {
-        net_client_reject_reason = NULL;
+        net_client_reject_reason = nullptr;
     }
 }
 

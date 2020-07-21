@@ -122,7 +122,7 @@ auto I_ZoneBase(size_t *size) -> byte *
     // Specify the heap size, in MiB (default 16).
     //
 
-    p = M_CheckParmWithArgs("-mb", 1);
+    p = M_CheckParm("-mb", 1);
 
     if (p > 0)
     {
@@ -444,19 +444,19 @@ bool I_GetMemoryValue(unsigned int offset, void *value, int size)
         // The default is to emulate DOS 7.1 (Windows 98).
         //
 
-        p = M_CheckParmWithArgs("-setmem", 1);
+        p = M_CheckParm("-setmem", 1);
 
         if (p > 0)
         {
-            if (!strcasecmp(M_GetArgument(p + 1), "dos622"))
+            if (!strcasecmp(M_GetArgument(p + 1).data(), "dos622"))
             {
                 dos_mem_dump = mem_dump_dos622;
             }
-            if (!strcasecmp(M_GetArgument(p + 1), "dos71"))
+            if (!strcasecmp(M_GetArgument(p + 1).data(), "dos71"))
             {
                 dos_mem_dump = mem_dump_win98;
             }
-            else if (!strcasecmp(M_GetArgument(p + 1), "dosbox"))
+            else if (!strcasecmp(M_GetArgument(p + 1).data(), "dosbox"))
             {
                 dos_mem_dump = mem_dump_dosbox;
             }

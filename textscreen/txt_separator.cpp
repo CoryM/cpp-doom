@@ -12,8 +12,8 @@
 // GNU General Public License for more details.
 //
 
-#include <cstdlib>
-#include <cstring>
+#include "../src/m_misc.hpp"
+#include "../utils/memory.hpp"
 
 #include "txt_separator.hpp"
 #include "txt_gui.hpp"
@@ -21,7 +21,10 @@
 #include "txt_main.hpp"
 #include "txt_utf8.hpp"
 #include "txt_window.hpp"
-#include "../utils/memory.hpp"
+
+#include <cstdlib>
+#include <cstring>
+
 
 static void TXT_SeparatorSizeCalc(TXT_UNCAST_ARG(separator))
 {
@@ -54,7 +57,7 @@ static void TXT_SeparatorDrawer(TXT_UNCAST_ARG(separator))
     // Draw separator.  Go back one character and draw two extra
     // to overlap the window borders.
 
-    TXT_DrawSeparator(x-2, y, w + 4);
+    TXT_DrawSeparator(x - 2, y, w + 4);
 
     if (separator->label != NULL)
     {
@@ -80,7 +83,7 @@ void TXT_SetSeparatorLabel(txt_separator_t *separator, const char *label)
 
     if (label != NULL)
     {
-        separator->label = strdup(label);
+        separator->label = M_StringDuplicate(label);
     }
     else
     {
@@ -88,8 +91,7 @@ void TXT_SetSeparatorLabel(txt_separator_t *separator, const char *label)
     }
 }
 
-txt_widget_class_t txt_separator_class =
-{
+txt_widget_class_t txt_separator_class = {
     TXT_NeverSelectable,
     TXT_SeparatorSizeCalc,
     TXT_SeparatorDrawer,
@@ -110,4 +112,3 @@ txt_separator_t *TXT_NewSeparator(const char *label)
 
     return separator;
 }
-
