@@ -92,6 +92,11 @@ auto c_Arguments::find(const std::string_view findMe, const int num_args) -> int
     return index;
 }
 
+auto c_Arguments::exists(const std::string_view findMe) -> bool
+{
+    return find(findMe, 0) != c_Arguments::NotFound;
+}
+
 
 void M_SetArgument(const int newArgC, char **newArgV)
 {
@@ -134,9 +139,10 @@ auto M_CheckParm(const std::string_view check, int num_args /* = 0 */) -> int
 // Returns true if the given parameter exists in the program's command
 // line arguments, false if not.
 //
-auto M_ParmExists(const char *check) -> bool
+auto M_ParmExists(const std::string_view findMe) -> bool
 {
-    return M_CheckParm(check) != c_Arguments::NotFound;
+    return myArgs.exists(findMe);
+    //return M_CheckParm(check) != c_Arguments::NotFound;
 }
 
 static void LoadResponseFile(int argv_index, const char *filename)
@@ -148,7 +154,7 @@ static void LoadResponseFile(int argv_index, const char *filename)
     {
         fmt::print("\nNo such response file!");
         //exit(1);
-        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+        throw std::logic_error(exceptionalExit);
     }
 
     fmt::print("Found response file {}!\n", filename);

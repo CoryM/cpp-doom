@@ -1568,7 +1568,7 @@ void D_DoomMain(void)
     {
         NET_MasterQuery();
         //exit(0);
-        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+        throw std::logic_error(exceptionalExit);
     }
 
     //!
@@ -1583,7 +1583,7 @@ void D_DoomMain(void)
     {
         NET_QueryAddress(M_StringDuplicate(M_GetArgument(p + 1)));
         //exit(0);
-        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+        throw std::logic_error(exceptionalExit);
     }
 
     //!
@@ -1596,7 +1596,7 @@ void D_DoomMain(void)
     {
         NET_LANQuery();
         //exit(0);
-        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+        throw std::logic_error(exceptionalExit);
     }
 
     //!

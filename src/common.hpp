@@ -17,13 +17,11 @@
 #ifndef __COMMON_HPP__
 #define __COMMON_HPP__
 
-#include <string>
+//#include <string>
+#include "fmt/core.h"
 
 namespace MACROS {
-using std::string;
-#define S1(x)        #x
-#define S2(x)        S1(x)
-#define LOCATION_STR string("In File " __FILE__ " on line " S2(__LINE__))
+#define exceptionalExit fmt::format("exceptional exit in File {} on line {}", __FILE__, __LINE__)
 }
 
 #endif

@@ -44,11 +44,9 @@ void M_FindResponseFile();
 void M_AddLooseFiles();
 
 // Parameter has been specified?
-
-auto M_ParmExists(const char *check) -> bool;
+auto M_ParmExists(const std::string_view findMe) -> bool;
 
 // Get name of executable used to run this program:
-
 auto M_GetExecutableName() -> const char *;
 
 // class index_t {
@@ -118,6 +116,7 @@ public:
     auto asInt32(const int pos) -> int;
     auto size() -> size_t;
     auto find(const std::string_view findMe, const int num_args) -> int;
+    auto exists(const std::string_view findMe) -> bool;
 };
 
 extern c_Arguments myArgs;

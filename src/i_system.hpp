@@ -20,13 +20,13 @@
 #ifndef __I_SYSTEM__
 #define __I_SYSTEM__
 
-#include <string>
-#include <string_view>
 
 #include "common.hpp"
-
 #include "d_event.hpp"
 #include "d_ticcmd.hpp"
+
+#include <string>
+#include <string_view>
 
 
 typedef void (*atexit_func_t)();
@@ -66,8 +66,9 @@ void I_Tactile(int on, int off, int total);
 auto I_Realloc(void *ptr, size_t size) -> void *;
 
 template <typename DataType>
-auto i_realloc(void *ptr, size_t size) {
-  return static_cast<DataType>(I_Realloc(ptr, size));
+auto i_realloc(void *ptr, size_t size)
+{
+    return static_cast<DataType>(I_Realloc(ptr, size));
 }
 
 auto I_GetMemoryValue(unsigned int offset, void *value, int size) -> bool;

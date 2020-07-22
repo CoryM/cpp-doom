@@ -53,7 +53,7 @@ auto main(int argc, char **argv) -> int
         {
             puts(PACKAGE_STRING);
             //exit(0);
-            throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+            throw std::logic_error(exceptionalExit);
         }
 
         {

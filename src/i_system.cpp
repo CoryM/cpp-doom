@@ -242,7 +242,7 @@ void I_Quit(void)
     SDL_Quit();
 
     //exit(0);
-    throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+    throw std::logic_error(exceptionalExit);
 }
 
 
@@ -260,9 +260,8 @@ void I_Error(const char *error, ...)
 
     if (already_quitting)
     {
-        fprintf(stderr, "Warning: recursive call to I_Error detected.\n");
-        //exit(-1);
-        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+        fmt::print(stderr, "Warning: recursive call to I_Error detected.\n");
+        throw std::logic_error(exceptionalExit);
     }
     else
     {
@@ -317,9 +316,7 @@ void I_Error(const char *error, ...)
     // abort();
 
     SDL_Quit();
-
-    //exit(-1);
-    throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+    throw std::logic_error(exceptionalExit);
 }
 
 void S_Error(const std::string_view error)
@@ -331,7 +328,7 @@ void S_Error(const std::string_view error)
     else
     {
         std::cerr << "Warning: recursive call to I_Error detected.\n";
-        throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+        throw std::logic_error(exceptionalExit);
     }
 
     // Message first.
@@ -371,7 +368,7 @@ void S_Error(const std::string_view error)
     SDL_Quit();
 
     //exit(-1);
-    throw std::logic_error(std::string("exceptional exit ") + MACROS::LOCATION_STR);
+    throw std::logic_error(exceptionalExit);
 }
 
 //
