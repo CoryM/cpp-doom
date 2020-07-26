@@ -1,6 +1,9 @@
-
 #ifndef __TEST_M_ARGV_HPP__
 #define __TEST_M_ARGV_HPP__
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+
 
 #include "../m_argv.hpp"
 
@@ -265,5 +268,5 @@ TEST_CASE("{m_argv} part2", "[c_Arguments][found]")
 
     // M_ParmExists(?)
 }
-
+#pragma GCC diagnostic pop
 #endif //__TEST_M_ARGV_HPP__
