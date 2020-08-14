@@ -266,26 +266,22 @@ fixed_t yspeed[8] = { 0, 47000, FRACUNIT, 47000, 0, -47000, -FRACUNIT, -47000 };
 
 bool P_Move(mobj_t *actor)
 {
-    fixed_t tryx;
-    fixed_t tryy;
-
-    line_s *ld;
-
     // warning: 'catch', 'throw', and 'try'
     // are all C++ reserved words
-    bool try_ok;
-    bool good;
-
     if (actor->movedir == DI_NODIR)
+    {
         return false;
+    }
 
     if ((unsigned)actor->movedir >= 8)
+    {
         I_Error("Weird actor->movedir!");
+    }
 
-    tryx = actor->x + actor->info->speed * xspeed[actor->movedir];
-    tryy = actor->y + actor->info->speed * yspeed[actor->movedir];
+    fixed_t try_x = actor->x + actor->info->speed * xspeed[actor->movedir];
+    fixed_t try_y = actor->y + actor->info->speed * yspeed[actor->movedir];
 
-    try_ok = P_TryMove(actor, tryx, tryy);
+    bool try_ok = P_TryMove(actor, try_x, try_y);
 
     if (!try_ok)
     {
@@ -303,18 +299,22 @@ bool P_Move(mobj_t *actor)
         }
 
         if (!numspechit)
+        {
             return false;
+        }
 
         actor->movedir = DI_NODIR;
-        good           = false;
+        bool good      = false;
         while (numspechit--)
         {
-            ld = spechit[numspechit];
+            line_s *ld = spechit[numspechit];
             // if the special is not a door
             // that can be opened,
             // return false
             if (P_UseSpecialLine(actor, ld, 0))
+            {
                 good = true;
+            }
         }
         return good;
     }
@@ -355,61 +355,69 @@ bool P_TryWalk(mobj_t *actor)
 
 void P_NewChaseDir(mobj_t *actor)
 {
-    fixed_t deltax;
-    fixed_t deltay;
-
     dirtype_t d[3];
-
-    int       tdir;
-    dirtype_t olddir;
 
     dirtype_t turnaround;
 
     if (!actor->target)
         I_Error("P_NewChaseDir: called with no target");
 
-    olddir     = static_cast<dirtype_t>(actor->movedir);
-    turnaround = opposite[olddir];
+    dirtype_t olddir = static_cast<dirtype_t>(actor->movedir);
+    turnaround       = opposite[olddir];
 
-    deltax = actor->target->x - actor->x;
-    deltay = actor->target->y - actor->y;
+    fixed_t delta_x = actor->target->x - actor->x;
+    fixed_t delta_y = actor->target->y - actor->y;
 
-    if (deltax > 10 * FRACUNIT)
+    if (delta_x > 10 * FRACUNIT)
+    {
         d[1] = DI_EAST;
-    else if (deltax < -10 * FRACUNIT)
+    }
+    else if (delta_x < -10 * FRACUNIT)
+    {
         d[1] = DI_WEST;
+    }
     else
+    {
         d[1] = DI_NODIR;
+    }
 
-    if (deltay < -10 * FRACUNIT)
+    if (delta_y < -10 * FRACUNIT)
+    {
         d[2] = DI_SOUTH;
-    else if (deltay > 10 * FRACUNIT)
+    }
+    else if (delta_y > 10 * FRACUNIT)
+    {
         d[2] = DI_NORTH;
+    }
     else
+    {
         d[2] = DI_NODIR;
+    }
 
     // try direct route
-    if (d[1] != DI_NODIR
-        && d[2] != DI_NODIR)
+    if (d[1] != DI_NODIR && d[2] != DI_NODIR)
     {
-        actor->movedir = diags[((deltay < 0) << 1) + (deltax > 0)];
+        actor->movedir = diags[((delta_y < 0) << 1) + (delta_x > 0)];
         if (actor->movedir != (int)turnaround && P_TryWalk(actor))
             return;
     }
 
     // try other directions
-    if (P_Random() > 200
-        || abs(deltay) > abs(deltax))
+    if (P_Random() > 200 || abs(delta_y) > abs(delta_x))
     {
-        tdir = d[1];
-        d[1] = d[2];
-        d[2] = static_cast<dirtype_t>(tdir);
+        auto tdir = d[1];
+        d[1]      = d[2];
+        d[2]      = tdir;
     }
 
     if (d[1] == turnaround)
+    {
         d[1] = DI_NODIR;
+    }
     if (d[2] == turnaround)
+    {
         d[2] = DI_NODIR;
+    }
 
     if (d[1] != DI_NODIR)
     {
@@ -426,7 +434,9 @@ void P_NewChaseDir(mobj_t *actor)
         actor->movedir = d[2];
 
         if (P_TryWalk(actor))
+        {
             return;
+        }
     }
 
     // there is no direct path to the player,
@@ -436,13 +446,15 @@ void P_NewChaseDir(mobj_t *actor)
         actor->movedir = olddir;
 
         if (P_TryWalk(actor))
+        {
             return;
+        }
     }
 
     // randomly determine direction of search
     if (P_Random() & 1)
     {
-        for (tdir = DI_EAST;
+        for (int tdir = DI_EAST;
              tdir <= DI_SOUTHEAST;
              tdir++)
         {
@@ -457,7 +469,7 @@ void P_NewChaseDir(mobj_t *actor)
     }
     else
     {
-        for (tdir = DI_SOUTHEAST;
+        for (int tdir = DI_SOUTHEAST;
              tdir != (DI_EAST - 1);
              tdir--)
         {
@@ -487,9 +499,8 @@ void P_NewChaseDir(mobj_t *actor)
 // If allaround is false, only look 180 degrees in front.
 // Returns true if a player is targeted.
 //
-bool
-    P_LookForPlayers(mobj_t *actor,
-        bool              allaround)
+bool P_LookForPlayers(mobj_t *actor,
+    bool                      allaround)
 {
     int       c;
     int       stop;
@@ -816,7 +827,7 @@ void A_PosAttack(mobj_t *actor)
     slope = P_AimLineAttack(actor, angle, MISSILERANGE);
 
     S_StartSound(actor, sfx_pistol);
-    angle += P_SubRandom() << 20;
+    angle += static_cast<int64_t>(P_SubRandom() << 20);
     damage = ((P_Random() % 5) + 1) * 3;
     P_LineAttack(actor, angle, MISSILERANGE, slope, damage);
 }
@@ -1024,8 +1035,8 @@ void A_SkelMissile(mobj_t *actor)
     mo = P_SpawnMissile(actor, actor->target, MT_TRACER);
     actor->z -= 16 * FRACUNIT; // back to normal
 
-    mo->x += mo->momx;
-    mo->y += mo->momy;
+    mo->x += mo->momX;
+    mo->y += mo->momY;
     mo->tracer = actor->target;
 }
 
@@ -1046,11 +1057,11 @@ void A_Tracer(mobj_t *actor)
     // spawn a puff of smoke behind the rocket
     P_SpawnPuff(actor->x, actor->y, actor->z);
 
-    th = P_SpawnMobj(actor->x - actor->momx,
-        actor->y - actor->momy,
+    th = P_SpawnMobj(actor->x - actor->momX,
+        actor->y - actor->momY,
         actor->z, MT_SMOKE);
 
-    th->momz = FRACUNIT;
+    th->momZ = FRACUNIT;
     th->tics -= P_Random() & 3;
     if (th->tics < 1)
         th->tics = 1;
@@ -1084,8 +1095,8 @@ void A_Tracer(mobj_t *actor)
     }
 
     exact       = actor->angle >> ANGLETOFINESHIFT;
-    actor->momx = FixedMul(actor->info->speed, finecosine[exact]);
-    actor->momy = FixedMul(actor->info->speed, finesine[exact]);
+    actor->momX = FixedMul(actor->info->speed, finecosine[exact]);
+    actor->momY = FixedMul(actor->info->speed, finesine[exact]);
 
     // change slope
     dist = P_AproxDistance(dest->x - actor->x,
@@ -1097,10 +1108,10 @@ void A_Tracer(mobj_t *actor)
         dist = 1;
     slope = (dest->z + 40 * FRACUNIT - actor->z) / dist;
 
-    if (slope < actor->momz)
-        actor->momz -= FRACUNIT / 8;
+    if (slope < actor->momZ)
+        actor->momZ -= FRACUNIT / 8;
     else
-        actor->momz += FRACUNIT / 8;
+        actor->momZ += FRACUNIT / 8;
 }
 
 
@@ -1141,7 +1152,7 @@ fixed_t viletryy;
 
 bool PIT_VileCheck(mobj_t *thing)
 {
-    int     maxdist;
+    int  maxdist;
     bool check;
 
     if (!(thing->flags & MF_CORPSE))
@@ -1160,7 +1171,7 @@ bool PIT_VileCheck(mobj_t *thing)
         return true; // not actually touching
 
     corpsehit       = thing;
-    corpsehit->momx = corpsehit->momy = 0;
+    corpsehit->momX = corpsehit->momY = 0;
     corpsehit->height <<= 2;
     check = P_CheckPosition(corpsehit, corpsehit->x, corpsehit->y);
     corpsehit->height >>= 2;
@@ -1349,7 +1360,7 @@ void A_VileAttack(mobj_t *actor)
 
     S_StartSound(actor, sfx_barexp);
     P_DamageMobj(actor->target, actor, actor, 20);
-    actor->target->momz = 1000 * FRACUNIT / actor->target->info->mass;
+    actor->target->momZ = 1000 * FRACUNIT / actor->target->info->mass;
 
     an = actor->angle >> ANGLETOFINESHIFT;
 
@@ -1396,8 +1407,8 @@ void A_FatAttack1(mobj_t *actor)
     mo = P_SpawnMissile(actor, target, MT_FATSHOT);
     mo->angle += FATSPREAD;
     an       = mo->angle >> ANGLETOFINESHIFT;
-    mo->momx = FixedMul(mo->info->speed, finecosine[an]);
-    mo->momy = FixedMul(mo->info->speed, finesine[an]);
+    mo->momX = FixedMul(mo->info->speed, finecosine[an]);
+    mo->momY = FixedMul(mo->info->speed, finesine[an]);
 }
 
 void A_FatAttack2(mobj_t *actor)
@@ -1415,8 +1426,8 @@ void A_FatAttack2(mobj_t *actor)
     mo = P_SpawnMissile(actor, target, MT_FATSHOT);
     mo->angle -= FATSPREAD * 2;
     an       = mo->angle >> ANGLETOFINESHIFT;
-    mo->momx = FixedMul(mo->info->speed, finecosine[an]);
-    mo->momy = FixedMul(mo->info->speed, finesine[an]);
+    mo->momX = FixedMul(mo->info->speed, finecosine[an]);
+    mo->momY = FixedMul(mo->info->speed, finesine[an]);
 }
 
 void A_FatAttack3(mobj_t *actor)
@@ -1432,14 +1443,14 @@ void A_FatAttack3(mobj_t *actor)
     mo = P_SpawnMissile(actor, target, MT_FATSHOT);
     mo->angle -= FATSPREAD / 2;
     an       = mo->angle >> ANGLETOFINESHIFT;
-    mo->momx = FixedMul(mo->info->speed, finecosine[an]);
-    mo->momy = FixedMul(mo->info->speed, finesine[an]);
+    mo->momX = FixedMul(mo->info->speed, finecosine[an]);
+    mo->momY = FixedMul(mo->info->speed, finesine[an]);
 
     mo = P_SpawnMissile(actor, target, MT_FATSHOT);
     mo->angle += FATSPREAD / 2;
     an       = mo->angle >> ANGLETOFINESHIFT;
-    mo->momx = FixedMul(mo->info->speed, finecosine[an]);
-    mo->momy = FixedMul(mo->info->speed, finesine[an]);
+    mo->momX = FixedMul(mo->info->speed, finecosine[an]);
+    mo->momY = FixedMul(mo->info->speed, finesine[an]);
 }
 
 
@@ -1464,14 +1475,14 @@ void A_SkullAttack(mobj_t *actor)
     S_StartSound(actor, actor->info->attacksound);
     A_FaceTarget(actor);
     an          = actor->angle >> ANGLETOFINESHIFT;
-    actor->momx = FixedMul(SKULLSPEED, finecosine[an]);
-    actor->momy = FixedMul(SKULLSPEED, finesine[an]);
+    actor->momX = FixedMul(SKULLSPEED, finecosine[an]);
+    actor->momY = FixedMul(SKULLSPEED, finesine[an]);
     dist        = P_AproxDistance(dest->x - actor->x, dest->y - actor->y);
     dist        = dist / SKULLSPEED;
 
     if (dist < 1)
         dist = 1;
-    actor->momz = (dest->z + (dest->height >> 1) - actor->z) / dist;
+    actor->momZ = (dest->z + (dest->height >> 1) - actor->z) / dist;
 }
 
 
@@ -1815,21 +1826,21 @@ void A_BabyMetal(mobj_t *mo)
     A_Chase(mo);
 }
 
-void A_OpenShotgun2(mobj_t *mobj [[maybe_unused]], player_t * player, pspdef_t * psp [[maybe_unused]])
+void A_OpenShotgun2(mobj_t *mobj [[maybe_unused]], player_t *player, pspdef_t *psp [[maybe_unused]])
 {
     if (!player) return;                 // [crispy] let pspr action pointers get called from mobj states
     S_StartSound(player->so, sfx_dbopn); // [crispy] weapon sound source
 }
 
-void A_LoadShotgun2(mobj_t *mobj [[maybe_unused]], player_t * player, pspdef_t * psp [[maybe_unused]])
+void A_LoadShotgun2(mobj_t *mobj [[maybe_unused]], player_t *player, pspdef_t *psp [[maybe_unused]])
 {
     if (!player) return;                  // [crispy] let pspr action pointers get called from mobj states
     S_StartSound(player->so, sfx_dbload); // [crispy] weapon sound source
 }
 
-void A_ReFire(mobj_t *mobj, player_t * player, pspdef_t * psp);
+void A_ReFire(mobj_t *mobj, player_t *player, pspdef_t *psp);
 
-void A_CloseShotgun2(mobj_t *mobj [[maybe_unused]], player_t * player, pspdef_t * psp)
+void A_CloseShotgun2(mobj_t *mobj [[maybe_unused]], player_t *player, pspdef_t *psp)
 {
     if (!player) return;                 // [crispy] let pspr action pointers get called from mobj states
     S_StartSound(player->so, sfx_dbcls); // [crispy] weapon sound source
@@ -1912,7 +1923,7 @@ void A_BrainScream(mobj_t *mo)
         y        = mo->y - 320 * FRACUNIT;
         z        = 128 + P_Random() * 2 * FRACUNIT;
         th       = P_SpawnMobj(x, y, z, MT_ROCKET);
-        th->momz = P_Random() * 512;
+        th->momZ = P_Random() * 512;
 
         P_SetMobjState(th, S_BRAINEXPLODE1);
 
@@ -1936,7 +1947,7 @@ void A_BrainExplode(mobj_t *mo)
     y        = mo->y;
     z        = 128 + P_Random() * 2 * FRACUNIT;
     th       = P_SpawnMobj(x, y, z, MT_ROCKET);
-    th->momz = P_Random() * 512;
+    th->momZ = P_Random() * 512;
 
     P_SetMobjState(th, S_BRAINEXPLODE1);
 
@@ -1985,7 +1996,7 @@ void A_BrainSpit(mobj_t *mo)
     newmobj         = P_SpawnMissile(mo, targ, MT_SPAWNSHOT);
     newmobj->target = targ;
     newmobj->reactiontime =
-        ((targ->y - mo->y) / newmobj->momy) / newmobj->state->tics;
+        ((targ->y - mo->y) / newmobj->momY) / newmobj->state->tics;
 
     S_StartSound(NULL, sfx_bospit);
 }
