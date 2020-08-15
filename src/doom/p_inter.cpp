@@ -58,11 +58,10 @@ int clipammo[NUMAMMO] = { 10, 4, 20, 1 };
 // Returns false if the ammo can't be picked up at all
 //
 
-bool
-    P_GiveAmmo(player_t *player,
-        ammotype_t       ammo,
-        int              num,
-        bool          dropped) // [NS] Dropped ammo/weapons give half as much.
+bool P_GiveAmmo(player_t *player,
+    ammotype_t            ammo,
+    int                   num,
+    bool                  dropped) // [NS] Dropped ammo/weapons give half as much.
 {
     int oldammo;
 
@@ -160,10 +159,9 @@ bool
 // P_GiveWeapon
 // The weapon name may have a MF_DROPPED flag ored in.
 //
-bool
-    P_GiveWeapon(player_t *player,
-        weapontype_t       weapon,
-        bool            dropped)
+bool P_GiveWeapon(player_t *player,
+    weapontype_t            weapon,
+    bool                    dropped)
 {
     bool gaveammo;
     bool gaveweapon;
@@ -225,9 +223,8 @@ bool
 // P_GiveBody
 // Returns false if the body isn't needed at all
 //
-bool
-    P_GiveBody(player_t *player,
-        int              num)
+bool P_GiveBody(player_t *player,
+    int                   num)
 {
     if (player->health >= MAXHEALTH)
         return false;
@@ -246,9 +243,8 @@ bool
 // Returns false if the armor is worse
 // than the current armor.
 //
-bool
-    P_GiveArmor(player_t *player,
-        int               armortype)
+bool P_GiveArmor(player_t *player,
+    int                    armortype)
 {
     int hits;
 
@@ -280,9 +276,8 @@ void P_GiveCard(player_t *player,
 //
 // P_GivePower
 //
-bool
-    P_GivePower(player_t *  player,
-        int /*powertype_t*/ power)
+bool P_GivePower(player_t *player,
+    int /*powertype_t*/    power)
 {
     if (power == pw_invulnerability)
     {
@@ -330,10 +325,10 @@ bool
 void P_TouchSpecialThing(mobj_t *special,
     mobj_t *                     toucher)
 {
-    player_t *    player;
-    int           i;
-    fixed_t       delta;
-    int           sound;
+    player_t * player;
+    int        i;
+    fixed_t    delta;
+    int        sound;
     const bool dropped = ((special->flags & MF_DROPPED) != 0);
 
     delta = special->z - toucher->z;
@@ -821,7 +816,7 @@ void P_DamageMobj(mobj_t *target,
 
     if (target->flags & MF_SKULLFLY)
     {
-        target->momx = target->momy = target->momz = 0;
+        target->momX = target->momY = target->momZ = 0;
     }
 
     player = target->player;
@@ -857,8 +852,8 @@ void P_DamageMobj(mobj_t *target,
         }
 
         ang >>= ANGLETOFINESHIFT;
-        target->momx += FixedMul(thrust, finecosine[ang]);
-        target->momy += FixedMul(thrust, finesine[ang]);
+        target->momX += FixedMul(thrust, finecosine[ang]);
+        target->momY += FixedMul(thrust, finesine[ang]);
     }
 
     // player specific

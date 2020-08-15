@@ -128,7 +128,7 @@ static statenum_t P_LatestSafeState(statenum_t state)
 //
 static void P_ExplodeMissileSafe(mobj_t *mo, bool safe)
 {
-    mo->momx = mo->momy = mo->momz = 0;
+    mo->momX = mo->momY = mo->momZ = 0;
 
     P_SetMobjState(mo, static_cast<statenum_t>(
                            safe ? P_LatestSafeState(static_cast<statenum_t>(
@@ -167,13 +167,13 @@ void P_XYMovement(mobj_t *mo)
     fixed_t   xmove;
     fixed_t   ymove;
 
-    if (!mo->momx && !mo->momy)
+    if (!mo->momX && !mo->momY)
     {
         if (mo->flags & MF_SKULLFLY)
         {
             // the skull slammed into something
             mo->flags &= ~MF_SKULLFLY;
-            mo->momx = mo->momy = mo->momz = 0;
+            mo->momX = mo->momY = mo->momZ = 0;
 
             P_SetMobjState(mo, static_cast<statenum_t>(mo->info->spawnstate));
         }
@@ -182,18 +182,18 @@ void P_XYMovement(mobj_t *mo)
 
     player = mo->player;
 
-    if (mo->momx > MAXMOVE)
-        mo->momx = MAXMOVE;
-    else if (mo->momx < -MAXMOVE)
-        mo->momx = -MAXMOVE;
+    if (mo->momX > MAXMOVE)
+        mo->momX = MAXMOVE;
+    else if (mo->momX < -MAXMOVE)
+        mo->momX = -MAXMOVE;
 
-    if (mo->momy > MAXMOVE)
-        mo->momy = MAXMOVE;
-    else if (mo->momy < -MAXMOVE)
-        mo->momy = -MAXMOVE;
+    if (mo->momY > MAXMOVE)
+        mo->momY = MAXMOVE;
+    else if (mo->momY < -MAXMOVE)
+        mo->momY = -MAXMOVE;
 
-    xmove = mo->momx;
-    ymove = mo->momy;
+    xmove = mo->momX;
+    ymove = mo->momY;
 
     do
     {
@@ -240,7 +240,7 @@ void P_XYMovement(mobj_t *mo)
                 P_ExplodeMissileSafe(mo, safe);
             }
             else
-                mo->momx = mo->momy = 0;
+                mo->momX = mo->momY = 0;
         }
     } while (xmove || ymove);
 
@@ -248,7 +248,7 @@ void P_XYMovement(mobj_t *mo)
     if (player && player->cheats & CF_NOMOMENTUM)
     {
         // debug option for no sliding at all
-        mo->momx = mo->momy = 0;
+        mo->momX = mo->momY = 0;
         return;
     }
 
@@ -262,20 +262,20 @@ void P_XYMovement(mobj_t *mo)
     {
         // do not stop sliding
         //  if halfway off a step with some momentum
-        if (mo->momx > FRACUNIT / 4
-            || mo->momx < -FRACUNIT / 4
-            || mo->momy > FRACUNIT / 4
-            || mo->momy < -FRACUNIT / 4)
+        if (mo->momX > FRACUNIT / 4
+            || mo->momX < -FRACUNIT / 4
+            || mo->momY > FRACUNIT / 4
+            || mo->momY < -FRACUNIT / 4)
         {
             if (mo->floorz != mo->subsector->sector->floorheight)
                 return;
         }
     }
 
-    if (mo->momx > -STOPSPEED
-        && mo->momx < STOPSPEED
-        && mo->momy > -STOPSPEED
-        && mo->momy < STOPSPEED
+    if (mo->momX > -STOPSPEED
+        && mo->momX < STOPSPEED
+        && mo->momY > -STOPSPEED
+        && mo->momY < STOPSPEED
         && (!player
             || (player->cmd.forwardmove == 0
                 && player->cmd.sidemove == 0)))
@@ -284,13 +284,13 @@ void P_XYMovement(mobj_t *mo)
         if (player && (unsigned)((player->mo->state - states) - S_PLAY_RUN1) < 4)
             P_SetMobjState(player->mo, S_PLAY);
 
-        mo->momx = 0;
-        mo->momy = 0;
+        mo->momX = 0;
+        mo->momY = 0;
     }
     else
     {
-        mo->momx = FixedMul(mo->momx, FRICTION);
-        mo->momy = FixedMul(mo->momy, FRICTION);
+        mo->momX = FixedMul(mo->momX, FRICTION);
+        mo->momY = FixedMul(mo->momY, FRICTION);
     }
 }
 
@@ -311,7 +311,7 @@ void P_ZMovement(mobj_t *mo)
     }
 
     // adjust height
-    mo->z += mo->momz;
+    mo->z += mo->momZ;
 
     if (mo->flags & MF_FLOAT
         && mo->target)
@@ -338,7 +338,7 @@ void P_ZMovement(mobj_t *mo)
         // hit the floor
 
         // Note (id):
-        //  somebody left this after the setting momz to 0,
+        //  somebody left this after the setting momZ to 0,
         //  kinda useless there.
         //
         // cph - This was the a bug in the linuxdoom-1.10 source which
@@ -365,26 +365,26 @@ void P_ZMovement(mobj_t *mo)
         if (correct_lost_soul_bounce && mo->flags & MF_SKULLFLY)
         {
             // the skull slammed into something
-            mo->momz = -mo->momz;
+            mo->momZ = -mo->momZ;
         }
 
-        if (mo->momz < 0)
+        if (mo->momZ < 0)
         {
             // [crispy] delay next jump
             if (mo->player)
                 mo->player->jumpTics = 7;
             if (mo->player
-                && mo->momz < -GRAVITY * 8)
+                && mo->momZ < -GRAVITY * 8)
             {
                 // Squat down.
                 // Decrease viewheight for a moment
                 // after hitting the ground (hard),
                 // and utter appropriate sound.
-                mo->player->deltaviewheight = mo->momz >> 3;
+                mo->player->deltaviewheight = mo->momZ >> 3;
                 // [crispy] squat down weapon sprite as well
                 if (crispy->weaponsquat)
                 {
-                    mo->player->psp_dy_max = mo->momz >> 2;
+                    mo->player->psp_dy_max = mo->momZ >> 2;
                 }
                 // [crispy] center view if not using permanent mouselook
                 if (!crispy->mouselook)
@@ -395,7 +395,7 @@ void P_ZMovement(mobj_t *mo)
                     S_StartSound(mo, sfx_oof);
                 }
             }
-            mo->momz = 0;
+            mo->momZ = 0;
         }
         mo->z = mo->floorz;
 
@@ -407,7 +407,7 @@ void P_ZMovement(mobj_t *mo)
         //
 
         if (!correct_lost_soul_bounce && mo->flags & MF_SKULLFLY)
-            mo->momz = -mo->momz;
+            mo->momZ = -mo->momZ;
 
         if ((mo->flags & MF_MISSILE)
             && !(mo->flags & MF_NOCLIP))
@@ -418,24 +418,24 @@ void P_ZMovement(mobj_t *mo)
     }
     else if (!(mo->flags & MF_NOGRAVITY))
     {
-        if (mo->momz == 0)
-            mo->momz = -GRAVITY * 2;
+        if (mo->momZ == 0)
+            mo->momZ = -GRAVITY * 2;
         else
-            mo->momz -= GRAVITY;
+            mo->momZ -= GRAVITY;
     }
 
     if (mo->z + mo->height > mo->ceilingz)
     {
         // hit the ceiling
-        if (mo->momz > 0)
-            mo->momz = 0;
+        if (mo->momZ > 0)
+            mo->momZ = 0;
         {
             mo->z = mo->ceilingz - mo->height;
         }
 
         if (mo->flags & MF_SKULLFLY)
         { // the skull slammed into something
-            mo->momz = -mo->momz;
+            mo->momZ = -mo->momZ;
         }
 
         if ((mo->flags & MF_MISSILE)
@@ -550,8 +550,8 @@ void P_MobjThinker(mobj_t *mobj)
     }
 
     // momentum movement
-    if (mobj->momx
-        || mobj->momy
+    if (mobj->momX
+        || mobj->momY
         || (mobj->flags & MF_SKULLFLY))
     {
         P_XYMovement(mobj);
@@ -561,7 +561,7 @@ void P_MobjThinker(mobj_t *mobj)
             return; // mobj was removed
     }
     if ((mobj->z != mobj->floorz)
-        || mobj->momz)
+        || mobj->momZ)
     {
         P_ZMovement(mobj);
 
@@ -1055,7 +1055,7 @@ void P_SpawnPuffSafe(fixed_t x,
     z += safe ? (Crispy_SubRandom() << 10) : (P_SubRandom() << 10);
 
     th       = P_SpawnMobjSafe(x, y, z, MT_PUFF, safe);
-    th->momz = FRACUNIT;
+    th->momZ = FRACUNIT;
     th->tics -= safe ? Crispy_Random() & 3 : P_Random() & 3;
 
     if (th->tics < 1)
@@ -1080,7 +1080,7 @@ void P_SpawnBlood(fixed_t x,
 
     z += (P_SubRandom() << 10);
     th       = P_SpawnMobj(x, y, z, MT_BLOOD);
-    th->momz = FRACUNIT * 2;
+    th->momZ = FRACUNIT * 2;
     th->tics -= P_Random() & 3;
 
     if (th->tics < 1)
@@ -1113,9 +1113,9 @@ void P_CheckMissileSpawn(mobj_t *th)
 
     // move a little forward so an angle can
     // be computed if it immediately explodes
-    th->x += (th->momx >> 1);
-    th->y += (th->momy >> 1);
-    th->z += (th->momz >> 1);
+    th->x += (th->momX >> 1);
+    th->y += (th->momY >> 1);
+    th->z += (th->momZ >> 1);
 
     if (!P_TryMove(th, th->x, th->y))
         P_ExplodeMissile(th);
@@ -1172,8 +1172,8 @@ mobj_t *
 
     th->angle = an;
     an >>= ANGLETOFINESHIFT;
-    th->momx = FixedMul(th->info->speed, finecosine[an]);
-    th->momy = FixedMul(th->info->speed, finesine[an]);
+    th->momX = FixedMul(th->info->speed, finecosine[an]);
+    th->momY = FixedMul(th->info->speed, finesine[an]);
 
     dist = P_AproxDistance(dest->x - source->x, dest->y - source->y);
     dist = dist / th->info->speed;
@@ -1181,7 +1181,7 @@ mobj_t *
     if (dist < 1)
         dist = 1;
 
-    th->momz = (dest->z - source->z) / dist;
+    th->momZ = (dest->z - source->z) / dist;
     P_CheckMissileSpawn(th);
 
     return th;
@@ -1248,11 +1248,11 @@ void P_SpawnPlayerMissile(mobj_t *source,
 
     th->target = source;
     th->angle  = an;
-    th->momx   = FixedMul(th->info->speed,
+    th->momX   = FixedMul(th->info->speed,
         finecosine[an >> ANGLETOFINESHIFT]);
-    th->momy   = FixedMul(th->info->speed,
+    th->momY   = FixedMul(th->info->speed,
         finesine[an >> ANGLETOFINESHIFT]);
-    th->momz   = FixedMul(th->info->speed, slope);
+    th->momZ   = FixedMul(th->info->speed, slope);
     // [crispy] suppress interpolation of player missiles for the first tic
     th->interp = -1;
 

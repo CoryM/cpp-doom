@@ -349,14 +349,14 @@ static void saveg_read_mobj_t(mobj_t *str)
     // fixed_t height;
     str->height = saveg_read32();
 
-    // fixed_t momx;
-    str->momx = saveg_read32();
+    // fixed_t momX;
+    str->momX = saveg_read32();
 
-    // fixed_t momy;
-    str->momy = saveg_read32();
+    // fixed_t momY;
+    str->momY = saveg_read32();
 
-    // fixed_t momz;
-    str->momz = saveg_read32();
+    // fixed_t momZ;
+    str->momZ = saveg_read32();
 
     // int validcount;
     str->validcount = saveg_read32();
@@ -514,14 +514,14 @@ static void saveg_write_mobj_t(mobj_t *str)
     // fixed_t height;
     saveg_write32(str->height);
 
-    // fixed_t momx;
-    saveg_write32(str->momx);
+    // fixed_t momX;
+    saveg_write32(str->momX);
 
-    // fixed_t momy;
-    saveg_write32(str->momy);
+    // fixed_t momY;
+    saveg_write32(str->momY);
 
-    // fixed_t momz;
-    saveg_write32(str->momz);
+    // fixed_t momZ;
+    saveg_write32(str->momZ);
 
     // int validcount;
     saveg_write32(str->validcount);

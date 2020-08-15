@@ -211,7 +211,7 @@ struct mobj_t {
 
     // More list: links in sector (if needed)
     mobj_t *snext = nullptr;
-    mobj_t *sprev  = nullptr;
+    mobj_t *sprev = nullptr;
 
     //More drawing info: to determine current sprite.
     angle_t     angle  = 0;  // orientation
@@ -234,9 +234,9 @@ struct mobj_t {
     fixed_t height = 0;
 
     // Momentums, used to update position.
-    fixed_t momx = 0;
-    fixed_t momy = 0;
-    fixed_t momz = 0;
+    fixed_t momX = 0;
+    fixed_t momY = 0;
+    fixed_t momZ = 0;
 
     // If == validcount, already checked.
     int validcount = 0;
@@ -250,7 +250,7 @@ struct mobj_t {
     int      health = 0;
 
     // Movement direction, movement generation (zig-zagging).
-    int movedir   = 0;   // 0-7
+    int movedir   = 0; // 0-7
     int movecount = 0; // when 0, select a new dir
 
     // Thing being chased/attacked (or NULL),
@@ -283,9 +283,9 @@ struct mobj_t {
 
     // [AM] Previous position of mobj before think.
     //      Used to interpolate between positions.
-    fixed_t oldx = 0;
-    fixed_t oldy = 0;
-    fixed_t oldz = 0;
+    fixed_t oldx     = 0;
+    fixed_t oldy     = 0;
+    fixed_t oldz     = 0;
     angle_t oldangle = 0;
 };
 

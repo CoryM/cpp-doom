@@ -26,7 +26,7 @@ extern void A_Explode(mobj_t *thingy);
 extern void A_FaceTarget(mobj_t *thingy);
 
 extern bool P_CheckMeleeRange(mobj_t *actor);
-extern void    P_Thrust(player_t *player, angle_t angle, fixed_t move);
+extern void P_Thrust(player_t *player, angle_t angle, fixed_t move);
 
 // killough 11/98: kill an object
 void A_Die(mobj_t *actor)
@@ -67,9 +67,9 @@ void A_Mushroom(mobj_t *actor)
             target.y += j << FRACBITS;
             target.z += P_AproxDistance(i, j) * misc1;             // Aim fairly high
             mo       = P_SpawnMissile(actor, &target, MT_FATSHOT); // Launch fireball
-            mo->momx = FixedMul(mo->momx, misc2);
-            mo->momy = FixedMul(mo->momy, misc2); // Slow down a bit
-            mo->momz = FixedMul(mo->momz, misc2);
+            mo->momX = FixedMul(mo->momX, misc2);
+            mo->momY = FixedMul(mo->momY, misc2); // Slow down a bit
+            mo->momZ = FixedMul(mo->momZ, misc2);
             mo->flags &= ~MF_NOGRAVITY; // Make debris fall under gravity
         }
 }
@@ -92,7 +92,9 @@ void A_BetaSkullAttack(mobj_t *actor)
 
 void A_Stop(mobj_t *actor)
 {
-    actor->momx = actor->momy = actor->momz = 0;
+    actor->momX = 0;
+    actor->momY = 0;
+    actor->momZ = 0;
 }
 
 //
@@ -248,9 +250,9 @@ void A_FireOldBFG(mobj_t *mobj [[maybe_unused]], player_t *player, pspdef_t *psp
             type);
         th->target = mo; // P_SetTarget(&th->target, mo);
         th->angle  = an1;
-        th->momx   = finecosine[an1 >> ANGLETOFINESHIFT] * 25;
-        th->momy   = finesine[an1 >> ANGLETOFINESHIFT] * 25;
-        th->momz   = finetangent[an2 >> ANGLETOFINESHIFT] * 25;
+        th->momX   = finecosine[an1 >> ANGLETOFINESHIFT] * 25;
+        th->momY   = finesine[an1 >> ANGLETOFINESHIFT] * 25;
+        th->momZ   = finetangent[an2 >> ANGLETOFINESHIFT] * 25;
         // [crispy] suppress interpolation of player missiles for the first tic
         th->interp = -1;
         P_CheckMissileSpawn(th);

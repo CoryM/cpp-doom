@@ -316,7 +316,7 @@ bool PIT_CheckThing(mobj_t *thing)
         P_DamageMobj(thing, tmthing, tmthing, damage);
 
         tmthing->flags &= ~MF_SKULLFLY;
-        tmthing->momx = tmthing->momy = tmthing->momz = 0;
+        tmthing->momX = tmthing->momY = tmthing->momZ = 0;
 
         P_SetMobjState(tmthing,
             static_cast<statenum_t>(tmthing->info->spawnstate));
@@ -792,7 +792,7 @@ isblocking:
 
 //
 // P_SlideMove
-// The momx / momy move is bad, so try to slide
+// The momX / momY move is bad, so try to slide
 // along a wall.
 // Find the first line hit, move flush to it,
 // and slide along it
@@ -818,7 +818,7 @@ retry:
 
 
     // trace along the three leading corners
-    if (mo->momx > 0)
+    if (mo->momX > 0)
     {
         leadx  = mo->x + mo->radius;
         trailx = mo->x - mo->radius;
@@ -829,7 +829,7 @@ retry:
         trailx = mo->x + mo->radius;
     }
 
-    if (mo->momy > 0)
+    if (mo->momY > 0)
     {
         leady  = mo->y + mo->radius;
         traily = mo->y - mo->radius;
@@ -842,11 +842,11 @@ retry:
 
     bestslidefrac = FRACUNIT + 1;
 
-    P_PathTraverse(leadx, leady, leadx + mo->momx, leady + mo->momy,
+    P_PathTraverse(leadx, leady, leadx + mo->momX, leady + mo->momY,
         PT_ADDLINES, PTR_SlideTraverse);
-    P_PathTraverse(trailx, leady, trailx + mo->momx, leady + mo->momy,
+    P_PathTraverse(trailx, leady, trailx + mo->momX, leady + mo->momY,
         PT_ADDLINES, PTR_SlideTraverse);
-    P_PathTraverse(leadx, traily, leadx + mo->momx, traily + mo->momy,
+    P_PathTraverse(leadx, traily, leadx + mo->momX, traily + mo->momY,
         PT_ADDLINES, PTR_SlideTraverse);
 
     // move up to the wall
@@ -854,8 +854,8 @@ retry:
     {
         // the move most have hit the middle, so stairstep
     stairstep:
-        if (!P_TryMove(mo, mo->x, mo->y + mo->momy))
-            P_TryMove(mo, mo->x + mo->momx, mo->y);
+        if (!P_TryMove(mo, mo->x, mo->y + mo->momY))
+            P_TryMove(mo, mo->x + mo->momX, mo->y);
         return;
     }
 
@@ -863,8 +863,8 @@ retry:
     bestslidefrac -= 0x800;
     if (bestslidefrac > 0)
     {
-        newx = FixedMul(mo->momx, bestslidefrac);
-        newy = FixedMul(mo->momy, bestslidefrac);
+        newx = FixedMul(mo->momX, bestslidefrac);
+        newy = FixedMul(mo->momY, bestslidefrac);
 
         if (!P_TryMove(mo, mo->x + newx, mo->y + newy))
             goto stairstep;
@@ -880,13 +880,13 @@ retry:
     if (bestslidefrac <= 0)
         return;
 
-    tmxmove = FixedMul(mo->momx, bestslidefrac);
-    tmymove = FixedMul(mo->momy, bestslidefrac);
+    tmxmove = FixedMul(mo->momX, bestslidefrac);
+    tmymove = FixedMul(mo->momY, bestslidefrac);
 
     P_HitSlideLine(bestslideline); // clip the moves
 
-    mo->momx = tmxmove;
-    mo->momy = tmymove;
+    mo->momX = tmxmove;
+    mo->momY = tmymove;
 
     if (!P_TryMove(mo, mo->x + tmxmove, mo->y + tmymove))
     {
@@ -1554,8 +1554,8 @@ bool PIT_ChangeSector(mobj_t *thing)
             // [crispy] Lost Souls and Barrels bleed Puffs
             thing->z + thing->height / 2, (thing->flags & MF_NOBLOOD) ? MT_PUFF : MT_BLOOD);
 
-        mo->momx = P_SubRandom() << 12;
-        mo->momy = P_SubRandom() << 12;
+        mo->momX = P_SubRandom() << 12;
+        mo->momY = P_SubRandom() << 12;
 
         // [crispy] connect blood object with the monster that bleeds it
         mo->target = thing;

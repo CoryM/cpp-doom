@@ -55,8 +55,8 @@ void P_Thrust(player_t *player,
 {
     angle >>= ANGLETOFINESHIFT;
 
-    player->mo->momx += FixedMul(move, finecosine[angle]);
-    player->mo->momy += FixedMul(move, finesine[angle]);
+    player->mo->momX += FixedMul(move, finecosine[angle]);
+    player->mo->momY += FixedMul(move, finesine[angle]);
 }
 
 
@@ -76,8 +76,8 @@ void P_CalcHeight(player_t *player)
     // Note: a LUT allows for effects
     //  like a ramp with low health.
     player->bob =
-        FixedMul(player->mo->momx, player->mo->momx)
-        + FixedMul(player->mo->momy, player->mo->momy);
+        FixedMul(player->mo->momX, player->mo->momX)
+        + FixedMul(player->mo->momY, player->mo->momY);
 
     player->bob >>= 2;
 
@@ -367,12 +367,12 @@ void P_PlayerThink(player_t *player)
         if ((cmd->arti & AFLAG_JUMP) && onground && !player->jumpTics)
         {
             // [crispy] Hexen sets 9; Strife adds 8
-            player->mo->momz = (7 + crispy->jump) * FRACUNIT;
+            player->mo->momZ = (7 + crispy->jump) * FRACUNIT;
             player->jumpTics = 18;
             // [crispy] squat down weapon sprite a bit
             if (crispy->weaponsquat)
             {
-                player->psp_dy_max = -player->mo->momz >> 2;
+                player->psp_dy_max = -player->mo->momZ >> 2;
             }
         }
     }

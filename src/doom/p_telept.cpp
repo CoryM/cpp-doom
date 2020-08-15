@@ -121,7 +121,7 @@ int EV_Teleport(line_s *line,
                     thing->reactiontime = 18;
 
                 thing->angle = m->angle;
-                thing->momx = thing->momy = thing->momz = 0;
+                thing->momX = thing->momY = thing->momZ = 0;
                 return 1;
             }
         }

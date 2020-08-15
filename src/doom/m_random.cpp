@@ -69,8 +69,9 @@ int Crispy_Random(void)
 
 void M_ClearRandom(void)
 {
-    rndindex = prndindex = 0;
-    crndindex            = 0;
+    rndindex  = 0;
+    prndindex = 0;
+    crndindex = 0;
 }
 
 // inspired by the same routine in Eternity, thanks haleyjd
