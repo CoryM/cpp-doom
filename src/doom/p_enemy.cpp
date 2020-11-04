@@ -1678,6 +1678,17 @@ void A_BossDeath(mobj_t *mo)
         }
     }
 
+    // Used to replace
+    //   line_s junk.tag = 666;
+    // with
+    //   auto junk = junkTag(666);
+    constexpr auto junkTag = [](const short tag) {
+        line_s junk;
+        junk.tag = tag;
+        return junk;
+    };
+
+
     // victory!
     if (gamemode == GameMode_t::commercial)
     {
@@ -1687,14 +1698,15 @@ void A_BossDeath(mobj_t *mo)
         {
             if (mo->type == MT_FATSO)
             {
-                line_s junk.tag = 666;
+                auto junk = junkTag(666);
                 EV_DoFloor(&junk, lowerFloorToLowest);
                 return;
             }
 
             if (mo->type == MT_BABY)
             {
-                line_s junk.tag = 667;
+                //line_s junk.tag = 667;
+                auto junk = junkTag(667);
                 EV_DoFloor(&junk, raiseToTexture);
                 return;
             }
@@ -1702,10 +1714,11 @@ void A_BossDeath(mobj_t *mo)
     }
     else
     {
+        auto junk = junkTag(666);
         switch (gameepisode)
         {
         case 1:
-            line_s junk.tag = 666;
+            //line_s junk.tag = 666;
             EV_DoFloor(&junk, lowerFloorToLowest);
             return;
             break;
@@ -1714,13 +1727,13 @@ void A_BossDeath(mobj_t *mo)
             switch (gamemap)
             {
             case 6:
-                line_s junk.tag = 666;
+                //line_s junk.tag = 666;
                 EV_DoDoor(&junk, vld_blazeOpen);
                 return;
                 break;
 
             case 8:
-                line_s junk.tag = 666;
+                //line_s junk.tag = 666;
                 EV_DoFloor(&junk, lowerFloorToLowest);
                 return;
                 break;
