@@ -1,0 +1,62 @@
+# PrecompiledHeaders.cmake
+#
+option(ENABLE_PCH "Enable Precompiled Headers" ON)
+
+if(ENABLE_PCH)
+  # This sets a global PCH parameter, each project will build its own PCH, which is a good idea if any #define's change
+  # consider breaking this out per project as necessary
+  target_precompile_headers(
+    project_options
+    INTERFACE
+    <algorithm>
+    <amd64/pio.h>
+    <cassert>
+    <cctype>
+    <cerrno>
+    <cinttypes>
+    <climits>
+    <cmath>
+    <cstdarg>
+    <cstdio>
+    <cstdlib>
+    <cstring>
+    <ctime>
+    <dirent.h>
+    <direct.h>
+    <fcntl.h>
+    <filesystem>
+    <fmt/core.h>
+    <functional>
+    <fstream>
+    <i386/pio.h>
+    <initializer_list>
+    <io.h>
+    <iostream>
+    <linux/kd.h>
+    <machine/sysarch.h>
+    <map>
+    <memory>
+    <new>
+    <numeric>
+    <png.h>
+    <SDL2/SDL_net.h>
+    <shlobj.h>
+    <span>
+    <string>
+    <string_view>
+    <sys/io.h>
+    <sys/ioctl.h>
+    <sys/stat.h>
+    <sys/signal.h>
+    <sys/socket.h>
+    <sys/types.h>
+    <sys/wait.h>
+    <unistd.h>
+    <vector>
+    <windows.h>
+    <win_opendir.h>
+    <winuser.h>
+    <winioctl.h>
+    <zlib.h>
+  )
+endif()

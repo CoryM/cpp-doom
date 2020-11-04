@@ -8,6 +8,10 @@ set(CXX_STANDARD_REQUIRED on)
 set(CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Link this 'library' to set the c++ standard / compile-time options requested
+add_library(project_options INTERFACE)
+target_compile_features(project_options INTERFACE cxx_std_17)
+
 # Autotools variables
 set(top_srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(top_builddir ${CMAKE_CURRENT_BINARY_DIR})
@@ -23,12 +27,31 @@ string(REGEX REPLACE " Doom$" "" PACKAGE_SHORTNAME "${PACKAGE_NAME}")
 set(PACKAGE_COPYRIGHT "Copyright (C) 1993-2020")
 set(PACKAGE_LICENSE "GNU General Public License, version 2")
 
+option(ENABLE_PCH "Enable Precompiled Headers" ON)
+if(ENABLE_PCH)
+  # This sets a global PCH parameter, each project will build its own PCH, which is a good idea if any #define's change
+  # consider breaking this out per project as necessary
+  target_precompile_headers(
+    project_options
+    INTERFACE
+    <array>
+    <cstddef>
+    <map>
+    <string>
+    <string_view>
+    <utility>
+    <vector>)
+endif()
+
+
 # Any settings that should apply to all targets in this directory and all
 # subdirectories should go here.  Use judiciously.
 add_compile_options("-Wall" "-march=native" "-mtune=native" "-Wextra" "-pedantic" "-pthread" "-Og" "-Wno-attributes")
 add_link_options("-O2")
 add_compile_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
 add_link_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
+
+find_package(SFML 2.5.0 COMPONENTS system window graphics audio REQUIRED)
 
 find_package(SDL2 2.0.1 REQUIRED)
 find_package(SDL2_mixer 2.0.0 REQUIRED)

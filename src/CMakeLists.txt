@@ -47,12 +47,12 @@ endif()
 set(GAME_SOURCE_FILES
     aes_prng.cpp          aes_prng.hpp
     d_event.cpp           d_event.hpp
-                        doomkeys.hpp
-                        doomtype.hpp
+                          doomkeys.hpp
+                          doomtype.hpp
     d_iwad.cpp            d_iwad.hpp
     d_loop.cpp            d_loop.hpp
     d_mode.cpp            d_mode.hpp
-                        d_ticcmd.hpp
+                          d_ticcmd.hpp
     deh_str.cpp           deh_str.hpp
     gusconf.cpp           gusconf.hpp
     i_cdmus.cpp           i_cdmus.hpp
@@ -60,7 +60,7 @@ set(GAME_SOURCE_FILES
     i_glob.cpp            i_glob.hpp
     i_input.cpp           i_input.hpp
     i_joystick.cpp        i_joystick.hpp
-                        i_swap.hpp
+                          i_swap.hpp
     i_midipipe.cpp        i_midipipe.hpp
     i_musicpack.cpp
     i_oplmusic.cpp
@@ -96,7 +96,7 @@ set(GAME_SOURCE_FILES
     tables.cpp            tables.hpp
     v_diskicon.cpp        v_diskicon.hpp
     v_video.cpp           v_video.hpp
-                        v_patch.hpp
+                          v_patch.hpp
     v_trans.cpp           v_trans.hpp
     w_checksum.cpp        w_checksum.hpp
     w_main.cpp            w_main.hpp
@@ -133,7 +133,13 @@ endif()
 add_executable("${PROGRAM_PREFIX}doom" ${SOURCE_FILES_WITH_DEH})
 
 target_include_directories("${PROGRAM_PREFIX}doom" PRIVATE ${GAME_INCLUDE_DIRS})
-target_link_libraries("${PROGRAM_PREFIX}doom" doom ${EXTRA_LIBS})
+target_link_libraries(
+    "${PROGRAM_PREFIX}doom"
+    doom
+    ${EXTRA_LIBS}
+    project_options
+)
+
 if(FoundIPO)
   set_property(TARGET "${PROGRAM_PREFIX}doom" PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
 endif()
