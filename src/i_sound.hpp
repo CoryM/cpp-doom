@@ -70,8 +70,7 @@ struct sfxinfo_struct {
 //
 // MusicInfo struct.
 //
-typedef struct
-{
+struct musicinfo_t {
     // up to 6-character name
     const char *name;
 
@@ -83,8 +82,7 @@ typedef struct
 
     // music handle once registered
     void *handle;
-
-} musicinfo_t;
+};
 
 enum snddevice_t : int
 {
@@ -103,8 +101,7 @@ enum snddevice_t : int
 
 // Interface for sound modules
 
-typedef struct
-{
+struct sound_module_t {
     // List of sound devices that this sound module is used for.
 
     snddevice_t *sound_devices;
@@ -147,23 +144,21 @@ typedef struct
     // Called on startup to precache sound effects (if necessary)
 
     void (*CacheSounds)(sfxinfo_t *sounds, int num_sounds);
+};
 
-} sound_module_t;
-
-void    I_InitSound(bool use_sfx_prefix);
-void    I_ShutdownSound(void);
-int     I_GetSfxLumpNum(sfxinfo_t *sfxinfo);
-void    I_UpdateSound(void);
-void    I_UpdateSoundParams(int channel, int vol, int sep);
-int     I_StartSound(sfxinfo_t *sfxinfo, int channel, int vol, int sep, int pitch);
-void    I_StopSound(int channel);
+void I_InitSound(bool use_sfx_prefix);
+void I_ShutdownSound(void);
+int  I_GetSfxLumpNum(sfxinfo_t *sfxinfo);
+void I_UpdateSound(void);
+void I_UpdateSoundParams(int channel, int vol, int sep);
+int  I_StartSound(sfxinfo_t *sfxinfo, int channel, int vol, int sep, int pitch);
+void I_StopSound(int channel);
 bool I_SoundIsPlaying(int channel);
-void    I_PrecacheSounds(sfxinfo_t *sounds, int num_sounds);
+void I_PrecacheSounds(sfxinfo_t *sounds, int num_sounds);
 
 // Interface for music modules
 
-typedef struct
-{
+struct music_module_t {
     // List of sound devices that this music module is used for.
 
     snddevice_t *sound_devices;
@@ -213,18 +208,18 @@ typedef struct
     // Invoked periodically to poll.
 
     void (*Poll)(void);
-} music_module_t;
+};
 
-void    I_InitMusic(void);
-void    I_ShutdownMusic(void);
-void    I_SetMusicVolume(int volume);
-void    I_PauseSong(void);
-void    I_ResumeSong(void);
-void *  I_RegisterSong(void *data, int len);
-void    I_UnRegisterSong(void *handle);
-void    I_PlaySong(void *handle, bool looping);
-void    I_StopSong(void);
-bool I_MusicIsPlaying(void);
+void  I_InitMusic(void);
+void  I_ShutdownMusic(void);
+void  I_SetMusicVolume(int volume);
+void  I_PauseSong(void);
+void  I_ResumeSong(void);
+void *I_RegisterSong(void *data, int len);
+void  I_UnRegisterSong(void *handle);
+void  I_PlaySong(void *handle, bool looping);
+void  I_StopSong(void);
+bool  I_MusicIsPlaying(void);
 
 extern snddevice_t snd_sfxdevice;
 extern snddevice_t snd_musicdevice;
@@ -237,12 +232,12 @@ extern int         snd_pitchshift;
 void I_BindSoundVariables(void);
 
 // DMX version to emulate for OPL emulation:
-typedef enum
+enum opl_driver_ver_t
 {
     opl_doom1_1_666, // Doom 1 v1.666
     opl_doom2_1_666, // Doom 2 v1.666, Hexen, Heretic
     opl_doom_1_9     // Doom v1.9, Strife
-} opl_driver_ver_t;
+};
 
 void I_SetOPLDriverVer(opl_driver_ver_t ver);
 
