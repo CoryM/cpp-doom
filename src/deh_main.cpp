@@ -24,6 +24,7 @@
 #include "m_argv.hpp"
 #include "w_wad.hpp"
 
+#include <iostream>
 #include <string>
 #include <string_view>
 
@@ -122,45 +123,22 @@ static auto IsWhitespace(std::string_view s) -> bool
 }
 
 // Strip whitespace from the start and end of a string
-// Does not change the orginal string only points to the
+// Does not change the original string only points to the
 // "contents" of the string inside.
 static auto CleanString(const std::string_view in_s) -> std::string_view
 {
-    auto out_s = std::string_view();
+    size_t length = 0;
+    size_t start  = 0;
     if (!in_s.empty()) [[likely]]
         {
-            const auto start = in_s.find_first_not_of(' ');
+            start = in_s.find_first_not_of(' ');
             if (start != std::string::npos) [[likely]]
                 {
-                    const auto        end    = in_s.find_last_not_of(' ');
-                    const auto *const first  = in_s.begin() + start;
-                    const auto        length = (end - start) + 1;
-                    out_s                    = std::string_view(first, length);
+                    length = (in_s.find_last_not_of(' ') - start) + 1;
                 }
         }
-    return out_s;
+    return in_s.substr(start, length);
 }
-// // Strip whitespace from the start and end of a string
-// static auto CleanString(char *s) -> char *
-// {
-//     // Leading whitespace
-//     while (*s && isspace(*s))
-//     {
-//         ++s;
-//     }
-//
-//     // Trailing whitespace
-//
-//     char *strending = s + strlen(s) - 1;
-//
-//     while (strlen(s) > 0 && isspace(*strending))
-//     {
-//         *strending = '\0';
-//         --strending;
-//     }
-//
-//     return s;
-// }
 
 // This pattern is used a lot of times in different sections,
 // an assignment is essentially just a statement of the form:
@@ -383,7 +361,7 @@ static void DEH_ParseContext(deh_context_t *context)
 }
 
 // Parses a dehacked file
-int DEH_LoadFile(const char *filename)
+[[deprecated("Use String_View version")]] int DEH_LoadFile(const char *filename)
 {
     deh_context_t *context;
 
@@ -409,6 +387,45 @@ int DEH_LoadFile(const char *filename)
     if (context == NULL)
     {
         fprintf(stderr, "DEH_LoadFile: Unable to open %s\n", filename);
+        return 0;
+    }
+
+    DEH_ParseContext(context);
+
+    DEH_CloseFile(context);
+
+    if (DEH_HadError(context))
+    {
+        S_Error("Error parsing dehacked file");
+    }
+
+    return 1;
+}
+
+int DEH_LoadFile(const std::string_view filename)
+{
+    if (!deh_initialized)
+    {
+        DEH_Init();
+    }
+
+    // Before parsing a new file, reset special override flags to false.
+    // Magic comments should only apply to the file in which they were
+    // defined, and shouldn't carry over to subsequent files as well.
+    // [crispy] always allow everything
+    /*
+    deh_allow_long_strings = false;
+    deh_allow_long_cheats = false;
+    deh_allow_extended_strings = false;
+*/
+
+    puts(fmt::format(" loading {}\n", filename).data());
+
+    deh_context_t *context = DEH_OpenFile(filename.data());
+
+    if (context == nullptr)
+    {
+        std::cerr << fmt::format("DEH_LoadFile: Unable to open {}\n", filename);
         return 0;
     }
 
@@ -448,10 +465,8 @@ void DEH_AutoLoadPatches(const char *path)
 
 // Load dehacked file from WAD lump.
 // If allow_long is set, allow long strings and cheats just for this lump.
-int DEH_LoadLump(int lumpnum, [[maybe_unused]] bool allow_long, bool allow_error)
+auto DEH_LoadLump(int lumpnum, [[maybe_unused]] bool allow_long, bool allow_error) -> int
 {
-    deh_context_t *context;
-
     if (!deh_initialized)
     {
         DEH_Init();
@@ -465,11 +480,11 @@ int DEH_LoadLump(int lumpnum, [[maybe_unused]] bool allow_long, bool allow_error
     deh_allow_extended_strings = false;
 */
 
-    context = DEH_OpenLump(lumpnum);
+    deh_context_t *context = DEH_OpenLump(lumpnum);
 
-    if (context == NULL)
+    if (context == nullptr)
     {
-        fprintf(stderr, "DEH_LoadFile: Unable to open lump %i\n", lumpnum);
+        std::cerr << fmt::format("DEH_LoadFile: Unable to open lump {}\n", lumpnum);
         return 0;
     }
 
@@ -481,21 +496,19 @@ int DEH_LoadLump(int lumpnum, [[maybe_unused]] bool allow_long, bool allow_error
     // errors to just be ignored if allow_error=true.
     if (!allow_error && DEH_HadError(context))
     {
-        I_Error("Error parsing dehacked lump");
+        S_Error("Error parsing dehacked lump");
     }
 
     return 1;
 }
 
-int DEH_LoadLumpByName(const char *name, bool allow_long, bool allow_error)
+auto DEH_LoadLumpByName(const char *name, bool allow_long, bool allow_error) -> int
 {
-    int lumpnum;
-
-    lumpnum = W_CheckNumForName(name);
+    int lumpnum = W_CheckNumForName(name);
 
     if (lumpnum == -1)
     {
-        fprintf(stderr, "DEH_LoadLumpByName: '%s' lump not found\n", name);
+        std::cerr << fmt::format("DEH_LoadLumpByName: '{}' lump not found\n", name);
         return 0;
     }
 
@@ -503,7 +516,7 @@ int DEH_LoadLumpByName(const char *name, bool allow_long, bool allow_error)
 }
 
 // Check the command line for -deh argument, and others.
-void DEH_ParseCommandLine(void)
+void DEH_ParseCommandLine()
 {
     //!
     // @arg <files>
@@ -518,7 +531,7 @@ void DEH_ParseCommandLine(void)
         while (p < M_GetArgumentCount() && M_GetArgument(p)[0] != '-')
         {
             auto filename = D_TryFindWADByName(M_GetArgument(p));
-            DEH_LoadFile(filename.c_str());
+            DEH_LoadFile(filename);
             ++p;
         }
     }

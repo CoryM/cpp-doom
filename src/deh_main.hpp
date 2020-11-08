@@ -19,10 +19,11 @@
 #define DEH_MAIN_H
 
 
-
 #include "doomtype.hpp"
 #include "deh_str.hpp"
 #include "sha1.hpp"
+
+#include <string_view>
 
 // These are the limits that dehacked uses (from dheinit.h in the dehacked
 // source).  If these limits are exceeded, it does not generate an error, but
@@ -33,6 +34,7 @@
 
 void DEH_ParseCommandLine();
 int  DEH_LoadFile(const char *filename);
+int  DEH_LoadFile(const std::string_view filename);
 void DEH_AutoLoadPatches(const char *path);
 int  DEH_LoadLump(int lumpnum, bool allow_long, bool allow_error);
 int  DEH_LoadLumpByName(const char *name, bool allow_long, bool allow_error);
