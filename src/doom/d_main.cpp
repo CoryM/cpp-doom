@@ -840,7 +840,7 @@ static void SetMissionForPackName(const char *pack_name)
         printf("\t%s\n", pack.name);
     }
 
-    I_Error("Unknown mission pack name: %s", pack_name);
+    S_Error(fmt::format("Unknown mission pack name: {}", pack_name));
 }
 
 //
@@ -877,7 +877,7 @@ void D_IdentifyVersion(void)
         {
             // Still no idea.  I don't think this is going to work.
 
-            I_Error("Unknown or invalid IWAD file.");
+            S_Error("Unknown or invalid IWAD file.");
         }
     }
 
@@ -1113,7 +1113,7 @@ static void InitGameVersion(void)
                     gameversions[i].description);
             }
 
-            I_Error("Unknown game version '%s'", M_GetArgument(p + 1));
+            S_Error(fmt::format("Unknown game version '{}'", M_GetArgument(p + 1)));
         }
     }
     else
@@ -1272,8 +1272,7 @@ static void LoadIwadDeh(void)
     {
         if (!DEH_LoadLumpByName("DEHACKED", true, false))
         {
-            I_Error("DEHACKED lump not found.  Please check that this is the "
-                    "Hacx v1.2 IWAD.");
+            S_Error("DEHACKED lump not found.  Please check that this is the Hacx v1.2 IWAD.");
         }
     }
 
@@ -1281,22 +1280,19 @@ static void LoadIwadDeh(void)
     // and installed next to the IWAD.
     if (gameversion == exe_chex)
     {
-        char *chex_deh = NULL;
-
         // Look for chex.deh in the same directory as the IWAD file.
-        auto dirname = M_DirName(iwadfile);
-        chex_deh     = M_StringJoin({ dirname, DIR_SEPARATOR_S, "chex.deh" });
+        auto dirname  = M_DirName(iwadfile);
+        auto chex_deh = std::string(M_StringJoin({ dirname, DIR_SEPARATOR_S, "chex.deh" }));
 
         // If the dehacked patch isn't found, try searching the WAD
         // search path instead.  We might find it...
         if (!M_FileExists(chex_deh))
         {
-            free(chex_deh);
-            chex_deh = M_StringDuplicate(D_FindWADByName("chex.deh"));
+            chex_deh = D_FindWADByName("chex.deh");
         }
 
         // Still not found?
-        if (chex_deh == nullptr)
+        if (chex_deh.empty())
         {
             S_Error("Unable to find Chex Quest dehacked file (chex.deh).\n"
                     "The dehacked file is required in order to emulate\n"
@@ -1305,7 +1301,7 @@ static void LoadIwadDeh(void)
                     "   utils/exe_edit/patches/chexdeh.zip");
         }
 
-        if (!DEH_LoadFile(chex_deh))
+        if (!DEH_LoadFile(chex_deh.data()))
         {
             S_Error("Failed to load chex.deh needed for emulating chex.exe.");
         }
@@ -1727,7 +1723,7 @@ void D_DoomMain(void)
 
     if (iwadfile == nullptr)
     {
-        I_Error("Game mode undetermined.  No IWAD file was found.  Try\n"
+        S_Error("Game mode undetermined.  No IWAD file was found.  Try\n"
                 "specifying one with the '-iwad' command line parameter.\n");
     }
 
@@ -1878,11 +1874,11 @@ void D_DoomMain(void)
             }
 
             merged = W_MergeDump(file);
-            I_Error("W_MergeDump: Merged %d lumps into file '%s'.", merged, file);
+            S_Error(fmt::format("W_MergeDump: Merged {} lumps into file '{}'.", merged, file));
         }
         else
         {
-            I_Error("W_MergeDump: The '-mergedump' parameter requires an argument.");
+            S_Error("W_MergeDump: The '-mergedump' parameter requires an argument.");
         }
     }
 
@@ -1909,16 +1905,16 @@ void D_DoomMain(void)
 
             if (dumped < 0)
             {
-                I_Error("W_LumpDump: Failed to write lump '%s'.", file);
+                S_Error(fmt::format("W_LumpDump: Failed to write lump '{}'.", file));
             }
             else
             {
-                I_Error("W_LumpDump: Dumped lump into file '%s.lmp'.", file);
+                S_Error(fmt::format("W_LumpDump: Dumped lump into file '{}.lmp'.", file));
             }
         }
         else
         {
-            I_Error("W_LumpDump: The '-lumpdump' parameter requires an argument.");
+            S_Error(fmt::format("W_LumpDump: The '-lumpdump' parameter requires an argument."));
         }
     }
 
@@ -2044,7 +2040,7 @@ void D_DoomMain(void)
         int i;
 
         if (gamemode == GameMode_t::shareware)
-            I_Error(DEH_String("\nYou cannot -file with the shareware "
+            S_Error(DEH_String("\nYou cannot -file with the shareware "
                                "version. Register!"));
 
         // Check for fake IWAD with right name,
@@ -2052,7 +2048,7 @@ void D_DoomMain(void)
         if (gamemode == GameMode_t::registered)
             for (i = 0; i < 23; i++)
                 if (W_CheckNumForName(name[i]) < 0)
-                    I_Error(DEH_String("\nThis is not the registered version."));
+                    S_Error(DEH_String("\nThis is not the registered version."));
     }
 
 // [crispy] disable meaningless warning, we always use "-merge" anyway
