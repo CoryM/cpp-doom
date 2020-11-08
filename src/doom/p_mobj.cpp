@@ -610,7 +610,12 @@ void P_MobjThinker(mobj_t *mobj)
 //
 // P_SpawnMobj
 //
-static mobj_t *P_SpawnMobjSafe(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type, bool safe)
+static mobj_t *P_SpawnMobjSafe(
+    const fixed_t    x,
+    const fixed_t    y,
+    const fixed_t    z,
+    const mobjtype_t type,
+    const bool       safe)
 {
     mobj_t *mobj = zmalloc<decltype(mobj)>(sizeof(*mobj), PU::LEVEL, NULL);
     *mobj        = {};
@@ -626,14 +631,16 @@ static mobj_t *P_SpawnMobjSafe(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type,
     mobj->health = info->spawnhealth;
 
     if (gameskill != sk_nightmare)
+    {
         mobj->reactiontime = info->reactiontime;
+    };
 
     mobj->lastlook = safe ? Crispy_Random() % MAXPLAYERS : P_Random() % MAXPLAYERS;
     // do not set the state with P_SetMobjState,
     // because action routines can not be called yet
-    auto st = &states[safe ?
-                          P_LatestSafeState(static_cast<statenum_t>(info->spawnstate)) :
-                          info->spawnstate];
+    const auto st = &states[safe ?
+                                P_LatestSafeState(static_cast<statenum_t>(info->spawnstate)) :
+                                info->spawnstate];
 
     mobj->state  = st;
     mobj->tics   = st->tics;
@@ -675,11 +682,11 @@ static mobj_t *P_SpawnMobjSafe(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type,
     return mobj;
 }
 
-mobj_t *
-    P_SpawnMobj(fixed_t x,
-        fixed_t         y,
-        fixed_t         z,
-        mobjtype_t      type)
+mobj_t *P_SpawnMobj(
+    const fixed_t    x,
+    const fixed_t    y,
+    const fixed_t    z,
+    const mobjtype_t type)
 {
     return P_SpawnMobjSafe(x, y, z, type, false);
 }
@@ -733,16 +740,6 @@ void P_RemoveMobj(mobj_t *mobj)
 //
 void P_RespawnSpecials(void)
 {
-    fixed_t x;
-    fixed_t y;
-    fixed_t z;
-
-    subsector_t *ss;
-    mobj_t *     mo;
-    mapthing_t * mthing;
-
-    int i;
-
     // only respawn items in deathmatch
     // AX: deathmatch 3 is a Crispy-specific change
     if (deathmatch != 2 && deathmatch != 3)
@@ -756,17 +753,18 @@ void P_RespawnSpecials(void)
     if (leveltime - itemrespawntime[iquetail] < 30 * TICRATE)
         return;
 
-    mthing = &itemrespawnque[iquetail];
+    const mapthing_t *mthing = &itemrespawnque[iquetail];
 
-    x = mthing->x << FRACBITS;
-    y = mthing->y << FRACBITS;
+    const fixed_t x = mthing->x << FRACBITS;
+    const fixed_t y = mthing->y << FRACBITS;
 
     // spawn a teleport fog at the new spot
-    ss = R_PointInSubsector(x, y);
-    mo = P_SpawnMobj(x, y, ss->sector->floorheight, MT_IFOG);
+    subsector_t *ss = R_PointInSubsector(x, y);
+    mobj_t *     mo = P_SpawnMobj(x, y, ss->sector->floorheight, MT_IFOG);
     S_StartSound(mo, sfx_itmbk);
 
     // find which type to spawn
+    int i;
     for (i = 0; i < NUMMOBJTYPES; i++)
     {
         if (mthing->type == mobjinfo[i].doomednum)
@@ -775,17 +773,14 @@ void P_RespawnSpecials(void)
 
     if (i >= NUMMOBJTYPES)
     {
-        I_Error("P_RespawnSpecials: Failed to find mobj type with doomednum "
-                "%d when respawning thing. This would cause a buffer overrun "
-                "in vanilla Doom",
-            mthing->type);
+        S_Error(fmt::format("P_RespawnSpecials: Failed to find mobj type with doomednum "
+                            "{} when respawning thing. This would cause a buffer overrun "
+                            "in vanilla Doom",
+            mthing->type));
     }
 
     // spawn it
-    if (mobjinfo[i].flags & MF_SPAWNCEILING)
-        z = ONCEILINGZ;
-    else
-        z = ONFLOORZ;
+    const fixed_t z = (mobjinfo[i].flags & MF_SPAWNCEILING) ? ONCEILINGZ : ONFLOORZ;
 
     mo             = P_SpawnMobj(x, y, z, static_cast<mobjtype_t>(i));
     mo->spawnpoint = *mthing;

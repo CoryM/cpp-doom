@@ -17,7 +17,7 @@
 //	Action Pointer Functions
 //	that are associated with states/frames.
 //
-
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 
@@ -568,7 +568,6 @@ bool P_LookForPlayers(mobj_t *actor,
 void A_KeenDie(mobj_t *mo)
 {
     thinker_s *th;
-    mobj_t *   mo2;
     line_s     junk;
 
     A_Fall(mo);
@@ -580,7 +579,7 @@ void A_KeenDie(mobj_t *mo)
         if (th->function.acp1 != (actionf_p1)P_MobjThinker)
             continue;
 
-        mo2 = (mobj_t *)th;
+        mobj_t *mo2 = (mobj_t *)th;
         if (mo2 != mo
             && mo2->type == mo->type
             && mo2->health > 0)
@@ -1324,7 +1323,8 @@ void A_VileAttack(mobj_t *actor)
 // in three different directions?
 // Doesn't look like it.
 //
-#define FATSPREAD (ANG90 / 8)
+//#define FATSPREAD (ANG90 / 8)
+constexpr auto FATSPREAD = (ANG90 / 8);
 
 void A_FatRaise(mobj_t *actor)
 {
@@ -1856,9 +1856,7 @@ void A_BrainScream(mobj_t *mo)
 
         P_SetMobjState(th, S_BRAINEXPLODE1);
 
-        th->tics -= P_Random() & 7;
-        if (th->tics < 1)
-            th->tics = 1;
+        th->tics = std::max(th->tics - (P_Random() & 7), 1);
     }
 
     S_StartSound(NULL, sfx_bosdth);
@@ -1867,17 +1865,18 @@ void A_BrainScream(mobj_t *mo)
 
 void A_BrainExplode(mobj_t *mo)
 {
-    int     x  = mo->x + P_SubRandom() * 2048;
-    int     y  = mo->y;
-    int     z  = 128 + P_Random() * 2 * FRACUNIT;
+    auto    x  = mo->x + P_SubRandom() * 2048;
+    auto    y  = mo->y;
+    auto    z  = 128 + P_Random() * 2 * FRACUNIT;
     mobj_t *th = P_SpawnMobj(x, y, z, MT_ROCKET);
     th->momZ   = P_Random() * 512;
 
     P_SetMobjState(th, S_BRAINEXPLODE1);
 
-    th->tics -= P_Random() & 7;
-    if (th->tics < 1)
-        th->tics = 1;
+    // th->tics -= P_Random() & 7;
+    // if (th->tics < 1)
+    //     th->tics = 1;
+    th->tics = std::max(th->tics - (P_Random() & 7), 1);
 
     // [crispy] brain explosions are translucent
     th->flags |= MF_TRANSLUCENT;
@@ -1948,12 +1947,10 @@ void A_SpawnFly(mobj_t *mo)
     S_StartSound(fog, sfx_telept);
 
     // Randomly select monster to spawn.
-    int r = P_Random();
-
     // Probability distribution (kind of :),
     // decreasing likelihood.
     mobjtype_t type;
-    if (r < 50)
+    if (auto r = P_Random(); r < 50)
         type = MT_TROOP;
     else if (r < 90)
         type = MT_SERGEANT;
@@ -1995,7 +1992,7 @@ void A_SpawnFly(mobj_t *mo)
 void A_PlayerScream(mobj_t *mo)
 {
     // Default death sound.
-    int sound = sfx_pldeth;
+    auto sound = sfx_pldeth;
 
     if ((gamemode == GameMode_t::commercial)
         && (mo->health < -50))

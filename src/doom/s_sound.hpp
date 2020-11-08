@@ -50,12 +50,12 @@ void S_Start(void);
 //  using <sound_id> from sounds.h
 //
 
-void S_StartSound(void *origin, int sound_id);
+void S_StartSound(void *origin, const int sound_id);
 void S_StartSoundOnce(void *origin, int sound_id);
 
 // Stop sound for thing at <origin>
-void S_StopSound(mobj_t *origin);
-void S_UnlinkSound(mobj_t *origin);
+void S_StopSound(const mobj_t *const origin);
+void S_UnlinkSound(const mobj_t *const origin);
 
 
 // Start music using <music_id> from sounds.h
@@ -63,7 +63,7 @@ void S_StartMusic(int music_id);
 
 // Start music using <music_id> from sounds.h,
 //  and set whether looping
-void S_ChangeMusic(int music_id, int looping);
+void S_ChangeMusic(int music_id, const int looping);
 void S_ChangeMusInfoMusic(int lumpnum, int looping);
 
 // query if music is playing
@@ -82,8 +82,8 @@ void S_ResumeSound(void);
 //
 void S_UpdateSounds(mobj_t *listener);
 
-void S_SetMusicVolume(int volume);
-void S_SetSfxVolume(int volume);
+void S_SetMusicVolume(const int volume);
+void S_SetSfxVolume(const int volume);
 
 extern int snd_channels;
 

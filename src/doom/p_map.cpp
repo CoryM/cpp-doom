@@ -485,18 +485,11 @@ bool PIT_CheckThing(mobj_t *thing)
 //  speciallines[]
 //  numspeciallines
 //
-bool P_CheckPosition(mobj_t *thing,
-    fixed_t                  x,
-    fixed_t                  y)
+bool P_CheckPosition(
+    mobj_t *      thing,
+    const fixed_t x,
+    const fixed_t y)
 {
-    int          xl;
-    int          xh;
-    int          yl;
-    int          yh;
-    int          bx;
-    int          by;
-    subsector_t *newsubsec;
-
     tmthing = thing;
     tmflags = thing->flags;
 
@@ -508,8 +501,8 @@ bool P_CheckPosition(mobj_t *thing,
     tmbbox[BOXRIGHT]  = x + tmthing->radius;
     tmbbox[BOXLEFT]   = x - tmthing->radius;
 
-    newsubsec   = R_PointInSubsector(x, y);
-    ceilingline = NULL;
+    subsector_t *newsubsec = R_PointInSubsector(x, y);
+    ceilingline            = NULL;
 
     // The base floor / ceiling is from the subsector
     // that contains the point.
@@ -529,13 +522,13 @@ bool P_CheckPosition(mobj_t *thing,
     // because mobj_ts are grouped into mapblocks
     // based on their origin point, and can overlap
     // into adjacent blocks by up to MAXRADIUS units.
-    xl = (tmbbox[BOXLEFT] - bmaporgx - MAXRADIUS) >> MAPBLOCKSHIFT;
-    xh = (tmbbox[BOXRIGHT] - bmaporgx + MAXRADIUS) >> MAPBLOCKSHIFT;
-    yl = (tmbbox[BOXBOTTOM] - bmaporgy - MAXRADIUS) >> MAPBLOCKSHIFT;
-    yh = (tmbbox[BOXTOP] - bmaporgy + MAXRADIUS) >> MAPBLOCKSHIFT;
+    int xl = (tmbbox[BOXLEFT] - bmaporgx - MAXRADIUS) >> MAPBLOCKSHIFT;
+    int xh = (tmbbox[BOXRIGHT] - bmaporgx + MAXRADIUS) >> MAPBLOCKSHIFT;
+    int yl = (tmbbox[BOXBOTTOM] - bmaporgy - MAXRADIUS) >> MAPBLOCKSHIFT;
+    int yh = (tmbbox[BOXTOP] - bmaporgy + MAXRADIUS) >> MAPBLOCKSHIFT;
 
-    for (bx = xl; bx <= xh; bx++)
-        for (by = yl; by <= yh; by++)
+    for (int bx = xl; bx <= xh; bx++)
+        for (int by = yl; by <= yh; by++)
             if (!P_BlockThingsIterator(bx, by, PIT_CheckThing))
                 return false;
 
@@ -545,8 +538,8 @@ bool P_CheckPosition(mobj_t *thing,
     yl = (tmbbox[BOXBOTTOM] - bmaporgy) >> MAPBLOCKSHIFT;
     yh = (tmbbox[BOXTOP] - bmaporgy) >> MAPBLOCKSHIFT;
 
-    for (bx = xl; bx <= xh; bx++)
-        for (by = yl; by <= yh; by++)
+    for (int bx = xl; bx <= xh; bx++)
+        for (int by = yl; by <= yh; by++)
             if (!P_BlockLinesIterator(bx, by, PIT_CheckLine))
                 return false;
 
