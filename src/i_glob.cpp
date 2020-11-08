@@ -15,12 +15,15 @@
 // File globbing API. This allows the contents of the filesystem
 // to be interrogated.
 //
-
-#include <cstdlib>
-
+#include "config.hpp"
 #include "i_glob.hpp"
 #include "m_misc.hpp"
-#include "config.hpp"
+
+#include <fmt/core.h>
+
+#include <cstdlib>
+#include <filesystem>
+#include <iostream>
 
 #if defined(_MSC_VER)
 // For Visual C++, we need to include the win_opendir module.
@@ -43,31 +46,11 @@
 // in POSIX.1.  Other than Linux, the d_type field is available mainly
 // only on BSD systems.  The remaining fields are available on many, but
 // not all systems.
-static bool IsDirectory(char *dir, struct dirent *de)
+static auto IsDirectory(const std::filesystem::path dir, struct dirent *de) -> bool
 {
-#if defined(_DIRENT_HAVE_D_TYPE)
-    if (de->d_type != DT_UNKNOWN && de->d_type != DT_LNK)
-    {
-        return de->d_type == DT_DIR;
-    }
-    else
-#endif
-    {
-        char *      filename;
-        struct stat sb;
-        int         result;
+    const auto filename = dir / std::filesystem::path(de->d_name);
 
-        filename = M_StringJoin({dir, DIR_SEPARATOR_S, de->d_name});
-        result   = stat(filename, &sb);
-        free(filename);
-
-        if (result != 0)
-        {
-            return false;
-        }
-
-        return S_ISDIR(sb.st_mode);
-    }
+    return std::filesystem::is_directory(filename);
 }
 
 struct glob_s {
@@ -85,8 +68,7 @@ struct glob_s {
 
 static void FreeStringList(char **globs, int num_globs)
 {
-    int i;
-    for (i = 0; i < num_globs; ++i)
+    for (int i = 0; i < num_globs; ++i)
     {
         free(globs[i]);
     }
@@ -96,33 +78,30 @@ static void FreeStringList(char **globs, int num_globs)
 glob_t *I_StartMultiGlob(const char *directory, int flags,
     const char *glob, ...)
 {
-    char ** globs;
-    int     num_globs;
-    glob_t *result;
     va_list args;
 
-    globs = static_cast<char **>(malloc(sizeof(char *)));
-    if (globs == NULL)
+    char **globs = static_cast<char **>(malloc(sizeof(char *)));
+    if (globs == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
-    globs[0]  = M_StringDuplicate(glob);
-    num_globs = 1;
+
+    globs[0]      = M_StringDuplicate(glob);
+    int num_globs = 1;
 
     va_start(args, glob);
     for (;;)
     {
         const char *arg = va_arg(args, const char *);
-        char **     new_globs;
 
-        if (arg == NULL)
+        if (arg == nullptr)
         {
             break;
         }
 
-        new_globs = static_cast<char **>(
+        char **new_globs = static_cast<char **>(
             realloc(globs, sizeof(char *) * (num_globs + 1)));
-        if (new_globs == NULL)
+        if (new_globs == nullptr)
         {
             FreeStringList(globs, num_globs);
         }
@@ -132,27 +111,27 @@ glob_t *I_StartMultiGlob(const char *directory, int flags,
     }
     va_end(args);
 
-    result = static_cast<glob_t *>(malloc(sizeof(glob_t)));
-    if (result == NULL)
+    glob_t *result = static_cast<glob_t *>(malloc(sizeof(glob_t)));
+    if (result == nullptr)
     {
         FreeStringList(globs, num_globs);
-        return NULL;
+        return nullptr;
     }
 
     result->dir = opendir(directory);
-    if (result->dir == NULL)
+    if (result->dir == nullptr)
     {
         FreeStringList(globs, num_globs);
         free(result);
-        return NULL;
+        return nullptr;
     }
 
     result->directory     = M_StringDuplicate(directory);
     result->globs         = globs;
     result->num_globs     = num_globs;
     result->flags         = flags;
-    result->last_filename = NULL;
-    result->filenames     = NULL;
+    result->last_filename = nullptr;
+    result->filenames     = nullptr;
     result->filenames_len = 0;
     result->next_index    = -1;
     return result;
@@ -165,7 +144,7 @@ glob_t *I_StartGlob(const char *directory, const char *glob, int flags)
 
 void I_EndGlob(glob_t *glob)
 {
-    if (glob == NULL)
+    if (glob == nullptr)
     {
         return;
     }
@@ -253,7 +232,7 @@ static char *NextGlob(glob_t *glob)
              || !MatchesAnyGlob(de->d_name, glob));
 
     // Return the fully-qualified path, not just the bare filename.
-    return M_StringJoin({glob->directory, DIR_SEPARATOR_S, de->d_name});
+    return M_StringJoin({ glob->directory, DIR_SEPARATOR_S, de->d_name });
 }
 
 static void ReadAllFilenames(glob_t *glob)
@@ -319,9 +298,9 @@ const char *I_NextGlob(glob_t *glob)
 {
     const char *result;
 
-    if (glob == NULL)
+    if (glob == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     // In unsorted mode we just return the filenames as we read
