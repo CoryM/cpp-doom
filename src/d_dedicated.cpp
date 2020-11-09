@@ -15,7 +15,6 @@
 //
 
 
-
 #include "config.hpp"
 
 #include "m_argv.hpp"
@@ -25,7 +24,7 @@
 #include "net_server.hpp"
 #include "z_zone.hpp"
 
-void NET_CL_Run(void)
+auto NET_CL_Run() -> void
 {
     // No client present :-)
     //
@@ -34,7 +33,7 @@ void NET_CL_Run(void)
     // In a standalone dedicated server, we don't have a client.
 }
 
-void D_DoomMain(void)
+auto D_DoomMain() -> void
 {
     printf(PACKAGE_NAME " standalone dedicated server\n");
 
