@@ -16,10 +16,6 @@
 //	Movement, collision handling.
 //	Shooting and aiming.
 //
-
-#include <cstdio>
-#include <cstdlib>
-
 #include "deh_misc.hpp"
 
 #include "../m_bbox.hpp"
@@ -38,6 +34,10 @@
 #include "r_state.hpp"
 // Data.
 #include "sounds.hpp"
+
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
 
 // Spechit overrun magic value.
 //
@@ -1105,7 +1105,7 @@ bool PTR_ShootTraverse(intercept_t *in)
 
                 if (z < sector->floorheight || (z > sector->ceilingheight && sector->ceilingpic != skyflatnum))
                 {
-                    z    = BETWEEN(sector->floorheight, sector->ceilingheight, z);
+                    z    = std::clamp(z, sector->floorheight, sector->ceilingheight);
                     frac = FixedDiv(z - shootz, FixedMul(aimslope, attackrange));
                     x    = trace.x + FixedMul(trace.dx, frac);
                     y    = trace.y + FixedMul(trace.dy, frac);

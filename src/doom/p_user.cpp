@@ -192,9 +192,9 @@ void P_MovePlayer(player_t *player)
     }
     if (!menuactive && !demoplayback)
     {
-        player->lookdir = BETWEEN(-LOOKDIRMIN * MLOOKUNIT,
-            LOOKDIRMAX * MLOOKUNIT,
-            player->lookdir + cmd->lookdir);
+        player->lookdir = std::clamp(player->lookdir + cmd->lookdir,
+            -LOOKDIRMIN * MLOOKUNIT,
+            LOOKDIRMAX * MLOOKUNIT);
     }
 }
 

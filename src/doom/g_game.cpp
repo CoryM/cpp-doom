@@ -56,6 +56,7 @@
 #include "wi_stuff.hpp"
 #include "z_zone.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -2081,7 +2082,7 @@ void G_DoSaveGame(void)
         extern const char *skilltable[];
 
         fprintf(stderr, "G_DoSaveGame: Episode %d, Map %d, %s, Time %d:%02d:%02d, Total %d:%02d:%02d.\n",
-            gameepisode, gamemap, skilltable[BETWEEN(0, 5, (int)gameskill + 1)],
+            gameepisode, gamemap, skilltable[std::clamp((int)gameskill + 1, 0, 5)],
             ltime / 3600, (ltime % 3600) / 60, ltime % 60,
             ttime / 3600, (ttime % 3600) / 60, ttime % 60);
     }

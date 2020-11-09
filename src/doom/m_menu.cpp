@@ -3036,7 +3036,7 @@ void M_Init(void)
         SaveDef_x = (ORIGWIDTH - SHORT(patchs->width)) / 2 + SHORT(patchs->leftoffset);
         LoadDef.x = SaveDef.x = (ORIGWIDTH - 24 * 8) / 2 + SHORT(patchm->leftoffset); // [crispy] see M_DrawSaveLoadBorder()
 
-        captionheight = MAX(SHORT(patchl->height), SHORT(patchs->height));
+        captionheight = std::max(SHORT(patchl->height), SHORT(patchs->height));
 
         vstep = ORIGHEIGHT - 32; // [crispy] ST_HEIGHT
         vstep -= captionheight;

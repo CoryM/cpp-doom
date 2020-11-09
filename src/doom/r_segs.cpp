@@ -17,17 +17,16 @@
 //
 
 
-#include <cstdio>
-#include <cstdlib>
-
 #include "../i_system.hpp"
-
 #include "doomdef.hpp"
 #include "doomstat.hpp"
-
+#include "r_bmaps.hpp" // [crispy] brightmaps
 #include "r_local.hpp"
 #include "r_sky.hpp"
-#include "r_bmaps.hpp" // [crispy] brightmaps
+
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
 
 
 // OPTIMIZE: closed two sided lines as single sided
@@ -40,9 +39,9 @@ bool markfloor;
 bool markceiling;
 
 bool maskedtexture;
-int     toptexture;
-int     bottomtexture;
-int     midtexture;
+int  toptexture;
+int  bottomtexture;
+int  midtexture;
 
 
 angle_t rw_normalangle;
@@ -308,13 +307,13 @@ void R_RenderMaskedSegRange(drawseg_t *ds,
 
 void R_RenderSegLoop(void)
 {
-    angle_t  angle;
-    int      yl;
-    int      yh;
-    int      mid;
-    fixed_t  texturecolumn;
-    int      top;
-    int      bottom;
+    angle_t angle;
+    int     yl;
+    int     yh;
+    int     mid;
+    fixed_t texturecolumn;
+    int     top;
+    int     bottom;
 
     for (; rw_x < rw_stopx; rw_x++)
     {
@@ -362,7 +361,7 @@ void R_RenderSegLoop(void)
         if (segtextured)
         {
             // calculate texture offset
-            angle         = (rw_centerangle + xtoviewangle[rw_x]) >> ANGLETOFINESHIFT;
+            angle = (rw_centerangle + xtoviewangle[rw_x]) >> ANGLETOFINESHIFT;
             // Angle overflows the finetangent size
             if (angle >= std::size(finetangent)) angle = std::size(finetangent) - 1;
             texturecolumn = rw_offset - FixedMul(finetangent[angle], rw_distance);
@@ -561,7 +560,7 @@ void R_StoreWallRange(int start,
     dx1         = ((int64_t)viewx - curline->v1->r_x) >> 1;
     dy1         = ((int64_t)viewy - curline->v1->r_y) >> 1;
     dist        = ((dy * dx1 - dx * dy1) / len) << 1;
-    rw_distance = (fixed_t)BETWEEN(INT_MIN, INT_MAX, dist);
+    rw_distance = std::clamp<fixed_t>(dist, INT_MIN, INT_MAX);
 
 
     ds_p->x1 = rw_x = start;

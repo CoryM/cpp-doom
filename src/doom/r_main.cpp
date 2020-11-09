@@ -18,24 +18,21 @@
 //	See tables.c, too.
 //
 
-
-#include <cstdlib>
-#include <cmath>
-#include <vector>
-
-
+#include "../d_loop.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp" // [AM] leveltime, paused, menuactive
-#include "d_loop.hpp"
-
+#include "i_system.hpp" // [crispy] I_Realloc()
 #include "m_bbox.hpp"
 #include "m_menu.hpp"
-
-#include "i_system.hpp" // [crispy] I_Realloc()
-#include "p_local.hpp"  // [crispy] MLOOKUNIT
+#include "p_local.hpp" // [crispy] MLOOKUNIT
 #include "r_local.hpp"
 #include "r_sky.hpp"
 #include "st_stuff.hpp" // [crispy] ST_refreshBackground()
+
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
+#include <vector>
 
 
 // Fineangles in the SCREENWIDTH wide window.
@@ -97,9 +94,9 @@ angle_t xtoviewangle[MAXWIDTH + 1];
 
 // [crispy] parameterized for smooth diminishing lighting
 //lighttable_t ***scalelight      = NULL;
-std::vector< std::vector<lighttable_t*> > scalelight{};
-lighttable_t ** scalelightfixed = NULL;
-lighttable_t ***zlight          = NULL;
+std::vector<std::vector<lighttable_t *>> scalelight {};
+lighttable_t **                          scalelightfixed = NULL;
+lighttable_t ***                         zlight          = NULL;
 
 // bumped light from gun blasts
 int extralight;
@@ -746,8 +743,8 @@ void R_InitLightTables(void)
 // The change will take effect next refresh.
 //
 bool setsizeneeded;
-int     setblocks;
-int     setdetail;
+int  setblocks;
+int  setdetail;
 
 // [crispy] lookup table for horizontal screen coordinates
 int  flipscreenwidth[MAXWIDTH];
@@ -807,7 +804,7 @@ void R_ExecuteSetViewSize(void)
     centerx     = viewwidth / 2;
     centerxfrac = centerx << FRACBITS;
     centeryfrac = centery << FRACBITS;
-    projection  = MIN(centerxfrac, ((HIRESWIDTH >> detailshift) / 2) << FRACBITS);
+    projection  = std::min(centerxfrac, ((HIRESWIDTH >> detailshift) / 2) << FRACBITS);
 
     if (!detailshift)
     {
@@ -831,8 +828,8 @@ void R_ExecuteSetViewSize(void)
     R_InitTextureMapping();
 
     // psprite scales
-    pspritescale  = FRACUNIT * MIN(viewwidth, HIRESWIDTH >> detailshift) / ORIGWIDTH;
-    pspriteiscale = FRACUNIT * ORIGWIDTH / MIN(viewwidth, HIRESWIDTH >> detailshift);
+    pspritescale  = FRACUNIT * std::min(viewwidth, HIRESWIDTH >> detailshift) / ORIGWIDTH;
+    pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(viewwidth, HIRESWIDTH >> detailshift);
 
     // thing clipping
     for (i = 0; i < viewwidth; i++)
@@ -843,7 +840,7 @@ void R_ExecuteSetViewSize(void)
     {
         // [crispy] re-generate lookup-table for yslope[] (free look)
         // whenever "detailshift" or "screenblocks" change
-        const fixed_t num = MIN(viewwidth << detailshift, HIRESWIDTH) / 2 * FRACUNIT;
+        const fixed_t num = std::min(viewwidth << detailshift, HIRESWIDTH) / 2 * FRACUNIT;
         for (j = 0; j < LOOKDIRS; j++)
         {
             dy            = ((i - (viewheight / 2 + ((j - LOOKDIRMIN) * (1 << crispy->hires)) * (screenblocks < 11 ? screenblocks : 11) / 10)) << FRACBITS) + FRACUNIT / 2;
@@ -861,7 +858,7 @@ void R_ExecuteSetViewSize(void)
 
     // Calculate the light levels to use
     //  for each level / scale combination.
-    scalelight.resize(LIGHTLEVELS, std::vector<lighttable_t*>(MAXLIGHTSCALE, nullptr));
+    scalelight.resize(LIGHTLEVELS, std::vector<lighttable_t *>(MAXLIGHTSCALE, nullptr));
     for (i = 0; i < LIGHTLEVELS; i++)
     {
         //scalelight[i] = static_cast<lighttable_t **>(malloc(MAXLIGHTSCALE * sizeof(**scalelight)));
@@ -869,7 +866,7 @@ void R_ExecuteSetViewSize(void)
         startmap = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
         for (j = 0; j < MAXLIGHTSCALE; j++)
         {
-            level = startmap - j * HIRESWIDTH / MIN(viewwidth << detailshift, HIRESWIDTH) / DISTMAP;
+            level = startmap - j * HIRESWIDTH / std::min(viewwidth << detailshift, HIRESWIDTH) / DISTMAP;
 
             level = std::clamp(level, 0, NUMCOLORMAPS - 1);
 

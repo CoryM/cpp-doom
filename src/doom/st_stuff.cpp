@@ -17,51 +17,38 @@
 //	Does the face/direction indicator animatin.
 //	Does palette indicators as well (red pain/berserk, bright pickup)
 //
-
-
-#include <cstdio>
-
+#include "../../utils/lump.hpp"
 #include "../config.hpp"
+#include "../deh_main.hpp"
+#include "../doomkeys.hpp"
 #include "../i_swap.hpp" // [crispy] SHORT()
-#include "i_system.hpp"
-#include "i_video.hpp"
-#include "z_zone.hpp"
-#include "m_argv.hpp" // [crispy] M_ParmExists()
-#include "m_misc.hpp"
-#include "m_random.hpp"
-#include "w_wad.hpp"
-
-#include "deh_main.hpp"
+#include "am_map.hpp"
 #include "deh_misc.hpp"
 #include "doomdef.hpp"
-#include "doomkeys.hpp"
-
+#include "doomstat.hpp" // State.
+#include "dstrings.hpp" // Data.
 #include "g_game.hpp"
-
-#include "st_stuff.hpp"
-#include "st_lib.hpp"
-#include "r_local.hpp"
-
-#include "p_local.hpp"
+#include "i_system.hpp"
+#include "i_video.hpp"
+#include "m_argv.hpp"
+#include "m_cheat.hpp" // [crispy] M_ParmExists()
+#include "m_misc.hpp"
+#include "m_random.hpp"
 #include "p_inter.hpp"
-
-#include "am_map.hpp"
-#include "m_cheat.hpp"
-
+#include "p_local.hpp"
+#include "r_local.hpp"
 #include "s_sound.hpp"
-
-// Needs access to LFB.
-#include "v_video.hpp"
-
-// State.
-#include "doomstat.hpp"
-
-// Data.
-#include "dstrings.hpp"
-#include "sounds.hpp"
-
-#include "../../utils/lump.hpp"
+#include "sounds.hpp" // Data.
+#include "st_lib.hpp"
+#include "st_stuff.hpp"
 #include "v_trans.hpp" // [crispy] colored cheat messages
+#include "v_video.hpp" // Needs access to LFB.
+#include "w_wad.hpp"
+#include "z_zone.hpp"
+
+#include <algorithm>
+#include <cstdio>
+
 
 extern int  screenblocks;  // [crispy] for the Crispy HUD
 extern bool inhelpscreens; // [crispy] prevent palette changes
@@ -1135,7 +1122,7 @@ bool ST_Responder(event_t *ev)
             extern const char *skilltable[];
 
             M_snprintf(msg, sizeof(msg), "Skill: %s",
-                skilltable[BETWEEN(0, 5, (int)gameskill + 1)]);
+                skilltable[std::clamp<int>(gameskill + 1, 0, 5)]);
             plyr->message = msg;
         }
 
