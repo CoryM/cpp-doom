@@ -15,31 +15,34 @@
 // Parses "Ammo" sections in dehacked files
 //
 
+#include "../deh_defs.hpp"
+#include "../deh_io.hpp"
+#include "../deh_main.hpp"
+#include "../doomtype.hpp"
+#include "doomdef.hpp"
+#include "p_local.hpp"
+
+#include "fmt/core.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
-#include "doomdef.hpp"
-#include "doomtype.hpp"
-#include "deh_defs.hpp"
-#include "deh_io.hpp"
-#include "deh_main.hpp"
-#include "p_local.hpp"
 
-static void *DEH_AmmoStart(deh_context_t *context, char *line)
+static auto DEH_AmmoStart(deh_context_t *context, char *line) -> void *
 {
     int ammo_number = 0;
 
     if (sscanf(line, "Ammo %i", &ammo_number) != 1)
     {
         DEH_Warning(context, "Parse error on section start");
-        return NULL;
+        return nullptr;
     }
 
     if (ammo_number < 0 || ammo_number >= NUMAMMO)
     {
-        DEH_Warning(context, "Invalid ammo number: %i", ammo_number);
-        return NULL;
+        DEH_Warning(context, fmt::format("Invalid ammo number: {}", ammo_number));
+        return nullptr;
     }
 
     return &maxammo[ammo_number];
@@ -76,7 +79,7 @@ static void DEH_AmmoParseLine(deh_context_t *context, char *line, void *tag)
         maxammo[ammo_number] = ivalue;
     else
     {
-        DEH_Warning(context, "Field named '%s' not found", variable_name);
+        DEH_Warning(context, fmt::format("Field named '{}' not found", variable_name));
     }
 }
 

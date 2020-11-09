@@ -16,11 +16,13 @@
 // Parses [PARS] sections in BEX files
 //
 
+#include "../deh_io.hpp"
+#include "deh_bexpars.hpp"
+
+#include "fmt/core.h"
+
 #include <cstdio>
 #include <cstring>
-
-#include "deh_bexpars.hpp"
-#include "deh_io.hpp"
 
 int bex_pars[6][10] = { { 0 } };
 int bex_cpars[32]   = { 0 };
@@ -34,7 +36,7 @@ static void *DEH_BEXParsStart(deh_context_t *context, char *line)
         DEH_Warning(context, "Parse error on section start");
     }
 
-    return NULL;
+    return nullptr;
 }
 
 static void DEH_BEXParsParseLine(deh_context_t *context, char *line, void *tag [[maybe_unused]])
@@ -47,7 +49,7 @@ static void DEH_BEXParsParseLine(deh_context_t *context, char *line, void *tag [
             bex_pars[episode][map] = partime;
         else
         {
-            DEH_Warning(context, "Invalid episode or map: E%dM%d", episode, map);
+            DEH_Warning(context, fmt::format("Invalid episode or map: E{}M{}", episode, map));
             return;
         }
     }
@@ -57,7 +59,7 @@ static void DEH_BEXParsParseLine(deh_context_t *context, char *line, void *tag [
             bex_cpars[map - 1] = partime;
         else
         {
-            DEH_Warning(context, "Invalid map: MAP%02d", map);
+            DEH_Warning(context, fmt::format("Invalid map: MAP{}", map));
             return;
         }
     }
@@ -70,9 +72,9 @@ static void DEH_BEXParsParseLine(deh_context_t *context, char *line, void *tag [
 
 deh_section_t deh_section_bexpars = {
     "[PARS]",
-    NULL,
+    nullptr,
     DEH_BEXParsStart,
     DEH_BEXParsParseLine,
-    NULL,
-    NULL,
+    nullptr,
+    nullptr,
 };

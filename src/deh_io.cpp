@@ -14,15 +14,19 @@
 //
 // Dehacked I/O code (does all reads from dehacked files)
 //
+#include "../utils/lump.hpp"
+#include "../utils/memory.hpp"
+#include "deh_defs.hpp"
 #include "deh_io.hpp"
-
 #include "m_misc.hpp"
 #include "w_wad.hpp"
 #include "z_zone.hpp"
 
-#include "../utils/lump.hpp"
-#include "../utils/memory.hpp"
-#include "deh_defs.hpp"
+#include "fmt/core.h"
+
+#include <iostream>
+#include <string_view>
+
 
 typedef enum
 {
@@ -330,17 +334,12 @@ char *DEH_ReadLine(deh_context_t *context, bool extended)
     return context->readbuffer;
 }
 
-void DEH_Warning(deh_context_t *context, const char *msg, ...)
+auto DEH_Warning(deh_context_t *context, const std::string_view msg) -> void
 {
-    va_list args;
-
-    va_start(args, msg);
-
-    fprintf(stderr, "%s:%i: warning: ", context->filename, context->linenum);
-    vfprintf(stderr, msg, args);
-    fprintf(stderr, "\n");
-
-    va_end(args);
+    std::cerr << fmt::format("{}:{}: warning: {}\n",
+        context->filename,
+        context->linenum,
+        msg);
 }
 
 void DEH_Error(deh_context_t *context, const char *msg, ...)
@@ -358,19 +357,19 @@ void DEH_Error(deh_context_t *context, const char *msg, ...)
     context->had_error = true;
 }
 
-bool DEH_HadError(deh_context_t *context)
+auto DEH_HadError(deh_context_t *context) -> bool
 {
     return context->had_error;
 }
 
 // [crispy] return the filename of the DEHACKED file
 // or NULL if it is a DEHACKED lump loaded from a PWAD
-char *DEH_FileName(deh_context_t *context)
+auto DEH_FileName(deh_context_t *context) -> char *
 {
     if (context->type == DEH_INPUT_FILE)
     {
         return context->filename;
     }
 
-    return NULL;
+    return nullptr;
 }

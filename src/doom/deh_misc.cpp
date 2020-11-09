@@ -15,15 +15,17 @@
 // Parses "Misc" sections in dehacked files
 //
 
-#include <cstdlib>
-#include <cstring>
-#include <string_view>
-
 #include "../doomtype.hpp"
 #include "../deh_defs.hpp"
 #include "../deh_io.hpp"
 #include "../deh_main.hpp"
 #include "deh_misc.hpp"
+
+#include "fmt/core.h"
+
+#include <cstdlib>
+#include <cstring>
+#include <string_view>
 
 // Dehacked: "Initial Health"
 // This is the initial health a player has when starting anew.
@@ -188,8 +190,8 @@ static void DEH_MiscParseLine(deh_context_t *context, char *line, void *tag [[ma
         }
         else
         {
-            DEH_Warning(context,
-                "Invalid value for 'Monsters Infight': %i", ivalue);
+            DEH_Warning(context, fmt::format(
+                                     "Invalid value for 'Monsters Infight': {}", ivalue));
         }
 
         return;
@@ -204,7 +206,7 @@ static void DEH_MiscParseLine(deh_context_t *context, char *line, void *tag [[ma
         }
     }
 
-    DEH_Warning(context, "Unknown Misc variable '%s'", variable_name);
+    DEH_Warning(context, fmt::format("Unknown Misc variable '{}'", variable_name));
 }
 
 static void DEH_MiscSHA1Sum(sha1_context_t *context)
@@ -219,9 +221,9 @@ static void DEH_MiscSHA1Sum(sha1_context_t *context)
 
 deh_section_t deh_section_misc = {
     "Misc",
-    NULL,
+    nullptr,
     DEH_MiscStart,
     DEH_MiscParseLine,
-    NULL,
+    nullptr,
     DEH_MiscSHA1Sum,
 };

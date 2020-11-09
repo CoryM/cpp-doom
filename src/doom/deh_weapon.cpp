@@ -15,17 +15,18 @@
 // Parses "Weapon" sections in dehacked files
 //
 
+#include "../deh_defs.hpp"
+#include "../deh_main.hpp"
+#include "../deh_mapping.hpp"
+#include "../doomtype.hpp"
+#include "d_items.hpp"
+
+#include "fmt/core.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
-#include "../doomtype.hpp"
-
-#include "d_items.hpp"
-
-#include "../deh_defs.hpp"
-#include "../deh_main.hpp"
-#include "../deh_mapping.hpp"
 
 DEH_BEGIN_MAPPING(weapon_mapping, weaponinfo_t)
 DEH_MAPPING("Ammo type", ammo)
@@ -43,13 +44,13 @@ static void *DEH_WeaponStart(deh_context_t *context, char *line)
     if (sscanf(line, "Weapon %i", &weapon_number) != 1)
     {
         DEH_Warning(context, "Parse error on section start");
-        return NULL;
+        return nullptr;
     }
 
     if (weapon_number < 0 || weapon_number >= NUMWEAPONS)
     {
-        DEH_Warning(context, "Invalid weapon number: %i", weapon_number);
-        return NULL;
+        DEH_Warning(context, fmt::format("Invalid weapon number: {}", weapon_number));
+        return nullptr;
     }
 
     return &weaponinfo[weapon_number];
@@ -61,7 +62,7 @@ static void DEH_WeaponParseLine(deh_context_t *context, char *line, void *tag)
     weaponinfo_t *weapon;
     int           ivalue;
 
-    if (tag == NULL)
+    if (tag == nullptr)
         return;
 
     weapon = (weaponinfo_t *)tag;

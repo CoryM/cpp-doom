@@ -15,16 +15,17 @@
 // Parses "Cheat" sections in dehacked files
 //
 
-#include <cstdlib>
-#include <cstring>
-
-#include "../doomtype.hpp"
-
 #include "../deh_defs.hpp"
 #include "../deh_io.hpp"
 #include "../deh_main.hpp"
+#include "../doomtype.hpp"
 #include "am_map.hpp"
 #include "st_stuff.hpp"
+
+#include "fmt/core.h"
+
+#include <cstdlib>
+#include <cstring>
 
 typedef struct
 {
@@ -65,7 +66,7 @@ static deh_cheat_t *FindCheatByName(char *name)
 
 static void *DEH_CheatStart(deh_context_t *context [[maybe_unused]], char *line [[maybe_unused]])
 {
-    return NULL;
+    return nullptr;
 }
 
 static void DEH_CheatParseLine(deh_context_t *context, char *line, void *tag [[maybe_unused]])
@@ -87,9 +88,9 @@ static void DEH_CheatParseLine(deh_context_t *context, char *line, void *tag [[m
 
     cheat = FindCheatByName(variable_name);
 
-    if (cheat == NULL)
+    if (cheat == nullptr)
     {
-        DEH_Warning(context, "Unknown cheat '%s'", variable_name);
+        DEH_Warning(context, fmt::format("Unknown cheat '{}'", variable_name));
         return;
     }
 

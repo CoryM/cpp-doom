@@ -16,17 +16,17 @@
 // Parses [CODEPTR] sections in BEX files
 //
 
+#include "../deh_io.hpp"
+#include "../deh_main.hpp"
+#include "event_function_decls.hpp"
+#include "info.hpp"
+
+#include "fmt/core.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
 #include <string_view>
-
-#include "info.hpp"
-
-#include "deh_io.hpp"
-#include "deh_main.hpp"
-#include "event_function_decls.hpp"
 
 typedef struct {
     const char *    mnemonic;
@@ -142,27 +142,27 @@ static void *DEH_BEXPtrStart(deh_context_t *context, char *line)
 
 static void DEH_BEXPtrParseLine(deh_context_t *context, char *line, void *tag [[maybe_unused]])
 {
-    char *   variable_name, *value, frame_str[6];
-    int      frame_number;
+    char *variable_name, *value, frame_str[6];
+    int   frame_number;
 
     // parse "FRAME nn = mnemonic", where
     // variable_name = "FRAME nn" and value = "mnemonic"
     if (!DEH_ParseAssignment(line, &variable_name, &value))
     {
-        DEH_Warning(context, "Failed to parse assignment: %s", line);
+        DEH_Warning(context, fmt::format("Failed to parse assignment: {}", line));
         return;
     }
 
     // parse "FRAME nn", where frame_number = "nn"
     if (sscanf(variable_name, "%5s %32d", frame_str, &frame_number) != 2 || strcasecmp(frame_str, "FRAME"))
     {
-        DEH_Warning(context, "Failed to parse assignment: %s", variable_name);
+        DEH_Warning(context, fmt::format("Failed to parse assignment: {}", variable_name));
         return;
     }
 
     if (frame_number < 0 || frame_number >= NUMSTATES)
     {
-        DEH_Warning(context, "Invalid frame number: %i", frame_number);
+        DEH_Warning(context, fmt::format("Invalid frame number: {}", frame_number));
         return;
     }
 
@@ -178,7 +178,7 @@ static void DEH_BEXPtrParseLine(deh_context_t *context, char *line, void *tag [[
         }
     }
 
-    DEH_Warning(context, "Invalid mnemonic '%s'", value);
+    DEH_Warning(context, fmt::format("Invalid mnemonic '%s'", value));
 }
 
 deh_section_t deh_section_bexptr = {

@@ -16,26 +16,29 @@
 // Parses INCLUDE directives in BEX files
 //
 
+#include "../m_misc.hpp"
+#include "../deh_io.hpp"
+#include "../deh_main.hpp"
+
+#include "fmt/core.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
 
-#include "../m_misc.hpp"
-#include "../deh_io.hpp"
-#include "../deh_main.hpp"
 
 static bool bex_nested = false;
 
 static void *DEH_BEXInclStart(deh_context_t *context, char *line)
 {
-    char *         deh_file;
+    char *      deh_file;
     extern bool bex_notext;
 
     if (!DEH_FileName(context))
     {
         DEH_Warning(context, "DEHACKED lumps may not include files");
-        return NULL;
+        return nullptr;
     }
 
     deh_file = DEH_FileName(context);
@@ -43,7 +46,7 @@ static void *DEH_BEXInclStart(deh_context_t *context, char *line)
     if (bex_nested)
     {
         DEH_Warning(context, "Included files may not include other files");
-        return NULL;
+        return nullptr;
     }
 
     std::string inc_file(strlen(line) + 1, '\0');
@@ -59,7 +62,7 @@ static void *DEH_BEXInclStart(deh_context_t *context, char *line)
     else
     {
         DEH_Warning(context, "Parse error on section start");
-        return NULL;
+        return nullptr;
     }
 
     // first, try loading the file right away
@@ -76,13 +79,13 @@ static void *DEH_BEXInclStart(deh_context_t *context, char *line)
 
     if (!M_FileExists(try_path.c_str()) || !DEH_LoadFile(try_path.c_str()))
     {
-        DEH_Warning(context, "Could not include \"%s\"", inc_file.c_str());
+        DEH_Warning(context, fmt::format("Could not include \"{}\"", inc_file));
     }
 
     bex_nested = false;
     bex_notext = false;
 
-    return NULL;
+    return nullptr;
 }
 
 static void DEH_BEXInclParseLine(deh_context_t *context [[maybe_unused]], char *line [[maybe_unused]], void *tag [[maybe_unused]])

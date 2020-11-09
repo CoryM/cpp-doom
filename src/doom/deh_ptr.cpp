@@ -15,24 +15,24 @@
 // Parses Action Pointer entries in dehacked files
 //
 
+#include "../deh_defs.hpp"
+#include "../deh_io.hpp"
+#include "../deh_main.hpp"
+#include "../doomtype.hpp"
+#include "info.hpp"
+
+#include "fmt/core.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
-#include "../doomtype.hpp"
-#include "info.hpp"
-
-#include "../deh_defs.hpp"
-#include "../deh_io.hpp"
-#include "../deh_main.hpp"
 
 actionf_t codeptrs[NUMSTATES]; // [crispy] share with deh_bexptr.c
 
-static int CodePointerIndex(actionf_t *ptr)
+static auto CodePointerIndex(actionf_t *ptr) -> int
 {
-    int i;
-
-    for (i = 0; i < NUMSTATES; ++i)
+    for (int i = 0; i < NUMSTATES; ++i)
     {
         if (!memcmp(&codeptrs[i], ptr, sizeof(actionf_t)))
         {
@@ -77,13 +77,13 @@ static void *DEH_PointerStart(deh_context_t *context, char *line)
     if (sscanf(line, "Pointer %*i (%*s %i)", &frame_number) != 1)
     {
         DEH_Warning(context, "Parse error on section start");
-        return NULL;
+        return nullptr;
     }
 
     if (frame_number < 0 || frame_number >= NUMSTATES)
     {
-        DEH_Warning(context, "Invalid frame number: %i", frame_number);
-        return NULL;
+        DEH_Warning(context, fmt::format("Invalid frame number: {}", frame_number));
+        return nullptr;
     }
 
     return &states[frame_number];
@@ -121,7 +121,7 @@ static void DEH_PointerParseLine(deh_context_t *context, char *line, void *tag)
     {
         if (ivalue < 0 || ivalue >= NUMSTATES)
         {
-            DEH_Warning(context, "Invalid state '%i'", ivalue);
+            DEH_Warning(context, fmt::format("Invalid state '{}'", ivalue));
         }
         else
         {
@@ -130,15 +130,13 @@ static void DEH_PointerParseLine(deh_context_t *context, char *line, void *tag)
     }
     else
     {
-        DEH_Warning(context, "Unknown variable name '%s'", variable_name);
+        DEH_Warning(context, fmt::format("Unknown variable name '{}'", variable_name));
     }
 }
 
 static void DEH_PointerSHA1Sum(sha1_context_t *context)
 {
-    int i;
-
-    for (i = 0; i < NUMSTATES; ++i)
+    for (int i = 0; i < NUMSTATES; ++i)
     {
         SHA1_UpdateInt32(context, CodePointerIndex(&states[i].action));
     }
@@ -149,6 +147,6 @@ deh_section_t deh_section_pointer = {
     DEH_PointerInit,
     DEH_PointerStart,
     DEH_PointerParseLine,
-    NULL,
+    nullptr,
     DEH_PointerSHA1Sum,
 };

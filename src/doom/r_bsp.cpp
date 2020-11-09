@@ -40,7 +40,7 @@ line_s *  linedef;
 sector_t *frontsector;
 sector_t *backsector;
 
-drawseg_t *drawsegs = NULL;
+drawseg_t *drawsegs = nullptr;
 drawseg_t *ds_p;
 int        numdrawsegs = 0;
 

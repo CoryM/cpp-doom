@@ -15,17 +15,19 @@
 // Parses "Frame" sections in dehacked files
 //
 
-#include <cstdio>
-#include <cstdlib>
-
+#include "../deh_defs.hpp"
+#include "../deh_io.hpp"
+#include "../deh_main.hpp"
+#include "../deh_mapping.hpp"
 #include "../doomtype.hpp"
 #include "d_items.hpp"
 #include "info.hpp"
 
-#include "deh_defs.hpp"
-#include "deh_io.hpp"
-#include "deh_main.hpp"
-#include "deh_mapping.hpp"
+#include "fmt/core.h"
+
+#include <cstdio>
+#include <cstdlib>
+
 
 DEH_BEGIN_MAPPING(state_mapping, state_t)
 DEH_MAPPING("Sprite number", sprite)
@@ -45,20 +47,20 @@ static void *DEH_FrameStart(deh_context_t *context, char *line)
     if (sscanf(line, "Frame %i", &frame_number) != 1)
     {
         DEH_Warning(context, "Parse error on section start");
-        return NULL;
+        return nullptr;
     }
 
     if (frame_number < 0 || frame_number >= NUMSTATES)
     {
-        DEH_Warning(context, "Invalid frame number: %i", frame_number);
-        return NULL;
+        DEH_Warning(context, fmt::format("Invalid frame number: {}", frame_number));
+        return nullptr;
     }
 
     if (frame_number >= DEH_VANILLA_NUMSTATES)
     {
-        DEH_Warning(context, "Attempt to modify frame %i: this will cause "
-                             "problems in Vanilla dehacked.",
-            frame_number);
+        DEH_Warning(context, fmt::format(
+                                 "Attempt to modify frame {}: this will cause problems in Vanilla dehacked.",
+                                 frame_number));
     }
 
     state = &states[frame_number];
@@ -71,7 +73,7 @@ static void *DEH_FrameStart(deh_context_t *context, char *line)
 // attempts to set frame 966 (the last frame) will overflow the dehacked
 // array and overwrite the weaponinfo[] array instead.
 //
-// This is noticable in Batman Doom where it is impossible to switch weapons
+// This is noticeable in Batman Doom where it is impossible to switch weapons
 // away from the fist once selected.
 
 static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
@@ -115,9 +117,9 @@ static void DEH_FrameSHA1Sum(sha1_context_t *context)
 
 deh_section_t deh_section_frame = {
     "Frame",
-    NULL,
+    nullptr,
     DEH_FrameStart,
     DEH_FrameParseLine,
-    NULL,
+    nullptr,
     DEH_FrameSHA1Sum,
 };

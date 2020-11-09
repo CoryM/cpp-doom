@@ -27,29 +27,26 @@ static deh_mapping_entry_t *GetMappingEntryByName(deh_context_t *context,
     deh_mapping_t *                                              mapping,
     char *                                                       name)
 {
-    int i;
-
-    for (i = 0; mapping->entries[i].name != NULL; ++i)
+    for (int i = 0; mapping->entries[i].name != NULL; ++i)
     {
         deh_mapping_entry_t *entry = &mapping->entries[i];
 
         if (!strcasecmp(entry->name, name))
         {
-            if (entry->location == NULL)
+            if (entry->location == nullptr)
             {
-                DEH_Warning(context, "Field '%s' is unsupported", name);
-                return NULL;
+                DEH_Warning(context, fmt::format("Field '{}' is unsupported", name));
+                return nullptr;
             }
 
             return entry;
         }
     }
-
     // Not found.
 
-    DEH_Warning(context, "Field named '%s' not found", name);
+    DEH_Warning(context, fmt::format("Field named '{}' not found", name));
 
-    return NULL;
+    return nullptr;
 }
 
 //
@@ -184,8 +181,8 @@ void DEH_StructSHA1Sum(sha1_context_t *context, deh_mapping_t *mapping,
             SHA1_UpdateInt32(context, *((uint32_t *)location));
             break;
         default:
-            I_Error("Unknown dehacked mapping field type for '%s' (BUG)",
-                entry->name);
+            S_Error(fmt::format("Unknown dehacked mapping field type for '{}' (BUG)",
+                entry->name));
             break;
         }
     }

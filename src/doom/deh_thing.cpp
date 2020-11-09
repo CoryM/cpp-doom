@@ -15,18 +15,19 @@
 // Parses "Thing" sections in dehacked files
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <string_view>
-
-#include "../doomtype.hpp"
-
 #include "../deh_defs.hpp"
 #include "../deh_main.hpp"
 #include "../deh_mapping.hpp"
+#include "../doomtype.hpp"
 
 #include "info.hpp"
 #include "p_mobj.hpp" // [crispy] MF_*
+
+#include "fmt/core.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <string_view>
 
 typedef struct {
     const char * flag;
@@ -106,7 +107,7 @@ static void *DEH_ThingStart(deh_context_t *context, char *line)
     if (sscanf(line, "Thing %i", &thing_number) != 1)
     {
         DEH_Warning(context, "Parse error on section start");
-        return NULL;
+        return nullptr;
     }
 
     // dehacked files are indexed from 1
@@ -114,8 +115,8 @@ static void *DEH_ThingStart(deh_context_t *context, char *line)
 
     if (thing_number < 0 || thing_number >= NUMMOBJTYPES)
     {
-        DEH_Warning(context, "Invalid thing number: %i", thing_number);
-        return NULL;
+        DEH_Warning(context, fmt::format("Invalid thing number: {}", thing_number));
+        return nullptr;
     }
 
     mobj = &mobjinfo[thing_number];
