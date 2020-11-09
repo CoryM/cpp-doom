@@ -30,7 +30,7 @@
 
 static bool bex_nested = false;
 
-static void *DEH_BEXInclStart(deh_context_t *context, char *line)
+static void *DEH_BEXInclStart(deh_context_s *context, char *line)
 {
     char *      deh_file;
     extern bool bex_notext;
@@ -88,7 +88,7 @@ static void *DEH_BEXInclStart(deh_context_t *context, char *line)
     return nullptr;
 }
 
-static void DEH_BEXInclParseLine(deh_context_t *context [[maybe_unused]], char *line [[maybe_unused]], void *tag [[maybe_unused]])
+static void DEH_BEXInclParseLine(deh_context_s *context [[maybe_unused]], char *line [[maybe_unused]], void *tag [[maybe_unused]])
 {
     // not used
 }

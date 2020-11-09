@@ -334,7 +334,7 @@ static const bex_string_t bex_stringtable[] = {
     { "BGCASTCALL", "BOSSBACK" },
 };
 
-static void *DEH_BEXStrStart(deh_context_t *context, char *line)
+static void *DEH_BEXStrStart(deh_context_s *context, char *line)
 {
     char s[10];
 
@@ -346,7 +346,7 @@ static void *DEH_BEXStrStart(deh_context_t *context, char *line)
     return NULL;
 }
 
-static void DEH_BEXStrParseLine(deh_context_t *context, char *line, void *tag [[maybe_unused]])
+static void DEH_BEXStrParseLine(deh_context_s *context, char *line, void *tag [[maybe_unused]])
 {
     char *variable_name, *value;
 

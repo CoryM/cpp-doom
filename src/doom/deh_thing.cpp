@@ -99,7 +99,7 @@ DEH_MAPPING("Bits", flags)
 DEH_MAPPING("Respawn frame", raisestate)
 DEH_END_MAPPING
 
-static void *DEH_ThingStart(deh_context_t *context, char *line)
+static void *DEH_ThingStart(deh_context_s *context, char *line)
 {
     int         thing_number = 0;
     mobjinfo_t *mobj;
@@ -124,7 +124,7 @@ static void *DEH_ThingStart(deh_context_t *context, char *line)
     return mobj;
 }
 
-static void DEH_ThingParseLine(deh_context_t *context, char *line, void *tag)
+static void DEH_ThingParseLine(deh_context_s *context, char *line, void *tag)
 {
     mobjinfo_t *mobj;
     char *      variable_name, *value;

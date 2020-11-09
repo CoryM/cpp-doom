@@ -18,22 +18,20 @@
 //	Moreover, the sky areas have to be determined.
 //
 
-
-#include <cstdio>
-#include <cstdlib>
-#include <algorithm>
-
 #include "../i_system.hpp"
-#include "../z_zone.hpp"
 #include "../w_wad.hpp"
-
+#include "../z_zone.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp"
-
+#include "r_bmaps.hpp" // [crispy] R_BrightmapForTexName()
 #include "r_local.hpp"
 #include "r_sky.hpp"
-#include "r_bmaps.hpp" // [crispy] R_BrightmapForTexName()
 #include "r_swirl.hpp" // [crispy] R_DistortedFlat()
+
+#include <algorithm>
+#include <array>
+#include <cstdio>
+#include <cstdlib>
 
 
 planefunction_t floorfunc;
@@ -44,17 +42,17 @@ planefunction_t ceilingfunc;
 //
 
 // Here comes the obnoxious "visplane".
-#define MAXVISPLANES 256
-visplane_t *visplanes = NULL;
-visplane_t *lastvisplane;
-visplane_t *floorplane;
-visplane_t *ceilingplane;
-static int  numvisplanes;
+constexpr size_t MAXVISPLANES = 256;
+visplane_t *     visplanes    = nullptr;
+visplane_t *     lastvisplane = nullptr;
+visplane_t *     floorplane   = nullptr;
+visplane_t *     ceilingplane = nullptr;
+static int       numvisplanes = 0;
 
 // ?
-#define MAXOPENINGS MAXWIDTH * 64 * 4
-int  openings[MAXOPENINGS]; // [crispy] 32-bit integer math
-int *lastopening;           // [crispy] 32-bit integer math
+constexpr size_t MAXOPENINGS = MAXWIDTH * 64 * 4;
+int              openings[MAXOPENINGS]; // [crispy] 32-bit integer math
+int *            lastopening = nullptr; // [crispy] 32-bit integer math
 
 
 //
@@ -161,13 +159,17 @@ void R_MapPlane(int y,
     ds_yfrac = -viewy - FixedMul(viewsin, distance) + dx * ds_ystep;
 
     if (fixedcolormap)
+    {
         ds_colormap[0] = ds_colormap[1] = fixedcolormap;
+    }
     else
     {
         int index = distance >> LIGHTZSHIFT;
 
         if (index >= MAXLIGHTZ)
+        {
             index = MAXLIGHTZ - 1;
+        }
 
         ds_colormap[0] = planezlight[index];
         ds_colormap[1] = zlight[LIGHTLEVELS - 1][MAXLIGHTZ - 1];

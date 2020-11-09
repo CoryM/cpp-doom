@@ -22,14 +22,16 @@
 
 #include <string_view>
 
-auto DEH_OpenFile(const char *filename) -> deh_context_t *;
-auto DEH_OpenLump(int lumpnum) -> deh_context_t *;
-auto DEH_CloseFile(deh_context_t *context) -> void;
-auto DEH_GetChar(deh_context_t *context) -> int;
-auto DEH_ReadLine(deh_context_t *context, bool extended) -> char *;
-void DEH_Error(deh_context_t *context, const char *msg, ...) PRINTF_ATTR(2, 3);
-auto DEH_Warning(deh_context_t *context, const std::string_view msg) -> void;
-auto DEH_HadError(deh_context_t *context) -> bool;
-auto DEH_FileName(deh_context_t *context) -> char *; // [crispy] returns filename
+struct deh_context_s;
+
+auto DEH_OpenFile(const char *filename) -> deh_context_s *;
+auto DEH_OpenLump(int lumpnum) -> deh_context_s *;
+auto DEH_CloseFile(deh_context_s *context) -> void;
+auto DEH_GetChar(deh_context_s &context) -> int;
+auto DEH_ReadLine(deh_context_s *context, bool extended) -> char *;
+auto DEH_Error(deh_context_s *context, const std::string_view msg) -> void;
+auto DEH_Warning(deh_context_s *context, const std::string_view msg) -> void;
+auto DEH_HadError(deh_context_s *context) -> bool;
+auto DEH_FileName(deh_context_s *context) -> char *; // [crispy] returns filename
 
 #endif /* #ifndef DEH_IO_H */

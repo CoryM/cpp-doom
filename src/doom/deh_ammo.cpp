@@ -29,7 +29,7 @@
 #include <cstring>
 
 
-static auto DEH_AmmoStart(deh_context_t *context, char *line) -> void *
+static auto DEH_AmmoStart(deh_context_s *context, char *line) -> void *
 {
     int ammo_number = 0;
 
@@ -48,7 +48,7 @@ static auto DEH_AmmoStart(deh_context_t *context, char *line) -> void *
     return &maxammo[ammo_number];
 }
 
-static void DEH_AmmoParseLine(deh_context_t *context, char *line, void *tag)
+static void DEH_AmmoParseLine(deh_context_s *context, char *line, void *tag)
 {
     char *variable_name, *value;
     int   ivalue;

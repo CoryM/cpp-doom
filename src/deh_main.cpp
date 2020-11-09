@@ -171,10 +171,10 @@ auto DEH_ParseAssignment(char *line, char **variable_name, char **value) -> bool
     return true;
 }
 
-extern void DEH_SaveLineStart(deh_context_t *context);
-extern void DEH_RestoreLineStart(deh_context_t *context);
+extern void DEH_SaveLineStart(deh_context_s *context);
+extern void DEH_RestoreLineStart(deh_context_s *context);
 
-static auto CheckSignatures(deh_context_t *context) -> bool
+static auto CheckSignatures(deh_context_s *context) -> bool
 {
     // [crispy] save pointer to start of line (should be 0 here)
     DEH_SaveLineStart(context);
@@ -254,14 +254,12 @@ static void DEH_ParseComment(char *comment)
 }
 
 // Parses a dehacked file by reading from the context
-static void DEH_ParseContext(deh_context_t *context)
+static void DEH_ParseContext(deh_context_s *context)
 {
-    deh_section_t *current_section = NULL;
-    deh_section_t *prev_section    = NULL; // [crispy] remember previous line parser
+    deh_section_t *current_section = nullptr;
+    deh_section_t *prev_section    = nullptr; // [crispy] remember previous line parser
     char           section_name[20];
-    void *         tag = NULL;
-    bool           extended;
-    char *         line;
+    void *         tag = nullptr;
 
     // Read the header and check it matches the signature
     if (!CheckSignatures(context))
@@ -275,20 +273,22 @@ static void DEH_ParseContext(deh_context_t *context)
     {
         // Read the next line. We only allow the special extended parsing
         // for the BEX [STRINGS] section.
-        extended = current_section != NULL
-                   && !strcasecmp(current_section->name, "[STRINGS]");
+        bool extended = current_section != nullptr
+                        && !strcasecmp(current_section->name, "[STRINGS]");
         // [crispy] save pointer to start of line, just in case
         DEH_SaveLineStart(context);
-        line = DEH_ReadLine(context, extended);
+        auto *line = DEH_ReadLine(context, extended);
 
         // end of file?
-        if (line == NULL)
+        if (line == nullptr)
         {
             return;
         }
 
         while (line[0] != '\0' && isspace(line[0]))
+        {
             ++line;
+        }
 
         if (line[0] == '#')
         {
@@ -363,7 +363,7 @@ static void DEH_ParseContext(deh_context_t *context)
 // Parses a dehacked file
 [[deprecated("Use String_View version")]] int DEH_LoadFile(const char *filename)
 {
-    deh_context_t *context;
+    deh_context_s *context;
 
     if (!deh_initialized)
     {
@@ -421,7 +421,7 @@ int DEH_LoadFile(const std::string_view filename)
 
     puts(fmt::format(" loading {}\n", filename).data());
 
-    deh_context_t *context = DEH_OpenFile(filename.data());
+    deh_context_s *context = DEH_OpenFile(filename.data());
 
     if (context == nullptr)
     {
@@ -478,7 +478,7 @@ auto DEH_LoadLump(int lumpnum, [[maybe_unused]] bool allow_long, bool allow_erro
     deh_allow_extended_strings = false;
 */
 
-    deh_context_t *context = DEH_OpenLump(lumpnum);
+    deh_context_s *context = DEH_OpenLump(lumpnum);
 
     if (context == nullptr)
     {

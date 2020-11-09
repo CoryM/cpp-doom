@@ -37,7 +37,7 @@ DEH_MAPPING("Shooting frame", atkstate)
 DEH_MAPPING("Firing frame", flashstate)
 DEH_END_MAPPING
 
-static void *DEH_WeaponStart(deh_context_t *context, char *line)
+static void *DEH_WeaponStart(deh_context_s *context, char *line)
 {
     int weapon_number = 0;
 
@@ -56,7 +56,7 @@ static void *DEH_WeaponStart(deh_context_t *context, char *line)
     return &weaponinfo[weapon_number];
 }
 
-static void DEH_WeaponParseLine(deh_context_t *context, char *line, void *tag)
+static void DEH_WeaponParseLine(deh_context_s *context, char *line, void *tag)
 {
     char *        variable_name, *value;
     weaponinfo_t *weapon;

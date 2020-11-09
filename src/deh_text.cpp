@@ -49,7 +49,7 @@ static int TXT_MaxStringLength(int len)
     return len - 1;
 }
 
-static void *DEH_TextStart(deh_context_t *context, char *line)
+static void *DEH_TextStart(deh_context_s *context, char *line)
 {
     int fromlen, tolen;
     int i;
@@ -77,7 +77,7 @@ static void *DEH_TextStart(deh_context_t *context, char *line)
 
     for (i = 0; i < fromlen; ++i)
     {
-        from_text[i] = DEH_GetChar(context);
+        from_text[i] = DEH_GetChar(*context);
     }
     from_text[fromlen] = '\0';
 
@@ -85,7 +85,7 @@ static void *DEH_TextStart(deh_context_t *context, char *line)
 
     for (i = 0; i < tolen; ++i)
     {
-        to_text[i] = DEH_GetChar(context);
+        to_text[i] = DEH_GetChar(*context);
     }
     to_text[tolen] = '\0';
 
@@ -97,7 +97,7 @@ static void *DEH_TextStart(deh_context_t *context, char *line)
     return nullptr;
 }
 
-static void DEH_TextParseLine(deh_context_t *context [[maybe_unused]], char *line [[maybe_unused]], void *tag [[maybe_unused]])
+static void DEH_TextParseLine(deh_context_s *context [[maybe_unused]], char *line [[maybe_unused]], void *tag [[maybe_unused]])
 {
     // not used
 }

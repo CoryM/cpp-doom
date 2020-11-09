@@ -67,7 +67,7 @@ static void DEH_PointerInit(void)
     }
 }
 
-static void *DEH_PointerStart(deh_context_t *context, char *line)
+static void *DEH_PointerStart(deh_context_s *context, char *line)
 {
     int frame_number = 0;
 
@@ -89,7 +89,7 @@ static void *DEH_PointerStart(deh_context_t *context, char *line)
     return &states[frame_number];
 }
 
-static void DEH_PointerParseLine(deh_context_t *context, char *line, void *tag)
+static void DEH_PointerParseLine(deh_context_s *context, char *line, void *tag)
 {
     state_t *state;
     char *   variable_name, *value;

@@ -22,8 +22,10 @@
 #include "i_system.hpp"
 #include "m_misc.hpp"
 
+#include "fmt/compile.h"
 
-static deh_mapping_entry_t *GetMappingEntryByName(deh_context_t *context,
+
+static deh_mapping_entry_t *GetMappingEntryByName(deh_context_s *context,
     deh_mapping_t *                                              mapping,
     char *                                                       name)
 {
@@ -68,7 +70,7 @@ static void *GetStructField(void *structptr,
 // Set the value of a particular field in a structure by name
 //
 
-bool DEH_SetMapping(deh_context_t *context, deh_mapping_t *mapping,
+bool DEH_SetMapping(deh_context_s *context, deh_mapping_t *mapping,
     void *structptr, char *name, int value)
 {
     deh_mapping_entry_t *entry;
@@ -85,7 +87,7 @@ bool DEH_SetMapping(deh_context_t *context, deh_mapping_t *mapping,
 
     if (entry->is_string)
     {
-        DEH_Error(context, "Tried to set '%s' as integer (BUG)", name);
+        DEH_Error(context, fmt::format("Tried to set '{}' as integer (BUG)", name));
         return false;
     }
 
@@ -108,7 +110,7 @@ bool DEH_SetMapping(deh_context_t *context, deh_mapping_t *mapping,
         *((uint32_t *)location) = value;
         break;
     default:
-        DEH_Error(context, "Unknown field type for '%s' (BUG)", name);
+        DEH_Error(context, fmt::format("Unknown field type for '{}' (BUG)", name));
         return false;
     }
 
@@ -119,7 +121,7 @@ bool DEH_SetMapping(deh_context_t *context, deh_mapping_t *mapping,
 // Set the value of a string field in a structure by name
 //
 
-bool DEH_SetStringMapping(deh_context_t *context, deh_mapping_t *mapping,
+bool DEH_SetStringMapping(deh_context_s *context, deh_mapping_t *mapping,
     void *structptr, char *name, char *value)
 {
     deh_mapping_entry_t *entry = GetMappingEntryByName(context, mapping, name);
@@ -133,7 +135,7 @@ bool DEH_SetStringMapping(deh_context_t *context, deh_mapping_t *mapping,
 
     if (!entry->is_string)
     {
-        DEH_Error(context, "Tried to set '%s' as string (BUG)", name);
+        DEH_Error(context, fmt::format("Tried to set '{}' as string (BUG)", name));
         return false;
     }
 

@@ -39,7 +39,7 @@ DEH_MAPPING("Unknown 2", misc2)
 DEH_UNSUPPORTED_MAPPING("Codep frame")
 DEH_END_MAPPING
 
-static void *DEH_FrameStart(deh_context_t *context, char *line)
+static void *DEH_FrameStart(deh_context_s *context, char *line)
 {
     int      frame_number = 0;
     state_t *state;
@@ -76,7 +76,7 @@ static void *DEH_FrameStart(deh_context_t *context, char *line)
 // This is noticeable in Batman Doom where it is impossible to switch weapons
 // away from the fist once selected.
 
-static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
+static void DEH_FrameParseLine(deh_context_s *context, char *line, void *tag)
 {
     state_t *state;
     char *   variable_name, *value;

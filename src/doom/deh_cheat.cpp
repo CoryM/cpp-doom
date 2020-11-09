@@ -64,12 +64,12 @@ static deh_cheat_t *FindCheatByName(char *name)
     return NULL;
 }
 
-static void *DEH_CheatStart(deh_context_t *context [[maybe_unused]], char *line [[maybe_unused]])
+static void *DEH_CheatStart(deh_context_s *context [[maybe_unused]], char *line [[maybe_unused]])
 {
     return nullptr;
 }
 
-static void DEH_CheatParseLine(deh_context_t *context, char *line, void *tag [[maybe_unused]])
+static void DEH_CheatParseLine(deh_context_s *context, char *line, void *tag [[maybe_unused]])
 {
     deh_cheat_t *  cheat;
     char *         variable_name;

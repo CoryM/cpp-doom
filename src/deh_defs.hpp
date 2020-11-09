@@ -20,12 +20,13 @@
 
 #include "sha1.hpp"
 
-typedef struct deh_context_s deh_context_t;
+struct deh_context_s;
+
 typedef struct deh_section_s deh_section_t;
 typedef void (*deh_section_init_t)(void);
-typedef void *(*deh_section_start_t)(deh_context_t *context, char *line);
-typedef void (*deh_section_end_t)(deh_context_t *context, void *tag);
-typedef void (*deh_line_parser_t)(deh_context_t *context, char *line, void *tag);
+typedef void *(*deh_section_start_t)(deh_context_s *context, char *line);
+typedef void (*deh_section_end_t)(deh_context_s *context, void *tag);
+typedef void (*deh_line_parser_t)(deh_context_s *context, char *line, void *tag);
 typedef void (*deh_sha1_hash_t)(sha1_context_t *context);
 
 struct deh_section_s {
