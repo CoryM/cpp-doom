@@ -280,7 +280,7 @@ void P_AddActivePlat(plat_t *plat)
             activeplats[i] = plat;
             return;
         }
-    I_Error("P_AddActivePlat: no more plats!");
+    S_Error("P_AddActivePlat: no more plats!");
 }
 
 void P_RemoveActivePlat(plat_t *plat)
@@ -295,5 +295,5 @@ void P_RemoveActivePlat(plat_t *plat)
 
             return;
         }
-    I_Error("P_RemoveActivePlat: can't find plat!");
+    S_Error("P_RemoveActivePlat: can't find plat!");
 }

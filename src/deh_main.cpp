@@ -435,7 +435,7 @@ int DEH_LoadFile(const std::string_view filename)
 
     if (DEH_HadError(context))
     {
-        I_Error("Error parsing dehacked file");
+        S_Error("Error parsing dehacked file");
     }
 
     return 1;

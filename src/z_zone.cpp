@@ -259,7 +259,7 @@ auto Z_Malloc(size_t size, PU tag, void *user) -> void *
         if (rover == start)
         {
             // scanned all the way around the list
-            //          I_Error ("Z_Malloc: failed on allocation of %i bytes", size);
+            //   S_Error(fmt::format("Z_Malloc: failed on allocation of %i bytes", size));
 
             // [crispy] allocate another zone twice as big
             Z_Init();
@@ -446,13 +446,19 @@ void Z_CheckHeap(void)
         }
 
         if ((byte *)block + block->size != (byte *)block->next)
-            I_Error("Z_CheckHeap: block size does not touch the next block\n");
+        {
+            S_Error("Z_CheckHeap: block size does not touch the next block\n");
+        }
 
         if (block->next->prev != block)
-            I_Error("Z_CheckHeap: next block doesn't have proper back link\n");
+        {
+            S_Error("Z_CheckHeap: next block doesn't have proper back link\n");
+        }
 
         if (block->tag == PU::FREE && block->next->tag == PU::FREE)
-            I_Error("Z_CheckHeap: two consecutive free blocks\n");
+        {
+            S_Error("Z_CheckHeap: two consecutive free blocks\n");
+        }
     }
 }
 
@@ -467,13 +473,13 @@ void Z_ChangeTag2(void *ptr, PU tag, const char *file, int line)
     block = (memblock_s *)((byte *)ptr - sizeof(memblock_s));
 
     if (block->id != ZONEID)
-        I_Error("%s:%i: Z_ChangeTag: block without a ZONEID!",
-            file, line);
+        S_Error(fmt::format("{}:{}: Z_ChangeTag: block without a ZONEID!",
+            file, line));
 
     if (tag >= PU::PURGELEVEL && block->user == NULL)
-        I_Error("%s:%i: Z_ChangeTag: an owner is required "
-                "for purgable blocks",
-            file, line);
+        S_Error(fmt::format("{}:{}: Z_ChangeTag: an owner is required "
+                            "for purgable blocks",
+            file, line));
 
     block->tag = tag;
 }
@@ -486,7 +492,7 @@ void Z_ChangeUser(void *ptr, void **user)
 
     if (block->id != ZONEID)
     {
-        I_Error("Z_ChangeUser: Tried to change user for invalid block!");
+        S_Error("Z_ChangeUser: Tried to change user for invalid block!");
     }
 
     block->user = user;

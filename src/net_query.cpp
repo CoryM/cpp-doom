@@ -787,7 +787,7 @@ void NET_QueryAddress(char *addr_str)
 
     if (addr == NULL)
     {
-        I_Error("NET_QueryAddress: Host '%s' not found!", addr_str);
+        S_Error(fmt::format("NET_QueryAddress: Host '{}' not found!", addr_str));
     }
 
     // Add the address to the list of targets.
@@ -810,7 +810,7 @@ void NET_QueryAddress(char *addr_str)
     }
     else
     {
-        I_Error("No response from '%s'", addr_str);
+        S_Error(fmt::format("No response from '{}'", addr_str));
     }
 }
 

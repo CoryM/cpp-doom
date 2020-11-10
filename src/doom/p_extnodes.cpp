@@ -115,8 +115,8 @@ void P_LoadSegs_DeePBSP(int lump)
         // e6y: check for wrong indexes
         if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
         {
-            I_Error("P_LoadSegs: linedef %d for seg %d references a non-existent sidedef %d",
-                linedef, i, (unsigned)ldef->sidenum[side]);
+            S_Error(fmt::format("P_LoadSegs: linedef {} for seg {} references a non-existent sidedef {}",
+                linedef, i, (unsigned)ldef->sidenum[side]));
         }
 
         li->sidedef     = &sides[ldef->sidenum[side]];
@@ -161,7 +161,7 @@ void P_LoadSubsectors_DeePBSP(int lump)
 
     // [crispy] fail on missing subsectors
     if (!data || !numsubsectors)
-        I_Error("P_LoadSubsectors: No subsectors in map!");
+        S_Error("P_LoadSubsectors: No subsectors in map!");
 
     for (i = 0; i < numsubsectors; i++)
     {
@@ -186,7 +186,7 @@ void P_LoadNodes_DeePBSP(int lump)
         if (numsubsectors == 1)
             fprintf(stderr, "P_LoadNodes: No nodes in map, but only one subsector.\n");
         else
-            I_Error("P_LoadNodes: No nodes in map!");
+            S_Error("P_LoadNodes: No nodes in map!");
     }
 
     // skip header
@@ -261,7 +261,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
         zstream->avail_out = outlen;
 
         if (inflateInit(zstream) != Z_OK)
-            I_Error("P_LoadNodes: Error during ZDBSP nodes decompression initialization!");
+            S_Error("P_LoadNodes: Error during ZDBSP nodes decompression initialization!");
 
         // resize if output buffer runs full
         while ((err = inflate(zstream, Z_SYNC_FLUSH)) == Z_OK)
@@ -274,7 +274,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
         }
 
         if (err != Z_STREAM_END)
-            I_Error("P_LoadNodes: Error during ZDBSP nodes decompression!");
+            S_Error("P_LoadNodes: Error during ZDBSP nodes decompression!");
 
         fprintf(stderr, "P_LoadNodes: ZDBSP nodes compression ratio %.3f\n",
             (float)zstream->total_out / zstream->total_in);
@@ -282,13 +282,13 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
         data = output;
 
         if (inflateEnd(zstream) != Z_OK)
-            I_Error("P_LoadNodes: Error during ZDBSP nodes decompression shut-down!");
+            S_Error("P_LoadNodes: Error during ZDBSP nodes decompression shut-down!");
 
         // release the original data lump
         W_ReleaseLumpNum(lump);
         free(zstream);
 #else
-        I_Error("P_LoadNodes: Compressed ZDBSP nodes are not supported!");
+        S_Error("P_LoadNodes: Compressed ZDBSP nodes are not supported!");
 #endif
     }
     else
@@ -346,7 +346,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
     data += sizeof(numSubs);
 
     if (numSubs < 1)
-        I_Error("P_LoadNodes: No subsectors in map!");
+        S_Error("P_LoadNodes: No subsectors in map!");
 
     numsubsectors = numSubs;
     subsectors    = zmalloc<decltype(subsectors)>(numsubsectors * sizeof(subsector_t), PU::LEVEL, 0);
@@ -370,7 +370,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
     // The number of stored segs should match the number of segs used by subsectors
     if (numSegs != currSeg)
     {
-        I_Error("P_LoadNodes: Incorrect number of segs in ZDBSP nodes!");
+        S_Error("P_LoadNodes: Incorrect number of segs in ZDBSP nodes!");
     }
 
     numsegs = numSegs;
@@ -395,8 +395,8 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
         // e6y: check for wrong indexes
         if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
         {
-            I_Error("P_LoadSegs: linedef %d for seg %d references a non-existent sidedef %d",
-                linedef, i, (unsigned)ldef->sidenum[side]);
+            S_Error(fmt::format("P_LoadSegs: linedef {} for seg {} references a non-existent sidedef {}",
+                linedef, i, (unsigned)ldef->sidenum[side]));
         }
 
         li->sidedef     = &sides[ldef->sidenum[side]];

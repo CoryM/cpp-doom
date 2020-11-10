@@ -92,7 +92,7 @@ static bool NET_CL_InitClient(void)
 
 static bool NET_CL_InitServer(void)
 {
-    I_Error("NET_CL_InitServer: attempted to initialize client pipe end as a server!");
+    S_Error("NET_CL_InitServer: attempted to initialize client pipe end as a server!");
     return false;
 }
 
@@ -109,8 +109,8 @@ static bool NET_CL_RecvPacket(net_addr_t **addr, net_packet_t **packet)
 
     if (popped != NULL)
     {
-        *packet            = popped;
-        *addr              = &client_addr;
+        *packet         = popped;
+        *addr           = &client_addr;
         client_addr.mod = &net_loop_client_module;
 
         return true;
@@ -160,7 +160,7 @@ net_module_t net_loop_client_module = {
 
 static bool NET_SV_InitClient(void)
 {
-    I_Error("NET_SV_InitClient: attempted to initialize server pipe end as a client!");
+    S_Error("NET_SV_InitClient: attempted to initialize server pipe end as a client!");
     return false;
 }
 
@@ -184,8 +184,8 @@ static bool NET_SV_RecvPacket(net_addr_t **addr, net_packet_t **packet)
 
     if (popped != NULL)
     {
-        *packet            = popped;
-        *addr              = &server_addr;
+        *packet         = popped;
+        *addr           = &server_addr;
         server_addr.mod = &net_loop_server_module;
 
         return true;

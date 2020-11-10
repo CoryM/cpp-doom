@@ -268,7 +268,7 @@ static void UnlockAllocatedSound(allocated_sound_t *snd)
 {
     if (snd->use_count <= 0)
     {
-        I_Error("Sound effect released more times than it was locked...");
+        S_Error("Sound effect released more times than it was locked...");
     }
 
     --snd->use_count;
@@ -1148,7 +1148,7 @@ static bool I_SDL_InitSound(bool _use_sfx_prefix)
     // SDL 2.0.6 has a bug that makes it unusable.
     if (SDL_COMPILEDVERSION == SDL_VERSIONNUM(2, 0, 6))
     {
-        I_Error(
+        S_Error(
             "I_SDL_InitSound: "
             "You are trying to launch with SDL 2.0.6 which has a known bug "
             "that makes the game crash. Please either downgrade to "
@@ -1186,8 +1186,8 @@ static bool I_SDL_InitSound(bool _use_sfx_prefix)
     {
         if (SRC_ConversionMode() < 0)
         {
-            I_Error("I_SDL_InitSound: Invalid value for use_libsamplerate: %i",
-                use_libsamplerate);
+            S_Error(fmt::format("I_SDL_InitSound: Invalid value for use_libsamplerate: {}",
+                use_libsamplerate));
         }
 
         ExpandSoundData = ExpandSoundData_SRC;

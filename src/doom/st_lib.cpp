@@ -113,7 +113,7 @@ void STlib_drawNum(st_number_t *n,
     x = n->x - numdigits * w;
 
     if (n->y - ST_Y < 0)
-        I_Error("drawNum: n->y - ST_Y < 0");
+        S_Error("drawNum: n->y - ST_Y < 0");
 
     if (screenblocks < CRISPY_HUD || (automapactive && !crispy->automapoverlay && !crispy->widescreen))
         V_CopyRect(x, n->y - ST_Y, st_backing_screen, w * numdigits, h, x, n->y);
@@ -225,7 +225,7 @@ void STlib_updateMultIcon(st_multicon_t *mi,
             h = SHORT(mi->p[mi->oldinum]->height);
 
             if (y - ST_Y < 0)
-                I_Error("updateMultIcon: y - ST_Y < 0");
+                S_Error("updateMultIcon: y - ST_Y < 0");
 
             if (screenblocks < CRISPY_HUD || (automapactive && !crispy->automapoverlay && !crispy->widescreen))
                 V_CopyRect(x, y - ST_Y, st_backing_screen, w, h, x, y);
@@ -269,7 +269,7 @@ void STlib_updateBinIcon(st_binicon_t *bi,
         h = SHORT(bi->p->height);
 
         if (y - ST_Y < 0)
-            I_Error("updateBinIcon: y - ST_Y < 0");
+            S_Error("updateBinIcon: y - ST_Y < 0");
 
         if (*bi->val)
             V_DrawPatch(bi->x, bi->y, bi->p);

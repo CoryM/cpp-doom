@@ -127,7 +127,7 @@ void R_MapPlane(int y,
         || x2 >= viewwidth
         || y > viewheight)
     {
-        I_Error("R_MapPlane: %i, %i at %i", x1, x2, y);
+        S_Error(fmt::format("R_MapPlane: {}, {} at {}", x1, x2, y));
     }
 #endif
 
@@ -276,7 +276,9 @@ visplane_t *R_FindPlane(
 
     R_RaiseVisplanes(&check); // [crispy] remove VISPLANES limit
     if (lastvisplane - visplanes == MAXVISPLANES && false)
-        I_Error("R_FindPlane: no more visplanes");
+    {
+        S_Error("R_FindPlane: no more visplanes");
+    }
 
     lastvisplane++;
 
@@ -352,8 +354,10 @@ visplane_t *R_CheckPlane(
     lastvisplane->picnum     = pl->picnum;
     lastvisplane->lightlevel = pl->lightlevel;
 
-    if (lastvisplane - visplanes == MAXVISPLANES && false) // [crispy] remove VISPLANES limit
-        I_Error("R_CheckPlane: no more visplanes");
+    if (lastvisplane - visplanes == MAXVISPLANES && false)
+    { // [crispy] remove VISPLANES limit
+        S_Error("R_CheckPlane: no more visplanes");
+    }
 
     pl       = lastvisplane++;
     pl->minx = start;
@@ -412,16 +416,22 @@ void R_DrawPlanes(void)
 
 #ifdef RANGECHECK
     if (ds_p - drawsegs > numdrawsegs)
-        I_Error("R_DrawPlanes: drawsegs overflow (%" PRIiPTR ")",
-            ds_p - drawsegs);
+    {
+        S_Error(fmt::format("R_DrawPlanes: drawsegs overflow ({})",
+            ds_p - drawsegs));
+    }
 
     if (lastvisplane - visplanes > numvisplanes)
-        I_Error("R_DrawPlanes: visplane overflow (%" PRIiPTR ")",
-            lastvisplane - visplanes);
+    {
+        S_Error(fmt::format("R_DrawPlanes: visplane overflow ({})",
+            lastvisplane - visplanes));
+    }
 
     if (lastopening - openings > MAXOPENINGS)
-        I_Error("R_DrawPlanes: opening overflow (%" PRIiPTR ")",
-            lastopening - openings);
+    {
+        S_Error(fmt::format("R_DrawPlanes: opening overflow ({})",
+            lastopening - openings));
+    }
 #endif
 
     for (visplane_t *pl = visplanes; pl < lastvisplane; pl++)

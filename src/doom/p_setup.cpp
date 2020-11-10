@@ -215,8 +215,8 @@ void P_LoadSegs(int lump)
         // e6y: check for wrong indexes
         if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
         {
-            I_Error("P_LoadSegs: linedef %d for seg %d references a non-existent sidedef %d",
-                linedef, i, (unsigned)ldef->sidenum[side]);
+            S_Error(fmt::format("P_LoadSegs: linedef {} for seg {} references a non-existent sidedef {}",
+                linedef, i, (unsigned)ldef->sidenum[side]));
         }
 
         li->sidedef     = &sides[ldef->sidenum[side]];
@@ -315,7 +315,7 @@ void P_LoadSubsectors(int lump)
 
     // [crispy] fail on missing subsectors
     if (!data || !numsubsectors)
-        I_Error("P_LoadSubsectors: No subsectors in map!");
+        S_Error("P_LoadSubsectors: No subsectors in map!");
 
     ms = (mapsubsector_t *)data;
     memset(subsectors, 0, numsubsectors * sizeof(subsector_t));
@@ -338,7 +338,7 @@ void P_LoadSectors(int lump)
 {
     // [crispy] fail on missing sectors
     if (lump >= static_cast<int>(numlumps))
-        I_Error("P_LoadSectors: No sectors in map!");
+        S_Error("P_LoadSectors: No sectors in map!");
 
     numsectors = W_LumpLength(lump) / sizeof(mapsector_t);
     sectors    = zmalloc<decltype(sectors)>(numsectors * sizeof(sector_t), PU::LEVEL, 0);
@@ -350,7 +350,7 @@ void P_LoadSectors(int lump)
 
     // [crispy] fail on missing sectors
     if (!data || !numsectors)
-        I_Error("P_LoadSectors: No sectors in map!");
+        S_Error("P_LoadSectors: No sectors in map!");
 
     auto ms = reinterpret_cast<mapsector_t *>(data);
     auto ss = sectors;
@@ -403,7 +403,7 @@ void P_LoadNodes(int lump)
         if (numsubsectors == 1)
             fprintf(stderr, "P_LoadNodes: No nodes in map, but only one subsector.\n");
         else
-            I_Error("P_LoadNodes: No nodes in map!");
+            S_Error("P_LoadNodes: No nodes in map!");
     }
 
     mn = (mapnode_t *)data;
@@ -500,7 +500,7 @@ void P_LoadThings(int lump)
         {
             if (playeringame[i] && !playerstartsingame[i])
             {
-                I_Error("P_LoadThings: Player %d start missing (vanilla crashes here)", i + 1);
+                S_Error(fmt::format("P_LoadThings: Player {} start missing (vanilla crashes here)", i + 1));
             }
             playerstartsingame[i] = false;
         }

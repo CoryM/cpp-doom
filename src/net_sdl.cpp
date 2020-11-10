@@ -277,8 +277,8 @@ static void NET_SDL_SendPacket(net_addr_t *addr, net_packet_t *packet)
 
     if (!SDLNet_UDP_Send(udpsocket, -1, &sdl_packet))
     {
-        I_Error("NET_SDL_SendPacket: Error transmitting packet: %s",
-            SDLNet_GetError());
+        S_Error(fmt::format("NET_SDL_SendPacket: Error transmitting packet: {}",
+            SDLNet_GetError()));
     }
 }
 
@@ -290,8 +290,8 @@ static bool NET_SDL_RecvPacket(net_addr_t **addr, net_packet_t **packet)
 
     if (result < 0)
     {
-        I_Error("NET_SDL_RecvPacket: Error receiving packet: %s",
-            SDLNet_GetError());
+        S_Error(fmt::format("NET_SDL_RecvPacket: Error receiving packet: {}",
+            SDLNet_GetError()));
     }
 
     // no packets received

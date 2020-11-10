@@ -118,7 +118,7 @@ void V_CopyRect(int srcx, int srcy, pixel_t *source,
         || desty < 0
         || desty /* + height */ > SCREENHEIGHT)
     {
-        I_Error("Bad V_CopyRect");
+        S_Error("Bad V_CopyRect");
     }
 #endif
 
@@ -223,7 +223,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
         || y < 0
         || y + SHORT(patch->height) > ORIGHEIGHT)
     {
-        I_Error("Bad V_DrawPatch");
+        S_Error("Bad V_DrawPatch");
     }
 #endif
 
@@ -364,7 +364,7 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
         || y < 0
         || y + SHORT(patch->height) > ORIGHEIGHT)
     {
-        I_Error("Bad V_DrawPatchFlipped");
+        S_Error("Bad V_DrawPatchFlipped");
     }
 #endif
 
@@ -471,7 +471,7 @@ void V_DrawTLPatch(int x, int y, patch_t *patch)
         || y < 0
         || y + SHORT(patch->height) > ORIGHEIGHT)
     {
-        I_Error("Bad V_DrawTLPatch");
+        S_Error("Bad V_DrawTLPatch");
     }
 
     col     = 0;
@@ -575,7 +575,7 @@ void V_DrawAltTLPatch(int x, int y, patch_t *patch)
         || y < 0
         || y + SHORT(patch->height) > ORIGHEIGHT)
     {
-        I_Error("Bad V_DrawAltTLPatch");
+        S_Error("Bad V_DrawAltTLPatch");
     }
 
     col     = 0;
@@ -629,7 +629,7 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
         || y < 0
         || y + SHORT(patch->height) > ORIGHEIGHT)
     {
-        I_Error("Bad V_DrawShadowedPatch");
+        S_Error("Bad V_DrawShadowedPatch");
     }
 
     col      = 0;
@@ -699,7 +699,7 @@ void V_DrawBlock(int x, int y, int width, int height, pixel_t *src)
         || y < 0
         || y + height > SCREENHEIGHT)
     {
-        I_Error("Bad V_DrawBlock");
+        S_Error("Bad V_DrawBlock");
     }
 #endif
 
@@ -726,7 +726,7 @@ void V_DrawScaledBlock(int x, int y, int width, int height, pixel_t *src)
         || y < 0
         || y + height > ORIGHEIGHT)
     {
-        I_Error("Bad V_DrawScaledBlock");
+        S_Error("Bad V_DrawScaledBlock");
     }
 #endif
 
@@ -814,7 +814,7 @@ void V_CopyScaledBuffer(pixel_t *dest, pixel_t *src, size_t size)
 #ifdef RANGECHECK
     if (size > ORIGWIDTH * ORIGHEIGHT)
     {
-        I_Error("Bad V_CopyScaledBuffer");
+        S_Error("Bad V_CopyScaledBuffer");
     }
 #endif
 
@@ -1138,12 +1138,12 @@ void V_ScreenShot(const char *format)
 #ifdef HAVE_LIBPNG
         if (png_screenshots)
         {
-            I_Error("V_ScreenShot: Couldn't create a PNG");
+            S_Error("V_ScreenShot: Couldn't create a PNG");
         }
         else
 #endif
         {
-            I_Error("V_ScreenShot: Couldn't create a PCX");
+            S_Error("V_ScreenShot: Couldn't create a PCX");
         }
     }
 

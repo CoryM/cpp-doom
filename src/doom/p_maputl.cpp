@@ -223,7 +223,7 @@ fixed_t
 
     if (den == 0)
         return 0;
-    //	I_Error ("P_InterceptVector: parallel");
+    //	S_Error ("P_InterceptVector: parallel");
 
     num =
         FixedMul((v1->x - v2->x) >> 8, v1->dy)
@@ -448,10 +448,9 @@ void P_SetThingPosition(mobj_t *thing)
 // to P_BlockLinesIterator, then make one or more calls
 // to it.
 //
-bool
-    P_BlockLinesIterator(int x,
-        int                  y,
-        bool (*func)(line_s *))
+bool P_BlockLinesIterator(int x,
+    int                       y,
+    bool (*func)(line_s *))
 {
     int      offset;
     int32_t *list; // [crispy] BLOCKMAP limit
@@ -488,10 +487,9 @@ bool
 //
 // P_BlockThingsIterator
 //
-bool
-    P_BlockThingsIterator(int x,
-        int                   y,
-        bool (*func)(mobj_t *))
+bool P_BlockThingsIterator(int x,
+    int                        y,
+    bool (*func)(mobj_t *))
 {
     mobj_t *mobj;
 
@@ -537,7 +535,7 @@ static void check_intercept(void)
 }
 
 divline_t trace;
-bool   earlyout;
+bool      earlyout;
 int       ptflags;
 
 static void InterceptsOverrun(int num_intercepts, intercept_t *intercept);
@@ -555,8 +553,7 @@ extern mobj_t *shootthing;
 // are on opposite sides of the trace.
 // Returns true if earlyout and a solid line hit.
 //
-bool
-    PIT_AddLineIntercepts(line_s *ld)
+bool PIT_AddLineIntercepts(line_s *ld)
 {
     int       s1;
     int       s2;
@@ -697,9 +694,8 @@ bool PIT_AddThingIntercepts(mobj_t *thing)
 // Returns true if the traverser function returns true
 // for all lines.
 //
-bool
-    P_TraverseIntercepts(traverser_t func,
-        fixed_t                      maxfrac)
+bool P_TraverseIntercepts(traverser_t func,
+    fixed_t                           maxfrac)
 {
     int          count;
     fixed_t      dist;
@@ -755,9 +751,9 @@ extern fixed_t bulletslope;
 
 typedef struct
 {
-    int     len;
-    void *  addr;
-    bool int16_array;
+    int   len;
+    void *addr;
+    bool  int16_array;
 } intercepts_overrun_t;
 
 // Intercepts memory table.  This is where various variables are located
@@ -874,13 +870,12 @@ static void InterceptsOverrun(int num_intercepts, intercept_t *intercept)
 // Returns true if the traverser function returns true
 // for all lines.
 //
-bool
-    P_PathTraverse(fixed_t x1,
-        fixed_t            y1,
-        fixed_t            x2,
-        fixed_t            y2,
-        int                flags,
-        bool (*trav)(intercept_t *))
+bool P_PathTraverse(fixed_t x1,
+    fixed_t                 y1,
+    fixed_t                 x2,
+    fixed_t                 y2,
+    int                     flags,
+    bool (*trav)(intercept_t *))
 {
     fixed_t xt1;
     fixed_t yt1;

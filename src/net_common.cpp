@@ -485,7 +485,7 @@ void NET_OpenLog(void)
         net_debug = fopen(M_GetArgument(p + 1).data(), "w");
         if (net_debug == nullptr)
         {
-            S_Error(fmt::format("Failed to open %s to write debug log.", M_GetArgument(p + 1)));
+            S_Error(fmt::format("Failed to open {} to write debug log.", M_GetArgument(p + 1)));
         }
         I_AtExit(CloseLog, true);
     }

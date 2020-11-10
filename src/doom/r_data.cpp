@@ -17,31 +17,25 @@
 //	generation of lookups, caching, retrieval by name.
 //
 
-#include <cstdio>
-#include <cstdlib> // [crispy] calloc()
-
-#include "../deh_main.hpp"
-#include "../i_swap.hpp"
-#include "i_system.hpp"
-#include "z_zone.hpp"
-
-
-#include "w_wad.hpp"
-
-#include "doomdef.hpp"
-#include "m_misc.hpp"
-#include "r_local.hpp"
-#include "p_local.hpp"
-
-#include "doomstat.hpp"
-#include "r_sky.hpp"
-
 #include "../../utils/lump.hpp"
 #include "../../utils/memory.hpp"
+#include "../deh_main.hpp"
+#include "../i_swap.hpp"
+#include "../i_system.hpp"
+#include "../w_wad.hpp"
+#include "../z_zone.hpp"
+#include "doomdef.hpp"
+#include "doomstat.hpp"
+#include "m_misc.hpp"
+#include "p_local.hpp"
 #include "r_bmaps.hpp" // [crispy] R_BrightmapForTexName()
 #include "r_data.hpp"
+#include "r_local.hpp"
+#include "r_sky.hpp"
 #include "v_trans.hpp" // [crispy] tranmap, CRMAX
 
+#include <cstdio>
+#include <cstdlib> // [crispy] calloc()
 //
 // Graphics.
 // DOOM graphics for walls and sprites
@@ -509,7 +503,7 @@ void R_GenerateLookup(int texnum)
 	    return;
 	    */
         }
-        // I_Error ("R_GenerateLookup: column without a patch");
+        // S_Error ("R_GenerateLookup: column without a patch");
 
         // [crispy] treat patch-less columns the same as multi-patched
         if (patchcount[x] > 1 || !patchcount[x])
@@ -536,8 +530,8 @@ void R_GenerateLookup(int texnum)
         /*
 	    if (texturecompositesize[texnum] > 0x10000-texture->height)
 	    {
-		I_Error ("R_GenerateLookup: texture %i is >64k",
-			 texnum);
+		S_Error(fmt::format("R_GenerateLookup: texture {} is >64k",
+			 texnum));
 	    }
 	    */
         csize += texture->height; // height bytes of texture data
@@ -851,7 +845,9 @@ void R_InitTextures(void)
         offset = LONG(*directory);
 
         if (offset > maxoff)
-            I_Error("R_InitTextures: bad texture directory");
+        {
+            S_Error("R_InitTextures: bad texture directory");
+        }
 
         mtexture = (maptexture_t *)((byte *)maptex + offset);
 

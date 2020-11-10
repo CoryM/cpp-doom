@@ -210,8 +210,8 @@ void P_InitPicAnims(void)
             init_swirl = true;
         }
         else if (lastanim->numpics < 2)
-            I_Error("P_InitPicAnims: bad cycle from %s to %s",
-                startname, endname);
+            S_Error(fmt::format("P_InitPicAnims: bad cycle from {} to {}",
+                startname, endname));
 
         lastanim++;
     }
@@ -1627,9 +1627,9 @@ void P_SpawnSpecials(void)
         case 85: // [crispy] [JN] (Boom) Scroll Texture Right
             if (numlinespecials >= MAXLINEANIMS)
             {
-                I_Error("Too many scrolling wall linedefs (%d)! "
-                        "(Vanilla limit is 64)",
-                    NumScrollers());
+                S_Error(fmt::format("Too many scrolling wall linedefs ({})! "
+                                    "(Vanilla limit is 64)",
+                    NumScrollers()));
             }
             // EFFECT FIRSTCOL SCROLL+
             linespeciallist[numlinespecials] = &lines[i];

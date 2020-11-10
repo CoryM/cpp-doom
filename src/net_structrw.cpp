@@ -92,7 +92,7 @@ void NET_WriteSettings(net_packet_t *packet, net_gamesettings_t *settings)
 bool NET_ReadSettings(net_packet_t *packet, net_gamesettings_t *settings)
 {
     bool success;
-    int     i;
+    int  i;
 
     success = NET_ReadInt8(packet, (unsigned int *)&settings->ticdup)
               && NET_ReadInt8(packet, (unsigned int *)&settings->extratics)
@@ -609,9 +609,9 @@ void NET_WriteProtocol(net_packet_t *packet, net_protocol_t protocol)
 
     // If you add an entry to the net_protocol_t enum, a corresponding entry
     // must be added to the protocol_names list.
-    I_Error("NET_WriteProtocol: protocol %d missing from protocol_names "
-            "list; please add it.",
-        protocol);
+    S_Error(fmt::format("NET_WriteProtocol: protocol {} missing from protocol_names "
+                        "list; please add it.",
+        protocol));
 }
 
 // NET_ReadProtocolList reads a list of string-format protocol names from
@@ -658,11 +658,9 @@ net_protocol_t NET_ReadProtocolList(net_packet_t *packet)
 // protocols is always sent.
 void NET_WriteProtocolList(net_packet_t *packet)
 {
-    int i;
-
     NET_WriteInt8(packet, NET_NUM_PROTOCOLS);
 
-    for (i = 0; i < NET_NUM_PROTOCOLS; ++i)
+    for (int i = 0; i < NET_NUM_PROTOCOLS; ++i)
     {
         NET_WriteProtocol(packet, static_cast<net_protocol_t>(i));
     }

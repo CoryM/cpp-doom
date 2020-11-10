@@ -245,7 +245,7 @@ auto Z_Malloc(size_t size, PU tag, void *user) -> void *
         {
             if (!ClearCache(sizeof(memblock_s) + size))
             {
-                I_Error("Z_Malloc: failed on allocation of %i bytes", size);
+                S_Error(fmt::format("Z_Malloc: failed on allocation of {} bytes", size));
             }
         }
     }
@@ -451,7 +451,7 @@ void Z_ChangeUser(void *ptr, void **user)
 
     if (block->id != ZONEID)
     {
-        I_Error("Z_ChangeUser: Tried to change user for invalid block!");
+        S_Error("Z_ChangeUser: Tried to change user for invalid block!");
     }
 
     block->user = user;

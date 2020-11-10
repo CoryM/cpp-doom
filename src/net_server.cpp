@@ -1308,7 +1308,7 @@ static void NET_SV_SendTics(net_client_t *client,
 
         if (i != cmd->seq)
         {
-            I_Error("Wanted to send %i, but %i is in its place", i, cmd->seq);
+            S_Error(fmt::format("Wanted to send {}, but {} is in its place", i, cmd->seq));
         }
 
         // Add command

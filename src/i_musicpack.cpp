@@ -1004,7 +1004,7 @@ static void DumpSubstituteConfig(char *filename)
 
     if (fs == NULL)
     {
-        I_Error("Failed to open %s for writing", filename);
+        S_Error(fmt::format("Failed to open {} for writing", filename));
         return;
     }
 

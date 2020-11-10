@@ -514,9 +514,9 @@ void R_Subsector(int num)
 
 #ifdef RANGECHECK
     if (num >= numsubsectors)
-        I_Error("R_Subsector: ss %i with numss = %i",
+        S_Error(fmt::format("R_Subsector: ss {} with numss = {}",
             num,
-            numsubsectors);
+            numsubsectors));
 #endif
 
     sscount++;
@@ -562,7 +562,7 @@ void R_Subsector(int num)
 
     // check for solidsegs overflow - extremely unsatisfactory!
     if (newend > &solidsegs[32] && false)
-        I_Error("R_Subsector: solidsegs overflow (vanilla may crash here)\n");
+        S_Error("R_Subsector: solidsegs overflow (vanilla may crash here)\n");
 }
 
 

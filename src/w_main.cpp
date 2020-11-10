@@ -216,12 +216,12 @@ void W_CheckCorrectIWAD(GameMission_t mission)
 
             if (lumpnum >= 0)
             {
-                I_Error("\nYou are trying to use a %s IWAD file with the %s%s binary.\n"
-                        "This isn't going to work.\n"
-                        "You probably want to use the %s%s binary.\n",
+                S_Error(fmt::format("\nYou are trying to use a {} IWAD file with the {}{} binary.\n"
+                                    "This isn't going to work.\n"
+                                    "You probably want to use the {}{} binary.\n",
                     D_SuggestGameName(unique_lumps[i].mission, GameMode_t::undetermined),
                     PROGRAM_PREFIX, D_GameMissionString(mission),
-                    PROGRAM_PREFIX, D_GameMissionString(unique_lumps[i].mission));
+                    PROGRAM_PREFIX, D_GameMissionString(unique_lumps[i].mission)));
             }
         }
     }

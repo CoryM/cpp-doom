@@ -172,7 +172,7 @@ int M_ReadFile(const char *name, byte **buffer)
 
     handle = fopen(name, "rb");
     if (handle == NULL)
-        I_Error("Couldn't read file %s", name);
+        S_Error(fmt::format("Couldn't read file {}", name));
 
     // find the size of the file by seeking to the end and
     // reading the current position
@@ -184,7 +184,9 @@ int M_ReadFile(const char *name, byte **buffer)
     fclose(handle);
 
     if (count < length)
-        I_Error("Couldn't read file %s", name);
+    {
+        S_Error(fmt::format("Couldn't read file {}", name));
+    }
 
     buf[length] = '\0';
     *buffer     = buf;

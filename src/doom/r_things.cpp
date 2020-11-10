@@ -16,28 +16,22 @@
 //	Refresh of things, i.e. objects represented by sprites.
 //
 
+#include "../../utils/lump.hpp"
+#include "../../utils/memory.hpp"
+#include "../deh_main.hpp"
+#include "../i_swap.hpp"
+#include "../i_system.hpp"
+#include "../w_wad.hpp"
+#include "../z_zone.hpp"
+#include "doomdef.hpp"
+#include "doomstat.hpp"
+#include "p_local.hpp" // [crispy] MLOOKUNIT
+#include "r_bmaps.hpp" // [crispy] R_BrightmapForTexName()
+#include "r_local.hpp"
+#include "v_trans.hpp" // [crispy] colored blood sprites
 
 #include <cstdio>
 #include <cstdlib>
-
-
-#include "../deh_main.hpp"
-#include "doomdef.hpp"
-
-#include "../i_swap.hpp"
-#include "i_system.hpp"
-#include "z_zone.hpp"
-#include "w_wad.hpp"
-
-#include "r_local.hpp"
-
-#include "doomstat.hpp"
-
-#include "../../utils/lump.hpp"
-#include "../../utils/memory.hpp"
-#include "p_local.hpp" // [crispy] MLOOKUNIT
-#include "r_bmaps.hpp" // [crispy] R_BrightmapForTexName()
-#include "v_trans.hpp" // [crispy] colored blood sprites
 
 #define MINZ        (FRACUNIT * 4)
 #define BASEYCENTER (ORIGHEIGHT / 2)
@@ -116,10 +110,12 @@ void R_InstallSpriteLump(int lump,
     // [crispy] support 16 sprite rotations
     unsigned rotation = (rot >= 'A') ? rot - 'A' + 10 : (rot >= '0') ? rot - '0' : 17;
 
-    if (frame >= 29 || rotation > 16) // [crispy] support 16 sprite rotations
-        I_Error("R_InstallSpriteLump: "
-                "Bad frame characters in lump %i",
-            lump);
+    if (frame >= 29 || rotation > 16)
+    { // [crispy] support 16 sprite rotations
+        S_Error(fmt::format("R_InstallSpriteLump: "
+                            "Bad frame characters in lump {}",
+            lump));
+    }
 
     if ((int)frame > maxframe)
         maxframe = frame;
@@ -288,9 +284,11 @@ void R_InitSpriteDefs(const char **namelist)
                 // must have all 8 frames
                 for (rotation = 0; rotation < 8; rotation++)
                     if (sprtemp[frame].lump[rotation] == -1)
-                        I_Error("R_InitSprites: Sprite %s frame %c "
-                                "is missing rotations",
-                            spritename, frame + 'A');
+                    {
+                        S_Error(fmt::format("R_InitSprites: Sprite {} frame {} "
+                                            "is missing rotations",
+                            spritename, frame + 'A'));
+                    }
 
                 // [crispy] support 16 sprite rotations
                 sprtemp[frame].rotate = 2;
@@ -617,8 +615,10 @@ void R_ProjectSprite(mobj_t *thing)
         // decide which patch to use for sprite relative to player
 #ifdef RANGECHECK
     if ((unsigned int)thing->sprite >= (unsigned int)numsprites)
-        I_Error("R_ProjectSprite: invalid sprite number %i ",
-            thing->sprite);
+    {
+        S_Error(fmt::format("R_ProjectSprite: invalid sprite number {} ",
+            thing->sprite));
+    }
 #endif
     sprdef = &sprites[thing->sprite];
     // [crispy] the TNT1 sprite is not supposed to be rendered anyway
@@ -628,8 +628,10 @@ void R_ProjectSprite(mobj_t *thing)
     }
 #ifdef RANGECHECK
     if ((thing->frame & FF_FRAMEMASK) >= sprdef->numframes)
-        I_Error("R_ProjectSprite: invalid sprite frame %i : %i ",
-            thing->sprite, thing->frame);
+    {
+        S_Error(fmt::format("R_ProjectSprite: invalid sprite frame {} : {} ",
+            thing->sprite, thing->frame));
+    }
 #endif
     sprframe = &sprdef->spriteframes[thing->frame & FF_FRAMEMASK];
 
@@ -946,8 +948,10 @@ void R_DrawPSprite(pspdef_t *psp, psprnum_t psprnum) // [crispy] differentiate g
     // decide which patch to use
 #ifdef RANGECHECK
     if ((unsigned)psp->state->sprite >= (unsigned int)numsprites)
-        I_Error("R_ProjectSprite: invalid sprite number %i ",
-            psp->state->sprite);
+    {
+        S_Error(fmt::format("R_ProjectSprite: invalid sprite number {} ",
+            psp->state->sprite));
+    }
 #endif
     sprdef = &sprites[psp->state->sprite];
     // [crispy] the TNT1 sprite is not supposed to be rendered anyway
@@ -957,8 +961,10 @@ void R_DrawPSprite(pspdef_t *psp, psprnum_t psprnum) // [crispy] differentiate g
     }
 #ifdef RANGECHECK
     if ((psp->state->frame & FF_FRAMEMASK) >= sprdef->numframes)
-        I_Error("R_ProjectSprite: invalid sprite frame %i : %i ",
-            psp->state->sprite, psp->state->frame);
+    {
+        S_Error(fmt::format("R_ProjectSprite: invalid sprite frame {} : {} ",
+            psp->state->sprite, psp->state->frame));
+    }
 #endif
     sprframe = &sprdef->spriteframes[psp->state->frame & FF_FRAMEMASK];
 

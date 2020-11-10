@@ -69,7 +69,7 @@ bool P_GiveAmmo(player_t *player,
         return false;
 
     if (ammo > NUMAMMO)
-        I_Error("P_GiveAmmo: bad type %i", ammo);
+        S_Error(fmt::format("P_GiveAmmo: bad type {}", ammo));
 
     if (player->ammo[ammo] == player->maxammo[ammo])
         return false;
@@ -657,7 +657,7 @@ void P_TouchSpecialThing(mobj_t *special,
         break;
 
     default:
-        I_Error("P_SpecialThing: Unknown gettable thing");
+        S_Error("P_SpecialThing: Unknown gettable thing");
     }
 
     if (special->flags & MF_COUNTITEM)

@@ -422,7 +422,7 @@ void NET_WaitForLaunch(void)
 
         if (!net_client_connected)
         {
-            I_Error("Lost connection to server");
+            S_Error("Lost connection to server");
         }
 
         TXT_Sleep(100);

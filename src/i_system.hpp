@@ -57,8 +57,6 @@ auto I_BaseTiccmd() -> ticcmd_t *;
 // Clean exit, displays sell blurb.
 [[noreturn]] void I_Quit();
 
-[[noreturn]] [[deprecated("Use void S_Error with fmt")]] void I_Error(const char *error, ...) PRINTF_ATTR(1, 2);
-
 [[noreturn]] void S_Error(std::string_view error);
 
 void I_Tactile(int on, int off, int total);

@@ -125,13 +125,13 @@ static void SetupLists(void)
 
     if (!SetupList(&iwad_flats, &iwad, "F_START", "F_END", NULL, NULL))
     {
-        I_Error("Flats section not found in IWAD");
+        S_Error("Flats section not found in IWAD");
     }
 
     if (!SetupList(&iwad_sprites, &iwad, "S_START", "S_END", NULL, NULL))
 
     {
-        I_Error("Sprites section not found in IWAD");
+        S_Error("Sprites section not found in IWAD");
     }
 
     // PWAD
@@ -730,25 +730,26 @@ int W_MergeDump(const char *file)
     uint32_t i, dir_p;
 
     // [crispy] WAD directory structure
-    typedef struct {
+    struct directory_t {
         uint32_t pos;
         uint32_t size;
         char     name[8];
-    } directory_t;
-    directory_t *dir = NULL;
+    };
+
+    directory_t *dir = nullptr;
 
     // [crispy] open file for writing
     fp = fopen(file, "wb");
     if (!fp)
     {
-        I_Error("W_MergeDump: Failed writing to file '%s'!", file);
+        S_Error(fmt::format("W_MergeDump: Failed writing to file '{}'!", file));
     }
 
     // [crispy] prepare directory
     dir = static_cast<decltype(dir)>(calloc(numlumps, sizeof(*dir)));
     if (!dir)
     {
-        I_Error("W_MergeDump: Error allocating memory!");
+        S_Error("W_MergeDump: Error allocating memory!");
     }
 
     // [crispy] write lumps to file, starting at offset 12

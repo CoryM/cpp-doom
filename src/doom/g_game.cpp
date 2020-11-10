@@ -1166,8 +1166,8 @@ void G_Ticker(void)
                 if (gametic > BACKUPTICS
                     && consistancy[i][buf] != cmd->consistancy)
                 {
-                    I_Error("consistency failure (%i should be %i)",
-                        cmd->consistancy, consistancy[i][buf]);
+                    S_Error(fmt::format("consistency failure ({} should be {})",
+                        cmd->consistancy, consistancy[i][buf]));
                 }
                 if (players[i].mo)
                     consistancy[i][buf] = players[i].mo->x;
@@ -1438,7 +1438,7 @@ bool G_CheckSpot(int playernum,
             ya = finesine[an];
             break;
         default:
-            I_Error("G_CheckSpot: unexpected angle %d\n", an);
+            S_Error(fmt::format("G_CheckSpot: unexpected angle {}\n", an));
             xa = ya = 0;
             break;
         }
@@ -1465,7 +1465,7 @@ void G_DeathMatchSpawnPlayer(int playernum)
 
     selections = deathmatch_p - deathmatchstarts;
     if (selections < 4)
-        I_Error("Only %i deathmatch spots, 4 required", selections);
+        S_Error(fmt::format("Only {} deathmatch spots, 4 required", selections));
 
     for (j = 0; j < 20; j++)
     {
@@ -1945,7 +1945,7 @@ void G_DoLoadGame(void)
 
     if (save_stream == NULL)
     {
-        I_Error("Could not load savegame %s", savename);
+        S_Error(fmt::format("Could not load savegame {}", savename));
     }
 
     // [crispy] read extended savegame data
@@ -2002,7 +2002,7 @@ void G_DoLoadGame(void)
     P_RestoreTargets(); // [crispy] restore mobj->target and mobj->tracer pointers
 
     if (!P_ReadSaveGameEOF())
-        I_Error("Bad savegame");
+        S_Error("Bad savegame");
 
     // [crispy] read more extended savegame data
     if (crispy->extsaveg)
@@ -2061,13 +2061,13 @@ void G_DoSaveGame(void)
     if (save_stream == NULL)
     {
         // Failed to save the game, so we're going to have to abort. But
-        // to be nice, save to somewhere else before we call I_Error().
+        // to be nice, save to somewhere else before we call S_Error().
         recovery_savegame_file = M_TempFile("recovery.dsg");
         save_stream            = fopen(recovery_savegame_file, "wb");
         if (save_stream == NULL)
         {
-            I_Error("Failed to open either '%s' or '%s' to write savegame.",
-                temp_savegame_file, recovery_savegame_file);
+            S_Error(fmt::format("Failed to open either '{}' or '{}' to write savegame.",
+                temp_savegame_file, recovery_savegame_file));
         }
     }
 
@@ -2106,7 +2106,7 @@ void G_DoSaveGame(void)
 
     if (vanilla_savegame_limit && ftell(save_stream) > SAVEGAMESIZE)
     {
-        I_Error("Savegame buffer overrun");
+        S_Error("Savegame buffer overrun");
     }
     */
 
@@ -2119,9 +2119,9 @@ void G_DoSaveGame(void)
         // We failed to save to the normal location, but we wrote a
         // recovery file to the temp directory. Now we can bomb out
         // with an error.
-        I_Error("Failed to open savegame file '%s' for writing.\n"
-                "But your game has been saved to '%s' for recovery.",
-            temp_savegame_file, recovery_savegame_file);
+        S_Error(fmt::format("Failed to open savegame file '{}' for writing.\n"
+                            "But your game has been saved to '{}' for recovery.",
+            temp_savegame_file, recovery_savegame_file));
     }
 
     // Now rename the temporary savegame file to the actual savegame
@@ -2754,22 +2754,23 @@ void G_DoPlayDemo(void)
     else if (demoversion != G_VanillaVersionCode() && !(gameversion <= exe_doom_1_2 && olddemo))
     {
         const char *message = "Demo is from a different game version!\n"
-                              "(read %i, should be %i)\n"
+                              "(read {}, should be {})\n"
                               "\n"
                               "*** You may need to upgrade your version "
                               "of Doom to v1.9. ***\n"
                               "    See: https://www.doomworld.com/classicdoom"
                               "/info/patches.php\n"
-                              "    This appears to be %s.";
+                              "    This appears to be {}.";
 
         if (singledemo)
-            I_Error(message, demoversion, G_VanillaVersionCode(),
-                DemoVersionDescription(demoversion));
+            S_Error(fmt::format(message, demoversion, G_VanillaVersionCode(),
+                DemoVersionDescription(demoversion)));
         // [crispy] make non-fatal
         else
         {
-            fprintf(stderr, message, demoversion, G_VanillaVersionCode(),
-                DemoVersionDescription(demoversion));
+            fprintf(stderr, fmt::format(message, demoversion, G_VanillaVersionCode(),
+                                DemoVersionDescription(demoversion))
+                                .c_str());
             fprintf(stderr, "\n");
             demoplayback = true;
             G_CheckDemoStatus();
@@ -2902,8 +2903,8 @@ bool G_CheckDemoStatus(void)
         timingdemo   = false;
         demoplayback = false;
 
-        I_Error("timed %i gametics in %i realtics (%f fps)",
-            gametic, realtics, fps);
+        S_Error(fmt::format("timed {} gametics in {} realtics ({} fps)",
+            gametic, realtics, fps));
     }
 
     if (demoplayback)
@@ -2959,7 +2960,7 @@ bool G_CheckDemoStatus(void)
         // [crispy] if a new game is started during demo recording, start a new demo
         if (gameaction != ga_newgame)
         {
-            I_Error("Demo %s recorded", demoname);
+            S_Error(fmt::format("Demo {} recorded", demoname));
         }
         else
         {

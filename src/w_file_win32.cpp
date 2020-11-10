@@ -81,7 +81,7 @@ unsigned int GetFileLength(HANDLE handle)
 
     if (result == INVALID_SET_FILE_POINTER)
     {
-        I_Error("W_Win32_OpenFile: Failed to read file length");
+        S_Error("W_Win32_OpenFile: Failed to read file length");
     }
 
     return result;
@@ -173,15 +173,15 @@ size_t W_Win32_Read(wad_file_t *wad, unsigned int offset,
 
     if (result == INVALID_SET_FILE_POINTER)
     {
-        I_Error("W_Win32_Read: Failed to set file pointer to %i",
-            offset);
+        S_Error(fmt::format("W_Win32_Read: Failed to set file pointer to {}",
+            offset));
     }
 
     // Read into the buffer.
 
     if (!ReadFile(win32_wad->handle, buffer, buffer_len, &bytes_read, NULL))
     {
-        I_Error("W_Win32_Read: Error reading from file");
+        S_Error("W_Win32_Read: Error reading from file");
     }
 
     return bytes_read;

@@ -146,7 +146,7 @@ fixed_t
 
     if (den == 0)
         return 0;
-    //	I_Error ("P_InterceptVector: parallel");
+    //	S_Error ("P_InterceptVector: parallel");
 
     num  = FixedMul((v1->x - v2->x) >> 8, v1->dy) + FixedMul((v2->y - v1->y) >> 8, v1->dx);
     frac = FixedDiv(num, den);
@@ -179,9 +179,11 @@ bool P_CrossSubsector(int num)
 
 #ifdef RANGECHECK
     if (num >= numsubsectors)
-        I_Error("P_CrossSubsector: ss %i with numss = %i",
+    {
+        S_Error(fmt::format("P_CrossSubsector: ss {} with numss = {}",
             num,
-            numsubsectors);
+            numsubsectors));
+    }
 #endif
 
     sub = &subsectors[num];
@@ -330,9 +332,8 @@ bool P_CrossBSPNode(int bspnum)
 //  if a straight line between t1 and t2 is unobstructed.
 // Uses REJECT.
 //
-bool
-    P_CheckSight(mobj_t *t1,
-        mobj_t *         t2)
+bool P_CheckSight(mobj_t *t1,
+    mobj_t *              t2)
 {
     int s1;
     int s2;

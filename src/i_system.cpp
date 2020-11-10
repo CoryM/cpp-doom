@@ -247,77 +247,9 @@ void I_Quit(void)
 
 
 //
-// I_Error
+// S_Error
 //
 static bool already_quitting = false;
-
-void I_Error(const char *error, ...)
-{
-    char                msgbuf[512];
-    va_list             argptr;
-    atexit_listentry_t *entry;
-    bool                exit_gui_popup;
-
-    if (already_quitting)
-    {
-        fmt::print(stderr, "Warning: recursive call to I_Error detected.\n");
-        throw std::logic_error(exceptionalExit);
-    }
-    else
-    {
-        already_quitting = true;
-    }
-
-    // Message first.
-    va_start(argptr, error);
-    //fprintf(stderr, "\nError: ");
-    vfprintf(stderr, error, argptr);
-    fprintf(stderr, "\n\n");
-    va_end(argptr);
-    fflush(stderr);
-
-    // Write a copy of the message into buffer.
-    va_start(argptr, error);
-    memset(msgbuf, 0, sizeof(msgbuf));
-    M_vsnprintf(msgbuf, sizeof(msgbuf), error, argptr);
-    va_end(argptr);
-
-    // Shutdown. Here might be other errors.
-
-    entry = exit_funcs;
-
-    while (entry != nullptr)
-    {
-        if (entry->run_on_error)
-        {
-            entry->func();
-        }
-
-        entry = entry->next;
-    }
-
-    //!
-    // @category obscure
-    //
-    // If specified, don't show a GUI window for error messages when the
-    // game exits with an error.
-    //
-    exit_gui_popup = !M_ParmExists("-nogui");
-
-    // Pop up a GUI dialog box to show the error message, if the
-    // game was not run from the console (and the user will
-    // therefore be unable to otherwise see the message).
-    if (exit_gui_popup && !I_ConsoleStdout())
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
-            PACKAGE_STRING, msgbuf, NULL);
-    }
-
-    // abort();
-
-    SDL_Quit();
-    throw std::logic_error(exceptionalExit);
-}
 
 void S_Error(const std::string_view error)
 {
@@ -327,7 +259,7 @@ void S_Error(const std::string_view error)
     }
     else
     {
-        std::cerr << "Warning: recursive call to I_Error detected.\n";
+        std::cerr << "Warning: recursive call to S_Error detected.\n";
         throw std::logic_error(exceptionalExit);
     }
 

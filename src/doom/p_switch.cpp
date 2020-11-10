@@ -241,7 +241,7 @@ void P_StartButton(line_s *line,
         return P_StartButton(line, w, texture, time);
     }
 
-    I_Error("P_StartButton: no button slots left!");
+    S_Error("P_StartButton: no button slots left!");
 }
 
 

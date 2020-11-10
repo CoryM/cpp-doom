@@ -261,7 +261,7 @@ static void CheckOpen(void)
 {
     if (ScriptOpen == false)
     {
-        I_Error("SC_ call before SC_Open().");
+        S_Error("SC_ call before SC_Open().");
     }
 }
 

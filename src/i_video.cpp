@@ -543,8 +543,8 @@ static void LimitTextureSize(int *w_upscale, int *h_upscale)
     // Query renderer and limit to maximum texture dimensions of hardware:
     if (SDL_GetRendererInfo(renderer, &rinfo) != 0)
     {
-        I_Error("CreateUpscaledTexture: SDL_GetRendererInfo() call failed: %s",
-            SDL_GetError());
+        S_Error(fmt::format("CreateUpscaledTexture: SDL_GetRendererInfo() call failed: {}",
+            SDL_GetError()));
     }
 
     while (*w_upscale * SCREENWIDTH > rinfo.max_texture_width)
@@ -558,9 +558,9 @@ static void LimitTextureSize(int *w_upscale, int *h_upscale)
 
     if ((*w_upscale < 1 && rinfo.max_texture_width > 0) || (*h_upscale < 1 && rinfo.max_texture_height > 0))
     {
-        I_Error("CreateUpscaledTexture: Can't create a texture big enough for "
-                "the whole screen! Maximum texture size %dx%d",
-            rinfo.max_texture_width, rinfo.max_texture_height);
+        S_Error(fmt::format("CreateUpscaledTexture: Can't create a texture big enough for "
+                            "the whole screen! Maximum texture size {}x{}",
+            rinfo.max_texture_width, rinfo.max_texture_height));
     }
 
     // We limit the amount of texture memory used for the intermediate buffer,
@@ -571,9 +571,9 @@ static void LimitTextureSize(int *w_upscale, int *h_upscale)
 
     if (max_scaling_buffer_pixels < SCREENWIDTH * SCREENHEIGHT)
     {
-        I_Error("CreateUpscaledTexture: max_scaling_buffer_pixels too small "
-                "to create a texture buffer: %d < %d",
-            max_scaling_buffer_pixels, SCREENWIDTH * SCREENHEIGHT);
+        S_Error(fmt::format("CreateUpscaledTexture: max_scaling_buffer_pixels too small "
+                            "to create a texture buffer: {} < {}",
+            max_scaling_buffer_pixels, SCREENWIDTH * SCREENHEIGHT));
     }
 
     while (*w_upscale * *h_upscale * SCREENWIDTH * SCREENHEIGHT
@@ -612,7 +612,7 @@ static void CreateUpscaledTexture(bool force)
     // window size (because of highdpi).
     if (SDL_GetRendererOutputSize(renderer, &w, &h) != 0)
     {
-        I_Error("Failed to get renderer output size: %s", SDL_GetError());
+        S_Error(fmt::format("Failed to get renderer output size: {}", SDL_GetError()));
     }
 
     // When the screen or window dimensions do not match the aspect ratio
@@ -895,7 +895,7 @@ void I_SetPalette(int palette)
         pane_alpha = 0xff * 125 / 1000;
         break;
     default:
-        I_Error("Unknown palette: %d!\n", palette);
+        S_Error(fmt::format("Unknown palette: {}!\n", palette));
         break;
     }
 }
@@ -1233,14 +1233,14 @@ static void SetVideoMode(void)
     // "window_flags" contains the fullscreen flag (see above), then
     // w and h are ignored.
 
-    if (screen == NULL)
+    if (screen == nullptr)
     {
         screen = SDL_CreateWindow(NULL, x, y, w, h, window_flags);
 
-        if (screen == NULL)
+        if (screen == nullptr)
         {
-            I_Error("Error creating window for video startup: %s",
-                SDL_GetError());
+            S_Error(fmt::format("Error creating window for video startup: {}",
+                SDL_GetError()));
         }
 
         pixel_format = SDL_GetWindowPixelFormat(screen);
@@ -1257,8 +1257,8 @@ static void SetVideoMode(void)
 
     if (SDL_GetCurrentDisplayMode(video_display, &mode) != 0)
     {
-        I_Error("Could not get display mode for video display #%d: %s",
-            video_display, SDL_GetError());
+        S_Error(fmt::format("Could not get display mode for video display #{}: {}",
+            video_display, SDL_GetError()));
     }
 
     // Turn on vsync if we aren't in a -timedemo
@@ -1298,16 +1298,16 @@ static void SetVideoMode(void)
         renderer = SDL_CreateRenderer(screen, -1, renderer_flags);
 
         // If this helped, save the setting for later.
-        if (renderer != NULL)
+        if (renderer != nullptr)
         {
             force_software_renderer = 1;
         }
     }
 
-    if (renderer == NULL)
+    if (renderer == nullptr)
     {
-        I_Error("Error creating renderer for screen window: %s",
-            SDL_GetError());
+        S_Error(fmt::format("Error creating renderer for screen window: {}",
+            SDL_GetError()));
     }
 
     // Important: Set the "logical size" of the rendering context. At the same
@@ -1452,7 +1452,7 @@ void I_InitGraphics(void)
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        I_Error("Failed to initialize video: %s", SDL_GetError());
+        S_Error(fmt::format("Failed to initialize video: {}", SDL_GetError()));
     }
 
     // When in screensaver mode, run full screen and auto detect

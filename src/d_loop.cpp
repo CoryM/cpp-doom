@@ -486,7 +486,6 @@ auto D_InitNetGame(net_connect_data_t *connect_data) -> bool
 
             if (addr == nullptr)
             {
-                //I_Error("Unable to resolve '%s'\n", myargv[i + 1]);
                 S_Error(fmt::format("Unable to resolve {}\n", M_GetArgument(i + 1)));
             }
         }

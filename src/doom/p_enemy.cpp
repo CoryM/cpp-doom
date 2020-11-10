@@ -274,7 +274,7 @@ bool P_Move(mobj_t *actor)
 
     if ((unsigned)actor->movedir >= 8)
     {
-        I_Error("Weird actor->movedir!");
+        S_Error("Weird actor->movedir!");
     }
 
     fixed_t try_x = actor->x + actor->info->speed * xspeed[actor->movedir];
@@ -359,7 +359,7 @@ void P_NewChaseDir(mobj_t *actor)
     dirtype_t turnaround;
 
     if (!actor->target)
-        I_Error("P_NewChaseDir: called with no target");
+        S_Error("P_NewChaseDir: called with no target");
 
     dirtype_t olddir = static_cast<dirtype_t>(actor->movedir);
     turnaround       = opposite[olddir];
@@ -1912,7 +1912,7 @@ void A_BrainSpit(mobj_t *mo)
     mobj_t *targ = braintargets[braintargeton];
     if (numbraintargets == 0)
     {
-        I_Error("A_BrainSpit: numbraintargets was 0 (vanilla crashes here)");
+        S_Error("A_BrainSpit: numbraintargets was 0 (vanilla crashes here)");
     }
     braintargeton = (braintargeton + 1) % numbraintargets;
 

@@ -35,14 +35,20 @@
 #include "../utils/memory.hpp"
 #include "w_wad.hpp"
 
-typedef PACKED_STRUCT(
-    {
-        // Should be "IWAD" or "PWAD".
-        char identification[4];
-        int  numlumps;
-        int  infotableofs;
-    }) wadinfo_t;
+//typedef PACKED_STRUCT(
+//    {
+//        // Should be "IWAD" or "PWAD".
+//        char identification[4];
+//        int  numlumps;
+//        int  infotableofs;
+//    }) wadinfo_t;
 
+struct wadinfo_t {
+    // Should be "IWAD" or "PWAD".
+    char identification[4];
+    int  numlumps;
+    int  infotableofs;
+};
 
 typedef PACKED_STRUCT(
     {
@@ -170,9 +176,8 @@ wad_file_t *W_AddFile(const char *filename)
             if (strncmp(header.identification, "PWAD", 4))
             {
                 W_CloseFile(wad_file);
-                I_Error("Wad file %s doesn't have IWAD "
-                        "or PWAD id\n",
-                    filename);
+                S_Error(fmt::format("Wad file {} doesn't have IWAD or PWAD id\n",
+                    filename));
             }
 
             // ???modifiedgame = true;
@@ -186,9 +191,9 @@ wad_file_t *W_AddFile(const char *filename)
         if (!strncmp(header.identification, "PWAD", 4) && header.numlumps > 4046 && false)
         {
             W_CloseFile(wad_file);
-            I_Error("Error: Vanilla limit for lumps in a WAD is 4046, "
-                    "PWAD %s has %d",
-                filename, header.numlumps);
+            S_Error(fmt::format("Error: Vanilla limit for lumps in a WAD is 4046, "
+                                "PWAD {} has {}",
+                filename, header.numlumps));
         }
 
         header.infotableofs = LONG(header.infotableofs);
@@ -204,7 +209,7 @@ wad_file_t *W_AddFile(const char *filename)
     if (filelumps == NULL)
     {
         W_CloseFile(wad_file);
-        I_Error("Failed to allocate array for lumps from new file.");
+        S_Error("Failed to allocate array for lumps from new file.");
     }
 
     startlump = numlumps;
@@ -314,7 +319,7 @@ lumpindex_t W_GetNumForName(const char *name)
 
     if (i < 0)
     {
-        I_Error("W_GetNumForName: %s not found!", name);
+        S_Error(fmt::format("W_GetNumForName: {} not found!", name));
     }
 
     return i;
@@ -343,7 +348,7 @@ int W_LumpLength(lumpindex_t lump)
 {
     if (lump >= numlumps)
     {
-        I_Error("W_LumpLength: %i >= numlumps", lump);
+        S_Error(fmt::format("W_LumpLength: {} >= numlumps", lump));
     }
 
     return lumpinfo[lump]->size;
@@ -362,7 +367,7 @@ void W_ReadLump(lumpindex_t lump, void *dest)
 
     if (lump >= numlumps)
     {
-        I_Error("W_ReadLump: %i >= numlumps", lump);
+        S_Error(fmt::format("W_ReadLump: {} >= numlumps", lump));
     }
 
     l = lumpinfo[lump];
@@ -373,8 +378,8 @@ void W_ReadLump(lumpindex_t lump, void *dest)
 
     if (c < l->size)
     {
-        I_Error("W_ReadLump: only read %i of %i on lump %i",
-            c, l->size, lump);
+        S_Error(fmt::format("W_ReadLump: only read {} of {} on lump {}",
+            c, l->size, lump));
     }
 }
 
@@ -398,7 +403,7 @@ void *W_CacheLumpNum(lumpindex_t lumpnum, PU tag)
 
     if ((unsigned)lumpnum >= numlumps)
     {
-        I_Error("W_CacheLumpNum: %i >= numlumps", lumpnum);
+        S_Error(fmt::format("W_CacheLumpNum: {} >= numlumps", lumpnum));
     }
 
     lump = lumpinfo[lumpnum];
@@ -458,7 +463,7 @@ void W_ReleaseLumpNum(lumpindex_t lumpnum)
 
     if ((unsigned)lumpnum >= numlumps)
     {
-        I_Error("W_ReleaseLumpNum: %i >= numlumps", lumpnum);
+        S_Error(fmt::format("W_ReleaseLumpNum: {} >= numlumps", lumpnum));
     }
 
     lump = lumpinfo[lumpnum];
@@ -653,7 +658,7 @@ int W_LumpDump(const char *lumpname)
     FILE *fp = fopen(filename.c_str(), "wb");
     if (!fp)
     {
-        I_Error("W_LumpDump: Failed writing to file '%s'!", filename.c_str());
+        S_Error(fmt::format("W_LumpDump: Failed writing to file '{}'!", filename));
     }
 
     std::string lump_p(lumpinfo[i]->size, 0);

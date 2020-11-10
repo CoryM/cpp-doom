@@ -718,7 +718,7 @@ void P_HitSlideLine(line_s *ld)
 
     if (deltaangle > ANG180)
         deltaangle += ANG180;
-    //	I_Error ("SlideLine: ang>ANG180");
+    //	S_Error ("SlideLine: ang>ANG180");
 
     lineangle >>= ANGLETOFINESHIFT;
     deltaangle >>= ANGLETOFINESHIFT;
@@ -739,7 +739,9 @@ bool PTR_SlideTraverse(intercept_t *in)
     line_s *li;
 
     if (!in->isaline)
-        I_Error("PTR_SlideTraverse: not a line?");
+    {
+        S_Error("PTR_SlideTraverse: not a line?");
+    }
 
     li = in->d.line;
 

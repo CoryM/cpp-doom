@@ -82,7 +82,7 @@ bool P_SetMobjState(mobj_t *mobj,
 
         if (cycle_counter++ > MOBJ_CYCLE_LIMIT)
         {
-            I_Error("P_SetMobjState: Infinite state cycle detected!");
+            S_Error("P_SetMobjState: Infinite state cycle detected!");
         }
     } while (!mobj->tics);
 
