@@ -15,38 +15,32 @@
 // DESCRIPTION:  Heads-up displays
 //
 
-
-#include <cctype>
-
-#include "doomdef.hpp"
+#include "../../utils/lump.hpp"
 #include "../deh_main.hpp"
 #include "../doomkeys.hpp"
 #include "../i_input.hpp"
 #include "../i_swap.hpp"
-#include "../z_zone.hpp"
 #include "../i_video.hpp"
-
-#include "hu_stuff.hpp"
+#include "doomdef.hpp"
+#include "doomstat.hpp"
+#include "dstrings.hpp"
 #include "hu_lib.hpp"
+#include "hu_stuff.hpp"
+#include "m_argv.hpp" // [crispy] M_ParmExists()
 #include "m_controls.hpp"
 #include "m_misc.hpp"
-#include "w_wad.hpp"
-#include "m_argv.hpp"   // [crispy] M_ParmExists()
-#include "st_stuff.hpp" // [crispy] ST_HEIGHT
-#include "p_setup.hpp"  // maplumpinfo
-
+#include "p_setup.hpp" // maplumpinfo
+#include "r_state.hpp" // [crispy] colormaps
 #include "s_sound.hpp"
-
-#include "doomstat.hpp"
+#include "sounds.hpp"
+#include "st_stuff.hpp" // [crispy] ST_HEIGHT
+#include "v_trans.hpp"  // [crispy] colored kills/items/secret/etc. messages
+#include "v_video.hpp"  // [crispy] V_DrawPatch() et al.
+#include "w_wad.hpp"
+#include "z_zone.hpp"
 
 // Data.
-#include "dstrings.hpp"
-#include "sounds.hpp"
-
-#include "../../utils/lump.hpp"
-#include "r_state.hpp" // [crispy] colormaps
-#include "v_trans.hpp" // [crispy] colored kills/items/secret/etc. messages
-#include "v_video.hpp" // [crispy] V_DrawPatch() et al.
+#include <cctype>
 
 //
 // Locally used constants, shortcuts.
@@ -424,16 +418,13 @@ static void CrispyReplaceColor(const char *str, const int cr, const char *col)
 
 static const char *cr_stat, *cr_stat2, *kills;
 
-void HU_Init(void)
+auto HU_Init() -> void
 {
-
-    int  i;
-    int  j;
     char buffer[9];
 
     // load the heads-up font
-    j = HU_FONTSTART;
-    for (i = 0; i < HU_FONTSIZE; i++)
+    int j = HU_FONTSTART;
+    for (int i = 0; i < HU_FONTSIZE; i++)
     {
         DEH_snprintf(buffer, 9, "STCFN%.3d", j++);
         hu_font[i] = (patch_t *)W_CacheLumpName(buffer, PU::STATIC);
@@ -460,9 +451,9 @@ void HU_Init(void)
     }
 
     // [crispy] initialize the crosshair types
-    for (i = 0; laserpatch[i].c; i++)
+    for (int i = 0; laserpatch[i].c; i++)
     {
-        patch_t *patch = NULL;
+        patch_t *patch = nullptr;
 
         // [crispy] check for alternative crosshair patches from e.g. prboom-plus.wad first
         //	if ((laserpatch[i].l = W_CheckNumForName(laserpatch[i].a)) == -1)
@@ -582,16 +573,18 @@ static void HU_SetSpecialLevelName(const char *wad, const char **name)
     }
 }
 
-void HU_Start(void)
+auto HU_Start() -> void
 {
 
     int         i;
     const char *s;
     // [crispy] string buffers for map title and WAD file name
-    char buf[8], *ptr;
+    char buf[8];
 
     if (headsupactive)
+    {
         HU_Stop();
+    }
 
     plr                       = &players[consoleplayer];
     message_on                = false;
@@ -716,13 +709,13 @@ void HU_Start(void)
     // map is from a PWAD or if the map title string has been dehacked
     if (DEH_HasStringReplacement(s) || (!W_IsIWADLump(maplumpinfo) && (!nervewadfile || gamemission != pack_nerve)))
     {
-        char *m;
-
-        ptr = M_StringJoin({ crstr[CR_GOLD], W_WadNameForLump(maplumpinfo), ": ", crstr[CR_GRAY], maplumpinfo->name });
-        m   = ptr;
+        auto *ptr = M_StringJoin({ crstr[CR_GOLD], W_WadNameForLump(maplumpinfo), ": ", crstr[CR_GRAY], maplumpinfo->name });
+        char *m   = ptr;
 
         while (*m)
+        {
             HUlib_addCharToTextLine(&w_map, *(m++));
+        }
 
         free(ptr);
     }
@@ -733,8 +726,8 @@ void HU_Start(void)
 
     // [crispy] print the map title in white from the first colon onward
     M_snprintf(buf, sizeof(buf), "%s%s", ":", crstr[CR_GRAY]);
-    ptr = M_StringReplace(s, ":", buf);
-    s   = ptr;
+    auto *ptr = M_StringReplace(s, ":", buf);
+    s         = ptr;
 
     while (*s)
         HUlib_addCharToTextLine(&w_title, *(s++));
@@ -755,7 +748,7 @@ void HU_Start(void)
 }
 
 // [crispy] print a bar indicating demo progress at the bottom of the screen
-void HU_DemoProgressBar(void)
+auto HU_DemoProgressBar() -> void
 {
     const int i = SCREENWIDTH * defdemotics / deftotaldemotics;
 
@@ -768,14 +761,16 @@ void HU_DemoProgressBar(void)
 }
 
 // [crispy] static, non-projected crosshair
-static void HU_DrawCrosshair(void)
+static auto HU_DrawCrosshair() -> void
 {
     static int      lump;
     static patch_t *patch;
     extern byte *   R_LaserspotColor(void);
 
     if (weaponinfo[plr->readyweapon].ammo == am_noammo || plr->playerstate != PST_LIVE || automapactive || menuactive || paused || secret_on)
+    {
         return;
+    }
 
     if (lump != laserpatch[crispy->crosshairtype].l)
     {
@@ -793,7 +788,7 @@ static void HU_DrawCrosshair(void)
     //  V_DrawHorizLine(0, (screenblocks <= 10) ? (SCREENHEIGHT/2-ST_HEIGHT) : (SCREENHEIGHT/2), SCREENWIDTH, 128);
 }
 
-void HU_Drawer(void)
+auto HU_Drawer() -> void
 {
 
     if (crispy->cleanscreenshot)
@@ -804,7 +799,9 @@ void HU_Drawer(void)
 
     // [crispy] translucent messages for translucent HUD
     if (screenblocks > CRISPY_HUD + 1 && (!automapactive || crispy->automapoverlay))
+    {
         dp_translucent = true;
+    }
 
     if (secret_on && !menuactive)
     {
@@ -812,15 +809,21 @@ void HU_Drawer(void)
         HUlib_drawSText(&w_secret);
     }
 
-    dp_translation = NULL;
+    dp_translation = nullptr;
     if (crispy->screenshotmsg == 4)
+    {
         HUlib_eraseSText(&w_message);
+    }
     else
+    {
         HUlib_drawSText(&w_message);
+    }
     HUlib_drawIText(&w_chat);
 
     if (crispy->coloredhud & COLOREDHUD_TEXT)
+    {
         dp_translation = cr[CR_GOLD];
+    }
 
     if (automapactive)
     {
@@ -831,7 +834,9 @@ void HU_Drawer(void)
     {
         // [crispy] move obtrusive line out of player view
         if (automapactive && (!crispy->automapoverlay || screenblocks < CRISPY_HUD - 1) && !crispy->widescreen)
+        {
             HUlib_drawTextLine(&w_map, false);
+        }
 
         HUlib_drawTextLine(&w_kills, false);
         HUlib_drawTextLine(&w_items, false);
@@ -856,9 +861,11 @@ void HU_Drawer(void)
     }
 
     if (crispy->crosshair == CROSSHAIR_STATIC)
+    {
         HU_DrawCrosshair();
+    }
 
-    dp_translation = NULL;
+    dp_translation = nullptr;
 
     if (dp_translucent)
         dp_translucent = false;
@@ -880,7 +887,7 @@ void HU_Drawer(void)
     }
 }
 
-void HU_Erase(void)
+auto HU_Erase() -> void
 {
 
     HUlib_eraseSText(&w_message);
@@ -897,7 +904,7 @@ void HU_Erase(void)
     HUlib_eraseTextLine(&w_fps);
 }
 
-void HU_Ticker(void)
+auto HU_Ticker() -> void
 {
 
     int  i, rc;
@@ -1083,7 +1090,7 @@ static int  head = 0;
 static int  tail = 0;
 
 
-void HU_queueChatChar(char c)
+auto HU_queueChatChar(char c) -> void
 {
     if (((head + 1) & (QUEUESIZE - 1)) == tail)
     {
@@ -1096,7 +1103,7 @@ void HU_queueChatChar(char c)
     }
 }
 
-char HU_dequeueChatChar(void)
+auto HU_dequeueChatChar() -> char
 {
     char c;
 
@@ -1113,7 +1120,7 @@ char HU_dequeueChatChar(void)
     return c;
 }
 
-static void StartChatInput(int dest [[maybe_unused]])
+static auto StartChatInput(int dest [[maybe_unused]]) -> void
 {
     chat_on = true;
     HUlib_resetIText(&w_chat);

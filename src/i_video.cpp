@@ -180,7 +180,7 @@ static bool noblit;
 // Callback function to invoke to determine whether to grab the
 // mouse pointer.
 
-static grabmouse_callback_t grabmouse_callback = NULL;
+static grabmouse_callback_t grabmouse_callback = nullptr;
 
 // Does the window currently have focus?
 
@@ -190,7 +190,7 @@ static bool window_focused = true;
 
 static bool         need_resize = false;
 static unsigned int last_resize_time;
-#define RESIZE_DELAY 500
+constexpr int       RESIZE_DELAY = 500;
 
 // Gamma correction level to use
 
@@ -199,33 +199,43 @@ int usegamma = 0;
 // Joystick/gamepad hysteresis
 unsigned int joywait = 0;
 
-static bool MouseShouldBeGrabbed()
+static auto MouseShouldBeGrabbed() -> bool
 {
     // never grab the mouse when in screensaver mode
 
     if (screensaver_mode)
+    {
         return false;
+    }
 
     // if the window doesn't have focus, never grab it
 
     if (!window_focused)
+    {
         return false;
+    }
 
     // always grab the mouse when full screen (dont want to
     // see the mouse pointer)
 
     if (fullscreen)
+    {
         return true;
+    }
 
     // Don't grab the mouse if mouse input is disabled
 
     if (!usemouse || nomouse)
+    {
         return false;
+    }
 
     // if we specify not to grab the mouse, never grab
 
     if (nograbmouse_override || !grabmouse)
+    {
         return false;
+    }
 
     // Invoke the grabmouse callback function to determine whether
     // the mouse should be grabbed
@@ -263,7 +273,7 @@ static void SetShowCursor(bool show)
     }
 }
 
-void I_ShutdownGraphics(void)
+auto I_ShutdownGraphics() -> void
 {
     if (initialized)
     {
@@ -279,14 +289,14 @@ void I_ShutdownGraphics(void)
 //
 // I_StartFrame
 //
-void I_StartFrame(void)
+auto I_StartFrame() -> void
 {
     // er?
 }
 
 // Adjust window_width / window_height variables to be an an aspect
 // ratio consistent with the aspect_ratio_correct variable.
-static void AdjustWindowSize(void)
+static auto AdjustWindowSize() -> void
 {
     if (aspect_ratio_correct || integer_scaling)
     {
@@ -303,7 +313,7 @@ static void AdjustWindowSize(void)
     }
 }
 
-static void HandleWindowEvent(SDL_WindowEvent *event)
+static auto HandleWindowEvent(SDL_WindowEvent *event) -> void
 {
     int i;
 
@@ -367,7 +377,7 @@ static void HandleWindowEvent(SDL_WindowEvent *event)
     }
 }
 
-static bool ToggleFullScreenKeyShortcut(SDL_Keysym *sym)
+static auto ToggleFullScreenKeyShortcut(SDL_Keysym *sym) -> bool
 {
     Uint16 flags = (KMOD_LALT | KMOD_RALT);
 #if defined(__MACOSX__)
@@ -376,7 +386,7 @@ static bool ToggleFullScreenKeyShortcut(SDL_Keysym *sym)
     return (sym->scancode == SDL_SCANCODE_RETURN || sym->scancode == SDL_SCANCODE_KP_ENTER) && (sym->mod & flags) != 0;
 }
 
-static void I_ToggleFullScreen(void)
+static auto I_ToggleFullScreen() -> void
 {
     unsigned int flags = 0;
 
@@ -404,7 +414,7 @@ static void I_ToggleFullScreen(void)
     }
 }
 
-void I_GetEvent(void)
+auto I_GetEvent() -> void
 {
     extern void I_HandleKeyboardEvent(SDL_Event * sdlevent);
     extern void I_HandleMouseEvent(SDL_Event * sdlevent);
@@ -466,7 +476,7 @@ void I_GetEvent(void)
 //
 // I_StartTic
 //
-void I_StartTic(void)
+auto I_StartTic() -> void
 {
     if (!initialized)
     {
@@ -490,12 +500,12 @@ void I_StartTic(void)
 //
 // I_UpdateNoBlit
 //
-void I_UpdateNoBlit(void)
+auto I_UpdateNoBlit() -> void
 {
     // what is this?
 }
 
-static void UpdateGrab(void)
+static auto UpdateGrab() -> void
 {
     static bool currently_grabbed = false;
     bool        grab;
@@ -532,13 +542,12 @@ static void UpdateGrab(void)
     currently_grabbed = grab;
 }
 
-static void LimitTextureSize(int *w_upscale, int *h_upscale)
+static auto LimitTextureSize(int *w_upscale, int *h_upscale) -> void
 {
     SDL_RendererInfo rinfo;
-    int              orig_w, orig_h;
 
-    orig_w = *w_upscale;
-    orig_h = *h_upscale;
+    int orig_w = *w_upscale;
+    int orig_h = *h_upscale;
 
     // Query renderer and limit to maximum texture dimensions of hardware:
     if (SDL_GetRendererInfo(renderer, &rinfo) != 0)
@@ -599,17 +608,12 @@ static void LimitTextureSize(int *w_upscale, int *h_upscale)
     }
 }
 
-static void CreateUpscaledTexture(bool force)
+static auto CreateUpscaledTexture(bool force) -> void
 {
-    int        w, h;
-    int        h_upscale, w_upscale;
-    static int h_upscale_old, w_upscale_old;
-
-    SDL_Texture *new_texture, *old_texture;
-
     // Get the size of the renderer output. The units this gives us will be
     // real world pixels, which are not necessarily equivalent to the screen's
     // window size (because of highdpi).
+    int w, h;
     if (SDL_GetRendererOutputSize(renderer, &w, &h) != 0)
     {
         S_Error(fmt::format("Failed to get renderer output size: {}", SDL_GetError()));
@@ -636,8 +640,8 @@ static void CreateUpscaledTexture(bool force)
     // If one screen dimension matches an integer multiple of the original
     // resolution, there is no need to overscale in this direction.
 
-    w_upscale = (w + SCREENWIDTH - 1) / SCREENWIDTH;
-    h_upscale = (h + SCREENHEIGHT - 1) / SCREENHEIGHT;
+    int w_upscale = (w + SCREENWIDTH - 1) / SCREENWIDTH;
+    int h_upscale = (h + SCREENHEIGHT - 1) / SCREENHEIGHT;
 
     // Minimum texture dimensions of 320x200.
 
@@ -653,7 +657,7 @@ static void CreateUpscaledTexture(bool force)
     LimitTextureSize(&w_upscale, &h_upscale);
 
     // Create a new texture only if the upscale factors have actually changed.
-
+    static int h_upscale_old, w_upscale_old;
     if (h_upscale == h_upscale_old && w_upscale == w_upscale_old && !force)
     {
         return;
@@ -668,16 +672,17 @@ static void CreateUpscaledTexture(bool force)
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
-    new_texture = SDL_CreateTexture(renderer,
+    auto *new_texture = SDL_CreateTexture(renderer,
         pixel_format,
         SDL_TEXTUREACCESS_TARGET,
         w_upscale * SCREENWIDTH,
         h_upscale * SCREENHEIGHT);
 
-    old_texture      = texture_upscaled;
-    texture_upscaled = new_texture;
+    SDL_Texture *texture_upscaled;
+    SDL_Texture *old_texture      = texture_upscaled;
+    SDL_Texture *texture_upscaled = new_texture;
 
-    if (old_texture != NULL)
+    if (old_texture != nullptr)
     {
         SDL_DestroyTexture(old_texture);
     }
@@ -690,26 +695,27 @@ fixed_t fractionaltic;
 //
 // I_FinishUpdate
 //
-void I_FinishUpdate(void)
+auto I_FinishUpdate() -> void
 {
-    static int lasttic;
-    int        tics;
-    int        i;
+    int i;
 
     if (!initialized)
+    {
         return;
+    }
 
     if (noblit)
+    {
         return;
+    }
 
     if (need_resize)
     {
         if (SDL_GetTicks() > last_resize_time + RESIZE_DELAY)
         {
-            int flags;
             // When the window is resized (we're not in fullscreen mode),
             // save the new window size.
-            flags = SDL_GetWindowFlags(screen);
+            int flags = SDL_GetWindowFlags(screen);
             if ((flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == 0)
             {
                 SDL_GetWindowSize(screen, &window_width, &window_height);
@@ -731,40 +737,36 @@ void I_FinishUpdate(void)
 
     UpdateGrab();
 
-#if 0 // SDL2-TODO
-    // Don't update the screen if the window isn't visible.
-    // Not doing this breaks under Windows when we alt-tab away
-    // while fullscreen.
-
-    if (!(SDL_GetAppState() & SDL_APPACTIVE))
-        return;
-#endif
-
     // draws little dots on the bottom of the screen
 
     if (display_fps_dots)
     {
-        i       = I_GetTime();
-        tics    = i - lasttic;
-        lasttic = i;
-        if (tics > 20) tics = 20;
+        static int lasttic;
+        auto       i       = I_GetTime();
+        int        tics    = i - lasttic;
+        int        lasttic = i;
+
+        if (tics > 20) { tics = 20 };
 
         for (i = 0; i < tics * 4; i += 4)
+        {
             I_VideoBuffer[(SCREENHEIGHT - 1) * SCREENWIDTH + i] = colormaps[0xff];
+        }
         for (; i < 20 * 4; i += 4)
+        {
             I_VideoBuffer[(SCREENHEIGHT - 1) * SCREENWIDTH + i] = colormaps[0x0];
+        }
     }
 
     // [crispy] [AM] Real FPS counter
     {
-        static int lastmili;
-        static int fpscount;
-        int        mili;
+        static int lastmili = 0;
+        static int fpscount = 0;
 
         fpscount++;
 
-        i    = SDL_GetTicks();
-        mili = i - lastmili;
+        i        = SDL_GetTicks();
+        int mili = i - lastmili;
 
         // Update FPS counter every second
         if (mili >= 1000)
@@ -837,27 +839,23 @@ void I_ReadScreen(pixel_t *scr)
 // I_SetPalette
 //
 // [crispy] intermediate gamma levels
-byte **gamma2table = NULL;
-void   I_SetGammaTable(void)
+byte **gamma2table = nullptr;
+auto   I_SetGammaTable() -> void
 {
-    int i;
-
     gamma2table = static_cast<byte **>(malloc(9 * sizeof(*gamma2table)));
 
     // [crispy] 5 original gamma levels
-    for (i = 0; i < 5; i++)
+    for (int i = 0; i < 5; i++)
     {
         gamma2table[2 * i] = (byte *)gammatable[i];
     }
 
     // [crispy] 4 intermediate gamma levels
-    for (i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
-        int j;
-
         gamma2table[2 * i + 1] = static_cast<byte *>(malloc(256 * sizeof(**gamma2table)));
 
-        for (j = 0; j < 256; j++)
+        for (int j = 0; j < 256; j++)
         {
             gamma2table[2 * i + 1][j] = (gamma2table[2 * i][j] + gamma2table[2 * i + 2][j]) / 2;
         }
@@ -914,18 +912,16 @@ void I_SetWindowTitle(const char *title)
 // the title set with I_SetWindowTitle.
 //
 
-void I_InitWindowTitle(void)
+auto I_InitWindowTitle() -> void
 {
-    char *buf;
-
-    buf = M_StringJoin({ window_title, " - ", PACKAGE_STRING });
+    char *buf = M_StringJoin({ window_title, " - ", PACKAGE_STRING });
     SDL_SetWindowTitle(screen, buf);
     free(buf);
 }
 
 // Set the application icon
 
-void I_InitWindowIcon(void)
+auto I_InitWindowIcon() -> void
 {
     SDL_Surface *surface;
 
@@ -940,7 +936,7 @@ void I_InitWindowIcon(void)
 
 // Set video size to a particular scale factor (1x, 2x, 3x, etc.)
 
-static void SetScaleFactor(int factor)
+static auto SetScaleFactor(int factor) -> void
 {
     // Pick 320x200 or 320x240, depending on aspect ratio correct
 
@@ -949,10 +945,8 @@ static void SetScaleFactor(int factor)
     fullscreen    = false;
 }
 
-void I_GraphicsCheckCommandLine(void)
+auto I_GraphicsCheckCommandLine() -> void
 {
-    int i;
-
     //!
     // @category video
     // @vanilla
@@ -1010,7 +1004,7 @@ void I_GraphicsCheckCommandLine(void)
     // Specify the screen width, in pixels. Implies -window.
     //
 
-    i = M_CheckParm("-width", 1);
+    int i = M_CheckParm("-width", 1);
 
     if (i > 0)
     {
@@ -1044,9 +1038,9 @@ void I_GraphicsCheckCommandLine(void)
 
     if (i > 0)
     {
-        int w, h, s;
+        int w, h;
 
-        s = sscanf(M_GetArgument(i + 1).data(), "%ix%i", &w, &h);
+        int s = sscanf(M_GetArgument(i + 1).data(), "%ix%i", &w, &h);
         if (s == 2)
         {
             window_width  = w;
@@ -1091,11 +1085,9 @@ void I_GraphicsCheckCommandLine(void)
 
 // Check if we have been invoked as a screensaver by xscreensaver.
 
-void I_CheckIsScreensaver(void)
+auto I_CheckIsScreensaver() -> void
 {
-    char *env;
-
-    env = getenv("XSCREENSAVER_WINDOW");
+    char *env = getenv("XSCREENSAVER_WINDOW");
 
     if (env != NULL)
     {
@@ -1103,16 +1095,14 @@ void I_CheckIsScreensaver(void)
     }
 }
 
-static void SetSDLVideoDriver(void)
+static auto SetSDLVideoDriver() -> void
 {
     // Allow a default value for the SDL video driver to be specified
     // in the configuration file.
 
     if (strcmp(video_driver, "") != 0)
     {
-        char *env_string;
-
-        env_string = M_StringJoin({ "SDL_VIDEODRIVER=", video_driver });
+        char *env_string = M_StringJoin({ "SDL_VIDEODRIVER=", video_driver });
         putenv(env_string);
         free(env_string);
     }
@@ -1121,7 +1111,7 @@ static void SetSDLVideoDriver(void)
 // Check the display bounds of the display referred to by 'video_display' and
 // set x and y to a location that places the window in the center of that
 // display.
-static void CenterWindow(int *x, int *y, int w, int h)
+static auto CenterWindow(int *x, int *y, int w, int h) -> void
 {
     SDL_Rect bounds;
 
@@ -1137,7 +1127,7 @@ static void CenterWindow(int *x, int *y, int w, int h)
     *y = bounds.y + SDL_max((bounds.h - h) / 2, 0);
 }
 
-void I_GetWindowPosition(int *x, int *y, int w, int h)
+auto I_GetWindowPosition(int *x, int *y, int w, int h) -> void
 {
     // Check that video_display corresponds to a display that really exists,
     // and if it doesn't, reset it.
@@ -1181,20 +1171,19 @@ void I_GetWindowPosition(int *x, int *y, int w, int h)
     }
 }
 
-static void SetVideoMode(void)
+static auto SetVideoMode() -> void
 {
-    int             w, h;
     int             x, y;
     int             unused_bpp;
-    int             window_flags = 0, renderer_flags = 0;
+    int             renderer_flags = 0;
     SDL_DisplayMode mode;
 
-    w = window_width;
-    h = window_height;
+    int w = window_width;
+    int h = window_height;
 
     // In windowed mode, the window can be resized while the game is
     // running.
-    window_flags = SDL_WINDOW_RESIZABLE;
+    int window_flags = SDL_WINDOW_RESIZABLE;
 
     // Set the highdpi flag - this makes a big difference on Macs with
     // retina displays, especially when using small window sizes.
@@ -1277,12 +1266,12 @@ static void SetVideoMode(void)
         crispy->vsync = false;
     }
 
-    if (renderer != NULL)
+    if (renderer != nullptr)
     {
         SDL_DestroyRenderer(renderer);
         // all associated textures get destroyed
-        texture          = NULL;
-        texture_upscaled = NULL;
+        texture          = nullptr;
+        texture_upscaled = nullptr;
     }
 
     renderer = SDL_CreateRenderer(screen, -1, renderer_flags);
@@ -1290,7 +1279,7 @@ static void SetVideoMode(void)
     // If we could not find a matching render driver,
     // try again without hardware acceleration.
 
-    if (renderer == NULL && !force_software_renderer)
+    if (renderer == nullptr && !force_software_renderer)
     {
         renderer_flags |= SDL_RENDERER_SOFTWARE;
         renderer_flags &= ~SDL_RENDERER_PRESENTVSYNC;

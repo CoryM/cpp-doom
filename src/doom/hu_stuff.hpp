@@ -20,22 +20,21 @@
 
 #include "../d_event.hpp"
 
-
 //
 // Globally visible constants.
 //
-#define HU_FONTSTART '!' // the first font characters
-#define HU_FONTEND   '_' // the last font characters
+constexpr int HU_FONTSTART = '!'; // the first font characters
+constexpr int HU_FONTEND   = '_'; // the last font characters
 
 // Calculate # of glyphs in font.
-#define HU_FONTSIZE (HU_FONTEND - HU_FONTSTART + 1)
+constexpr int HU_FONTSIZE = (HU_FONTEND - HU_FONTSTART + 1);
 
-#define HU_BROADCAST 5
+constexpr int HU_BROADCAST = 5;
 
-#define HU_MSGX      (0 - DELTAWIDTH)
-#define HU_MSGY      0
-#define HU_MSGWIDTH  64 // in characters
-#define HU_MSGHEIGHT 1  // in lines
+#define HU_MSGX (0 - DELTAWIDTH)
+constexpr int HU_MSGY      = 0;
+constexpr int HU_MSGWIDTH  = 64; // in characters
+constexpr int HU_MSGHEIGHT = 1;  // in lines
 
 #define HU_MSGTIMEOUT (4 * TICRATE)
 
@@ -43,15 +42,15 @@
 // HEADS UP TEXT
 //
 
-void HU_Init(void);
-void HU_Start(void);
+auto HU_Init() -> void;
+auto HU_Start() -> void;
 
-bool HU_Responder(event_t *ev);
+auto HU_Responder(event_t *ev) -> bool;
 
-void HU_Ticker(void);
-void HU_Drawer(void);
-char HU_dequeueChatChar(void);
-void HU_Erase(void);
+auto HU_Ticker() -> void;
+auto HU_Drawer() -> void;
+auto HU_dequeueChatChar() -> char;
+auto HU_Erase() -> void;
 
 extern char *chat_macros[10];
 
