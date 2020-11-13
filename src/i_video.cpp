@@ -43,6 +43,7 @@
 #include "z_zone.hpp"
 
 #include <algorithm>
+#include <utility>
 
 int SCREENWIDTH, SCREENHEIGHT, SCREENHEIGHT_4_3;
 int HIRESWIDTH; // [crispy] non-widescreen SCREENWIDTH
@@ -679,8 +680,8 @@ static auto CreateUpscaledTexture(bool force) -> void
         h_upscale * SCREENHEIGHT);
 
     SDL_Texture *texture_upscaled;
-    SDL_Texture *old_texture      = texture_upscaled;
-    SDL_Texture *texture_upscaled = new_texture;
+    SDL_Texture *old_texture = texture_upscaled;
+    texture_upscaled         = new_texture;
 
     if (old_texture != nullptr)
     {
@@ -697,8 +698,6 @@ fixed_t fractionaltic;
 //
 auto I_FinishUpdate() -> void
 {
-    int i;
-
     if (!initialized)
     {
         return;
@@ -741,18 +740,17 @@ auto I_FinishUpdate() -> void
 
     if (display_fps_dots)
     {
-        static int lasttic;
-        auto       i       = I_GetTime();
-        int        tics    = i - lasttic;
-        int        lasttic = i;
-
-        if (tics > 20) { tics = 20 };
+        auto                           currentTic = I_GetTime();
+        static decltype(currentTic)    lastTic    = 0;
+        constexpr decltype(currentTic) maxTics    = 20;
+        auto                           tics       = std::max(maxTics, currentTic - std::exchange(lastTic, currentTic));
+        decltype(currentTic)           i          = 0;
 
         for (i = 0; i < tics * 4; i += 4)
         {
             I_VideoBuffer[(SCREENHEIGHT - 1) * SCREENWIDTH + i] = colormaps[0xff];
         }
-        for (; i < 20 * 4; i += 4)
+        for (; i < maxTics * 4; i += 4)
         {
             I_VideoBuffer[(SCREENHEIGHT - 1) * SCREENWIDTH + i] = colormaps[0x0];
         }
@@ -765,8 +763,8 @@ auto I_FinishUpdate() -> void
 
         fpscount++;
 
-        i        = SDL_GetTicks();
-        int mili = i - lastmili;
+        auto i    = SDL_GetTicks();
+        int  mili = i - lastmili;
 
         // Update FPS counter every second
         if (mili >= 1000)
@@ -781,7 +779,7 @@ auto I_FinishUpdate() -> void
     V_DrawDiskIcon();
 
     // Update the intermediate texture with the contents of the RGBA buffer.
-    SDL_UpdateTexture(texture, NULL, argbbuffer->pixels, argbbuffer->pitch);
+    SDL_UpdateTexture(texture, nullptr, argbbuffer->pixels, argbbuffer->pitch);
 
     // Make sure the pillarboxes are kept clear each frame.
     SDL_RenderClear(renderer);
@@ -792,23 +790,23 @@ auto I_FinishUpdate() -> void
         // using "nearest" integer scaling.
 
         SDL_SetRenderTarget(renderer, texture_upscaled);
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
 
         // Finally, render this upscaled texture to screen using linear scaling.
 
-        SDL_SetRenderTarget(renderer, NULL);
-        SDL_RenderCopy(renderer, texture_upscaled, NULL, NULL);
+        SDL_SetRenderTarget(renderer, nullptr);
+        SDL_RenderCopy(renderer, texture_upscaled, nullptr, nullptr);
     }
     else
     {
-        SDL_SetRenderTarget(renderer, NULL);
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        SDL_SetRenderTarget(renderer, nullptr);
+        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     }
 
     if (curpane)
     {
         SDL_SetTextureAlphaMod(curpane, pane_alpha);
-        SDL_RenderCopy(renderer, curpane, NULL, NULL);
+        SDL_RenderCopy(renderer, curpane, nullptr, nullptr);
     }
 
     // Draw!
