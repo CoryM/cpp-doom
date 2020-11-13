@@ -37,6 +37,8 @@
 #include "../../utils/memory.hpp"
 #include "doomstat.hpp"
 
+#include <array>
+
 // ?
 //#define MAXWIDTH			1120
 //#define MAXHEIGHT			832
@@ -54,14 +56,15 @@
 //
 
 
-byte *   viewimage;
-int      viewwidth;
-int      scaledviewwidth;
-int      viewheight;
-int      viewwindowx;
-int      viewwindowy;
-pixel_t *ylookup[MAXHEIGHT];
-int      columnofs[MAXWIDTH];
+byte *viewimage;
+int   viewwidth;
+int   scaledviewwidth;
+int   viewheight;
+int   viewwindowx;
+int   viewwindowy;
+//pixel_t *ylookup[MAXHEIGHT];
+std::array<pixel_t *, MAXHEIGHT> ylookup;
+int                              columnofs[MAXWIDTH];
 
 // Color tables for different players,
 //  translate a limited part to another
@@ -763,13 +766,8 @@ int dscount;
 
 //
 // Draws the actual span.
-void R_DrawSpan(void)
+auto R_DrawSpan() -> void
 {
-    //  unsigned int position, step;
-    pixel_t *    dest;
-    int          count;
-    int          spot;
-    unsigned int xtemp, ytemp;
 
 #ifdef RANGECHECK
     if (ds_x2 < ds_x1
@@ -798,102 +796,32 @@ void R_DrawSpan(void)
     //  dest = ylookup[ds_y] + columnofs[ds_x1];
 
     // We do not check for zero spans here?
-    count = ds_x2 - ds_x1;
-
+    int count = ds_x2 - ds_x1;
+    if (count == 0)
+    {
+        return;
+    }
+    auto *const ylookupValue = ylookup.at(ds_y); // only need to lookup once
     do
     {
-        byte source;
         // Calculate current texture index in u,v.
         // [crispy] fix flats getting more distorted the closer they are to the right
-        ytemp = (ds_yfrac >> 10) & 0x0fc0;
-        xtemp = (ds_xfrac >> 16) & 0x3f;
-        spot  = xtemp | ytemp;
+        const auto ytemp = (ds_yfrac >> 10) & 0b0000111111000000; //0x0fc0;
+        const auto xtemp = (ds_xfrac >> 16) & 0b0000000000111111; // 0x3f;
+        const auto spot  = xtemp | ytemp;
 
         // Lookup pixel from flat texture tile,
         //  re-index using light/colormap.
-        source = ds_source[spot];
-        dest   = ylookup[ds_y] + columnofs[flipviewwidth[ds_x1++]];
-        *dest  = ds_colormap[ds_brightmap[source]][source];
+        const auto source = ds_source[spot];
+        pixel_t *  dest   = ylookupValue + columnofs[flipviewwidth[ds_x1++]]; // Get pixel location
+        *dest             = ds_colormap[ds_brightmap[source]][source];        // Set color at pixel location
 
         //      position += step;
         ds_xfrac += ds_xstep;
         ds_yfrac += ds_ystep;
 
-    } while (count--);
+    } while ((count--) != 0);
 }
-
-
-// UNUSED.
-// Loop unrolled by 4.
-#if 0
-void R_DrawSpan (void)
-{
-    unsigned	position, step;
-
-    byte*	source;
-    byte*	colormap;
-    pixel_t*	dest;
-
-    unsigned	count;
-    usingned	spot;
-    unsigned	value;
-    unsigned	temp;
-    unsigned	xtemp;
-    unsigned	ytemp;
-
-    position = ((ds_xfrac<<10)&0xffff0000) | ((ds_yfrac>>6)&0xffff);
-    step = ((ds_xstep<<10)&0xffff0000) | ((ds_ystep>>6)&0xffff);
-
-    source = ds_source;
-    colormap = ds_colormap;
-    dest = ylookup[ds_y] + columnofs[ds_x1];
-    count = ds_x2 - ds_x1 + 1;
-
-    while (count >= 4)
-    {
-	ytemp = position>>4;
-	ytemp = ytemp & 4032;
-	xtemp = position>>26;
-	spot = xtemp | ytemp;
-	position += step;
-	dest[0] = colormap[source[spot]];
-
-	ytemp = position>>4;
-	ytemp = ytemp & 4032;
-	xtemp = position>>26;
-	spot = xtemp | ytemp;
-	position += step;
-	dest[1] = colormap[source[spot]];
-
-	ytemp = position>>4;
-	ytemp = ytemp & 4032;
-	xtemp = position>>26;
-	spot = xtemp | ytemp;
-	position += step;
-	dest[2] = colormap[source[spot]];
-
-	ytemp = position>>4;
-	ytemp = ytemp & 4032;
-	xtemp = position>>26;
-	spot = xtemp | ytemp;
-	position += step;
-	dest[3] = colormap[source[spot]];
-
-	count -= 4;
-	dest += 4;
-    }
-    while (count > 0)
-    {
-	ytemp = position>>4;
-	ytemp = ytemp & 4032;
-	xtemp = position>>26;
-	spot = xtemp | ytemp;
-	position += step;
-	*dest++ = colormap[source[spot]];
-	count--;
-    }
-}
-#endif
 
 
 //
@@ -988,7 +916,9 @@ void R_InitBuffer(int width,
 
     // Preclaculate all row offsets.
     for (i = 0; i < height; i++)
+    {
         ylookup[i] = I_VideoBuffer + (i + viewwindowy) * SCREENWIDTH;
+    }
 }
 
 
