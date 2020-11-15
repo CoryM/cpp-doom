@@ -40,6 +40,8 @@
 
 #include "crispy.hpp"
 
+#include <array>
+
 
 // ------------------------
 // Command line parameters.
@@ -151,7 +153,7 @@ extern bool nodrawers;
 
 
 extern bool testcontrols;
-extern int     testcontrols_mousespeed;
+extern int  testcontrols_mousespeed;
 
 
 // This one is related to the 3-screen display mode.
@@ -209,7 +211,7 @@ extern gamestate_t gamestate;
 
 
 // Bookkeeping on players - state.
-extern player_t players[MAXPLAYERS];
+extern std::array<player_t, MAXPLAYERS> players;
 
 // Alive? Disconnected?
 extern bool playeringame[MAXPLAYERS];
@@ -222,7 +224,7 @@ extern mapthing_t *deathmatch_p;
 
 // Player spawn spots.
 extern mapthing_t playerstarts[MAXPLAYERS];
-extern bool    playerstartsingame[MAXPLAYERS];
+extern bool       playerstartsingame[MAXPLAYERS];
 // Intermission stats.
 // Parameters for world map / intermission.
 extern wbstartstruct_t wminfo;

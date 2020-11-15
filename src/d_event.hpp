@@ -21,7 +21,6 @@
 #define __D_EVENT__
 
 
-
 #include "doomtype.hpp"
 
 
@@ -80,7 +79,7 @@ struct event_t {
     int data3 = 0;
     int data4 = 0;
     int data5 = 0;
-} ;
+};
 
 
 //
@@ -88,17 +87,17 @@ struct event_t {
 //
 enum buttoncode_t
 {
-    BT_ATTACK = 1,         // Press "Fire".
-    BT_USE = 2,            // Use button, to open doors, activate switches.
+    BT_ATTACK = 1, // Press "Fire".
+    BT_USE    = 2, // Use button, to open doors, activate switches.
 
-    BT_SPECIAL     = 128,  // Flag: game events, not really buttons.
+    BT_SPECIAL     = 128, // Flag: game events, not really buttons.
     BT_SPECIALMASK = 3,
 
-    BT_CHANGE = 4,         // Flag, weapon change pending.
-                           // If true, the next 3 bits hold weapon num.
+    BT_CHANGE = 4, // Flag, weapon change pending.
+                   // If true, the next 3 bits hold weapon num.
 
     BT_WEAPONMASK  = 0b00111000, //(8 + 16 + 32),
-    BT_WEAPONSHIFT = 3,    // The 3bit weapon mask and shift, convenience.
+    BT_WEAPONSHIFT = 3,          // The 3bit weapon mask and shift, convenience.
 
     // Pause the game.
     BTS_PAUSE = 1,
@@ -135,11 +134,11 @@ enum buttoncode2_t
 
 
 // Called by IO functions when input is detected.
-void D_PostEvent(event_t *ev);
+auto D_PostEvent(event_t *ev) -> void;
 
 // Read an event from the event queue
 
-event_t *D_PopEvent(void);
+auto D_PopEvent() -> event_t *;
 
 
 #endif

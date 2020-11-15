@@ -118,34 +118,35 @@ bool storedemo;
 // If true, the main game loop has started.
 bool main_loop_started = false;
 
-char wadfile[1024]; // primary wad file
-char mapdir[1024];  // directory of development maps
-
 int show_endoom   = 0; // [crispy] disable
 int show_diskicon = 1;
 
-char *nervewadfile = NULL;
+char *nervewadfile = nullptr;
 
-void D_ConnectNetGame(void);
-void D_CheckNetGame(void);
+auto D_ConnectNetGame() -> void;
+auto D_CheckNetGame() -> void;
 
 
 //
 // D_ProcessEvents
 // Send all the events of the given timestamp down the responder chain
 //
-void D_ProcessEvents(void)
+auto D_ProcessEvents() -> void
 {
-    event_t *ev;
-
     // IF STORE DEMO, DO NOT ACCEPT INPUT
     if (storedemo)
+    {
         return;
+    }
 
-    while ((ev = D_PopEvent()) != NULL)
+
+    event_t *ev = nullptr;
+    while ((ev = D_PopEvent()) != nullptr)
     {
         if (M_Responder(ev))
+        {
             continue; // menu ate the event
+        }
         G_Responder(ev);
     }
 }
@@ -160,9 +161,9 @@ void D_ProcessEvents(void)
 gamestate_t wipegamestate = GS_DEMOSCREEN;
 extern bool setsizeneeded;
 extern int  showMessages;
-void        R_ExecuteSetViewSize(void);
+auto        R_ExecuteSetViewSize() -> void;
 
-bool D_Display(void)
+auto D_Display() -> bool
 {
     static bool        viewactivestate    = false;
     static bool        menuactivestate    = false;
@@ -170,11 +171,8 @@ bool D_Display(void)
     static bool        fullscreen         = false;
     static gamestate_t oldgamestate { GS_FORCE_WIPE };
     static int         borderdrawcount;
-    int                y;
-    bool               wipe;
-    bool               redrawsbar;
 
-    redrawsbar = false;
+    bool redrawsbar = false;
 
     // change the view size if needed
     if (setsizeneeded)
@@ -185,24 +183,26 @@ bool D_Display(void)
     }
 
     // save the current screen if about to wipe
-    if (gamestate != wipegamestate)
+    const bool wipe = gamestate != wipegamestate;
+    if (wipe)
     {
-        wipe = true;
         wipe_StartScreen(0, 0, SCREENWIDTH, SCREENHEIGHT);
     }
-    else
-        wipe = false;
 
-    if (gamestate == GS_LEVEL && gametic)
+    if (gamestate == GS_LEVEL && (gametic != 0))
+    {
         HU_Erase();
+    }
 
     // do buffered drawing
     switch (gamestate)
     {
     case GS_LEVEL:
-        if (!gametic)
+        if (gametic == 0)
+        {
             break;
-        if (automapactive && !crispy->automapoverlay)
+        }
+        if (automapactive && (crispy->automapoverlay == 0))
         {
             // [crispy] update automap while playing
             R_RenderPlayerView(&players[displayplayer]);
@@ -309,10 +309,11 @@ bool D_Display(void)
     // draw pause pic
     if (paused)
     {
-        if (automapactive && !crispy->automapoverlay)
-            y = 4;
-        else
+        int y = 4;
+        if (!(automapactive && !crispy->automapoverlay))
+        {
             y = (viewwindowy >> crispy->hires) + 4;
+        }
         V_DrawPatchDirect((viewwindowx >> crispy->hires) + ((scaledviewwidth >> crispy->hires) - 68) / 2 - DELTAWIDTH, y,
             cache_lump_name<patch_t *>(DEH_String("M_PAUSE"), PU::CACHE));
     }

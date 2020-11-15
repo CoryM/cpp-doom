@@ -35,10 +35,11 @@ enum
     wipe_NUMWIPES
 };
 
-int wipe_StartScreen(int x,
-    int                  y,
-    int                  width,
-    int                  height);
+int wipe_StartScreen(
+    unsigned int x,
+    unsigned int y,
+    unsigned int width,
+    unsigned int height);
 
 
 int wipe_EndScreen(int x,

@@ -216,10 +216,11 @@ int wipe_exitMelt(int width [[maybe_unused]],
     return 0;
 }
 
-int wipe_StartScreen(int x [[maybe_unused]],
-    int                  y [[maybe_unused]],
-    int                  width [[maybe_unused]],
-    int                  height [[maybe_unused]])
+int wipe_StartScreen(
+    unsigned int x [[maybe_unused]],
+    unsigned int y [[maybe_unused]],
+    unsigned int width [[maybe_unused]],
+    unsigned int height [[maybe_unused]])
 {
     wipe_scr_start = zmalloc<decltype(wipe_scr_start)>(SCREENWIDTH * SCREENHEIGHT * sizeof(*wipe_scr_start), PU::STATIC, NULL);
     I_ReadScreen(wipe_scr_start);
