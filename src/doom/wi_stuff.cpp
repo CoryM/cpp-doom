@@ -16,38 +16,27 @@
 //	Intermission screens.
 //
 
-
-#include <cstdio>
-#include <string_view>
-
-#include "../z_zone.hpp"
-
+#include "../../utils/lump.hpp"
+#include "../deh_main.hpp"
 #include "../m_misc.hpp"
-#include "m_random.hpp"
-
-#include "deh_main.hpp"
+#include "../z_zone.hpp"
 #include "deh_bexpars.hpp" // [crispy] bex_pars[]
+#include "doomstat.hpp"
+#include "g_game.hpp"
 #include "i_swap.hpp"
 #include "i_system.hpp"
-
-#include "w_wad.hpp"
-
-#include "g_game.hpp"
-
+#include "m_random.hpp"
 #include "r_local.hpp"
 #include "s_sound.hpp"
-
-#include "doomstat.hpp"
-
-// Data.
 #include "sounds.hpp"
-
-// Needs access to LFB.
-#include "v_video.hpp"
-
-#include "../../utils/lump.hpp"
 #include "st_stuff.hpp" // [crispy] ST_DrawDemoTimer()
+#include "v_video.hpp"
+#include "w_wad.hpp"
 #include "wi_stuff.hpp"
+
+#include <array>
+#include <cstdio>
+#include <string_view>
 
 //
 // Data needed to add patches to full screen intermission pics.
@@ -57,7 +46,7 @@
 
 
 //
-// Different vetween registered DOOM (1994) and
+// Different between registered DOOM (1994) and
 //  Ultimate DOOM - Final edition (retail, 1995?).
 // This is supposedly ignored for commercial
 //  release (aka DOOM II), which had 34 maps
@@ -1600,7 +1589,7 @@ void WI_checkForAccelerate(void)
     player_t *player;
 
     // check for button presses to skip delays
-    for (i = 0, player = players; i < MAXPLAYERS; i++, player++)
+    for (i = 0, player = players.data(); i < MAXPLAYERS; i++, player++)
     {
         if (playeringame[i])
         {

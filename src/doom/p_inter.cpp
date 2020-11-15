@@ -16,30 +16,20 @@
 //	Handling interactions (i.e., collisions).
 //
 
-
-// Data.
+#include "../deh_main.hpp"
+#include "am_map.hpp"
+#include "deh_misc.hpp"
 #include "doomdef.hpp"
+#include "doomstat.hpp"
 #include "dstrings.hpp"
+#include "i_system.hpp"
+#include "m_random.hpp"
+#include "p_inter.hpp"
+#include "p_local.hpp"
+#include "s_sound.hpp"
 #include "sounds.hpp"
 
-#include "deh_main.hpp"
-#include "deh_misc.hpp"
-#include "doomstat.hpp"
-
-#include "m_random.hpp"
-#include "i_system.hpp"
-
-#include "am_map.hpp"
-
-#include "p_local.hpp"
-
-#include "s_sound.hpp"
-
-#include "p_inter.hpp"
-
-
-#define BONUSADD 6
-
+constexpr int BONUSADD = 6;
 
 // a weapon is found with two clip loads,
 // a big item has five clip loads
@@ -693,7 +683,7 @@ void P_KillMobj(mobj_t *source,
             source->player->killcount++;
 
         if (target->player)
-            source->player->frags[target->player - players]++;
+            source->player->frags[target->player - players.data()]++;
     }
     else if (!netgame && (target->flags & MF_COUNTKILL))
     {
@@ -706,7 +696,7 @@ void P_KillMobj(mobj_t *source,
     {
         // count environment kills against you
         if (!source)
-            target->player->frags[target->player - players]++;
+            target->player->frags[target->player - players.data()]++;
 
         target->flags &= ~MF_SOLID;
         target->player->playerstate = PST_DEAD;

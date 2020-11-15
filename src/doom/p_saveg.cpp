@@ -45,9 +45,9 @@ static int restoretargets_fail;
 
 char *P_TempSaveGameFile(void)
 {
-    static char *filename = NULL;
+    static char *filename = nullptr;
 
-    if (filename == NULL)
+    if (filename == nullptr)
     {
         filename = M_StringJoin({ savegamedir, "temp.dsg" });
     }
@@ -562,9 +562,9 @@ static void saveg_write_mobj_t(mobj_t *str)
     saveg_write32(str->threshold);
 
     // struct player_s* player;
-    if (str->player)
+    if (str->player != nullptr)
     {
-        saveg_write32(str->player - players + 1);
+        saveg_write32(str->player - players.data() + 1);
     }
     else
     {

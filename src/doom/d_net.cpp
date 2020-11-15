@@ -17,24 +17,23 @@
 //	all OS independend parts.
 //
 
-#include <cstdlib>
-
-#include "d_main.hpp"
+#include "../d_loop.hpp"
+#include "../deh_main.hpp"
 #include "../m_argv.hpp"
-#include "m_menu.hpp"
-#include "m_misc.hpp"
+#include "../m_misc.hpp"
+#include "d_main.hpp"
+#include "doomdef.hpp"
+#include "doomstat.hpp"
+#include "g_game.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "i_video.hpp"
-#include "g_game.hpp"
-#include "doomdef.hpp"
-#include "doomstat.hpp"
+#include "m_menu.hpp"
 #include "w_checksum.hpp"
 #include "w_wad.hpp"
 
-#include "deh_main.hpp"
+#include <cstdlib>
 
-#include "d_loop.hpp"
 
 ticcmd_t *netcmds;
 
@@ -42,10 +41,9 @@ ticcmd_t *netcmds;
 
 static void PlayerQuitGame(player_t *player)
 {
-    static char  exitmsg[80];
-    unsigned int player_num;
+    static char exitmsg[80];
 
-    player_num = player - players;
+    unsigned int player_num = player - players.data();
 
     // Do this the same way as Vanilla Doom does, to allow dehacked
     // replacements of this message

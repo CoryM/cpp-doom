@@ -56,6 +56,7 @@
 #include "wi_stuff.hpp"
 #include "z_zone.hpp"
 
+#include <array>
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
@@ -105,10 +106,10 @@ int  starttime;  // for comparative timing purposes
 
 bool viewactive;
 
-int      deathmatch; // only if started as net death
-bool     netgame;    // only true if packets are broadcast
-bool     playeringame[MAXPLAYERS];
-player_t players[MAXPLAYERS];
+int                              deathmatch; // only if started as net death
+bool                             netgame;    // only true if packets are broadcast
+bool                             playeringame[MAXPLAYERS];
+std::array<player_t, MAXPLAYERS> players;
 
 bool turbodetected[MAXPLAYERS];
 
