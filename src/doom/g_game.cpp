@@ -56,8 +56,8 @@
 #include "wi_stuff.hpp"
 #include "z_zone.hpp"
 
-#include <array>
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -1281,11 +1281,9 @@ void G_InitPlayer(int player)
 //
 void G_PlayerFinishLevel(int player)
 {
-    player_t *p;
+    player_t *p = &players[player];
 
-    p = &players[player];
-
-    memset(p->powers, 0, sizeof(p->powers));
+    p->powers.fill(0);
     memset(p->cards, 0, sizeof(p->cards));
     memset(p->tryopen, 0, sizeof(p->tryopen)); // [crispy] blinking key or skull in the status bar
     p->mo->flags &= ~MF_SHADOW;                // cancel invisibility

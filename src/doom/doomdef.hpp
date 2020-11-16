@@ -86,7 +86,7 @@ typedef enum
 //
 // Key cards.
 //
-typedef enum
+enum card_t
 {
     it_bluecard,
     it_yellowcard,
@@ -96,8 +96,7 @@ typedef enum
     it_redskull,
 
     NUMCARDS
-
-} card_t;
+};
 
 
 // The defined weapons,
@@ -137,7 +136,7 @@ typedef enum
 
 
 // Power up artifacts.
-typedef enum
+enum powertype_t
 {
     pw_invulnerability,
     pw_strength,
@@ -148,9 +147,9 @@ typedef enum
     NUMPOWERS,
     // [crispy] showfps and mapcoords are now "powers"
     pw_showfps,
-    pw_mapcoords
-
-} powertype_t;
+    pw_mapcoords,
+    MAXPOWERS
+};
 
 
 //

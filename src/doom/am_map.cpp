@@ -16,97 +16,90 @@
 // DESCRIPTION:  the automap code
 //
 
+#include "../../utils/lump.hpp" // Data.
+#include "../deh_main.hpp"
+#include "../doomkeys.hpp"
+#include "../z_zone.hpp"
+#include "am_map.hpp" // Data.
+#include "doomdef.hpp"
+#include "doomstat.hpp" // State.
+#include "dstrings.hpp" // Data.
+#include "i_system.hpp"
+#include "i_timer.hpp"
+#include "i_video.hpp"
+#include "m_cheat.hpp"
+#include "m_controls.hpp"
+#include "m_misc.hpp"
+#include "p_local.hpp"
+#include "r_state.hpp" // State.
+#include "st_stuff.hpp"
+#include "v_video.hpp" // Needs access to LFB.
+#include "w_wad.hpp"
 
 #include <cstdio>
 #include <string_view>
 
-#include "../deh_main.hpp"
-#include "../z_zone.hpp"
-#include "../doomkeys.hpp"
-
-#include "doomdef.hpp"
-#include "st_stuff.hpp"
-#include "p_local.hpp"
-#include "w_wad.hpp"
-
-#include "m_cheat.hpp"
-#include "m_controls.hpp"
-#include "m_misc.hpp"
-#include "i_system.hpp"
-#include "i_timer.hpp"
-#include "i_video.hpp"
-
-// Needs access to LFB.
-#include "v_video.hpp"
-
-// State.
-#include "doomstat.hpp"
-#include "r_state.hpp"
-
-// Data.
-#include "dstrings.hpp"
-
-#include "../../utils/lump.hpp"
-#include "am_map.hpp"
 extern bool inhelpscreens; // [crispy]
 
 
 // For use if I do walls with outsides/insides
-#define REDS        (256 - 5 * 16)
-#define REDRANGE    16
-#define BLUES       (256 - 4 * 16 + 8)
-#define BLUERANGE   8
-#define GREENS      (7 * 16)
-#define GREENRANGE  16
-#define GRAYS       (6 * 16)
-#define GRAYSRANGE  16
-#define BROWNS      (4 * 16)
-#define BROWNRANGE  16
-#define YELLOWS     (256 - 32 + 7)
-#define YELLOWRANGE 1
-#define BLACK       0
-#define WHITE       (256 - 47)
+constexpr int REDS       = (256 - 5 * 16);
+constexpr int REDRANGE   = 16;
+constexpr int BLUES      = (256 - 4 * 16 + 8);
+constexpr int GREENS     = (7 * 16);
+constexpr int GREENRANGE = 16;
+constexpr int GRAYS      = (6 * 16);
+constexpr int GRAYSRANGE = 16;
+constexpr int BROWNS     = (4 * 16);
+constexpr int YELLOWS    = (256 - 32 + 7);
+constexpr int BLACK      = 0;
+constexpr int WHITE      = (256 - 47);
+// Unused Variables
+//constexpr int BLUERANGE   = 8;
+//constexpr int BROWNRANGE  = 16;
+//constexpr int YELLOWRANGE = 1;
+
 
 // Automap colors
-#define BACKGROUND       BLACK
-#define YOURCOLORS       WHITE
-#define YOURRANGE        0
-#define WALLCOLORS       (crispy->extautomap ? 23 : REDS) // [crispy] red-brown
-#define WALLRANGE        REDRANGE
-#define TSWALLCOLORS     GRAYS
-#define TSWALLRANGE      GRAYSRANGE
-#define FDWALLCOLORS     (crispy->extautomap ? 55 : BROWNS) // [crispy] lt brown
-#define FDWALLRANGE      BROWNRANGE
-#define CDWALLCOLORS     (crispy->extautomap ? 215 : YELLOWS) // [crispy] orange
-#define CDWALLRANGE      YELLOWRANGE
-#define THINGCOLORS      GREENS
-#define THINGRANGE       GREENRANGE
-#define SECRETWALLCOLORS 252 // [crispy] purple
+constexpr int BACKGROUND               = BLACK;
+constexpr int WALLRANGE                = REDRANGE;
+constexpr int TSWALLCOLORS             = GRAYS;
+constexpr int THINGCOLORS              = GREENS;
+constexpr int THINGRANGE               = GREENRANGE;
+constexpr int SECRETWALLCOLORS         = 252; // [crispy] purple
+constexpr int REVEALEDSECRETWALLCOLORS = 112; // [crispy] green
+constexpr int GRIDCOLORS               = (GRAYS + GRAYSRANGE / 2);
+constexpr int XHAIRCOLORS              = GRAYS;
+// Unused variables
+//constexpr int YOURCOLORS               = WHITE;
+//constexpr int YOURRANGE                = 0;
+//constexpr int TSWALLRANGE              = GRAYSRANGE;
+//constexpr int FDWALLRANGE              = BROWNRANGE;
+//constexpr int CDWALLRANGE              = YELLOWRANGE;
+//constexpr int SECRETWALLRANGE          = WALLRANGE;
+//constexpr int GRIDRANGE                = 0;
+#define CDWALLCOLORS (crispy->extautomap ? 215 : YELLOWS) // [crispy] orange
+#define FDWALLCOLORS (crispy->extautomap ? 55 : BROWNS)   // [crispy] lt brown
+#define WALLCOLORS   (crispy->extautomap ? 23 : REDS)     // [crispy] red-brown
 #define CRISPY_HIGHLIGHT_REVEALED_SECRETS
-#define REVEALEDSECRETWALLCOLORS 112 // [crispy] green
-#define SECRETWALLRANGE          WALLRANGE
-#define GRIDCOLORS               (GRAYS + GRAYSRANGE / 2)
-#define GRIDRANGE                0
-#define XHAIRCOLORS              GRAYS
 
 // drawing stuff
-
-#define AM_NUMMARKPOINTS 10
+constexpr int AM_NUMMARKPOINTS = 10;
 
 // scale on entry
-#define INITSCALEMTOF (.2 * FRACUNIT)
+constexpr auto INITSCALEMTOF = (.2 * FRACUNIT);
 // how much the automap moves window per tic in frame-buffer coordinates
 // moves 140 pixels in 1 second
-#define F_PANINC 4
+constexpr int F_PANINC = 4;
 // how much zoom-in per tic
 // goes to 2x in 1 second
-#define M_ZOOMIN ((int)(1.02 * FRACUNIT))
+constexpr auto M_ZOOMIN = static_cast<int>(1.02 * FRACUNIT);
 // how much zoom-out per tic
 // pulls out to 0.5x in 1 second
-#define M_ZOOMOUT ((int)(FRACUNIT / 1.02))
+constexpr auto M_ZOOMOUT = static_cast<int>(FRACUNIT / 1.02);
 // [crispy] zoom faster with the mouse wheel
-#define M2_ZOOMIN  ((int)(1.08 * FRACUNIT))
-#define M2_ZOOMOUT ((int)(FRACUNIT / 1.08))
+constexpr auto M2_ZOOMIN  = static_cast<int>(1.08 * FRACUNIT);
+constexpr auto M2_ZOOMOUT = static_cast<int>(FRACUNIT / 1.08);
 
 // translates between frame-buffer and map distances
 // [crispy] fix int overflow that causes map and grid lines to disappear
@@ -119,38 +112,38 @@ extern bool inhelpscreens; // [crispy]
 // the following is crap
 #define LINE_NEVERSEE ML_DONTDRAW
 
-typedef struct
-{
-    int x, y;
-} fpoint_t;
+struct fpoint_t {
+    int x;
+    int y;
+};
 
-typedef struct
-{
-    fpoint_t a, b;
-} fline_t;
+struct fline_t {
+    fpoint_t a;
+    fpoint_t b;
+};
 
-typedef struct
-{
-    int64_t x, y;
-} mpoint_t;
+struct mpoint_t {
+    int64_t x;
+    int64_t y;
+};
 
-typedef struct
-{
-    mpoint_t a, b;
-} mline_t;
+struct mline_t {
+    mpoint_t a;
+    mpoint_t b;
+};
 
-typedef struct
-{
-    fixed_t slp, islp;
-} islope_t;
+struct islope_t {
+    fixed_t slp;
+    fixed_t islp;
+};
 
-typedef enum
+enum keycolor_t
 {
     no_key,
     red_key,
     yellow_key,
     blue_key
-} keycolor_t;
+};
 
 
 //
@@ -159,15 +152,23 @@ typedef enum
 //   starting from the middle.
 //
 #define R ((8 * PLAYERRADIUS) / 7)
-mline_t player_arrow[] = {
-    { { -R + R / 8, 0 }, { R, 0 } },    // -----
-    { { R, 0 }, { R - R / 2, R / 4 } }, // ----->
-    { { R, 0 }, { R - R / 2, -R / 4 } },
-    { { -R + R / 8, 0 }, { -R - R / 8, R / 4 } }, // >---->
-    { { -R + R / 8, 0 }, { -R - R / 8, -R / 4 } },
-    { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 4 } }, // >>--->
-    { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 4 } }
-};
+// mline_t player_arrow[] = {
+//     { { -R + R / 8, 0 }, { R, 0 } },    // -----
+//     { { R, 0 }, { R - R / 2, R / 4 } }, // ----->
+//     { { R, 0 }, { R - R / 2, -R / 4 } },
+//     { { -R + R / 8, 0 }, { -R - R / 8, R / 4 } }, // >---->
+//     { { -R + R / 8, 0 }, { -R - R / 8, -R / 4 } },
+//     { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 4 } }, // >>--->
+//     { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 4 } }
+// };
+auto player_arrow = std::to_array<mline_t>({          // >---->
+    { { -R + R / 8, 0 }, { R, 0 } },                  // >---->
+    { { R, 0 }, { R - R / 2, R / 4 } },               // >---->
+    { { R, 0 }, { R - R / 2, -R / 4 } },              // >---->
+    { { -R + R / 8, 0 }, { -R - R / 8, R / 4 } },     // >---->
+    { { -R + R / 8, 0 }, { -R - R / 8, -R / 4 } },    // >---->
+    { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 4 } }, // >---->
+    { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 4 } } });
 #undef R
 
 #define R ((8 * PLAYERRADIUS) / 7)
@@ -1586,7 +1587,7 @@ void AM_drawPlayers(void)
             AM_drawLineCharacter(cheat_player_arrow, std::size(cheat_player_arrow), 0,
                 plr->mo->angle, WHITE, pt.x, pt.y);
         else
-            AM_drawLineCharacter(player_arrow, std::size(player_arrow), 0, plr->mo->angle,
+            AM_drawLineCharacter(player_arrow.data(), std::size(player_arrow), 0, plr->mo->angle,
                 WHITE, pt.x, pt.y);
         return;
     }
@@ -1614,7 +1615,7 @@ void AM_drawPlayers(void)
             AM_rotatePoint(&pt);
         }
 
-        AM_drawLineCharacter(player_arrow, std::size(player_arrow), 0, p->mo->angle,
+        AM_drawLineCharacter(player_arrow.data(), std::size(player_arrow), 0, p->mo->angle,
             color, pt.x, pt.y);
     }
 }

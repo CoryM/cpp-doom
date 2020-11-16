@@ -39,11 +39,12 @@
 
 #include "net_defs.hpp"
 
+#include <array>
 
 //
 // Player states.
 //
-typedef enum
+enum playerstate_t
 {
     // Playing or camping.
     PST_LIVE,
@@ -52,13 +53,13 @@ typedef enum
     // Ready to restart/respawn???
     PST_REBORN
 
-} playerstate_t;
+};
 
 
 //
 // Player internal flags, for cheats and debug.
 //
-typedef enum
+enum cheat_t
 {
     // No clipping, walk through barriers.
     CF_NOCLIP = 1,
@@ -69,7 +70,7 @@ typedef enum
     // [crispy] monsters don't target
     CF_NOTARGET = 8
 
-} cheat_t;
+};
 
 
 //
@@ -99,9 +100,9 @@ struct player_t {
     int armortype;
 
     // Power ups. invinc and invis are tic counters.
-    int     powers[NUMPOWERS + 3]; // [crispy] showfps and mapcoords are now "powers"
-    bool cards[NUMCARDS];
-    bool backpack;
+    std::array<int, MAXPOWERS> powers; // [crispy] showfps and mapcoords are now "powers"
+    bool                       cards[NUMCARDS];
+    bool                       backpack;
 
     // Frags, kills of other players.
     int          frags[MAXPLAYERS];
@@ -167,7 +168,7 @@ struct player_t {
     const char *centermessage;
 
     // [crispy] free look / mouse look
-    int     lookdir, oldlookdir;
+    int  lookdir, oldlookdir;
     bool centering;
 
     // [crispy] jumping
