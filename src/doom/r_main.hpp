@@ -66,9 +66,9 @@ extern int LIGHTSCALESHIFT;
 extern int MAXLIGHTZ;
 extern int LIGHTZSHIFT;
 
-extern std::vector< std::vector<lighttable_t*> > scalelight;
-extern lighttable_t ** scalelightfixed;
-extern lighttable_t ***zlight;
+extern std::vector<std::vector<lighttable_t *>> scalelight;
+extern lighttable_t **                          scalelightfixed;
+extern lighttable_t ***                         zlight;
 
 extern int           extralight;
 extern lighttable_t *fixedcolormap;
@@ -85,7 +85,7 @@ extern fixed_t fractionaltic;
 // Blocky/low detail mode.
 //B remove this?
 //  0 = high, 1 = low
-extern int detailshift;
+extern unsigned int detailshift;
 
 
 //

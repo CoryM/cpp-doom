@@ -75,7 +75,7 @@ fixed_t viewsin;
 player_t *viewplayer;
 
 // 0 = high, 1 = low
-int detailshift;
+unsigned int detailshift;
 
 //
 // precalculated math tables
