@@ -790,13 +790,9 @@ auto R_DrawSpan() -> void
     //  dest = ylookup[ds_y] + columnofs[ds_x1];
 
     // We do not check for zero spans here?
-    int count = ds_x2 - ds_x1;
-    if (count == 0)
-    {
-        return;
-    }
+
     auto *const ylookupValue = ylookup.at(ds_y); // only need to lookup once
-    do
+    for (int count = (ds_x2 - ds_x1); count >= 0; count--)
     {
         // Calculate current texture index in u,v.
         // [crispy] fix flats getting more distorted the closer they are to the right
@@ -806,15 +802,13 @@ auto R_DrawSpan() -> void
 
         // Lookup pixel from flat texture tile,
         //  re-index using light/colormap.
-        const auto source = ds_source[spot];
-        pixel_t *  dest   = ylookupValue + columnofs[flipviewwidth[ds_x1++]]; // Get pixel location
-        *dest             = ds_colormap[ds_brightmap[source]][source];        // Set color at pixel location
+        const auto source                               = ds_source[spot];
+        ylookupValue[columnofs[flipviewwidth[ds_x1++]]] = ds_colormap[ds_brightmap[source]][source];
 
         //      position += step;
         ds_xfrac += ds_xstep;
         ds_yfrac += ds_ystep;
-
-    } while ((count--) != 0);
+    };
 }
 
 
