@@ -23,24 +23,27 @@
 #include "../m_cheat.hpp"
 
 // Used by ST StatusBar stuff.
-#define AM_MSGHEADER  (('a' << 24) + ('m' << 16))
-#define AM_MSGENTERED (AM_MSGHEADER | ('e' << 8))
-#define AM_MSGEXITED  (AM_MSGHEADER | ('x' << 8))
+//constexpr int AM_MSGHEADER  = (('a' << 24) + ('m' << 16));
+//constexpr int AM_MSGENTERED = (AM_MSGHEADER | ('e' << 8));
+//constexpr int AM_MSGEXITED  = (AM_MSGHEADER | ('x' << 8));
+constexpr int AM_MSGHEADER  = 0x616D0000; // am??
+constexpr int AM_MSGENTERED = 0x616D6500; // ame?
+constexpr int AM_MSGEXITED  = 0x616D7800; // amx?
 
 
 // Called by main loop.
-bool AM_Responder(event_t *ev);
+auto AM_Responder(event_t *ev) -> bool;
 
 // Called by main loop.
-void AM_Ticker(void);
+auto AM_Ticker() -> void;
 
 // Called by main loop,
 // called instead of view drawer if automap active.
-void AM_Drawer(void);
+auto AM_Drawer() -> void;
 
 // Called to force the automap to quit
 // if the level is completed while it is up.
-void AM_Stop(void);
+auto AM_Stop() -> void;
 
 
 extern cheatseq_t cheat_amap;

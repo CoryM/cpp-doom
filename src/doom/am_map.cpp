@@ -37,6 +37,7 @@
 #include "w_wad.hpp"
 
 #include <cstdio>
+#include <span>
 #include <string_view>
 
 extern bool inhelpscreens; // [crispy]
@@ -151,72 +152,84 @@ enum keycolor_t
 //  A line drawing of the player pointing right,
 //   starting from the middle.
 //
-#define R ((8 * PLAYERRADIUS) / 7)
-// mline_t player_arrow[] = {
-//     { { -R + R / 8, 0 }, { R, 0 } },    // -----
-//     { { R, 0 }, { R - R / 2, R / 4 } }, // ----->
-//     { { R, 0 }, { R - R / 2, -R / 4 } },
-//     { { -R + R / 8, 0 }, { -R - R / 8, R / 4 } }, // >---->
-//     { { -R + R / 8, 0 }, { -R - R / 8, -R / 4 } },
-//     { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 4 } }, // >>--->
-//     { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 4 } }
-// };
-auto player_arrow = std::to_array<mline_t>({          // >---->
-    { { -R + R / 8, 0 }, { R, 0 } },                  // >---->
-    { { R, 0 }, { R - R / 2, R / 4 } },               // >---->
-    { { R, 0 }, { R - R / 2, -R / 4 } },              // >---->
-    { { -R + R / 8, 0 }, { -R - R / 8, R / 4 } },     // >---->
-    { { -R + R / 8, 0 }, { -R - R / 8, -R / 4 } },    // >---->
-    { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 4 } }, // >---->
-    { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 4 } } });
-#undef R
+//#define R ((8 * PLAYERRADIUS) / 7)
+constexpr int64_t R = ((8 * PLAYERRADIUS) / 7);
 
-#define R ((8 * PLAYERRADIUS) / 7)
-mline_t cheat_player_arrow[] = {
-    { { -R + R / 8, 0 }, { R, 0 } },    // -----
-    { { R, 0 }, { R - R / 2, R / 6 } }, // ----->
-    { { R, 0 }, { R - R / 2, -R / 6 } },
-    { { -R + R / 8, 0 }, { -R - R / 8, R / 6 } }, // >----->
-    { { -R + R / 8, 0 }, { -R - R / 8, -R / 6 } },
-    { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 6 } }, // >>----->
-    { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 6 } },
-    { { -R / 2, 0 }, { -R / 2, -R / 6 } }, // >>-d--->
-    { { -R / 2, -R / 6 }, { -R / 2 + R / 6, -R / 6 } },
-    { { -R / 2 + R / 6, -R / 6 }, { -R / 2 + R / 6, R / 4 } },
-    { { -R / 6, 0 }, { -R / 6, -R / 6 } }, // >>-dd-->
-    { { -R / 6, -R / 6 }, { 0, -R / 6 } },
-    { { 0, -R / 6 }, { 0, R / 4 } },
-    { { R / 6, R / 4 }, { R / 6, -R / 7 } }, // >>-ddt->
-    { { R / 6, -R / 7 }, { R / 6 + R / 32, -R / 7 - R / 32 } },
-    { { R / 6 + R / 32, -R / 7 - R / 32 }, { R / 6 + R / 10, -R / 7 } }
-};
+// constexpr auto player_arrow = std::to_array<mline_t>({ // >---->
+//     { { -R + R / 8, 0 }, { R, 0 } },                   // >---->
+//     { { R, 0 }, { R - R / 2, R / 4 } },                // >---->
+//     { { R, 0 }, { R - R / 2, -R / 4 } },               // >---->
+//     { { -R + R / 8, 0 }, { -R - R / 8, R / 4 } },      // >---->
+//     { { -R + R / 8, 0 }, { -R - R / 8, -R / 4 } },     // >---->
+//     { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 4 } },  // >---->
+//     { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 4 } } });
+// //#undef R
+
+consteval auto init_player_arrow()
+{
+    constexpr int64_t R1 = ((8 * PLAYERRADIUS) / 7);
+    constexpr int64_t R2 = -R1 + R1 / 8;
+    constexpr int64_t R3 = R1 - R1 / 2;
+    constexpr int64_t R4 = R1 / 4;
+    constexpr int64_t R5 = -R4;
+    constexpr int64_t R6 = -R1 - R1 / 8;
+    constexpr int64_t R7 = -R1 + 3 * R1 / 8;
+
+    return std::to_array<mline_t>({ // >---->
+        { { R2, 0 }, { R1, 0 } },   // >---->
+        { { R1, 0 }, { R3, R4 } },  // >---->
+        { { R1, 0 }, { R3, R5 } },  // >---->
+        { { R2, 0 }, { R6, R4 } },  // >---->
+        { { R2, 0 }, { R6, R5 } },  // >---->
+        { { R7, 0 }, { R2, R4 } },  // >---->
+        { { R7, 0 }, { R2, R5 } } });
+}
+
+constexpr auto player_arrow = init_player_arrow();
+
+//#define R ((8 * PLAYERRADIUS) / 7)
+constexpr auto cheat_player_arrow = std::to_array<mline_t>({    //
+    { { -R + R / 8, 0 }, { R, 0 } },                            // -----
+    { { R, 0 }, { R - R / 2, R / 6 } },                         // ----->
+    { { R, 0 }, { R - R / 2, -R / 6 } },                        //
+    { { -R + R / 8, 0 }, { -R - R / 8, R / 6 } },               // >----->
+    { { -R + R / 8, 0 }, { -R - R / 8, -R / 6 } },              //
+    { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 6 } },           // >>----->
+    { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 6 } },          //
+    { { -R / 2, 0 }, { -R / 2, -R / 6 } },                      // >>-d--->
+    { { -R / 2, -R / 6 }, { -R / 2 + R / 6, -R / 6 } },         //
+    { { -R / 2 + R / 6, -R / 6 }, { -R / 2 + R / 6, R / 4 } },  //
+    { { -R / 6, 0 }, { -R / 6, -R / 6 } },                      // >>-dd-->
+    { { -R / 6, -R / 6 }, { 0, -R / 6 } },                      //
+    { { 0, -R / 6 }, { 0, R / 4 } },                            //
+    { { R / 6, R / 4 }, { R / 6, -R / 7 } },                    // >>-ddt->
+    { { R / 6, -R / 7 }, { R / 6 + R / 32, -R / 7 - R / 32 } }, //
+    { { R / 6 + R / 32, -R / 7 - R / 32 }, { R / 6 + R / 10, -R / 7 } } });
 #undef R
 
 #define R (FRACUNIT)
-mline_t triangle_guy[] = {
-    { { (fixed_t)(-.867 * R), (fixed_t)(-.5 * R) }, { (fixed_t)(.867 * R), (fixed_t)(-.5 * R) } },
-    { { (fixed_t)(.867 * R), (fixed_t)(-.5 * R) }, { (fixed_t)(0), (fixed_t)(R) } },
-    { { (fixed_t)(0), (fixed_t)(R) }, { (fixed_t)(-.867 * R), (fixed_t)(-.5 * R) } }
-};
-#undef R
-
-#define R (FRACUNIT)
-mline_t thintriangle_guy[] = {
+// constexpr auto triangle_guy = std::to_array<mline_t>({ //
+//     { { (fixed_t)(-.867 * R), (fixed_t)(-.5 * R) }, { (fixed_t)(.867 * R), (fixed_t)(-.5 * R) } },
+//     { { (fixed_t)(.867 * R), (fixed_t)(-.5 * R) }, { (fixed_t)(0), (fixed_t)(R) } },
+//     { { (fixed_t)(0), (fixed_t)(R) }, { (fixed_t)(-.867 * R), (fixed_t)(-.5 * R) } } });
+//
+constexpr auto thintriangle_guy = std::to_array<mline_t>({ //
     { { (fixed_t)(-.5 * R), (fixed_t)(-.7 * R) }, { (fixed_t)(R), (fixed_t)(0) } },
     { { (fixed_t)(R), (fixed_t)(0) }, { (fixed_t)(-.5 * R), (fixed_t)(.7 * R) } },
-    { { (fixed_t)(-.5 * R), (fixed_t)(.7 * R) }, { (fixed_t)(-.5 * R), (fixed_t)(-.7 * R) } }
-};
+    { { (fixed_t)(-.5 * R), (fixed_t)(.7 * R) }, { (fixed_t)(-.5 * R), (fixed_t)(-.7 * R) } } });
+
 // [crispy] print keys as crosses
-static mline_t cross_mark[] = {
+constexpr auto cross_mark = std::to_array<mline_t>({
     { { -R, 0 }, { R, 0 } },
     { { 0, -R }, { 0, R } },
-};
-static mline_t square_mark[] = {
+});
+
+constexpr auto square_mark = std::to_array<mline_t>({
     { { -R, 0 }, { 0, R } },
     { { 0, R }, { R, 0 } },
     { { R, 0 }, { 0, -R } },
     { { 0, -R }, { -R, 0 } },
-};
+});
 #undef R
 
 
@@ -286,9 +299,9 @@ static fixed_t scale_ftom;
 
 static player_t *plr; // the player represented by an arrow
 
-static patch_t *marknums[10];                 // numbers used for marking by the automap
-static mpoint_t markpoints[AM_NUMMARKPOINTS]; // where the points are
-static int      markpointnum = 0;             // next point to be assigned
+static std::array<patch_t *, 10>              marknums;         // numbers used for marking by the automap
+static std::array<mpoint_t, AM_NUMMARKPOINTS> markpoints;       // where the points are
+static int                                    markpointnum = 0; // next point to be assigned
 
 static int followplayer = 1; // specifies whether to follow the player around
 
@@ -305,28 +318,32 @@ static angle_t  mapangle;
 // Calculates the slope and slope according to the x-axis of a line
 // segment in map coordinates (with the upright y-axis n' all) so
 // that it can be used with the brain-dead drawing stuff.
-
-void AM_getIslope(mline_t *ml,
-    islope_t *             is)
+auto AM_getIslope(mline_t *ml,
+    islope_t *             is) -> void
 {
-    int dx, dy;
-
-    dy = ml->a.y - ml->b.y;
-    dx = ml->b.x - ml->a.x;
-    if (!dy)
+    auto dy = ml->a.y - ml->b.y;
+    auto dx = ml->b.x - ml->a.x;
+    if (dy == 0)
+    {
         is->islp = (dx < 0 ? -INT_MAX : INT_MAX);
+    }
     else
+    {
         is->islp = FixedDiv(dx, dy);
-    if (!dx)
+    }
+    if (dx == 0)
+    {
         is->slp = (dy < 0 ? -INT_MAX : INT_MAX);
+    }
     else
+    {
         is->slp = FixedDiv(dy, dx);
+    }
 }
 
 //
 //
-//
-void AM_activateNewScale(void)
+auto AM_activateNewScale() -> void
 {
     m_x += m_w / 2;
     m_y += m_h / 2;
@@ -341,7 +358,7 @@ void AM_activateNewScale(void)
 //
 //
 //
-void AM_saveScaleAndLoc(void)
+auto AM_saveScaleAndLoc() -> void
 {
     old_m_x = m_x;
     old_m_y = m_y;
@@ -352,12 +369,11 @@ void AM_saveScaleAndLoc(void)
 //
 //
 //
-void AM_restoreScaleAndLoc(void)
+auto AM_restoreScaleAndLoc() -> void
 {
-
     m_w = old_m_w;
     m_h = old_m_h;
-    if (!followplayer)
+    if (followplayer == 0)
     {
         m_x = old_m_x;
         m_y = old_m_y;
@@ -371,14 +387,14 @@ void AM_restoreScaleAndLoc(void)
     m_y2 = m_y + m_h;
 
     // Change the scaling multipliers
-    scale_mtof = FixedDiv(f_w << FRACBITS, m_w);
+    scale_mtof = FixedDiv(static_cast<unsigned int>(f_w) << FRACBITS, m_w);
     scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
 }
 
 //
 // adds a marker at the current location
 //
-void AM_addMark(void)
+auto AM_addMark() -> void
 {
     // [crispy] keep the map static in overlay mode
     // if not following the player
@@ -483,9 +499,8 @@ void AM_changeWindowLoc(void)
 //
 //
 //
-void AM_initVariables(void)
+auto AM_initVariables() -> void
 {
-    int            pnum;
     static event_t st_notify = { evtype_t::ev_keyup, AM_MSGENTERED, 0, 0 };
 
     automapactive = true;
@@ -511,7 +526,7 @@ void AM_initVariables(void)
     {
         plr = &players[0];
 
-        for (pnum = 0; pnum < MAXPLAYERS; pnum++)
+        for (int pnum = 0; pnum < MAXPLAYERS; pnum++)
         {
             if (playeringame[pnum])
             {
@@ -538,36 +553,34 @@ void AM_initVariables(void)
 //
 //
 //
-void AM_loadPics(void)
+auto AM_loadPics() -> void
 {
-    int  i;
     char namebuf[9];
 
-    for (i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++)
     {
         DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
         marknums[i] = cache_lump_name<patch_t *>(namebuf, PU::STATIC);
     }
 }
 
-void AM_unloadPics(void)
+auto AM_unloadPics() -> void
 {
-    int  i;
     char namebuf[9];
 
-    for (i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++)
     {
         DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
         W_ReleaseLumpName(namebuf);
     }
 }
 
-void AM_clearMarks(void)
+auto AM_clearMarks() -> void
 {
-    int i;
-
-    for (i = 0; i < AM_NUMMARKPOINTS; i++)
+    for (int i = 0; i < AM_NUMMARKPOINTS; i++)
+    {
         markpoints[i].x = -1; // means empty
+    }
     markpointnum = 0;
 }
 
@@ -575,16 +588,16 @@ void AM_clearMarks(void)
 // should be called at the start of every level
 // right now, i figure it out myself
 //
-void AM_LevelInit(void)
+auto AM_LevelInit() -> void
 {
-    fixed_t a, b;
     leveljuststarted = 0;
 
-    f_x = f_y = 0;
-    f_w       = SCREENWIDTH;
-    f_h       = SCREENHEIGHT;
+    f_x = 0;
+    f_y = 0;
+    f_w = SCREENWIDTH;
+    f_h = SCREENHEIGHT;
     // [crispy] automap without status bar in widescreen mode
-    if (!crispy->widescreen)
+    if (crispy->widescreen == 0)
     {
         f_h -= (ST_HEIGHT << crispy->hires);
     }
@@ -594,15 +607,19 @@ void AM_LevelInit(void)
     AM_findMinMaxBoundaries();
     // [crispy] initialize zoomlevel on all maps so that a 4096 units
     // square map would just fit in (MAP01 is 3376x3648 units)
-    a          = FixedDiv(f_w, (max_w >> FRACBITS < 2048) ? 2 * (max_w >> FRACBITS) : 4096);
-    b          = FixedDiv(f_h, (max_h >> FRACBITS < 2048) ? 2 * (max_h >> FRACBITS) : 4096);
-    scale_mtof = FixedDiv(a < b ? a : b, (int)(0.7 * FRACUNIT));
+    //const fixed_t a = FixedDiv(f_w, (max_w >> FRACBITS < 2048) ? 2 * (max_w >> FRACBITS) : 4096);
+    //const fixed_t b = FixedDiv(f_h, (max_h >> FRACBITS < 2048) ? 2 * (max_h >> FRACBITS) : 4096);
+    const fixed_t a = std::min(max_w >> FRACBITS, 2048) * 2;
+    const fixed_t b = std::min(max_h >> FRACBITS, 2048) * 2;
+    scale_mtof      = FixedDiv(std::min(a, b), static_cast<int>(0.7 * FRACUNIT));
     if (scale_mtof > max_scale_mtof)
+    {
         scale_mtof = min_scale_mtof;
+    }
     scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
 }
 
-void AM_ReInit(void)
+auto AM_ReInit() -> void
 {
     f_w = SCREENWIDTH;
     f_h = SCREENHEIGHT;
@@ -623,8 +640,7 @@ void AM_ReInit(void)
 
 //
 //
-//
-void AM_Stop(void)
+auto AM_Stop() -> void
 {
     static event_t st_notify = { evtype_t::ev_keyup, AM_MSGEXITED, 0 };
 
@@ -638,10 +654,12 @@ void AM_Stop(void)
 //
 //
 // [crispy] moved here for extended savegames
-static int lastlevel = -1, lastepisode = -1;
-void       AM_Start(void)
+static int lastlevel   = -1;
+static int lastepisode = -1;
+
+auto AM_Start() -> void
 {
-    if (!stopped) AM_Stop();
+    if (!stopped) { AM_Stop(); };
     stopped = false;
     if (lastlevel != gamemap || lastepisode != gameepisode)
     {
@@ -661,7 +679,7 @@ void       AM_Start(void)
 //
 // set the window scale to the maximum size
 //
-void AM_minOutWindowScale(void)
+auto AM_minOutWindowScale() -> void
 {
     scale_mtof = min_scale_mtof;
     scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
@@ -671,7 +689,7 @@ void AM_minOutWindowScale(void)
 //
 // set the window scale to the minimum size
 //
-void AM_maxOutWindowScale(void)
+auto AM_maxOutWindowScale() -> void
 {
     scale_mtof = max_scale_mtof;
     scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
@@ -682,20 +700,17 @@ void AM_maxOutWindowScale(void)
 //
 // Handle events (user inputs) in automap mode
 //
-bool AM_Responder(event_t *ev)
+auto AM_Responder(event_t *ev) -> bool
 {
+    static int bigstate = 0;
 
-    int         rc;
-    static int  bigstate = 0;
-    static char buffer[20];
-    int         key;
-
-    rc = false;
+    bool rc = false;
 
     if (ev->type == evtype_t::ev_joystick && joybautomap >= 0
-        && (ev->data1 & (1 << joybautomap)) != 0)
+        && (static_cast<unsigned int>(ev->data1) & (1 << static_cast<unsigned int>(joybautomap))) != 0)
     {
-        joywait = I_GetTime() + 5;
+        constexpr unsigned int waitTime = 5;
+        joywait                         = I_GetTime() + waitTime;
 
         if (!automapactive)
         {
@@ -747,38 +762,54 @@ bool AM_Responder(event_t *ev)
     }
     else if (ev->type == evtype_t::ev_keydown)
     {
-        rc  = true;
-        key = ev->data1;
+        rc       = true;
+        auto key = ev->data1;
 
         if (key == key_map_east) // pan right
         {
             // [crispy] keep the map static in overlay mode
             // if not following the player
             if (!followplayer && !crispy->automapoverlay)
+            {
                 m_paninc.x = crispy->fliplevels ? -FTOM(F_PANINC) : FTOM(F_PANINC);
+            }
             else
+            {
                 rc = false;
+            }
         }
         else if (key == key_map_west) // pan left
         {
-            if (!followplayer && !crispy->automapoverlay)
+            if ((followplayer == 0) && (crispy->automapoverlay == 0))
+            {
                 m_paninc.x = crispy->fliplevels ? FTOM(F_PANINC) : -FTOM(F_PANINC);
+            }
             else
+            {
                 rc = false;
+            }
         }
         else if (key == key_map_north) // pan up
         {
-            if (!followplayer && !crispy->automapoverlay)
+            if ((followplayer == 0) && (crispy->automapoverlay == 0))
+            {
                 m_paninc.y = FTOM(F_PANINC);
+            }
             else
+            {
                 rc = false;
+            }
         }
         else if (key == key_map_south) // pan down
         {
-            if (!followplayer && !crispy->automapoverlay)
+            if ((followplayer == 0) && (crispy->automapoverlay == 0))
+            {
                 m_paninc.y = -FTOM(F_PANINC);
+            }
             else
+            {
                 rc = false;
+            }
         }
         else if (key == key_map_zoomout) // zoom out
         {
@@ -798,37 +829,49 @@ bool AM_Responder(event_t *ev)
         }
         else if (key == key_map_maxzoom)
         {
-            bigstate = !bigstate;
-            if (bigstate)
+            bigstate = (bigstate == 0);
+            if (bigstate != 0)
             {
                 AM_saveScaleAndLoc();
                 AM_minOutWindowScale();
             }
             else
+            {
                 AM_restoreScaleAndLoc();
+            }
         }
         else if (key == key_map_follow)
         {
-            followplayer = !followplayer;
+            followplayer = (followplayer == 0);
             f_oldloc.x   = INT_MAX;
-            if (followplayer)
+            if (followplayer != 0)
+            {
                 plr->message = DEH_String(AMSTR_FOLLOWON);
+            }
             else
+            {
                 plr->message = DEH_String(AMSTR_FOLLOWOFF);
+            }
         }
         else if (key == key_map_grid)
         {
-            grid = !grid;
-            if (grid)
+            grid = (grid == 0);
+            if (grid != 0)
+            {
                 plr->message = DEH_String(AMSTR_GRIDON);
+            }
             else
+            {
                 plr->message = DEH_String(AMSTR_GRIDOFF);
+            }
         }
         else if (key == key_map_mark)
         {
-            M_snprintf(buffer, sizeof(buffer), "%s %d",
+            constexpr size_t                    bufferSize = 20;
+            static std::array<char, bufferSize> buffer;
+            M_snprintf(buffer.data(), bufferSize, "%s %d",
                 DEH_String(AMSTR_MARKEDSPOT), markpointnum);
-            plr->message = buffer;
+            plr->message = buffer.data();
             AM_addMark();
         }
         else if (key == key_map_clearmark)
@@ -860,8 +903,8 @@ bool AM_Responder(event_t *ev)
             rc = false;
         }
 
-        if ((!deathmatch || gameversion <= exe_doom_1_8)
-            && cht_CheckCheat(&cheat_amap, ev->data2))
+        if (((deathmatch == 0) || gameversion <= exe_doom_1_8)
+            && cht_CheckCheat(&cheat_amap, ev->data2) != 0)
         {
             rc       = false;
             cheating = (cheating + 1) % 3;
@@ -869,24 +912,24 @@ bool AM_Responder(event_t *ev)
     }
     else if (ev->type == evtype_t::ev_keyup)
     {
-        rc  = false;
-        key = ev->data1;
+        rc       = false;
+        auto key = ev->data1;
 
         if (key == key_map_east)
         {
-            if (!followplayer) m_paninc.x = 0;
+            if (followplayer == 0) { m_paninc.x = 0; }
         }
         else if (key == key_map_west)
         {
-            if (!followplayer) m_paninc.x = 0;
+            if (followplayer == 0) { m_paninc.x = 0; }
         }
         else if (key == key_map_north)
         {
-            if (!followplayer) m_paninc.y = 0;
+            if (followplayer == 0) { m_paninc.y = 0; }
         }
         else if (key == key_map_south)
         {
-            if (!followplayer) m_paninc.y = 0;
+            if (followplayer == 0) { m_paninc.y = 0; }
         }
         else if (key == key_map_zoomout || key == key_map_zoomin)
         {
@@ -904,7 +947,6 @@ bool AM_Responder(event_t *ev)
 //
 void AM_changeWindowScale(void)
 {
-
     // Change the scaling multipliers
     scale_mtof = FixedMul(scale_mtof, mtof_zoommul);
     scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
@@ -930,7 +972,6 @@ void AM_changeWindowScale(void)
 //
 void AM_doFollowPlayer(void)
 {
-
     if (f_oldloc.x != plr->mo->x || f_oldloc.y != plr->mo->y)
     {
         m_x        = FTOM(MTOF(plr->mo->x)) - m_w / 2;
@@ -972,7 +1013,6 @@ void AM_updateLightLev(void)
 //
 void AM_Ticker(void)
 {
-
     if (!automapactive)
         return;
 
@@ -1513,14 +1553,19 @@ static void AM_rotatePoint(mpoint_t *pt)
     pt->x = tmpx;
 }
 
-void AM_drawLineCharacter(mline_t *lineguy,
-    int                            lineguylines,
+void AM_drawLineCharacter( //
+    //const mline_t *lineguy,
+    //int            lineguylines,
+    const std::span<const mline_t> drawIt,
     fixed_t                        scale,
     angle_t                        angle,
     int                            color,
     fixed_t                        x,
     fixed_t                        y)
 {
+    const mline_t *lineguy      = drawIt.data();
+    int            lineguylines = drawIt.size();
+
     int     i;
     mline_t l;
 
@@ -1584,11 +1629,11 @@ void AM_drawPlayers(void)
         }
 
         if (cheating)
-            AM_drawLineCharacter(cheat_player_arrow, std::size(cheat_player_arrow), 0,
-                plr->mo->angle, WHITE, pt.x, pt.y);
+        {
+            AM_drawLineCharacter(cheat_player_arrow, 0, plr->mo->angle, WHITE, pt.x, pt.y);
+        }
         else
-            AM_drawLineCharacter(player_arrow.data(), std::size(player_arrow), 0, plr->mo->angle,
-                WHITE, pt.x, pt.y);
+            AM_drawLineCharacter(player_arrow, 0, plr->mo->angle, WHITE, pt.x, pt.y);
         return;
     }
 
@@ -1615,7 +1660,7 @@ void AM_drawPlayers(void)
             AM_rotatePoint(&pt);
         }
 
-        AM_drawLineCharacter(player_arrow.data(), std::size(player_arrow), 0, p->mo->angle,
+        AM_drawLineCharacter(player_arrow, 0, p->mo->angle,
             color, pt.x, pt.y);
     }
 }
@@ -1671,8 +1716,7 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
                 // [crispy] draw keys as crosses in their respective colors
                 if (key > no_key)
                 {
-                    AM_drawLineCharacter(cross_mark, std::size(cross_mark),
-                        16 << FRACBITS, t->angle,
+                    AM_drawLineCharacter(cross_mark, 16 << FRACBITS, t->angle,
                         (key == red_key) ? REDS :
                                            (key == yellow_key) ? YELLOWS :
                                                                  (key == blue_key) ? BLUES :
@@ -1683,14 +1727,14 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
                     // [crispy] draw blood splats and puffs as small squares
                     if (t->type == MT_BLOOD || t->type == MT_PUFF)
                 {
-                    AM_drawLineCharacter(square_mark, std::size(square_mark),
+                    AM_drawLineCharacter(square_mark,
                         t->radius >> 2, t->angle,
                         (t->type == MT_BLOOD) ? REDS : GRAYS,
                         pt.x, pt.y);
                 }
                 else
                 {
-                    AM_drawLineCharacter(thintriangle_guy, std::size(thintriangle_guy),
+                    AM_drawLineCharacter(thintriangle_guy,
                         // [crispy] triangle size represents actual thing size
                         t->radius, t->angle,
                         // [crispy] show countable kills in red ...
@@ -1709,7 +1753,7 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
             }
             else
             {
-                AM_drawLineCharacter(thintriangle_guy, std::size(thintriangle_guy),
+                AM_drawLineCharacter(thintriangle_guy,
                     16 << FRACBITS, t->angle, colors + lightlev, t->x, t->y);
             }
             t = t->snext;
