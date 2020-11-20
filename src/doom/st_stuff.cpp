@@ -650,16 +650,16 @@ bool ST_Responder(event_t *ev)
 
     // Filter automap on/off.
     if (ev->type == evtype_t::ev_keyup
-        && ((ev->data1 & 0xffff0000) == AM_MSGHEADER))
+        && ((ev->data1 & 0xffff0000) == globals::AM_MSGHEADER))
     {
         switch (ev->data1)
         {
-        case AM_MSGENTERED:
+        case globals::AM_MSGENTERED:
             st_gamestate = AutomapState;
             st_firsttime = true;
             break;
 
-        case AM_MSGEXITED:
+        case globals::AM_MSGEXITED:
             //	fprintf(stderr, "AM exited\n");
             st_gamestate = FirstPersonState;
             break;

@@ -319,7 +319,7 @@ static void P_ReadBrainTarget(const char *key)
     }
 }
 
-// markpoints[]
+// locals.markpoints[]
 
 extern void AM_GetMarkPoints(int *n, long *p);
 extern void AM_SetMarkPoints(int n, long *p);

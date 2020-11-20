@@ -50,7 +50,7 @@ static deh_cheat_t allcheats[] = {
     { "BEHOLD menu", &cheat_powerup[6] },
     { "Level Warp", &cheat_clev },
     { "Player Position", &cheat_mypos },
-    { "Map cheat", &cheat_amap },
+    { "Map cheat", &globals::cheat_amap },
 };
 
 static deh_cheat_t *FindCheatByName(char *name)

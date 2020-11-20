@@ -22,15 +22,6 @@
 #include "../d_event.hpp"
 #include "../m_cheat.hpp"
 
-// Used by ST StatusBar stuff.
-//constexpr int AM_MSGHEADER  = (('a' << 24) + ('m' << 16));
-//constexpr int AM_MSGENTERED = (AM_MSGHEADER | ('e' << 8));
-//constexpr int AM_MSGEXITED  = (AM_MSGHEADER | ('x' << 8));
-constexpr int AM_MSGHEADER  = 0x616D0000; // am??
-constexpr int AM_MSGENTERED = 0x616D6500; // ame?
-constexpr int AM_MSGEXITED  = 0x616D7800; // amx?
-
-
 // Called by main loop.
 auto AM_Responder(event_t *ev) -> bool;
 
@@ -45,8 +36,16 @@ auto AM_Drawer() -> void;
 // if the level is completed while it is up.
 auto AM_Stop() -> void;
 
+namespace globals {
+// Used by ST StatusBar stuff.
+//constexpr int AM_MSGHEADER  = (('a' << 24) + ('m' << 16));
+//constexpr int AM_MSGENTERED = (AM_MSGHEADER | ('e' << 8));
+//constexpr int AM_MSGEXITED  = (AM_MSGHEADER | ('x' << 8));
+constexpr int AM_MSGHEADER  = 0x616D0000; // am??
+constexpr int AM_MSGENTERED = 0x616D6500; // ame?
+constexpr int AM_MSGEXITED  = 0x616D7800; // amx?
 
 extern cheatseq_t cheat_amap;
-
+}
 
 #endif

@@ -80,8 +80,8 @@ constexpr int XHAIRCOLORS              = GRAYS;
 //constexpr int SECRETWALLRANGE          = WALLRANGE;
 //constexpr int GRIDRANGE                = 0;
 #define CDWALLCOLORS (crispy->extautomap ? 215 : YELLOWS) // [crispy] orange
-#define FDWALLCOLORS (crispy->extautomap ? 55 : BROWNS)   // [crispy] lt brown
-#define WALLCOLORS   (crispy->extautomap ? 23 : REDS)     // [crispy] red-brown
+#define FDWALLCOLORS (crispy->extautomap ? 55 : BROWNS) // [crispy] lt brown
+#define WALLCOLORS   (crispy->extautomap ? 23 : REDS) // [crispy] red-brown
 #define CRISPY_HIGHLIGHT_REVEALED_SECRETS
 
 // drawing stuff
@@ -299,13 +299,17 @@ static fixed_t scale_ftom;
 
 static player_t *plr; // the player represented by an arrow
 
-static std::array<patch_t *, 10>              marknums;         // numbers used for marking by the automap
-static std::array<mpoint_t, AM_NUMMARKPOINTS> markpoints;       // where the points are
-static int                                    markpointnum = 0; // next point to be assigned
+struct {
+    std::array<patch_t *, 10>              marknums;         // numbers used for marking by the automap
+    std::array<mpoint_t, AM_NUMMARKPOINTS> markpoints;       // where the points are
+    int                                    markpointnum = 0; // next point to be assigned
 
-static int followplayer = 1; // specifies whether to follow the player around
+    int followplayer = 1; // specifies whether to follow the player around
+} static locals;
 
+namespace globals {
 cheatseq_t cheat_amap = CHEAT("iddt", 0);
+}
 
 static bool stopped = true;
 
@@ -373,7 +377,7 @@ auto AM_restoreScaleAndLoc() -> void
 {
     m_w = old_m_w;
     m_h = old_m_h;
-    if (followplayer == 0)
+    if (locals.followplayer == 0)
     {
         m_x = old_m_x;
         m_y = old_m_y;
@@ -398,17 +402,17 @@ auto AM_addMark() -> void
 {
     // [crispy] keep the map static in overlay mode
     // if not following the player
-    if (!(!followplayer && crispy->automapoverlay))
+    if (!(!locals.followplayer && crispy->automapoverlay))
     {
-        markpoints[markpointnum].x = m_x + m_w / 2;
-        markpoints[markpointnum].y = m_y + m_h / 2;
+        locals.markpoints[locals.markpointnum].x = m_x + m_w / 2;
+        locals.markpoints[locals.markpointnum].y = m_y + m_h / 2;
     }
     else
     {
-        markpoints[markpointnum].x = plr->mo->x;
-        markpoints[markpointnum].y = plr->mo->y;
+        locals.markpoints[locals.markpointnum].x = plr->mo->x;
+        locals.markpoints[locals.markpointnum].y = plr->mo->y;
     }
-    markpointnum = (markpointnum + 1) % AM_NUMMARKPOINTS;
+    locals.markpointnum = (locals.markpointnum + 1) % AM_NUMMARKPOINTS;
 }
 
 //
@@ -461,8 +465,8 @@ void AM_changeWindowLoc(void)
 
     if (m_paninc.x || m_paninc.y)
     {
-        followplayer = 0;
-        f_oldloc.x   = INT_MAX;
+        locals.followplayer = 0;
+        f_oldloc.x          = INT_MAX;
     }
 
     incx = m_paninc.x;
@@ -501,7 +505,7 @@ void AM_changeWindowLoc(void)
 //
 auto AM_initVariables() -> void
 {
-    static event_t st_notify = { evtype_t::ev_keyup, AM_MSGENTERED, 0, 0 };
+    static event_t st_notify = { evtype_t::ev_keyup, globals::AM_MSGENTERED, 0, 0 };
 
     automapactive = true;
     //  fb = I_VideoBuffer; // [crispy] simplify
@@ -560,7 +564,7 @@ auto AM_loadPics() -> void
     for (int i = 0; i < 10; i++)
     {
         DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
-        marknums[i] = cache_lump_name<patch_t *>(namebuf, PU::STATIC);
+        locals.marknums[i] = cache_lump_name<patch_t *>(namebuf, PU::STATIC);
     }
 }
 
@@ -579,9 +583,9 @@ auto AM_clearMarks() -> void
 {
     for (int i = 0; i < AM_NUMMARKPOINTS; i++)
     {
-        markpoints[i].x = -1; // means empty
+        locals.markpoints[i].x = -1; // means empty
     }
-    markpointnum = 0;
+    locals.markpointnum = 0;
 }
 
 //
@@ -642,7 +646,7 @@ auto AM_ReInit() -> void
 //
 auto AM_Stop() -> void
 {
-    static event_t st_notify = { evtype_t::ev_keyup, AM_MSGEXITED, 0 };
+    static event_t st_notify = { evtype_t::ev_keyup, globals::AM_MSGEXITED, 0 };
 
     AM_unloadPics();
     automapactive = false;
@@ -751,7 +755,7 @@ auto AM_Responder(event_t *ev) -> bool
             ftom_zoommul = M2_ZOOMOUT;
             rc           = true;
         }
-        else if (!followplayer && (ev->data2 || ev->data3))
+        else if (!locals.followplayer && (ev->data2 || ev->data3))
         {
             // [crispy] mouse sensitivity for strafe
             m_paninc.x = FTOM(ev->data2 * (mouseSensitivity_x2 + 5) / 80);
@@ -769,7 +773,7 @@ auto AM_Responder(event_t *ev) -> bool
         {
             // [crispy] keep the map static in overlay mode
             // if not following the player
-            if (!followplayer && !crispy->automapoverlay)
+            if (!locals.followplayer && !crispy->automapoverlay)
             {
                 m_paninc.x = crispy->fliplevels ? -FTOM(F_PANINC) : FTOM(F_PANINC);
             }
@@ -780,7 +784,7 @@ auto AM_Responder(event_t *ev) -> bool
         }
         else if (key == key_map_west) // pan left
         {
-            if ((followplayer == 0) && (crispy->automapoverlay == 0))
+            if ((locals.followplayer == 0) && (crispy->automapoverlay == 0))
             {
                 m_paninc.x = crispy->fliplevels ? FTOM(F_PANINC) : -FTOM(F_PANINC);
             }
@@ -791,7 +795,7 @@ auto AM_Responder(event_t *ev) -> bool
         }
         else if (key == key_map_north) // pan up
         {
-            if ((followplayer == 0) && (crispy->automapoverlay == 0))
+            if ((locals.followplayer == 0) && (crispy->automapoverlay == 0))
             {
                 m_paninc.y = FTOM(F_PANINC);
             }
@@ -802,7 +806,7 @@ auto AM_Responder(event_t *ev) -> bool
         }
         else if (key == key_map_south) // pan down
         {
-            if ((followplayer == 0) && (crispy->automapoverlay == 0))
+            if ((locals.followplayer == 0) && (crispy->automapoverlay == 0))
             {
                 m_paninc.y = -FTOM(F_PANINC);
             }
@@ -842,9 +846,9 @@ auto AM_Responder(event_t *ev) -> bool
         }
         else if (key == key_map_follow)
         {
-            followplayer = (followplayer == 0);
-            f_oldloc.x   = INT_MAX;
-            if (followplayer != 0)
+            locals.followplayer = (locals.followplayer == 0);
+            f_oldloc.x          = INT_MAX;
+            if (locals.followplayer != 0)
             {
                 plr->message = DEH_String(AMSTR_FOLLOWON);
             }
@@ -870,7 +874,7 @@ auto AM_Responder(event_t *ev) -> bool
             constexpr size_t                    bufferSize = 20;
             static std::array<char, bufferSize> buffer;
             M_snprintf(buffer.data(), bufferSize, "%s %d",
-                DEH_String(AMSTR_MARKEDSPOT), markpointnum);
+                DEH_String(AMSTR_MARKEDSPOT), locals.markpointnum);
             plr->message = buffer.data();
             AM_addMark();
         }
@@ -904,7 +908,7 @@ auto AM_Responder(event_t *ev) -> bool
         }
 
         if (((deathmatch == 0) || gameversion <= exe_doom_1_8)
-            && cht_CheckCheat(&cheat_amap, ev->data2) != 0)
+            && cht_CheckCheat(&globals::cheat_amap, ev->data2) != 0)
         {
             rc       = false;
             cheating = (cheating + 1) % 3;
@@ -917,19 +921,19 @@ auto AM_Responder(event_t *ev) -> bool
 
         if (key == key_map_east)
         {
-            if (followplayer == 0) { m_paninc.x = 0; }
+            if (locals.followplayer == 0) { m_paninc.x = 0; }
         }
         else if (key == key_map_west)
         {
-            if (followplayer == 0) { m_paninc.x = 0; }
+            if (locals.followplayer == 0) { m_paninc.x = 0; }
         }
         else if (key == key_map_north)
         {
-            if (followplayer == 0) { m_paninc.y = 0; }
+            if (locals.followplayer == 0) { m_paninc.y = 0; }
         }
         else if (key == key_map_south)
         {
-            if (followplayer == 0) { m_paninc.y = 0; }
+            if (locals.followplayer == 0) { m_paninc.y = 0; }
         }
         else if (key == key_map_zoomout || key == key_map_zoomin)
         {
@@ -970,7 +974,7 @@ void AM_changeWindowScale(void)
 //
 //
 //
-void AM_doFollowPlayer(void)
+void AM_dofollowplayer(void)
 {
     if (f_oldloc.x != plr->mo->x || f_oldloc.y != plr->mo->y)
     {
@@ -1018,8 +1022,8 @@ void AM_Ticker(void)
 
     amclock++;
 
-    if (followplayer)
-        AM_doFollowPlayer();
+    if (locals.followplayer)
+        AM_dofollowplayer();
 
     // Change the zoom if necessary
     if (ftom_zoommul != FRACUNIT)
@@ -1039,7 +1043,7 @@ void AM_Ticker(void)
         mapcenter.y = m_y + m_h / 2;
         // [crispy] keep the map static in overlay mode
         // if not following the player
-        if (!(!followplayer && crispy->automapoverlay))
+        if (!(!locals.followplayer && crispy->automapoverlay))
             mapangle = ANG90 - viewangle;
     }
 }
@@ -1717,10 +1721,10 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
                 if (key > no_key)
                 {
                     AM_drawLineCharacter(cross_mark, 16 << FRACBITS, t->angle,
-                        (key == red_key) ? REDS :
-                                           (key == yellow_key) ? YELLOWS :
-                                                                 (key == blue_key) ? BLUES :
-                                                                                     colors + lightlev,
+                        (key == red_key)    ? REDS :
+                        (key == yellow_key) ? YELLOWS :
+                        (key == blue_key)   ? BLUES :
+                                              colors + lightlev,
                         pt.x, pt.y);
                 }
                 else
@@ -1742,12 +1746,12 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
                                                                                     // [crispy] ... show Lost Souls and missiles in orange ...
                             (t->flags & (MF_FLOAT | MF_MISSILE)) ? 216 :
                                                                    // [crispy] ... show other shootable items in dark gold ...
-                                (t->flags & MF_SHOOTABLE) ? 164 :
-                                                            // [crispy] ... corpses in gray ...
-                                    (t->flags & MF_CORPSE) ? GRAYS :
-                                                             // [crispy] ... and countable items in yellow
-                                        (t->flags & MF_COUNTITEM) ? YELLOWS :
-                                                                    colors + lightlev,
+                            (t->flags & MF_SHOOTABLE) ? 164 :
+                                                        // [crispy] ... corpses in gray ...
+                            (t->flags & MF_CORPSE) ? GRAYS :
+                                                     // [crispy] ... and countable items in yellow
+                            (t->flags & MF_COUNTITEM) ? YELLOWS :
+                                                        colors + lightlev,
                         pt.x, pt.y);
                 }
             }
@@ -1768,15 +1772,15 @@ void AM_drawMarks(void)
 
     for (i = 0; i < AM_NUMMARKPOINTS; i++)
     {
-        if (markpoints[i].x != -1)
+        if (locals.markpoints[i].x != -1)
         {
-            //      w = SHORT(marknums[i]->width);
-            //      h = SHORT(marknums[i]->height);
+            //      w = SHORT(locals.marknums[i]->width);
+            //      h = SHORT(locals.marknums[i]->height);
             w = 5; // because something's wrong with the wad, i guess
             h = 6; // because something's wrong with the wad, i guess
             // [crispy] center marks around player
-            pt.x = markpoints[i].x;
-            pt.y = markpoints[i].y;
+            pt.x = locals.markpoints[i].x;
+            pt.y = locals.markpoints[i].y;
             if (crispy->automaprotate)
             {
                 AM_rotatePoint(&pt);
@@ -1784,7 +1788,7 @@ void AM_drawMarks(void)
             fx = (flipscreenwidth[CXMTOF(pt.x)] >> crispy->hires) - 1 - DELTAWIDTH;
             fy = (CYMTOF(pt.y) >> crispy->hires) - 2;
             if (fx >= f_x && fx <= (f_w >> crispy->hires) - w && fy >= f_y && fy <= (f_h >> crispy->hires) - h)
-                V_DrawPatch(fx, fy, marknums[i]);
+                V_DrawPatch(fx, fy, locals.marknums[i]);
         }
     }
 }
@@ -1792,7 +1796,7 @@ void AM_drawMarks(void)
 void AM_drawCrosshair(int color)
 {
     // [crispy] draw an actual crosshair
-    if (!followplayer)
+    if (!locals.followplayer)
     {
         static fline_t h, v;
 
@@ -1840,16 +1844,16 @@ void AM_GetMarkPoints(int *n, long *p)
 {
     int i;
 
-    *n = markpointnum;
+    *n = locals.markpointnum;
     *p = -1L;
 
-    // [crispy] prevent saving markpoints from previous map
+    // [crispy] prevent saving locals.markpoints from previous map
     if (lastlevel == gamemap && lastepisode == gameepisode)
     {
         for (i = 0; i < AM_NUMMARKPOINTS; i++)
         {
-            *p++ = (long)markpoints[i].x;
-            *p++ = (markpoints[i].x == -1) ? 0L : (long)markpoints[i].y;
+            *p++ = (long)locals.markpoints[i].x;
+            *p++ = (locals.markpoints[i].x == -1) ? 0L : (long)locals.markpoints[i].y;
         }
     }
 }
@@ -1862,11 +1866,11 @@ void AM_SetMarkPoints(int n, long *p)
     lastlevel   = gamemap;
     lastepisode = gameepisode;
 
-    markpointnum = n;
+    locals.markpointnum = n;
 
     for (i = 0; i < AM_NUMMARKPOINTS; i++)
     {
-        markpoints[i].x = (int64_t)*p++;
-        markpoints[i].y = (int64_t)*p++;
+        locals.markpoints[i].x = (int64_t)*p++;
+        locals.markpoints[i].y = (int64_t)*p++;
     }
 }
