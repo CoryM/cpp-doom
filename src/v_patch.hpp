@@ -27,19 +27,19 @@
 // of patches.
 
 struct patch_t {
-        short width; // bounding box size
-        short height;
-        short leftoffset;   // pixels to the left of origin
-        short topoffset;    // pixels below the origin
-        int   columnofs[8]; // only [width] used
-        // the [0] is &columnofs[width]
-    };
+    short width        = 0; // bounding box size
+    short height       = 0;
+    short leftoffset   = 0;  // pixels to the left of origin
+    short topoffset    = 0;  // pixels below the origin
+    int   columnofs[8] = {}; // only [width] used
+    // the [0] is &columnofs[width]
+};
 
 // posts are runs of non masked source pixels
 struct post_t {
-        byte topdelta; // -1 is the last post in a column
-        byte length;   // length data bytes follows
-    };
+    byte topdelta; // -1 is the last post in a column
+    byte length;   // length data bytes follows
+};
 
 // column_t is a list of 0 or more post_t, (byte)-1 terminated
 typedef post_t column_t;
