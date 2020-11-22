@@ -60,7 +60,7 @@ extern const byte gammatable[5][256];
 
 // Binary Angle Measument, BAM.
 
-typedef unsigned int angle_t;
+using angle_t = unsigned int;
 
 constexpr angle_t ANG45   = 0x20000000;
 constexpr angle_t ANG90   = 0x40000000;
