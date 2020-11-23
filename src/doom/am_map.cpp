@@ -102,17 +102,6 @@ constexpr auto M_ZOOMOUT = static_cast<int>(FRACUNIT / 1.02);
 constexpr auto M2_ZOOMIN  = static_cast<int>(1.08 * FRACUNIT);
 constexpr auto M2_ZOOMOUT = static_cast<int>(FRACUNIT / 1.08);
 
-// translates between frame-buffer and map distances
-// [crispy] fix int overflow that causes map and grid lines to disappear
-#define FTOM(x) (((int64_t)((x) << FRACBITS) * locals.scale_ftom) >> FRACBITS)
-#define MTOF(x) ((((int64_t)(x)*locals.scale_mtof) >> FRACBITS) >> FRACBITS)
-// translates between frame-buffer and map coordinates
-#define CXMTOF(x) (locals.f_x + MTOF((x)-locals.m_x))
-#define CYMTOF(y) (locals.f_y + (locals.f_h - MTOF((y)-locals.m_y)))
-
-// the following is crap
-#define LINE_NEVERSEE ML_DONTDRAW
-
 struct fpoint_t {
     int x;
     int y;
@@ -156,6 +145,11 @@ cheatseq_t cheat_amap = CHEAT("iddt", 0);
 } // end of namespace globals
 
 struct {
+
+    // the following is crap
+    //#define LINE_NEVERSEE globals::ML_DONTDRAW
+    const decltype(globals::ML_DONTDRAW) LINE_NEVERSEE = globals::ML_DONTDRAW;
+
     int cheating = 0;
     int grid     = 0;
 
@@ -290,6 +284,32 @@ struct {
 
 #undef R
 
+    // translates between frame-buffer and map distances
+    // [crispy] fix int overflow that causes map and grid lines to disappear
+
+    [[nodiscard]] auto FTOM(int64_t x) -> int
+    {
+        return (((x << FRACBITS) * scale_ftom) >> FRACBITS);
+    }
+
+    [[nodiscard]] auto MTOF(int64_t x) -> int64_t
+    {
+        return (static_cast<uint64_t>(x * scale_mtof) >> FRACBITS) >> FRACBITS;
+    }
+
+
+    // translates between frame-buffer and map coordinates
+    [[nodiscard]] auto CXMTOF(int64_t x) -> int
+    {
+        return static_cast<int>(f_x + MTOF((x)-m_x));
+    }
+
+
+    // translates between frame-buffer and map coordinates
+    [[nodiscard]] auto CYMTOF(int64_t y) -> int
+    {
+        return static_cast<int>(f_y + (f_h - MTOF(y - m_y)));
+    }
 
 } static locals;
 
@@ -330,8 +350,8 @@ auto AM_activateNewScale() -> void
 {
     locals.m_x += locals.m_w / 2;
     locals.m_y += locals.m_h / 2;
-    locals.m_w = FTOM(locals.f_w);
-    locals.m_h = FTOM(locals.f_h);
+    locals.m_w = locals.FTOM(locals.f_w);
+    locals.m_h = locals.FTOM(locals.f_h);
     locals.m_x -= locals.m_w / 2;
     locals.m_y -= locals.m_h / 2;
     locals.m_x2 = locals.m_x + locals.m_w;
@@ -504,8 +524,8 @@ auto AM_initVariables() -> void
     locals.ftom_zoommul                   = FRACUNIT;
     locals.mtof_zoommul                   = FRACUNIT;
 
-    locals.m_w = FTOM(locals.f_w);
-    locals.m_h = FTOM(locals.f_h);
+    locals.m_w = locals.FTOM(locals.f_w);
+    locals.m_h = locals.FTOM(locals.f_h);
 
     // find player to center on initially
     if (playeringame[consoleplayer])
@@ -744,8 +764,8 @@ auto AM_Responder(event_t *ev) -> bool
         else if (!locals.followplayer && (ev->data2 || ev->data3))
         {
             // [crispy] mouse sensitivity for strafe
-            locals.m_paninc.x = FTOM(ev->data2 * (mouseSensitivity_x2 + 5) / 80);
-            locals.m_paninc.y = FTOM(ev->data3 * (mouseSensitivity_x2 + 5) / 80);
+            locals.m_paninc.x = locals.FTOM(ev->data2 * (mouseSensitivity_x2 + 5) / 80);
+            locals.m_paninc.y = locals.FTOM(ev->data3 * (mouseSensitivity_x2 + 5) / 80);
             locals.f_oldloc.y = INT_MAX;
             rc                = true;
         }
@@ -761,7 +781,7 @@ auto AM_Responder(event_t *ev) -> bool
             // if not following the player
             if (!locals.followplayer && !crispy->automapoverlay)
             {
-                locals.m_paninc.x = crispy->fliplevels ? -FTOM(F_PANINC) : FTOM(F_PANINC);
+                locals.m_paninc.x = crispy->fliplevels ? -locals.FTOM(F_PANINC) : locals.FTOM(F_PANINC);
             }
             else
             {
@@ -772,7 +792,7 @@ auto AM_Responder(event_t *ev) -> bool
         {
             if ((locals.followplayer == 0) && (crispy->automapoverlay == 0))
             {
-                locals.m_paninc.x = crispy->fliplevels ? FTOM(F_PANINC) : -FTOM(F_PANINC);
+                locals.m_paninc.x = crispy->fliplevels ? locals.FTOM(F_PANINC) : -locals.FTOM(F_PANINC);
             }
             else
             {
@@ -783,7 +803,7 @@ auto AM_Responder(event_t *ev) -> bool
         {
             if ((locals.followplayer == 0) && (crispy->automapoverlay == 0))
             {
-                locals.m_paninc.y = FTOM(F_PANINC);
+                locals.m_paninc.y = locals.FTOM(F_PANINC);
             }
             else
             {
@@ -794,7 +814,7 @@ auto AM_Responder(event_t *ev) -> bool
         {
             if ((locals.followplayer == 0) && (crispy->automapoverlay == 0))
             {
-                locals.m_paninc.y = -FTOM(F_PANINC);
+                locals.m_paninc.y = -locals.FTOM(F_PANINC);
             }
             else
             {
@@ -964,15 +984,15 @@ void AM_dofollowplayer(void)
 {
     if (locals.f_oldloc.x != locals.plr->mo->x || locals.f_oldloc.y != locals.plr->mo->y)
     {
-        locals.m_x        = FTOM(MTOF(locals.plr->mo->x)) - locals.m_w / 2;
-        locals.m_y        = FTOM(MTOF(locals.plr->mo->y)) - locals.m_h / 2;
+        locals.m_x        = locals.FTOM(locals.MTOF(locals.plr->mo->x)) - locals.m_w / 2;
+        locals.m_y        = locals.FTOM(locals.MTOF(locals.plr->mo->y)) - locals.m_h / 2;
         locals.m_x2       = locals.m_x + locals.m_w;
         locals.m_y2       = locals.m_y + locals.m_h;
         locals.f_oldloc.x = locals.plr->mo->x;
         locals.f_oldloc.y = locals.plr->mo->y;
 
-        //  locals.m_x = FTOM(MTOF(locals.plr->mo->x - locals.m_w/2));
-        //  locals.m_y = FTOM(MTOF(locals.plr->mo->y - locals.m_h/2));
+        //  locals.m_x = locals.FTOM(locals.MTOF(locals.plr->mo->x - locals.m_w/2));
+        //  locals.m_y = locals.FTOM(locals.MTOF(locals.plr->mo->y - locals.m_h/2));
         //  locals.m_x = locals.plr->mo->x - locals.m_w/2;
         //  locals.m_y = locals.plr->mo->y - locals.m_h/2;
     }
@@ -1119,10 +1139,10 @@ bool AM_clipMline(mline_t *ml,
         return false; // trivially outside
 
     // transform to frame-buffer coordinates.
-    fl->a.x = CXMTOF(ml->a.x);
-    fl->a.y = CYMTOF(ml->a.y);
-    fl->b.x = CXMTOF(ml->b.x);
-    fl->b.y = CYMTOF(ml->b.y);
+    fl->a.x = locals.CXMTOF(ml->a.x);
+    fl->a.y = locals.CYMTOF(ml->a.y);
+    fl->b.x = locals.CXMTOF(ml->b.x);
+    fl->b.y = locals.CYMTOF(ml->b.y);
 
     DOOUTCODE(outcode1, fl->a.x, fl->a.y);
     DOOUTCODE(outcode2, fl->b.x, fl->b.y);
@@ -1411,7 +1431,7 @@ void AM_drawWalls(void)
         }
         if (locals.cheating || (lines[i].flags & ML_MAPPED))
         {
-            if ((lines[i].flags & LINE_NEVERSEE) && !locals.cheating)
+            if ((lines[i].flags & locals.LINE_NEVERSEE) && !locals.cheating)
                 continue;
             {
                 // [crispy] draw keyed doors in their respective colors
@@ -1504,7 +1524,7 @@ void AM_drawWalls(void)
         }
         else if (locals.plr->powers[pw_allmap])
         {
-            if (!(lines[i].flags & LINE_NEVERSEE)) AM_drawMline(&l, GRAYS + 3);
+            if (!(lines[i].flags & locals.LINE_NEVERSEE)) AM_drawMline(&l, GRAYS + 3);
         }
     }
 }
@@ -1779,8 +1799,8 @@ void AM_drawMarks(void)
             {
                 AM_rotatePoint(&pt);
             }
-            fx = (flipscreenwidth[CXMTOF(pt.x)] >> crispy->hires) - 1 - DELTAWIDTH;
-            fy = (CYMTOF(pt.y) >> crispy->hires) - 2;
+            fx = (flipscreenwidth[locals.CXMTOF(pt.x)] >> crispy->hires) - 1 - DELTAWIDTH;
+            fy = (locals.CYMTOF(pt.y) >> crispy->hires) - 2;
             if (fx >= locals.f_x && fx <= (locals.f_w >> crispy->hires) - w && fy >= locals.f_y && fy <= (locals.f_h >> crispy->hires) - h)
                 V_DrawPatch(fx, fy, locals.marknums[i]);
         }
