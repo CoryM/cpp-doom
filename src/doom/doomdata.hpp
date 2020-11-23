@@ -138,8 +138,10 @@ typedef PACKED_STRUCT(
 // Sound rendering: don't let sound cross two of these.
 #define ML_SOUNDBLOCK 64
 
+namespace globals {
 // Don't draw on the automap at all.
-#define ML_DONTDRAW 128
+constexpr int ML_DONTDRAW = 128;
+}
 
 // Set if already seen, thus drawn in automap.
 #define ML_MAPPED 256
@@ -217,7 +219,7 @@ typedef PACKED_STRUCT(
 // BSP node structure.
 
 // Indicate a leaf.
-#define NF_SUBSECTOR 0x80000000           // [crispy] extended nodes
+#define NF_SUBSECTOR 0x80000000 // [crispy] extended nodes
 #define NO_INDEX     ((unsigned short)-1) // [crispy] extended nodes
 
 typedef PACKED_STRUCT(
@@ -265,11 +267,11 @@ typedef PACKED_STRUCT(
 // Thing definition, position, orientation and type,
 // plus skill/visibility flags and attributes.
 struct mapthing_t {
-    short        x       = 0;
-    short        y       = 0;
-    short        angle   = 0;
-    short        type    = 0;
-    short        options = 0;
+    short x       = 0;
+    short y       = 0;
+    short angle   = 0;
+    short type    = 0;
+    short options = 0;
 };
 
 // [crispy] allow loading of Hexen-format maps
