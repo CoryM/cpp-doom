@@ -115,6 +115,16 @@ struct fline_t {
 struct mpoint_t {
     int64_t x = 0;
     int64_t y = 0;
+
+    mpoint_t operator*(const fixed_t &pIn)
+    {
+        return { this->x * pIn, this->y * pIn };
+    }
+
+    mpoint_t operator*=(const fixed_t &pIn)
+    {
+        return { this->x * pIn, this->y * pIn };
+    }
 };
 
 struct mline_t {
@@ -1572,8 +1582,6 @@ static void AM_rotatePoint(mpoint_t *pt)
 }
 
 void AM_drawLineCharacter( //
-    //const mline_t *lineguy,
-    //int            lineguylines,
     const std::span<const mline_t> drawIt,
     fixed_t                        scale,
     angle_t                        angle,
@@ -1581,46 +1589,30 @@ void AM_drawLineCharacter( //
     fixed_t                        x,
     fixed_t                        y)
 {
-    const mline_t *lineguy      = drawIt.data();
-    int            lineguylines = drawIt.size();
-
-    int     i;
-    mline_t l;
-
     if (crispy->automaprotate)
     {
         angle += locals.mapangle;
     }
 
-    for (i = 0; i < lineguylines; i++)
+    //for (i = 0; i < lineguylines; i++)
+    for (auto line : drawIt)
     {
-        l.a.x = lineguy[i].a.x;
-        l.a.y = lineguy[i].a.y;
+        mline_t l = line;
 
-        if (scale)
+        if (scale != 0)
         {
-            l.a.x = FixedMul(scale, l.a.x);
-            l.a.y = FixedMul(scale, l.a.y);
+            l.a *= scale;
+            l.b *= scale;
         }
 
-        if (angle)
+        if (angle != 0)
+        {
             AM_rotate(&l.a.x, &l.a.y, angle);
+            AM_rotate(&l.b.x, &l.b.y, angle);
+        }
 
         l.a.x += x;
         l.a.y += y;
-
-        l.b.x = lineguy[i].b.x;
-        l.b.y = lineguy[i].b.y;
-
-        if (scale)
-        {
-            l.b.x = FixedMul(scale, l.b.x);
-            l.b.y = FixedMul(scale, l.b.y);
-        }
-
-        if (angle)
-            AM_rotate(&l.b.x, &l.b.y, angle);
-
         l.b.x += x;
         l.b.y += y;
 
