@@ -43,7 +43,7 @@ constexpr auto FINEMASK   = FINEANGLES - 1;
 
 
 // 0x100000000 to 0x2000
-constexpr auto ANGLETOFINESHIFT = 19;
+constexpr unsigned int ANGLETOFINESHIFT = 19;
 
 // Effective size is 10240.
 extern const fixed_t finesine[5 * FINEANGLES / 4];

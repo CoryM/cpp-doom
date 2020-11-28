@@ -154,8 +154,8 @@ cheatseq_t cheat_amap = CHEAT("iddt", 0);
 
 } // end of namespace globals
 
-struct {
-
+class {
+public:
     // the following is crap
     //#define LINE_NEVERSEE globals::ML_DONTDRAW
     const decltype(globals::ML_DONTDRAW) LINE_NEVERSEE = globals::ML_DONTDRAW;
@@ -321,199 +321,208 @@ struct {
         return static_cast<int>(f_y + (f_h - MTOF(y - m_y)));
     }
 
+    //
+    //
+    auto AM_activateNewScale() -> void
+    {
+        m_x += m_w / 2;
+        m_y += m_h / 2;
+        m_w = FTOM(f_w);
+        m_h = FTOM(f_h);
+        m_x -= m_w / 2;
+        m_y -= m_h / 2;
+        m_x2 = m_x + m_w;
+        m_y2 = m_y + m_h;
+    }
+
+    //
+    inline auto AM_saveScaleAndLoc() -> void
+    {
+        old_m_x = m_x;
+        old_m_y = m_y;
+        old_m_w = m_w;
+        old_m_h = m_h;
+    }
+
+    //
+    auto AM_restoreScaleAndLoc() -> void
+    {
+        m_w = old_m_w;
+        m_h = old_m_h;
+        if (followplayer == 0)
+        {
+            m_x = old_m_x;
+            m_y = old_m_y;
+        }
+        else
+        {
+            m_x = plr->mo->x - m_w / 2;
+            m_y = plr->mo->y - m_h / 2;
+        }
+        m_x2 = m_x + m_w;
+        m_y2 = m_y + m_h;
+
+        // Change the scaling multipliers
+        scale_mtof = FixedDiv(static_cast<unsigned int>(f_w) << FRACBITS, m_w);
+        scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
+    }
+
+    //
+    // adds a marker at the current location
+    //
+    auto AM_addMark() -> void
+    {
+        // [crispy] keep the map static in overlay mode
+        // if not following the player
+        if (!(!followplayer && crispy->automapoverlay))
+        {
+            markpoints[markpointnum].x = m_x + m_w / 2;
+            markpoints[markpointnum].y = m_y + m_h / 2;
+        }
+        else
+        {
+            markpoints[markpointnum].x = plr->mo->x;
+            markpoints[markpointnum].y = plr->mo->y;
+        }
+        markpointnum = (markpointnum + 1) % AM_NUMMARKPOINTS;
+    }
+
+
+    // Determines bounding box of all vertices,
+    // sets global variables controlling zoom range.
+    auto AM_findMinMaxBoundaries() -> void
+    {
+        min_x = min_y = INT_MAX;
+        max_x = max_y = -INT_MAX;
+
+        auto vertex_span = std::span<vertex_t>(vertexes, numvertexes);
+
+        for (auto &i : vertex_span)
+        {
+            min_x = std::min(min_x, i.x);
+            max_x = std::max(max_x, i.x);
+            min_y = std::min(min_y, i.y);
+            max_y = std::max(max_y, i.y);
+        }
+
+        // [crispy] cope with huge level dimensions which span the entire INT range
+        max_w = max_x / 2 - min_x / 2;
+        max_h = max_y / 2 - min_y / 2;
+
+        const fixed_t a = FixedDiv(f_w << FRACBITS, max_w);
+        const fixed_t b = FixedDiv(f_h << FRACBITS, max_h);
+
+        min_scale_mtof = std::min(a, b) / 2;
+        max_scale_mtof = FixedDiv(f_h << FRACBITS, 2 * PLAYERRADIUS);
+    }
+
+
+    // [crispy] rotate point around map center
+    // adapted from prboom-plus/src/am_map.c:898-920
+    auto AM_rotatePoint(mpoint_t &pt) -> void
+    {
+        pt.x -= mapcenter.x;
+        pt.y -= mapcenter.y;
+
+        const auto angl = static_cast<size_t>(mapangle) >> ANGLETOFINESHIFT;
+        const auto fcos = finecosine[angl];
+        const auto fsin = finesine[angl];
+
+        const auto tmpx = FixedMul(pt.x, fcos) - FixedMul(pt.y, fsin) + mapcenter.x;
+        pt.y            = FixedMul(pt.x, fsin) + FixedMul(pt.y, fcos) + mapcenter.y;
+        pt.x            = tmpx;
+    }
+
+
+    //
+    // Rotation in 2D.
+    // Used to rotate player arrow line character.
+    void AM_rotate(int64_t &x,
+        int64_t &           y,
+        const angle_t       a)
+    {
+        int64_t tmpx =
+            FixedMul(x, finecosine[a >> ANGLETOFINESHIFT])
+            - FixedMul(y, finesine[a >> ANGLETOFINESHIFT]);
+
+        y =
+            FixedMul(x, finesine[a >> ANGLETOFINESHIFT])
+            + FixedMul(y, finecosine[a >> ANGLETOFINESHIFT]);
+
+        x = tmpx;
+    }
+
+
+    //
+    auto AM_changeWindowLoc() -> void
+    {
+        if (m_paninc.x || m_paninc.y)
+        {
+            followplayer = 0;
+            f_oldloc.x   = INT_MAX;
+        }
+
+        int64_t incx = m_paninc.x;
+        int64_t incy = m_paninc.y;
+        if (crispy->automaprotate != 0)
+        {
+            AM_rotate(incx, incy, -mapangle);
+        }
+        m_x += incx;
+        m_y += incy;
+
+        if (m_x + m_w / 2 > max_x)
+        {
+            m_x = max_x - m_w / 2;
+        }
+        else if (m_x + m_w / 2 < min_x)
+        {
+            m_x = min_x - m_w / 2;
+        }
+
+        if (m_y + m_h / 2 > max_y)
+        {
+            m_y = max_y - m_h / 2;
+        }
+        else if (m_y + m_h / 2 < min_y)
+        {
+            m_y = min_y - m_h / 2;
+        }
+
+        m_x2 = m_x + m_w;
+        m_y2 = m_y + m_h;
+
+        // [crispy] reset after moving with the mouse
+        if (f_oldloc.y == INT_MAX)
+        {
+            m_paninc.x = 0;
+            m_paninc.y = 0;
+        }
+    }
+
+
 } static locals;
 
-
-// [crispy] automap rotate mode needs these early on
-void        AM_rotate(int64_t *x, int64_t *y, angle_t a);
-static void AM_rotatePoint(mpoint_t *pt);
 
 // Calculates the slope and slope according to the x-axis of a line
 // segment in map coordinates (with the upright y-axis n' all) so
 // that it can be used with the brain-dead drawing stuff.
-auto AM_getIslope(mline_t *ml,
-    islope_t *             is) -> void
-{
-    auto dy = ml->a.y - ml->b.y;
-    auto dx = ml->b.x - ml->a.x;
-    if (dy == 0)
-    {
-        is->islp = (dx < 0 ? -INT_MAX : INT_MAX);
-    }
-    else
-    {
-        is->islp = FixedDiv(dx, dy);
-    }
-    if (dx == 0)
-    {
-        is->slp = (dy < 0 ? -INT_MAX : INT_MAX);
-    }
-    else
-    {
-        is->slp = FixedDiv(dy, dx);
-    }
-}
-
+// auto AM_getIslope(mline_t *ml,
+//     islope_t *             is) -> void
+// {
+//     const auto dy        = ml->a.y - ml->b.y;
+//     const auto dx        = ml->b.x - ml->a.x;
+//     const auto halfSlope = [](auto a, auto b) {
+//         if (b == 0)
+//         {
+//             return (a < 0 ? -INT_MAX : INT_MAX);
+//         }
+//         return FixedDiv(a, b);
+//     };
 //
-//
-auto AM_activateNewScale() -> void
-{
-    locals.m_x += locals.m_w / 2;
-    locals.m_y += locals.m_h / 2;
-    locals.m_w = locals.FTOM(locals.f_w);
-    locals.m_h = locals.FTOM(locals.f_h);
-    locals.m_x -= locals.m_w / 2;
-    locals.m_y -= locals.m_h / 2;
-    locals.m_x2 = locals.m_x + locals.m_w;
-    locals.m_y2 = locals.m_y + locals.m_h;
-}
-
-//
-//
-//
-auto AM_saveScaleAndLoc() -> void
-{
-    locals.old_m_x = locals.m_x;
-    locals.old_m_y = locals.m_y;
-    locals.old_m_w = locals.m_w;
-    locals.old_m_h = locals.m_h;
-}
-
-//
-//
-//
-auto AM_restoreScaleAndLoc() -> void
-{
-    locals.m_w = locals.old_m_w;
-    locals.m_h = locals.old_m_h;
-    if (locals.followplayer == 0)
-    {
-        locals.m_x = locals.old_m_x;
-        locals.m_y = locals.old_m_y;
-    }
-    else
-    {
-        locals.m_x = locals.plr->mo->x - locals.m_w / 2;
-        locals.m_y = locals.plr->mo->y - locals.m_h / 2;
-    }
-    locals.m_x2 = locals.m_x + locals.m_w;
-    locals.m_y2 = locals.m_y + locals.m_h;
-
-    // Change the scaling multipliers
-    locals.scale_mtof = FixedDiv(static_cast<unsigned int>(locals.f_w) << FRACBITS, locals.m_w);
-    locals.scale_ftom = FixedDiv(FRACUNIT, locals.scale_mtof);
-}
-
-//
-// adds a marker at the current location
-//
-auto AM_addMark() -> void
-{
-    // [crispy] keep the map static in overlay mode
-    // if not following the player
-    if (!(!locals.followplayer && crispy->automapoverlay))
-    {
-        locals.markpoints[locals.markpointnum].x = locals.m_x + locals.m_w / 2;
-        locals.markpoints[locals.markpointnum].y = locals.m_y + locals.m_h / 2;
-    }
-    else
-    {
-        locals.markpoints[locals.markpointnum].x = locals.plr->mo->x;
-        locals.markpoints[locals.markpointnum].y = locals.plr->mo->y;
-    }
-    locals.markpointnum = (locals.markpointnum + 1) % AM_NUMMARKPOINTS;
-}
-
-//
-// Determines bounding box of all vertices,
-// sets global variables controlling zoom range.
-//
-void AM_findMinMaxBoundaries(void)
-{
-    int     i;
-    fixed_t a;
-    fixed_t b;
-
-    locals.min_x = locals.min_y = INT_MAX;
-    locals.max_x = locals.max_y = -INT_MAX;
-
-    for (i = 0; i < numvertexes; i++)
-    {
-        if (vertexes[i].x < locals.min_x)
-            locals.min_x = vertexes[i].x;
-        else if (vertexes[i].x > locals.max_x)
-            locals.max_x = vertexes[i].x;
-
-        if (vertexes[i].y < locals.min_y)
-            locals.min_y = vertexes[i].y;
-        else if (vertexes[i].y > locals.max_y)
-            locals.max_y = vertexes[i].y;
-    }
-
-    // [crispy] cope with huge level dimensions which span the entire INT range
-    locals.max_w = locals.max_x / 2 - locals.min_x / 2;
-    locals.max_h = locals.max_y / 2 - locals.min_y / 2;
-
-
-    a = FixedDiv(locals.f_w << FRACBITS, locals.max_w);
-    b = FixedDiv(locals.f_h << FRACBITS, locals.max_h);
-
-    locals.min_scale_mtof = std::min(a, b) / 2;
-    locals.max_scale_mtof = FixedDiv(locals.f_h << FRACBITS, 2 * PLAYERRADIUS);
-}
-
-
-//
-//
-//
-auto AM_changeWindowLoc() -> void
-{
-    int64_t incx;
-    int64_t incy;
-
-    if (locals.m_paninc.x || locals.m_paninc.y)
-    {
-        locals.followplayer = 0;
-        locals.f_oldloc.x   = INT_MAX;
-    }
-
-    incx = locals.m_paninc.x;
-    incy = locals.m_paninc.y;
-    if (crispy->automaprotate)
-    {
-        AM_rotate(&incx, &incy, -locals.mapangle);
-    }
-    locals.m_x += incx;
-    locals.m_y += incy;
-
-    if (locals.m_x + locals.m_w / 2 > locals.max_x)
-    {
-        locals.m_x = locals.max_x - locals.m_w / 2;
-    }
-    else if (locals.m_x + locals.m_w / 2 < locals.min_x)
-    {
-        locals.m_x = locals.min_x - locals.m_w / 2;
-    }
-
-    if (locals.m_y + locals.m_h / 2 > locals.max_y)
-    {
-        locals.m_y = locals.max_y - locals.m_h / 2;
-    }
-    else if (locals.m_y + locals.m_h / 2 < locals.min_y)
-    {
-        locals.m_y = locals.min_y - locals.m_h / 2;
-    }
-
-    locals.m_x2 = locals.m_x + locals.m_w;
-    locals.m_y2 = locals.m_y + locals.m_h;
-
-    // [crispy] reset after moving with the mouse
-    if (locals.f_oldloc.y == INT_MAX)
-    {
-        locals.m_paninc.x = 0;
-        locals.m_paninc.y = 0;
-    }
-}
+//     is->islp = halfSlope(dx, dy);
+//     is->slp  = halfSlope(dy, dx);
+// }
 
 
 //
@@ -558,7 +567,7 @@ auto AM_initVariables() -> void
 
     locals.m_x = locals.plr->mo->x - locals.m_w / 2;
     locals.m_y = locals.plr->mo->y - locals.m_h / 2;
-    AM_changeWindowLoc();
+    locals.AM_changeWindowLoc();
 
     // for saving & restoring
     locals.old_m_x = locals.m_x;
@@ -624,7 +633,7 @@ auto AM_LevelInit() -> void
 
     AM_clearMarks();
 
-    AM_findMinMaxBoundaries();
+    locals.AM_findMinMaxBoundaries();
     // [crispy] initialize zoomlevel on all maps so that a 4096 units
     // square map would just fit in (MAP01 is 3376x3648 units)
     //const fixed_t a = FixedDiv(locals.f_w, (locals.max_w >> FRACBITS < 2048) ? 2 * (locals.max_w >> FRACBITS) : 4096);
@@ -649,7 +658,7 @@ auto AM_ReInit() -> void
         locals.f_h -= (ST_HEIGHT << crispy->hires);
     }
 
-    AM_findMinMaxBoundaries();
+    locals.AM_findMinMaxBoundaries();
 
     locals.scale_mtof = crispy->hires ? locals.scale_mtof * 2 : locals.scale_mtof / 2;
     if (locals.scale_mtof > locals.max_scale_mtof)
@@ -703,7 +712,7 @@ auto AM_minOutWindowScale() -> void
 {
     locals.scale_mtof = locals.min_scale_mtof;
     locals.scale_ftom = FixedDiv(FRACUNIT, locals.scale_mtof);
-    AM_activateNewScale();
+    locals.AM_activateNewScale();
 }
 
 //
@@ -713,7 +722,7 @@ auto AM_maxOutWindowScale() -> void
 {
     locals.scale_mtof = locals.max_scale_mtof;
     locals.scale_ftom = FixedDiv(FRACUNIT, locals.scale_mtof);
-    AM_activateNewScale();
+    locals.AM_activateNewScale();
 }
 
 
@@ -852,12 +861,12 @@ auto AM_Responder(event_t *ev) -> bool
             bigstate = (bigstate == 0);
             if (bigstate != 0)
             {
-                AM_saveScaleAndLoc();
+                locals.AM_saveScaleAndLoc();
                 AM_minOutWindowScale();
             }
             else
             {
-                AM_restoreScaleAndLoc();
+                locals.AM_restoreScaleAndLoc();
             }
         }
         else if (key == key_map_follow)
@@ -892,7 +901,7 @@ auto AM_Responder(event_t *ev) -> bool
             M_snprintf(buffer.data(), bufferSize, "%s %d",
                 DEH_String(AMSTR_MARKEDSPOT), locals.markpointnum);
             locals.plr->message = buffer.data();
-            AM_addMark();
+            locals.AM_addMark();
         }
         else if (key == key_map_clearmark)
         {
@@ -979,11 +988,17 @@ void AM_changeWindowScale(void)
     }
 
     if (locals.scale_mtof < locals.min_scale_mtof)
+    {
         AM_minOutWindowScale();
+    }
     else if (locals.scale_mtof > locals.max_scale_mtof)
+    {
         AM_maxOutWindowScale();
+    }
     else
-        AM_activateNewScale();
+    {
+        locals.AM_activateNewScale();
+    }
 }
 
 
@@ -1052,7 +1067,7 @@ auto AM_Ticker() -> void
     // Change x,y location
     if (locals.m_paninc.x || locals.m_paninc.y)
     {
-        AM_changeWindowLoc();
+        locals.AM_changeWindowLoc();
     }
 
     // Update light level
@@ -1350,8 +1365,8 @@ void AM_drawGrid(int color)
         {
             ml.a.y -= locals.m_w / 2;
             ml.b.y += locals.m_w / 2;
-            AM_rotatePoint(&ml.a);
-            AM_rotatePoint(&ml.b);
+            locals.AM_rotatePoint(ml.a);
+            locals.AM_rotatePoint(ml.b);
         }
         AM_drawMline(&ml, color);
     }
@@ -1384,8 +1399,8 @@ void AM_drawGrid(int color)
         {
             ml.a.x -= locals.m_h / 2;
             ml.b.x += locals.m_h / 2;
-            AM_rotatePoint(&ml.a);
-            AM_rotatePoint(&ml.b);
+            locals.AM_rotatePoint(ml.a);
+            locals.AM_rotatePoint(ml.b);
         }
         AM_drawMline(&ml, color);
     }
@@ -1436,8 +1451,8 @@ void AM_drawWalls(void)
         l.b.y = lines[i].v2->y;
         if (crispy->automaprotate)
         {
-            AM_rotatePoint(&l.a);
-            AM_rotatePoint(&l.b);
+            locals.AM_rotatePoint(l.a);
+            locals.AM_rotatePoint(l.b);
         }
         if (locals.cheating || (lines[i].flags & ML_MAPPED))
         {
@@ -1540,47 +1555,6 @@ void AM_drawWalls(void)
 }
 
 
-//
-// Rotation in 2D.
-// Used to rotate player arrow line character.
-//
-void AM_rotate(int64_t *x,
-    int64_t *           y,
-    angle_t             a)
-{
-    int64_t tmpx;
-
-    tmpx =
-        FixedMul(*x, finecosine[a >> ANGLETOFINESHIFT])
-        - FixedMul(*y, finesine[a >> ANGLETOFINESHIFT]);
-
-    *y =
-        FixedMul(*x, finesine[a >> ANGLETOFINESHIFT])
-        + FixedMul(*y, finecosine[a >> ANGLETOFINESHIFT]);
-
-    *x = tmpx;
-}
-
-// [crispy] rotate point around map center
-// adapted from prboom-plus/src/am_map.c:898-920
-static void AM_rotatePoint(mpoint_t *pt)
-{
-    int64_t tmpx;
-
-    pt->x -= locals.mapcenter.x;
-    pt->y -= locals.mapcenter.y;
-
-    tmpx = (int64_t)FixedMul(pt->x, finecosine[locals.mapangle >> ANGLETOFINESHIFT])
-           - (int64_t)FixedMul(pt->y, finesine[locals.mapangle >> ANGLETOFINESHIFT])
-           + locals.mapcenter.x;
-
-    pt->y = (int64_t)FixedMul(pt->x, finesine[locals.mapangle >> ANGLETOFINESHIFT])
-            + (int64_t)FixedMul(pt->y, finecosine[locals.mapangle >> ANGLETOFINESHIFT])
-            + locals.mapcenter.y;
-
-    pt->x = tmpx;
-}
-
 void AM_drawLineCharacter( //
     const std::span<const mline_t> drawIt,
     fixed_t                        scale,
@@ -1607,8 +1581,8 @@ void AM_drawLineCharacter( //
 
         if (angle != 0)
         {
-            AM_rotate(&l.a.x, &l.a.y, angle);
-            AM_rotate(&l.b.x, &l.b.y, angle);
+            locals.AM_rotate(l.a.x, l.a.y, angle);
+            locals.AM_rotate(l.b.x, l.b.y, angle);
         }
 
         l.a.x += x;
@@ -1635,7 +1609,7 @@ void AM_drawPlayers(void)
         pt.y = locals.plr->mo->y;
         if (crispy->automaprotate)
         {
-            AM_rotatePoint(&pt);
+            locals.AM_rotatePoint(pt);
         }
 
         if (locals.cheating)
@@ -1667,7 +1641,7 @@ void AM_drawPlayers(void)
         pt.y = p->mo->y;
         if (crispy->automaprotate)
         {
-            AM_rotatePoint(&pt);
+            locals.AM_rotatePoint(pt);
         }
 
         AM_drawLineCharacter(locals.player_arrow, 0, p->mo->angle,
@@ -1698,7 +1672,7 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
             pt.y = t->y;
             if (crispy->automaprotate)
             {
-                AM_rotatePoint(&pt);
+                locals.AM_rotatePoint(pt);
             }
 
             if (crispy->extautomap)
@@ -1789,7 +1763,7 @@ void AM_drawMarks(void)
             pt.y = locals.markpoints[i].y;
             if (crispy->automaprotate)
             {
-                AM_rotatePoint(&pt);
+                locals.AM_rotatePoint(pt);
             }
             fx = (flipscreenwidth[locals.CXMTOF(pt.x)] >> crispy->hires) - 1 - DELTAWIDTH;
             fy = (locals.CYMTOF(pt.y) >> crispy->hires) - 2;
