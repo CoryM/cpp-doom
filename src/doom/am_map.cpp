@@ -190,7 +190,7 @@ cheatseq_t cheat_amap = CHEAT("iddt", 0);
 
 } // end of namespace globals
 
-struct {
+class {
 public:
     // the following is crap
     //#define LINE_NEVERSEE globals::ML_DONTDRAW
@@ -260,6 +260,11 @@ public:
 
     mpoint_t mapcenter;
     angle_t  mapangle = 0;
+
+
+    // [crispy] moved here for extended savegames
+    int lastlevel   = -1;
+    int lastepisode = -1;
 
     //
     // The vector graphics for the automap.
@@ -488,6 +493,58 @@ public:
             m_paninc = { 0, 0 };
         }
     }
+
+
+    //
+    auto AM_initVariables() -> void
+    {
+        static event_t st_notify = { evtype_t::ev_keyup, globals::AM_MSGENTERED, 0, 0 };
+
+        automapactive = true;
+        //  fb = I_VideoBuffer; // [crispy] simplify
+
+        f_oldloc.x = INT_MAX;
+        amclock    = 0;
+        lightlev   = 0;
+
+        m_paninc.x   = 0;
+        m_paninc.y   = 0;
+        ftom_zoommul = FRACUNIT;
+        mtof_zoommul = FRACUNIT;
+
+        mapWH.x = FTOM(f_w);
+        mapWH.y = FTOM(f_h);
+
+        // find player to center on initially
+        if (playeringame[consoleplayer])
+        {
+            plr = &players[consoleplayer];
+        }
+        else
+        {
+            plr = &players[0];
+
+            for (int pnum = 0; pnum < MAXPLAYERS; pnum++)
+            {
+                if (playeringame[pnum])
+                {
+                    plr = &players[pnum];
+                    break;
+                }
+            }
+        }
+
+        mapLL = (mpoint_t { plr->mo->x, plr->mo->y }) - mapWH / 2;
+        AM_changeWindowLoc();
+
+        // for saving & restoring
+        old_map_ll = mapLL;
+        old_map_wh = mapWH;
+
+        // inform the status bar of the change
+        ST_Responder(&st_notify);
+    }
+
 } static locals;
 
 
@@ -513,65 +570,11 @@ public:
 
 
 //
-//
-//
-auto AM_initVariables() -> void
-{
-    static event_t st_notify = { evtype_t::ev_keyup, globals::AM_MSGENTERED, 0, 0 };
-
-    automapactive = true;
-    //  fb = I_VideoBuffer; // [crispy] simplify
-
-    locals.f_oldloc.x = INT_MAX;
-    locals.amclock    = 0;
-    locals.lightlev   = 0;
-
-    locals.m_paninc.x = locals.m_paninc.y = 0;
-    locals.ftom_zoommul                   = FRACUNIT;
-    locals.mtof_zoommul                   = FRACUNIT;
-
-    locals.mapWH.x = locals.FTOM(locals.f_w);
-    locals.mapWH.y = locals.FTOM(locals.f_h);
-
-    // find player to center on initially
-    if (playeringame[consoleplayer])
-    {
-        locals.plr = &players[consoleplayer];
-    }
-    else
-    {
-        locals.plr = &players[0];
-
-        for (int pnum = 0; pnum < MAXPLAYERS; pnum++)
-        {
-            if (playeringame[pnum])
-            {
-                locals.plr = &players[pnum];
-                break;
-            }
-        }
-    }
-
-    locals.mapLL = (mpoint_t { locals.plr->mo->x, locals.plr->mo->y }) - locals.mapWH / 2;
-    locals.AM_changeWindowLoc();
-
-    // for saving & restoring
-    locals.old_map_ll = locals.mapLL;
-    locals.old_map_wh = locals.mapWH;
-
-    // inform the status bar of the change
-    ST_Responder(&st_notify);
-}
-
-//
-//
-//
 auto AM_loadPics() -> void
 {
-    char namebuf[9];
-
     for (int i = 0; i < 10; i++)
     {
+        char namebuf[9];
         DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
         locals.marknums[i] = cache_lump_name<patch_t *>(namebuf, PU::STATIC);
     }
@@ -663,29 +666,23 @@ auto AM_Stop() -> void
     locals.stopped = true;
 }
 
-//
-//
-//
-// [crispy] moved here for extended savegames
-static int lastlevel   = -1;
-static int lastepisode = -1;
 
 auto AM_Start() -> void
 {
     if (!locals.stopped) { AM_Stop(); };
     locals.stopped = false;
-    if (lastlevel != gamemap || lastepisode != gameepisode)
+    if (locals.lastlevel != gamemap || locals.lastepisode != gameepisode)
     {
         AM_LevelInit();
-        lastlevel   = gamemap;
-        lastepisode = gameepisode;
+        locals.lastlevel   = gamemap;
+        locals.lastepisode = gameepisode;
     }
     // [crispy] reset IDDT cheat when re-starting map during demo recording
     else if (demorecording)
     {
         locals.cheating = 0;
     }
-    AM_initVariables();
+    locals.AM_initVariables();
     AM_loadPics();
 }
 
@@ -1744,26 +1741,22 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
 
 void AM_drawMarks(void)
 {
-    int      i, fx, fy, w, h;
-    mpoint_t pt;
-
-    for (i = 0; i < AM_NUMMARKPOINTS; i++)
+    for (int i = 0; i < AM_NUMMARKPOINTS; i++)
     {
         if (locals.markpoints[i].x != -1)
         {
             //      w = SHORT(locals.marknums[i]->width);
             //      h = SHORT(locals.marknums[i]->height);
-            w = 5; // because something's wrong with the wad, i guess
-            h = 6; // because something's wrong with the wad, i guess
+            int w = 5; // because something's wrong with the wad, i guess
+            int h = 6; // because something's wrong with the wad, i guess
             // [crispy] center marks around player
-            pt.x = locals.markpoints[i].x;
-            pt.y = locals.markpoints[i].y;
+            auto pt = locals.markpoints[i];
             if (crispy->automaprotate)
             {
                 locals.AM_rotatePoint(pt);
             }
-            fx = (flipscreenwidth[locals.CXMTOF(pt.x)] >> crispy->hires) - 1 - DELTAWIDTH;
-            fy = (locals.CYMTOF(pt.y) >> crispy->hires) - 2;
+            int fx = (flipscreenwidth[locals.CXMTOF(pt.x)] >> crispy->hires) - 1 - DELTAWIDTH;
+            int fy = (locals.CYMTOF(pt.y) >> crispy->hires) - 2;
             if (fx >= locals.f_x && fx <= (locals.f_w >> crispy->hires) - w && fy >= locals.f_y && fy <= (locals.f_h >> crispy->hires) - h)
                 V_DrawPatch(fx, fy, locals.marknums[i]);
         }
@@ -1819,15 +1812,13 @@ void AM_Drawer(void)
 // [crispy] extended savegames
 void AM_GetMarkPoints(int *n, long *p)
 {
-    int i;
-
     *n = locals.markpointnum;
     *p = -1L;
 
     // [crispy] prevent saving locals.markpoints from previous map
-    if (lastlevel == gamemap && lastepisode == gameepisode)
+    if (locals.lastlevel == gamemap && locals.lastepisode == gameepisode)
     {
-        for (i = 0; i < AM_NUMMARKPOINTS; i++)
+        for (int i = 0; i < AM_NUMMARKPOINTS; i++)
         {
             *p++ = (long)locals.markpoints[i].x;
             *p++ = (locals.markpoints[i].x == -1) ? 0L : (long)locals.markpoints[i].y;
@@ -1840,8 +1831,8 @@ void AM_SetMarkPoints(int n, long *p)
     int i;
 
     AM_LevelInit();
-    lastlevel   = gamemap;
-    lastepisode = gameepisode;
+    locals.lastlevel   = gamemap;
+    locals.lastepisode = gameepisode;
 
     locals.markpointnum = n;
 
