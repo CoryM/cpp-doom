@@ -48,8 +48,8 @@ endif()
 # subdirectories should go here.  Use judiciously.
 add_compile_options("-Wall" "-march=native" "-mtune=native" "-Wextra" "-pedantic" "-pthread" "-Og" "-Wno-attributes")
 add_link_options("-O2")
-add_compile_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
-add_link_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g")
+add_compile_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g3")
+add_link_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g3")
 
 find_package(SFML 2.5.0 COMPONENTS system window graphics audio REQUIRED)
 
