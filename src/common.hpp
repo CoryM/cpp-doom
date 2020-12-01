@@ -19,9 +19,29 @@
 
 //#include <string>
 #include "fmt/core.h"
+#include "fmt/format.h"
 
 namespace MACROS {
-#define exceptionalExit fmt::format("exceptional exit in File {} on line {}", __FILE__, __LINE__)
-}
 
-#endif
+#define exceptionalExit fmt::format(FMT_STRING("exceptional exit in File {} on line {}"), __FILE__, __LINE__)
+
+
+#ifndef NDEBUG
+
+#define ASSERT(condition, message)                                                                                                              \
+    if (!(condition))                                                                                                                           \
+    {                                                                                                                                           \
+        throw std::logic_error(fmt::format(FMT_STRING("Assertion `{}` failed in {} on line {}: {}"), #condition, __FILE__, __LINE__, message)); \
+    }
+
+#else
+
+#define ASSERT(condition, message) \
+    {                              \
+    }
+
+#endif // NDEBUG
+
+} // namespace MACROS
+
+#endif // __COMMON_HPP__
