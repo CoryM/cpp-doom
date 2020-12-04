@@ -36,6 +36,8 @@
 #include "v_video.hpp" // Needs access to LFB.
 #include "w_wad.hpp"
 
+#include <bitset>
+#include <cassert>
 #include <cstdio>
 #include <span>
 #include <string_view>
@@ -545,6 +547,144 @@ public:
         ST_Responder(&st_notify);
     }
 
+    //
+    auto AM_loadPics() -> void
+    {
+        int index = 0;
+        for (auto &i : marknums)
+        {
+            char namebuf[9];
+            DEH_snprintf(namebuf, 9, "AMMNUM%d", index++);
+            i = cache_lump_name<patch_t *>(namebuf, PU::STATIC);
+        }
+    }
+
+
+    auto AM_unloadPics() -> void
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            char namebuf[9];
+            DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
+            W_ReleaseLumpName(namebuf);
+        }
+    }
+
+
+    // set the window scale to the maximum size
+    auto AM_minOutWindowScale() -> void
+    {
+        scale_mtof = min_scale_mtof;
+        scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
+        AM_activateNewScale();
+    }
+
+
+    auto AM_clearMarks() -> void
+    {
+        for (auto &i : markpoints)
+        {
+            i.x = -1; // means empty
+        }
+        markpointnum = 0;
+    }
+
+    // set the window scale to the minimum size
+    auto AM_maxOutWindowScale() -> void
+    {
+        scale_mtof = max_scale_mtof;
+        scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
+        AM_activateNewScale();
+    }
+
+
+    // Zooming
+    auto AM_changeWindowScale() -> void
+    {
+        // Change the scaling multipliers
+        scale_mtof = FixedMul(scale_mtof, mtof_zoommul);
+        scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
+
+        // [crispy] reset after zooming with the mouse wheel
+        if (ftom_zoommul == M2_ZOOMIN || ftom_zoommul == M2_ZOOMOUT)
+        {
+            mtof_zoommul = FRACUNIT;
+            ftom_zoommul = FRACUNIT;
+        }
+
+        if (scale_mtof < min_scale_mtof)
+        {
+            AM_minOutWindowScale();
+        }
+        else if (scale_mtof > max_scale_mtof)
+        {
+            AM_maxOutWindowScale();
+        }
+        else
+        {
+            AM_activateNewScale();
+        }
+    }
+
+
+    //
+    auto AM_dofollowplayer() -> void
+    {
+        if (f_oldloc.x != plr->mo->x || f_oldloc.y != plr->mo->y)
+        {
+            mapLL.x    = FTOM(MTOF(plr->mo->x)) - mapWH.x / 2;
+            mapLL.y    = FTOM(MTOF(plr->mo->y)) - mapWH.y / 2;
+            mapUR      = mapLL + mapWH;
+            f_oldloc.x = plr->mo->x;
+            f_oldloc.y = plr->mo->y;
+        }
+    }
+
+    // Clear automap frame buffer.
+    auto AM_clearFB(const int color) -> void
+    {
+        memset(I_VideoBuffer, color, f_w * f_h * sizeof(*I_VideoBuffer));
+    }
+
+    // [crispy] keyed linedefs (PR, P1, SR, S1)
+    auto AM_DoorColor(const int type) -> keycolor_t
+    {
+        keycolor_t oc = no_key;
+        if (crispy->extautomap)
+        {
+            switch (type)
+            {
+            case 26:
+            case 32:
+            case 99:
+            case 133: {
+                oc = blue_key;
+                break;
+            }
+            case 27:
+            case 34:
+            case 136:
+            case 137: {
+                oc = yellow_key;
+                break;
+            }
+            case 28:
+            case 33:
+            case 134:
+            case 135: {
+                oc = red_key;
+                break;
+            }
+            default: {
+                oc = no_key;
+                break;
+            }
+            }
+        }
+        return oc;
+    }
+
+
 } static locals;
 
 
@@ -570,37 +710,6 @@ public:
 
 
 //
-auto AM_loadPics() -> void
-{
-    for (int i = 0; i < 10; i++)
-    {
-        char namebuf[9];
-        DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
-        locals.marknums[i] = cache_lump_name<patch_t *>(namebuf, PU::STATIC);
-    }
-}
-
-auto AM_unloadPics() -> void
-{
-    char namebuf[9];
-
-    for (int i = 0; i < 10; i++)
-    {
-        DEH_snprintf(namebuf, 9, "AMMNUM%d", i);
-        W_ReleaseLumpName(namebuf);
-    }
-}
-
-auto AM_clearMarks() -> void
-{
-    for (int i = 0; i < AM_NUMMARKPOINTS; i++)
-    {
-        locals.markpoints[i].x = -1; // means empty
-    }
-    locals.markpointnum = 0;
-}
-
-//
 // should be called at the start of every level
 // right now, i figure it out myself
 //
@@ -618,7 +727,7 @@ auto AM_LevelInit() -> void
         locals.f_h -= (ST_HEIGHT << crispy->hires);
     }
 
-    AM_clearMarks();
+    locals.AM_clearMarks();
 
     locals.AM_findMinMaxBoundaries();
     // [crispy] initialize zoomlevel on all maps so that a 4096 units
@@ -660,7 +769,7 @@ auto AM_Stop() -> void
 {
     static event_t st_notify = { evtype_t::ev_keyup, globals::AM_MSGEXITED, 0 };
 
-    AM_unloadPics();
+    locals.AM_unloadPics();
     automapactive = false;
     ST_Responder(&st_notify);
     locals.stopped = true;
@@ -683,33 +792,11 @@ auto AM_Start() -> void
         locals.cheating = 0;
     }
     locals.AM_initVariables();
-    AM_loadPics();
-}
-
-//
-// set the window scale to the maximum size
-//
-auto AM_minOutWindowScale() -> void
-{
-    locals.scale_mtof = locals.min_scale_mtof;
-    locals.scale_ftom = FixedDiv(FRACUNIT, locals.scale_mtof);
-    locals.AM_activateNewScale();
-}
-
-//
-// set the window scale to the minimum size
-//
-auto AM_maxOutWindowScale() -> void
-{
-    locals.scale_mtof = locals.max_scale_mtof;
-    locals.scale_ftom = FixedDiv(FRACUNIT, locals.scale_mtof);
-    locals.AM_activateNewScale();
+    locals.AM_loadPics();
 }
 
 
-//
 // Handle events (user inputs) in automap mode
-//
 auto AM_Responder(event_t *ev) -> bool
 {
     static int bigstate = 0;
@@ -843,7 +930,7 @@ auto AM_Responder(event_t *ev) -> bool
             if (bigstate != 0)
             {
                 locals.AM_saveScaleAndLoc();
-                AM_minOutWindowScale();
+                locals.AM_minOutWindowScale();
             }
             else
             {
@@ -886,7 +973,7 @@ auto AM_Responder(event_t *ev) -> bool
         }
         else if (key == key_map_clearmark)
         {
-            AM_clearMarks();
+            locals.AM_clearMarks();
             locals.plr->message = DEH_String(AMSTR_MARKSCLEARED);
         }
         else if (key == key_map_overlay)
@@ -953,69 +1040,21 @@ auto AM_Responder(event_t *ev) -> bool
 
 
 //
-// Zooming
+// auto AM_updateLightLev() -> void
+// {
+//     static int nexttic = 0;
+//     //static int litelevels[] = { 0, 3, 5, 6, 6, 7, 7, 7 };
+//     static int litelevels[]  = { 0, 4, 7, 10, 12, 14, 15, 15 };
+//     static int litelevelscnt = 0;
 //
-void AM_changeWindowScale(void)
-{
-    // Change the scaling multipliers
-    locals.scale_mtof = FixedMul(locals.scale_mtof, locals.mtof_zoommul);
-    locals.scale_ftom = FixedDiv(FRACUNIT, locals.scale_mtof);
-
-    // [crispy] reset after zooming with the mouse wheel
-    if (locals.ftom_zoommul == M2_ZOOMIN || locals.ftom_zoommul == M2_ZOOMOUT)
-    {
-        locals.mtof_zoommul = FRACUNIT;
-        locals.ftom_zoommul = FRACUNIT;
-    }
-
-    if (locals.scale_mtof < locals.min_scale_mtof)
-    {
-        AM_minOutWindowScale();
-    }
-    else if (locals.scale_mtof > locals.max_scale_mtof)
-    {
-        AM_maxOutWindowScale();
-    }
-    else
-    {
-        locals.AM_activateNewScale();
-    }
-}
-
-
-//
-//
-//
-void AM_dofollowplayer(void)
-{
-    if (locals.f_oldloc.x != locals.plr->mo->x || locals.f_oldloc.y != locals.plr->mo->y)
-    {
-        locals.mapLL.x    = locals.FTOM(locals.MTOF(locals.plr->mo->x)) - locals.mapWH.x / 2;
-        locals.mapLL.y    = locals.FTOM(locals.MTOF(locals.plr->mo->y)) - locals.mapWH.y / 2;
-        locals.mapUR      = locals.mapLL + locals.mapWH;
-        locals.f_oldloc.x = locals.plr->mo->x;
-        locals.f_oldloc.y = locals.plr->mo->y;
-    }
-}
-
-//
-//
-//
-void AM_updateLightLev(void)
-{
-    static int nexttic = 0;
-    //static int litelevels[] = { 0, 3, 5, 6, 6, 7, 7, 7 };
-    static int litelevels[]  = { 0, 4, 7, 10, 12, 14, 15, 15 };
-    static int litelevelscnt = 0;
-
-    // Change light level
-    if (locals.amclock > nexttic)
-    {
-        locals.lightlev = litelevels[litelevelscnt++];
-        if (litelevelscnt == std::ssize(litelevels)) litelevelscnt = 0;
-        nexttic = locals.amclock + 6 - (locals.amclock % 6);
-    }
-}
+//     // Change light level
+//     if (locals.amclock > nexttic)
+//     {
+//         locals.lightlev = litelevels[litelevelscnt++];
+//         if (litelevelscnt == std::ssize(litelevels)) litelevelscnt = 0;
+//         nexttic = locals.amclock + 6 - (locals.amclock % 6);
+//     }
+// }
 
 
 //
@@ -1030,13 +1069,13 @@ auto AM_Ticker() -> void
 
     if (locals.followplayer)
     {
-        AM_dofollowplayer();
+        locals.AM_dofollowplayer();
     }
 
     // Change the zoom if necessary
     if (locals.ftom_zoommul != FRACUNIT)
     {
-        AM_changeWindowScale();
+        locals.AM_changeWindowScale();
     }
 
     // Change x,y location
@@ -1062,223 +1101,153 @@ auto AM_Ticker() -> void
 }
 
 
-//
-// Clear automap frame buffer.
-//
-void AM_clearFB(int color)
-{
-    memset(I_VideoBuffer, color, locals.f_w * locals.f_h * sizeof(*I_VideoBuffer));
-}
-
-
-//
 // Automap clipping of lines.
 //
 // Based on Cohen-Sutherland clipping algorithm but with a slightly
 // faster reject and precalculated slopes.  If the speed is needed,
 // use a hash algorithm to handle  the common cases.
-//
-bool AM_clipMline(mline_t *ml,
-    fline_t *              fl)
+
+
+auto AM_clipMline(mline_t *ml, fline_t *fl) -> bool
 {
-    enum
-    {
-        LEFT   = 1,
-        RIGHT  = 2,
-        BOTTOM = 4,
-        TOP    = 8
+    constexpr auto noBit     = std::bitset<4>(0b0000);
+    constexpr auto topBit    = std::bitset<4>(0b0001);
+    constexpr auto bottomBit = std::bitset<4>(0b0010);
+    constexpr auto leftBit   = std::bitset<4>(0b0100);
+    constexpr auto rightBit  = std::bitset<4>(0b1000);
+
+    auto edge_code = [noBit](const auto val, const auto lo, const auto hi, const auto lo_flag, const auto hi_flag) {
+        return (val < lo) ? lo_flag : (val >= hi) ? hi_flag :
+                                                    noBit;
     };
 
-    int outcode1 = 0;
-    int outcode2 = 0;
-    int outside;
-
-    fpoint_t tmp;
-    int      dx;
-    int      dy;
-
-
-#define DOOUTCODE(oc, mx, my)    \
-    (oc) = 0;                    \
-    if ((my) < 0)                \
-        (oc) |= TOP;             \
-    else if ((my) >= locals.f_h) \
-        (oc) |= BOTTOM;          \
-    if ((mx) < 0)                \
-        (oc) |= LEFT;            \
-    else if ((mx) >= locals.f_w) \
-        (oc) |= RIGHT;
-
+    auto get_edge_code = [edge_code, topBit, bottomBit, leftBit, rightBit](const fpoint_t m) {
+        auto oc = edge_code(m.y, 0, locals.f_h, topBit, bottomBit);
+        oc |= edge_code(m.x, 0, locals.f_w, leftBit, rightBit);
+        return oc;
+    };
 
     // do trivial rejects and outcodes
-    if (ml->a.y > locals.mapUR.y)
-    {
-        outcode1 = TOP;
-    }
-    else if (ml->a.y < locals.mapLL.y)
-    {
-        outcode1 = BOTTOM;
-    }
-
-    if (ml->b.y > locals.mapUR.y)
-    {
-        outcode2 = TOP;
-    }
-    else if (ml->b.y < locals.mapLL.y)
-    {
-        outcode2 = BOTTOM;
-    }
-
-    if (outcode1 & outcode2)
+    const auto a_top_bottom = edge_code(ml->a.y, locals.mapLL.y, locals.mapUR.y, bottomBit, topBit);
+    const auto b_top_bottom = edge_code(ml->b.y, locals.mapLL.y, locals.mapUR.y, bottomBit, topBit);
+    if ((a_top_bottom & b_top_bottom).any())
     {
         return false; // trivially outside
     }
-    if (ml->a.x < locals.mapLL.x)
-    {
-        outcode1 |= LEFT;
-    }
-    else if (ml->a.x > locals.mapUR.x)
-    {
-        outcode1 |= RIGHT;
-    }
 
-    if (ml->b.x < locals.mapLL.x)
-    {
-        outcode2 |= LEFT;
-    }
-    else if (ml->b.x > locals.mapUR.x)
-    {
-        outcode2 |= RIGHT;
-    }
-
-    if (outcode1 & outcode2)
+    const auto a_edges = a_top_bottom | edge_code(ml->a.x, locals.mapLL.x, locals.mapUR.x, leftBit, rightBit);
+    const auto b_edges = b_top_bottom | edge_code(ml->b.x, locals.mapLL.x, locals.mapUR.x, leftBit, rightBit);
+    if ((a_edges & b_edges).any())
     {
         return false; // trivially outside
     }
+
     // transform to frame-buffer coordinates.
     fl->a.x = locals.CXMTOF(ml->a.x);
     fl->a.y = locals.CYMTOF(ml->a.y);
     fl->b.x = locals.CXMTOF(ml->b.x);
     fl->b.y = locals.CYMTOF(ml->b.y);
 
-    DOOUTCODE(outcode1, fl->a.x, fl->a.y);
-    DOOUTCODE(outcode2, fl->b.x, fl->b.y);
+    auto outcode1 = get_edge_code(fl->a);
+    auto outcode2 = get_edge_code(fl->b);
 
-    if (outcode1 & outcode2)
+    if ((outcode1 & outcode2).any())
+    {
         return false;
+    }
 
-    while (outcode1 | outcode2)
+    while ((outcode1 | outcode2).any())
     {
         // may be partially inside box
         // find an outside point
-        if (outcode1)
-            outside = outcode1;
-        else
-            outside = outcode2;
+        const auto outside = (outcode1.any()) ? outcode1 : outcode2;
 
+        const auto dx = fl->a.x - fl->b.x;
+        const auto dy = fl->a.y - fl->b.y;
+
+        fpoint_t tmp = { 0, 0 };
         // clip to each side
-        if (outside & TOP)
+        if ((outside & topBit).any())
         {
-            dy    = fl->a.y - fl->b.y;
-            dx    = fl->b.x - fl->a.x;
-            tmp.x = fl->a.x + (dx * (fl->a.y)) / dy;
-            tmp.y = 0;
+            ASSERT(dy != 0, "Divide by zero in top trim.  dy is zero");
+            tmp = { fl->a.x - (dx * fl->a.y) / dy, 0 };
         }
-        else if (outside & BOTTOM)
+        else if ((outside & bottomBit).any())
         {
-            dy    = fl->a.y - fl->b.y;
-            dx    = fl->b.x - fl->a.x;
-            tmp.x = fl->a.x + (dx * (fl->a.y - locals.f_h)) / dy;
-            tmp.y = locals.f_h - 1;
+            ASSERT(dy != 0, "Divide by zero in bottom trim.  dy is zero");
+            tmp = { fl->a.x - (dx * (fl->a.y - locals.f_h)) / dy, locals.f_h - 1 };
         }
-        else if (outside & RIGHT)
+        else if ((outside & rightBit).any())
         {
-            dy    = fl->b.y - fl->a.y;
-            dx    = fl->b.x - fl->a.x;
-            tmp.y = fl->a.y + (dy * (locals.f_w - 1 - fl->a.x)) / dx;
-            tmp.x = locals.f_w - 1;
+            ASSERT(dx != 0, "Divide by zero in right trim.  dx is zero");
+            tmp = { locals.f_w - 1, fl->a.y - (dy * (locals.f_w - 1 - fl->a.x)) / -dx };
         }
-        else if (outside & LEFT)
+        else if ((outside & leftBit).any())
         {
-            dy    = fl->b.y - fl->a.y;
-            dx    = fl->b.x - fl->a.x;
-            tmp.y = fl->a.y + (dy * (-fl->a.x)) / dx;
-            tmp.x = 0;
+            ASSERT(dx != 0, "Divide by zero in left trim.  dx is zero");
+            tmp = { 0, fl->a.y - (dy * (-fl->a.x)) / -dx };
         }
-        else
-        {
-            tmp.x = 0;
-            tmp.y = 0;
-        }
+
 
         if (outside == outcode1)
         {
-            fl->a = tmp;
-            DOOUTCODE(outcode1, fl->a.x, fl->a.y);
+            fl->a    = tmp;
+            outcode1 = get_edge_code(fl->a);
         }
         else
         {
-            fl->b = tmp;
-            DOOUTCODE(outcode2, fl->b.x, fl->b.y);
+            fl->b    = tmp;
+            outcode2 = get_edge_code(fl->b);
         }
 
-        if (outcode1 & outcode2)
+        if ((outcode1 & outcode2).any())
+        {
             return false; // trivially outside
+        }
     }
-
     return true;
 }
-#undef DOOUTCODE
 
 
 //
 // Classic Bresenham w/ whatever optimizations needed for speed
 //
 void AM_drawFline(fline_t *fl,
-    int                    color)
+    const int              color)
 {
-    int x;
-    int y;
-    int dx;
-    int dy;
-    int sx;
-    int sy;
-    int ax;
-    int ay;
-    int d;
-
-    static int fuck = 0;
-
     // For debugging only
     if (fl->a.x < 0 || fl->a.x >= locals.f_w
         || fl->a.y < 0 || fl->a.y >= locals.f_h
         || fl->b.x < 0 || fl->b.x >= locals.f_w
         || fl->b.y < 0 || fl->b.y >= locals.f_h)
     {
+        static int fuck = 0;
         DEH_fprintf(stderr, "fuck %d \r", fuck++);
         return;
     }
 
-#define PUTDOT(xx, yy, cc) I_VideoBuffer[(yy)*locals.f_w + (flipscreenwidth[xx])] = (colormaps[(cc)])
+    const auto PUTDOT = [=](const auto xx, const auto yy, const auto cc) {
+        I_VideoBuffer[yy * locals.f_w + flipscreenwidth[xx]] = colormaps[cc];
+    };
 
-    dx = fl->b.x - fl->a.x;
-    ax = 2 * (dx < 0 ? -dx : dx);
-    sx = dx < 0 ? -1 : 1;
+    const int dx = fl->b.x - fl->a.x;
+    const int ax = 2 * (dx < 0 ? -dx : dx);
+    const int sx = dx < 0 ? -1 : 1;
 
-    dy = fl->b.y - fl->a.y;
-    ay = 2 * (dy < 0 ? -dy : dy);
-    sy = dy < 0 ? -1 : 1;
+    const int dy = fl->b.y - fl->a.y;
+    const int ay = 2 * (dy < 0 ? -dy : dy);
+    const int sy = dy < 0 ? -1 : 1;
 
-    x = fl->a.x;
-    y = fl->a.y;
+    int x = fl->a.x;
+    int y = fl->a.y;
 
     if (ax > ay)
     {
-        d = ay - ax / 2;
+        int d = ay - ax / 2;
         while (1)
         {
             PUTDOT(x, y, color);
-            if (x == fl->b.x) return;
+            if (x == fl->b.x) { break; }
             if (d >= 0)
             {
                 y += sy;
@@ -1290,11 +1259,11 @@ void AM_drawFline(fline_t *fl,
     }
     else
     {
-        d = ax - ay / 2;
+        int d = ax - ay / 2;
         while (1)
         {
             PUTDOT(x, y, color);
-            if (y == fl->b.y) return;
+            if (y == fl->b.y) { break; }
             if (d >= 0)
             {
                 x += sx;
@@ -1316,7 +1285,9 @@ void AM_drawMline(mline_t *ml,
     static fline_t fl;
 
     if (AM_clipMline(ml, &fl))
+    {
         AM_drawFline(&fl, color); // draws it on frame buffer using I_VideoBuffer coords
+    }
 }
 
 
@@ -1325,8 +1296,6 @@ void AM_drawMline(mline_t *ml,
 //
 void AM_drawGrid(int color)
 {
-    mline_t ml;
-
     // Figure out start of vertical gridlines
     auto start = locals.mapLL.x;
     if (crispy->automaprotate)
@@ -1349,8 +1318,11 @@ void AM_drawGrid(int color)
     for (auto x = start; x < end; x += (MAPBLOCKUNITS << FRACBITS))
     {
         // [crispy] moved here
-        ml.a = { x, locals.mapLL.y };
-        ml.b = { x, locals.mapLL.y + locals.mapWH.y };
+        mline_t ml = {
+            .a = { x, locals.mapLL.y },                 //
+            .b = { x, locals.mapLL.y + locals.mapWH.y } //
+        };
+
         if (crispy->automaprotate)
         {
             const auto half_x = locals.mapWH.x / 2;
@@ -1386,8 +1358,11 @@ void AM_drawGrid(int color)
     for (auto y = start; y < end; y += (MAPBLOCKUNITS << FRACBITS))
     {
         // [crispy] moved here
-        ml.a = { locals.mapLL.x, y };
-        ml.b = { locals.mapLL.x + locals.mapWH.x, y };
+        mline_t ml = {
+            .a = { locals.mapLL.x, y },
+            .b = { locals.mapLL.x + locals.mapWH.x, y }
+        };
+
         if (crispy->automaprotate)
         {
             const auto half_y = locals.mapWH.y / 2;
@@ -1405,58 +1380,34 @@ void AM_drawGrid(int color)
 // This is LineDef based, not LineSeg based.
 //
 
-// [crispy] keyed linedefs (PR, P1, SR, S1)
-static keycolor_t AM_DoorColor(int type)
+auto AM_drawWalls() -> void
 {
-    if (crispy->extautomap)
-    {
-        switch (type)
-        {
-        case 26:
-        case 32:
-        case 99:
-        case 133:
-            return blue_key;
-        case 27:
-        case 34:
-        case 136:
-        case 137:
-            return yellow_key;
-        case 28:
-        case 33:
-        case 134:
-        case 135:
-            return red_key;
-        }
-    }
-    return no_key;
-}
-
-void AM_drawWalls(void)
-{
-    int            i;
     static mline_t l;
 
-    for (i = 0; i < numlines; i++)
+    for (int i = 0; i < numlines; i++)
     {
-        l.a.x = lines[i].v1->x;
-        l.a.y = lines[i].v1->y;
-        l.b.x = lines[i].v2->x;
-        l.b.y = lines[i].v2->y;
+        l = {
+            .a = { lines[i].v1->x, lines[i].v1->y },
+            .b = { lines[i].v2->x, lines[i].v2->y }
+        };
+
         if (crispy->automaprotate)
         {
             locals.AM_rotatePoint(l.a);
             locals.AM_rotatePoint(l.b);
         }
+
         if (locals.cheating || (lines[i].flags & ML_MAPPED))
         {
             if ((lines[i].flags & locals.LINE_NEVERSEE) && !locals.cheating)
+            {
                 continue;
+            }
             {
                 // [crispy] draw keyed doors in their respective colors
                 // (no Boom multiple keys)
                 keycolor_t amd;
-                if (!(lines[i].flags & ML_SECRET) && (amd = AM_DoorColor(lines[i].special)) > no_key)
+                if (!(lines[i].flags & ML_SECRET) && (amd = locals.AM_DoorColor(lines[i].special)) > no_key)
                 {
                     switch (amd)
                     {
@@ -1790,18 +1741,24 @@ void AM_drawCrosshair(int color)
     */
 }
 
-void AM_Drawer(void)
+auto AM_Drawer() -> void
 {
-    if (!automapactive) return;
+    if (!automapactive) { return; }
 
     if (!crispy->automapoverlay)
-        AM_clearFB(BACKGROUND);
+    {
+        locals.AM_clearFB(BACKGROUND);
+    }
     if (locals.grid)
+    {
         AM_drawGrid(GRIDCOLORS);
+    }
     AM_drawWalls();
     AM_drawPlayers();
     if (locals.cheating == 2)
+    {
         AM_drawThings(THINGCOLORS, THINGRANGE);
+    }
     AM_drawCrosshair(XHAIRCOLORS);
 
     AM_drawMarks();
@@ -1828,17 +1785,15 @@ void AM_GetMarkPoints(int *n, long *p)
 
 void AM_SetMarkPoints(int n, long *p)
 {
-    int i;
-
     AM_LevelInit();
     locals.lastlevel   = gamemap;
     locals.lastepisode = gameepisode;
 
     locals.markpointnum = n;
 
-    for (i = 0; i < AM_NUMMARKPOINTS; i++)
+    for (auto &i : locals.markpoints)
     {
-        locals.markpoints[i].x = (int64_t)*p++;
-        locals.markpoints[i].y = (int64_t)*p++;
+        i.x = (int64_t)*p++;
+        i.y = (int64_t)*p++;
     }
 }
