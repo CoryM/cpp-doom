@@ -81,10 +81,22 @@ constexpr int XHAIRCOLORS              = GRAYS;
 //constexpr int CDWALLRANGE              = YELLOWRANGE;
 //constexpr int SECRETWALLRANGE          = WALLRANGE;
 //constexpr int GRIDRANGE                = 0;
-#define CDWALLCOLORS (crispy->extautomap ? 215 : YELLOWS) // [crispy] orange
-#define FDWALLCOLORS (crispy->extautomap ? 55 : BROWNS) // [crispy] lt brown
-#define WALLCOLORS   (crispy->extautomap ? 23 : REDS) // [crispy] red-brown
 #define CRISPY_HIGHLIGHT_REVEALED_SECRETS
+
+constexpr auto CDWALLCOLORS = []() {
+    constexpr auto crispy_orange = 215;
+    return (crispy->extautomap ? crispy_orange : YELLOWS); // [crispy] orange
+};
+
+constexpr auto FDWALLCOLORS = []() {
+    constexpr auto crispy_brown = 55;
+    return (crispy->extautomap ? crispy_brown : BROWNS); // [crispy] lt brown
+};
+
+constexpr auto WALLCOLORS = []() {
+    constexpr auto crispy_red = 23;
+    return (crispy->extautomap ? crispy_red : REDS); // [crispy] red-brown
+};
 
 // drawing stuff
 constexpr int AM_NUMMARKPOINTS = 10;
@@ -105,8 +117,8 @@ constexpr auto M2_ZOOMIN  = static_cast<int>(1.08 * FRACUNIT);
 constexpr auto M2_ZOOMOUT = static_cast<int>(FRACUNIT / 1.08);
 
 struct fpoint_t {
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
 };
 
 struct fline_t {
@@ -331,26 +343,27 @@ public:
     // translates between frame-buffer and map distances
     // [crispy] fix int overflow that causes map and grid lines to disappear
 
-    [[nodiscard]] auto FTOM(int64_t x) -> int
+    [[nodiscard]] auto FTOM(int64_t x) const -> int
     {
-        return (((x << FRACBITS) * scale_ftom) >> FRACBITS);
+        //return (((x << FRACBITS) * scale_ftom) >> FRACBITS);
+        return (x * scale_ftom);
     }
 
-    [[nodiscard]] auto MTOF(int64_t x) -> int64_t
+    [[nodiscard]] auto MTOF(int64_t x) const -> int64_t
     {
         return (static_cast<uint64_t>(x * scale_mtof) >> FRACBITS) >> FRACBITS;
     }
 
 
     // translates between frame-buffer and map coordinates
-    [[nodiscard]] auto CXMTOF(int64_t x) -> int
+    [[nodiscard]] auto CXMTOF(int64_t x) const -> int
     {
         return static_cast<int>(f_x + MTOF(x - mapLL.x));
     }
 
 
     // translates between frame-buffer and map coordinates
-    [[nodiscard]] auto CYMTOF(int64_t y) -> int
+    [[nodiscard]] auto CYMTOF(int64_t y) const -> int
     {
         return static_cast<int>(f_y + (f_h - MTOF(y - mapLL.y)));
     }
@@ -1438,13 +1451,13 @@ auto AM_drawWalls() -> void
                 // [crispy] draw 1S secret sector boundaries in purple
                 if (crispy->extautomap && locals.cheating && (lines[i].frontsector->special == 9))
                     AM_drawMline(&l, SECRETWALLCOLORS);
-#if defined CRISPY_HIGHLIGHT_REVEALED_SECRETS
+#ifdef CRISPY_HIGHLIGHT_REVEALED_SECRETS
                 // [crispy] draw revealed secret sector boundaries in green
                 else if (crispy->extautomap && crispy->secretmessage && (lines[i].frontsector->oldspecial == 9))
                     AM_drawMline(&l, REVEALEDSECRETWALLCOLORS);
 #endif
                 else
-                    AM_drawMline(&l, WALLCOLORS + locals.lightlev);
+                    AM_drawMline(&l, WALLCOLORS() + locals.lightlev);
             }
             else
             {
@@ -1453,16 +1466,20 @@ auto AM_drawWalls() -> void
                 // (no monsters-only teleporters 125, 126; no Boom teleporters)
                 if (lines[i].special == 39 || (crispy->extautomap && !(lines[i].flags & ML_SECRET) && lines[i].special == 97))
                 { // teleporters
-                    AM_drawMline(&l, crispy->extautomap ? (GREENS + GREENRANGE / 2) : (WALLCOLORS + WALLRANGE / 2));
+                    AM_drawMline(&l, crispy->extautomap ? (GREENS + GREENRANGE / 2) : (WALLCOLORS() + WALLRANGE / 2));
                 }
                 else if (lines[i].flags & ML_SECRET) // secret door
                 {
                     // [crispy] NB: Choco has this check, but (SECRETWALLCOLORS == WALLCOLORS)
                     // Boom/PrBoom+ does not have this check at all
                     if (false && locals.cheating)
+                    {
                         AM_drawMline(&l, SECRETWALLCOLORS + locals.lightlev);
+                    }
                     else
-                        AM_drawMline(&l, WALLCOLORS + locals.lightlev);
+                    {
+                        AM_drawMline(&l, WALLCOLORS() + locals.lightlev);
+                    }
                 }
 #if defined CRISPY_HIGHLIGHT_REVEALED_SECRETS
                 // [crispy] draw revealed secret sector boundaries in green
@@ -1479,12 +1496,12 @@ auto AM_drawWalls() -> void
                 else if (lines[i].backsector->floorheight
                          != lines[i].frontsector->floorheight)
                 {
-                    AM_drawMline(&l, FDWALLCOLORS + locals.lightlev); // floor level change
+                    AM_drawMline(&l, FDWALLCOLORS() + locals.lightlev); // floor level change
                 }
                 else if (lines[i].backsector->ceilingheight
                          != lines[i].frontsector->ceilingheight)
                 {
-                    AM_drawMline(&l, CDWALLCOLORS + locals.lightlev); // ceiling level change
+                    AM_drawMline(&l, CDWALLCOLORS() + locals.lightlev); // ceiling level change
                 }
                 else if (locals.cheating)
                 {
@@ -1502,19 +1519,18 @@ auto AM_drawWalls() -> void
 
 void AM_drawLineCharacter( //
     const std::span<const mline_t> drawIt,
-    fixed_t                        scale,
-    angle_t                        angle,
-    int                            color,
-    fixed_t                        x,
-    fixed_t                        y)
+    const fixed_t                  scale,
+    const angle_t                  angle,
+    const int                      color,
+    const mpoint_t                 offset)
 {
-    if (crispy->automaprotate)
+    auto tmp_angle = angle;
+    if (crispy->automaprotate != 0)
     {
-        angle += locals.mapangle;
+        tmp_angle += locals.mapangle;
     }
 
-    //for (i = 0; i < lineguylines; i++)
-    for (auto line : drawIt)
+    for (const auto &line : drawIt)
     {
         mline_t l = line;
 
@@ -1524,16 +1540,14 @@ void AM_drawLineCharacter( //
             l.b *= scale;
         }
 
-        if (angle != 0)
+        if (tmp_angle != 0)
         {
-            locals.AM_rotate(l.a, angle);
-            locals.AM_rotate(l.b, angle);
+            locals.AM_rotate(l.a, tmp_angle);
+            locals.AM_rotate(l.b, tmp_angle);
         }
 
-        l.a.x += x;
-        l.a.y += y;
-        l.b.x += x;
-        l.b.y += y;
+        l.a += offset;
+        l.b += offset;
 
         AM_drawMline(&l, color);
     }
@@ -1552,17 +1566,19 @@ void AM_drawPlayers(void)
     {
         pt.x = locals.plr->mo->x;
         pt.y = locals.plr->mo->y;
-        if (crispy->automaprotate)
+        if (crispy->automaprotate != 0)
         {
             locals.AM_rotatePoint(pt);
         }
 
-        if (locals.cheating)
+        if (locals.cheating != 0)
         {
-            AM_drawLineCharacter(locals.cheat_player_arrow, 0, locals.plr->mo->angle, WHITE, pt.x, pt.y);
+            AM_drawLineCharacter(locals.cheat_player_arrow, 0, locals.plr->mo->angle, WHITE, pt);
         }
         else
-            AM_drawLineCharacter(locals.player_arrow, 0, locals.plr->mo->angle, WHITE, pt.x, pt.y);
+        {
+            AM_drawLineCharacter(locals.player_arrow, 0, locals.plr->mo->angle, WHITE, pt);
+        }
         return;
     }
 
@@ -1590,21 +1606,17 @@ void AM_drawPlayers(void)
         }
 
         AM_drawLineCharacter(locals.player_arrow, 0, p->mo->angle,
-            color, pt.x, pt.y);
+            color, pt);
     }
 }
 
 void AM_drawThings(int colors, int colorrange [[maybe_unused]])
 {
-    int        i;
-    mobj_t *   t;
-    keycolor_t key;
-    mpoint_t   pt;
-
-    for (i = 0; i < numsectors; i++)
+    auto sector_span = std::span<sector_t>(sectors, numsectors);
+    for (auto &i : sector_span)
     {
-        t = sectors[i].thinglist;
-        while (t)
+        auto *t = i.thinglist;
+        while (t != nullptr)
         {
             // [crispy] do not draw an extra triangle for the player
             if (t == locals.plr->mo)
@@ -1612,29 +1624,28 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
                 t = t->snext;
                 continue;
             }
-
-            pt.x = t->x;
-            pt.y = t->y;
-            if (crispy->automaprotate)
+            mpoint_t pt = { t->x, t->y };
+            if (crispy->automaprotate != 0)
             {
                 locals.AM_rotatePoint(pt);
             }
 
-            if (crispy->extautomap)
+            if (crispy->extautomap != 0)
             {
+                keycolor_t key;
                 // [crispy] skull keys and key cards
                 switch (t->info->doomednum)
                 {
-                case 38:
                 case 13:
+                case 38:
                     key = red_key;
                     break;
-                case 39:
                 case 6:
+                case 39:
                     key = yellow_key;
                     break;
-                case 40:
                 case 5:
+                case 40:
                     key = blue_key;
                     break;
                 default:
@@ -1650,40 +1661,40 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
                         (key == yellow_key) ? YELLOWS :
                         (key == blue_key)   ? BLUES :
                                               colors + locals.lightlev,
-                        pt.x, pt.y);
+                        pt);
                 }
-                else
-                    // [crispy] draw blood splats and puffs as small squares
-                    if (t->type == MT_BLOOD || t->type == MT_PUFF)
+                // [crispy] draw blood splats and puffs as small squares
+                else if (t->type == MT_BLOOD || t->type == MT_PUFF)
                 {
                     AM_drawLineCharacter(locals.square_mark,
                         t->radius >> 2, t->angle,
                         (t->type == MT_BLOOD) ? REDS : GRAYS,
-                        pt.x, pt.y);
+                        pt);
                 }
                 else
                 {
+                    // [crispy] show countable kills in red ...
+                    const auto color = ((t->flags & (MF_COUNTKILL | MF_CORPSE)) == MF_COUNTKILL) ? REDS :
+                                                                                                   // [crispy] ... show Lost Souls and missiles in orange ...
+                                           (t->flags & (MF_FLOAT | MF_MISSILE)) ? 216 :
+                                                                                  // [crispy] ... show other shootable items in dark gold ...
+                                           (t->flags & MF_SHOOTABLE) ? 164 :
+                                                                       // [crispy] ... corpses in gray ...
+                                           (t->flags & MF_CORPSE) ? GRAYS :
+                                                                    // [crispy] ... and countable items in yellow
+                                           (t->flags & MF_COUNTITEM) ? YELLOWS :
+                                                                       colors + locals.lightlev;
+
                     AM_drawLineCharacter(locals.thintriangle_guy,
                         // [crispy] triangle size represents actual thing size
                         t->radius, t->angle,
-                        // [crispy] show countable kills in red ...
-                        ((t->flags & (MF_COUNTKILL | MF_CORPSE)) == MF_COUNTKILL) ? REDS :
-                                                                                    // [crispy] ... show Lost Souls and missiles in orange ...
-                            (t->flags & (MF_FLOAT | MF_MISSILE)) ? 216 :
-                                                                   // [crispy] ... show other shootable items in dark gold ...
-                            (t->flags & MF_SHOOTABLE) ? 164 :
-                                                        // [crispy] ... corpses in gray ...
-                            (t->flags & MF_CORPSE) ? GRAYS :
-                                                     // [crispy] ... and countable items in yellow
-                            (t->flags & MF_COUNTITEM) ? YELLOWS :
-                                                        colors + locals.lightlev,
-                        pt.x, pt.y);
+                        color, pt);
                 }
             }
             else
             {
                 AM_drawLineCharacter(locals.thintriangle_guy,
-                    16 << FRACBITS, t->angle, colors + locals.lightlev, t->x, t->y);
+                    16 << FRACBITS, t->angle, colors + locals.lightlev, { t->x, t->y });
             }
             t = t->snext;
         }
@@ -1749,7 +1760,7 @@ auto AM_Drawer() -> void
     {
         locals.AM_clearFB(BACKGROUND);
     }
-    if (locals.grid)
+    if (locals.grid != 0)
     {
         AM_drawGrid(GRIDCOLORS);
     }
