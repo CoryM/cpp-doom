@@ -130,8 +130,7 @@ struct mpoint_t {
     int64_t x = 0;
     int64_t y = 0;
 
-    auto
-        operator*(const fixed_t &pIn) -> mpoint_t
+    auto operator*(const fixed_t &pIn) -> mpoint_t
     {
         return { FixedMul(this->x, pIn), FixedMul(this->y, pIn) };
     }
