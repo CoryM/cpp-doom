@@ -133,12 +133,12 @@ struct mpoint_t {
     auto
         operator*(const fixed_t &pIn) -> mpoint_t
     {
-        return { this->x * pIn, this->y * pIn };
+        return { FixedMul(this->x, pIn), FixedMul(this->y, pIn) };
     }
 
     auto operator/(const fixed_t &pIn) -> mpoint_t
     {
-        return { this->x / pIn, this->y / pIn };
+        return { FixedDiv(this->x, pIn), FixedDiv(this->y, pIn) };
     }
 
     auto operator+(const mpoint_t &pIn) -> mpoint_t
@@ -153,8 +153,8 @@ struct mpoint_t {
 
     auto operator*=(const fixed_t &pIn) -> mpoint_t
     {
-        this->x *= pIn;
-        this->y *= pIn;
+        this->x = FixedMul(this->x, pIn);
+        this->y = FixedMul(this->y, pIn);
         return (*this);
     }
 
