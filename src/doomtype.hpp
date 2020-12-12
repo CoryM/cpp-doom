@@ -59,11 +59,16 @@
 
 
 typedef uint8_t byte;
-using pixel_t = uint32_t;
+using pixel_t  = uint32_t;
 using dpixel_t = int64_t;
 
 #define DIR_SEPARATOR   '/'
 #define DIR_SEPARATOR_S "/"
 #define PATH_SEPARATOR  ':'
+
+#ifndef arrlen
+#define arrlen(array) (sizeof(array) / sizeof(*array))
+#endif
+
 
 #endif // __DOOMTYPE_HPP__
