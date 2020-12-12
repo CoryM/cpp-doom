@@ -108,7 +108,8 @@ void R_InstallSpriteLump(int lump,
 {
     int r;
     // [crispy] support 16 sprite rotations
-    unsigned rotation = (rot >= 'A') ? rot - 'A' + 10 : (rot >= '0') ? rot - '0' : 17;
+    unsigned rotation = (rot >= 'A') ? rot - 'A' + 10 : (rot >= '0') ? rot - '0' :
+                                                                       17;
 
     if (frame >= 29 || rotation > 16)
     { // [crispy] support 16 sprite rotations
@@ -830,7 +831,7 @@ byte *R_LaserspotColor(void)
             return cr[CR_BLUE];
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // [crispy] generate a vissprite for the laser spot

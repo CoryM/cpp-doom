@@ -226,7 +226,7 @@ static char *NextGlob(glob_t *glob)
         de = readdir(glob->dir);
         if (de == NULL)
         {
-            return NULL;
+            return nullptr;
         }
     } while (IsDirectory(glob->directory, de)
              || !MatchesAnyGlob(de->d_name, glob));
@@ -321,7 +321,7 @@ const char *I_NextGlob(glob_t *glob)
     }
     if (glob->next_index >= glob->filenames_len)
     {
-        return NULL;
+        return nullptr;
     }
     result = glob->filenames[glob->next_index];
     ++glob->next_index;
@@ -334,7 +334,7 @@ const char *I_NextGlob(glob_t *glob)
 
 glob_t *I_StartGlob(const char *directory, const char *glob, int flags)
 {
-    return NULL;
+    return nullptr;
 }
 
 void I_EndGlob(glob_t *glob)

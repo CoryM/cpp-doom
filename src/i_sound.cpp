@@ -433,7 +433,7 @@ void *I_RegisterSong(void *data, int len)
     }
     else
     {
-        return NULL;
+        return nullptr;
     }
 }
 

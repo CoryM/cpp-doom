@@ -343,7 +343,7 @@ static void *DEH_BEXStrStart(deh_context_s *context, char *line)
         DEH_Warning(context, "Parse error on section start");
     }
 
-    return NULL;
+    return nullptr;
 }
 
 static void DEH_BEXStrParseLine(deh_context_s *context, char *line, void *tag [[maybe_unused]])

@@ -968,7 +968,7 @@ static opl_voice_t *GetFreeVoice(void)
 
     if (voice_free_num == 0)
     {
-        return NULL;
+        return nullptr;
     }
 
     // Remove from free list
@@ -2224,7 +2224,7 @@ static void *I_OPL_RegisterSong(void *data, int len)
 
     if (!music_initialized)
     {
-        return NULL;
+        return nullptr;
     }
 
     // MUS files begin with "MUS"

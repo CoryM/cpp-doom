@@ -55,7 +55,7 @@ void *test_malloc(size_t size)
 
     if (test_malloced + size > 2 * 1024 * 1024)
     {
-        return NULL;
+        return nullptr;
     }
 
     test_malloced += size;

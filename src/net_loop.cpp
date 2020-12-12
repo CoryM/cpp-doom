@@ -68,7 +68,7 @@ static net_packet_t *QueuePop(packet_queue_t *queue)
     {
         // queue empty
 
-        return NULL;
+        return nullptr;
     }
 
     packet      = queue->packets[queue->head];
@@ -138,7 +138,7 @@ static net_addr_t *NET_CL_ResolveAddress(const char *address)
     }
     else
     {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -212,7 +212,7 @@ static net_addr_t *NET_SV_ResolveAddress(const char *address)
     }
     else
     {
-        return NULL;
+        return nullptr;
     }
 }
 

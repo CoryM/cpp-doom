@@ -40,7 +40,7 @@ static wad_file_t *W_StdC_OpenFile(const char *path)
 
     if (fstream == NULL)
     {
-        return NULL;
+        return nullptr;
     }
 
     // Create a new stdc_wad_file_t to hold the file handle.

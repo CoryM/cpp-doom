@@ -2207,7 +2207,7 @@ static default_t *SearchCollection(default_collection_t *collection, const char 
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // Mapping from DOS keyboard scan code to internal key code (as defined
@@ -2677,7 +2677,7 @@ const char *M_GetStringVariable(const char *name)
     if (variable == NULL || !variable->bound
         || variable->type != default_type_t::DEFAULT_STRING)
     {
-        return NULL;
+        return nullptr;
     }
 
     return *variable->location.s;

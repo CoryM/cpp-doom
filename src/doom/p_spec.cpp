@@ -285,7 +285,7 @@ sector_t *
         sector_t *        sec)
 {
     if (!(line->flags & ML_TWOSIDED))
-        return NULL;
+        return nullptr;
 
     if (line->frontsector == sec)
         return line->backsector;

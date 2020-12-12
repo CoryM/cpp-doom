@@ -883,7 +883,7 @@ static net_packet_t *BlockForPacket(net_addr_t *addr, unsigned int packet_type,
 
     // Timeout - no response.
 
-    return NULL;
+    return nullptr;
 }
 
 // Query master server for secure demo start seed value.
@@ -961,7 +961,7 @@ char *NET_EndSecureDemo(sha1_digest_t demo_hash)
 
     if (response == NULL)
     {
-        return NULL;
+        return nullptr;
     }
 
     signature = NET_ReadString(response);

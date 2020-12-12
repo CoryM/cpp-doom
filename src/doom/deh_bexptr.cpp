@@ -28,12 +28,12 @@
 #include <cstring>
 #include <string_view>
 
-typedef struct {
+struct bex_codeptr_t {
     const char *    mnemonic;
     const actionf_t pointer;
-} bex_codeptr_t;
+};
 
-static const bex_codeptr_t bex_codeptrtable[] = {
+static const auto bex_codeptrtable = std::to_array<bex_codeptr_t>({
     { "Light0", { A_Light0 } },
     { "WeaponReady", { A_WeaponReady } },
     { "Lower", { A_Lower } },
@@ -124,7 +124,7 @@ static const bex_codeptr_t bex_codeptrtable[] = {
     { "RandomJump", { A_RandomJump } },
     { "LineEffect", { A_LineEffect } },
     { "NULL", {} },
-};
+});
 
 extern actionf_t codeptrs[NUMSTATES];
 
@@ -137,7 +137,7 @@ static void *DEH_BEXPtrStart(deh_context_s *context, char *line)
         DEH_Warning(context, "Parse error on section start");
     }
 
-    return NULL;
+    return nullptr;
 }
 
 static void DEH_BEXPtrParseLine(deh_context_s *context, char *line, void *tag [[maybe_unused]])

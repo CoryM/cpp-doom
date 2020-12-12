@@ -48,7 +48,7 @@ static bool music_initialized = false;
 static bool sdl_was_initialized = false;
 
 static bool musicpaused = false;
-static int     current_music_volume;
+static int  current_music_volume;
 
 char *timidity_cfg_path = "";
 
@@ -86,8 +86,8 @@ static bool WriteWrapperTimidityConfig(char *write_path)
 
 void I_InitTimidityConfig(void)
 {
-    char *  env_string;
-    bool success;
+    char *env_string;
+    bool  success;
 
     temp_timidity_cfg = M_TempFile("timidity.cfg");
 
@@ -105,7 +105,7 @@ void I_InitTimidityConfig(void)
 
     if (success)
     {
-        env_string = M_StringJoin({"TIMIDITY_CFG=", temp_timidity_cfg});
+        env_string = M_StringJoin({ "TIMIDITY_CFG=", temp_timidity_cfg });
         putenv(env_string);
     }
     else
@@ -399,7 +399,7 @@ static void *I_SDL_RegisterSong(void *data, int len)
 
     if (!music_initialized)
     {
-        return NULL;
+        return nullptr;
     }
 
     // MUS files begin with "MUS"

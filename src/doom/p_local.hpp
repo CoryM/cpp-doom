@@ -20,9 +20,8 @@
 #ifndef __P_LOCAL__
 #define __P_LOCAL__
 
-#ifndef __R_LOCAL__
+#include "../m_fixed.hpp"
 #include "r_local.hpp"
-#endif
 
 #define TOCENTER   -8
 #define AFLAG_JUMP 0x80
@@ -114,7 +113,7 @@ mobj_t *
 
 void    P_RemoveMobj(mobj_t *th);
 mobj_t *P_SubstNullMobj(mobj_t *th);
-bool P_SetMobjState(mobj_t *mobj, statenum_t state);
+bool    P_SetMobjState(mobj_t *mobj, statenum_t state);
 void    P_MobjThinker(mobj_t *mobj);
 mobj_t *Crispy_PlayerSO(int p); // [crispy] weapon sound sources
 
@@ -146,7 +145,7 @@ typedef struct
 typedef struct
 {
     fixed_t frac; // along trace line
-    bool isaline;
+    bool    isaline;
     union {
         mobj_t *thing;
         line_s *line;
@@ -186,13 +185,12 @@ bool P_BlockThingsIterator(int x, int y, bool (*func)(mobj_t *));
 
 extern divline_t trace;
 
-bool
-    P_PathTraverse(fixed_t x1,
-        fixed_t            y1,
-        fixed_t            x2,
-        fixed_t            y2,
-        int                flags,
-        bool (*trav)(intercept_t *));
+bool P_PathTraverse(fixed_t x1,
+    fixed_t                 y1,
+    fixed_t                 x2,
+    fixed_t                 y2,
+    int                     flags,
+    bool (*trav)(intercept_t *));
 
 void P_UnsetThingPosition(mobj_t *thing);
 void P_SetThingPosition(mobj_t *thing);
@@ -204,7 +202,7 @@ void P_SetThingPosition(mobj_t *thing);
 
 // If "floatok" true, move would be ok
 // if within "tmfloorz - tmceilingz".
-extern bool floatok;
+extern bool    floatok;
 extern fixed_t tmfloorz;
 extern fixed_t tmceilingz;
 
@@ -228,9 +226,9 @@ extern int     numspechit;
 bool P_CheckPosition(mobj_t *thing, fixed_t x, fixed_t y);
 bool P_TryMove(mobj_t *thing, fixed_t x, fixed_t y);
 bool P_TeleportMove(mobj_t *thing, fixed_t x, fixed_t y);
-void    P_SlideMove(mobj_t *mo);
+void P_SlideMove(mobj_t *mo);
 bool P_CheckSight(mobj_t *t1, mobj_t *t2);
-void    P_UseLines(player_t *player);
+void P_UseLines(player_t *player);
 
 bool P_ChangeSector(sector_t *sector, bool crunch);
 

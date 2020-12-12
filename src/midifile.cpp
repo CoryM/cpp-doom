@@ -86,7 +86,7 @@ struct midi_file_s {
 // Check the header of a chunk:
 
 static bool CheckChunkHeader(chunk_header_t *chunk,
-    const char *                                expected_id)
+    const char *                             expected_id)
 {
     bool result;
 
@@ -176,7 +176,7 @@ static byte *ReadByteSequence(unsigned int num_bytes, FILE *stream)
     if (result == NULL)
     {
         fprintf(stderr, "ReadByteSequence: Failed to allocate buffer\n");
-        return NULL;
+        return nullptr;
     }
 
     // Read the data:
@@ -188,7 +188,7 @@ static byte *ReadByteSequence(unsigned int num_bytes, FILE *stream)
             fprintf(stderr, "ReadByteSequence: Error while reading byte %u\n",
                 i);
             free(result);
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -585,7 +585,7 @@ midi_file_t *MIDI_LoadFile(char *filename)
 
     if (file == NULL)
     {
-        return NULL;
+        return nullptr;
     }
 
     file->tracks      = NULL;
@@ -601,7 +601,7 @@ midi_file_t *MIDI_LoadFile(char *filename)
     {
         fprintf(stderr, "MIDI_LoadFile: Failed to open '%s'\n", filename);
         MIDI_FreeFile(file);
-        return NULL;
+        return nullptr;
     }
 
     // Read MIDI file header
@@ -610,7 +610,7 @@ midi_file_t *MIDI_LoadFile(char *filename)
     {
         fclose(stream);
         MIDI_FreeFile(file);
-        return NULL;
+        return nullptr;
     }
 
     // Read all tracks:
@@ -619,7 +619,7 @@ midi_file_t *MIDI_LoadFile(char *filename)
     {
         fclose(stream);
         MIDI_FreeFile(file);
-        return NULL;
+        return nullptr;
     }
 
     fclose(stream);

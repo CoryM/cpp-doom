@@ -313,10 +313,10 @@ static void saveg_read_mobj_t(mobj_t *str)
     // fixed_t z;
     str->z = saveg_read32();
 
-    // struct mobj_s* snext;
+    // struct mobj_t* snext;
     str->snext = static_cast<mobj_t *>(saveg_readp());
 
-    // struct mobj_s* sprev;
+    // struct mobj_t* sprev;
     str->sprev = static_cast<mobj_t *>(saveg_readp());
 
     // angle_t angle;
@@ -328,10 +328,10 @@ static void saveg_read_mobj_t(mobj_t *str)
     // int frame;
     str->frame = saveg_read32();
 
-    // struct mobj_s* bnext;
+    // struct mobj_t* bnext;
     str->bnext = static_cast<mobj_t *>(saveg_readp());
 
-    // struct mobj_s* bprev;
+    // struct mobj_t* bprev;
     str->bprev = static_cast<mobj_t *>(saveg_readp());
 
     // struct subsector_s* subsector;
@@ -385,7 +385,7 @@ static void saveg_read_mobj_t(mobj_t *str)
     // int movecount;
     str->movecount = saveg_read32();
 
-    // struct mobj_s* target;
+    // struct mobj_t* target;
     str->target = static_cast<mobj_t *>(saveg_readp());
 
     // int reactiontime;
@@ -414,7 +414,7 @@ static void saveg_read_mobj_t(mobj_t *str)
     // mapthing_t spawnpoint;
     saveg_read_mapthing_t(&str->spawnpoint);
 
-    // struct mobj_s* tracer;
+    // struct mobj_t* tracer;
     str->tracer = static_cast<mobj_t *>(saveg_readp());
 }
 
@@ -447,7 +447,7 @@ thinker_s *P_IndexToThinker(uint32_t index)
     uint32_t   i;
 
     if (!index)
-        return NULL;
+        return nullptr;
 
     for (th = thinkercap.next, i = 0; th != &thinkercap; th = th->next)
     {
@@ -461,7 +461,7 @@ thinker_s *P_IndexToThinker(uint32_t index)
 
     restoretargets_fail++;
 
-    return NULL;
+    return nullptr;
 }
 
 static void saveg_write_mobj_t(mobj_t *str)
@@ -478,10 +478,10 @@ static void saveg_write_mobj_t(mobj_t *str)
     // fixed_t z;
     saveg_write32(str->z);
 
-    // struct mobj_s* snext;
+    // struct mobj_t* snext;
     saveg_writep(str->snext);
 
-    // struct mobj_s* sprev;
+    // struct mobj_t* sprev;
     saveg_writep(str->sprev);
 
     // angle_t angle;
@@ -493,10 +493,10 @@ static void saveg_write_mobj_t(mobj_t *str)
     // int frame;
     saveg_write32(str->frame);
 
-    // struct mobj_s* bnext;
+    // struct mobj_t* bnext;
     saveg_writep(str->bnext);
 
-    // struct mobj_s* bprev;
+    // struct mobj_t* bprev;
     saveg_writep(str->bprev);
 
     // struct subsector_s* subsector;
@@ -550,7 +550,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     // int movecount;
     saveg_write32(str->movecount);
 
-    // struct mobj_s* target;
+    // struct mobj_t* target;
     // [crispy] instead of the actual pointer, store the
     // corresponding index in the mobj->target field
     saveg_writep((void *)(uintptr_t)P_ThinkerToIndex((thinker_s *)str->target));
@@ -577,7 +577,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     // mapthing_t spawnpoint;
     saveg_write_mapthing_t(&str->spawnpoint);
 
-    // struct mobj_s* tracer;
+    // struct mobj_t* tracer;
     // [crispy] instead of the actual pointer, store the
     // corresponding index in the mobj->tracers field
     saveg_writep((void *)(uintptr_t)P_ThinkerToIndex((thinker_s *)str->tracer));

@@ -143,7 +143,7 @@ wad_file_t *W_AddFile(const char *filename)
     if (wad_file == NULL)
     {
         printf(" couldn't open %s\n", filename);
-        return NULL;
+        return nullptr;
     }
 
     if (strcasecmp(filename + strlen(filename) - 3, "wad"))

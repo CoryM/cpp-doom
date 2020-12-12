@@ -538,7 +538,7 @@ static net_client_t *NET_SV_FindClient(net_addr_t *addr)
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // send a rejection packet to a client

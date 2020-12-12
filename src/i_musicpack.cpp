@@ -624,7 +624,7 @@ static const char *GetSubstituteMusicFile(void *data, size_t data_len)
     // Don't bother doing a hash if we're never going to find anything.
     if (subst_music_len == 0)
     {
-        return NULL;
+        return nullptr;
     }
 
     SHA1_Init(&context);
@@ -716,7 +716,7 @@ static char *ExpandFileExtension(const char *musicdir, const char *filename)
         free(result);
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // Add a substitute music file to the lookup list.
@@ -749,20 +749,20 @@ static const char *ReadHashPrefix(char *line)
     {
         if (!isxdigit(*p))
         {
-            return NULL;
+            return nullptr;
         }
     }
 
     len = p - line;
     if (len == 0 || len > sizeof(sha1_digest_t) * 2)
     {
-        return NULL;
+        return nullptr;
     }
 
     result = static_cast<char *>(malloc(len + 1));
     if (result == NULL)
     {
-        return NULL;
+        return nullptr;
     }
 
     for (i = 0; i < len; ++i)
@@ -802,7 +802,7 @@ static const char *ParseSubstituteLine(char *musicdir, char *line)
     // been stripped.
     if (*p == '\0')
     {
-        return NULL;
+        return nullptr;
     }
 
     hash_prefix = ReadHashPrefix(p);
@@ -844,7 +844,7 @@ static const char *ParseSubstituteLine(char *musicdir, char *line)
     // Expand full path and add to our database of substitutes.
     AddSubstituteMusic(musicdir, hash_prefix, filename);
 
-    return NULL;
+    return nullptr;
 }
 
 // Read a substitute music configuration file.
@@ -1246,14 +1246,14 @@ static void *I_MP_RegisterSong(void *data, int len)
 
     if (!music_initialized)
     {
-        return NULL;
+        return nullptr;
     }
 
     // See if we're substituting this MUS for a high-quality replacement.
     filename = GetSubstituteMusicFile(data, len);
     if (filename == NULL)
     {
-        return NULL;
+        return nullptr;
     }
 
     music = Mix_LoadMUS(filename);
@@ -1263,7 +1263,7 @@ static void *I_MP_RegisterSong(void *data, int len)
         // message.
         fprintf(stderr, "Failed to load substitute music file: %s: %s\n",
             filename, Mix_GetError());
-        return NULL;
+        return nullptr;
     }
 
     // Read loop point metadata from the file so that we know where

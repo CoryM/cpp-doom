@@ -2186,7 +2186,9 @@ void D_DoomMain(void)
     if (p != c_Arguments::NotFound)
     {
         if (gamemode == GameMode_t::commercial)
+        {
             startmap = M_GetArgumentAsInt(p + 1);
+        }
         else
         {
             startepisode = M_GetArgument(p + 1)[0] - '0';

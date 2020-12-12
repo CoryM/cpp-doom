@@ -368,7 +368,7 @@ net_addr_t *NET_SDL_ResolveAddress(const char *address)
     {
         // unable to resolve
 
-        return NULL;
+        return nullptr;
     }
     else
     {

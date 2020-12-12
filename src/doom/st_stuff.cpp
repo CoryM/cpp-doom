@@ -1668,14 +1668,14 @@ enum class hudcolor_t
 static byte *ST_WidgetColor(hudcolor_t hudcolor)
 {
     if (!(crispy->coloredhud & COLOREDHUD_BAR))
-        return NULL;
+        return nullptr;
 
     switch (hudcolor)
     {
     case hudcolor_t::hudcolor_ammo: {
         if (weaponinfo[plyr->readyweapon].ammo == am_noammo)
         {
-            return NULL;
+            return nullptr;
         }
         else
         {
@@ -1750,7 +1750,7 @@ static byte *ST_WidgetColor(hudcolor_t hudcolor)
     }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // [crispy] draw the gibbed death state frames in the Health widget

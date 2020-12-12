@@ -220,7 +220,7 @@ static allocated_sound_t *AllocateSound(sfxinfo_t *sfxinfo, size_t len)
 
         if (snd == NULL && !FindAndFreeSound())
         {
-            return NULL;
+            return nullptr;
         }
 
     } while (snd == NULL);
@@ -292,7 +292,7 @@ static allocated_sound_t *GetAllocatedSoundBySfxInfoAndPitch(sfxinfo_t *sfxinfo,
         p = p->next;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // Allocate a new sound chunk and pitch-shift an existing sound up-or-down
@@ -322,7 +322,7 @@ static allocated_sound_t *PitchShift(allocated_sound_t *insnd, int pitch)
 
     if (!outsnd)
     {
-        return NULL;
+        return nullptr;
     }
 
     outsnd->pitch = pitch;

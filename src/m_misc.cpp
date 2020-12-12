@@ -352,7 +352,7 @@ const char *M_StrCaseStr(const char *haystack, const char *needle)
 
     if (haystack_len < needle_len)
     {
-        return NULL;
+        return nullptr;
     }
 
     len = haystack_len - needle_len;
@@ -365,7 +365,7 @@ const char *M_StrCaseStr(const char *haystack, const char *needle)
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 //

@@ -61,7 +61,7 @@ static deh_cheat_t *FindCheatByName(char *name)
             return &allcheats[i];
     }
 
-    return NULL;
+    return nullptr;
 }
 
 static void *DEH_CheatStart(deh_context_s *context [[maybe_unused]], char *line [[maybe_unused]])
