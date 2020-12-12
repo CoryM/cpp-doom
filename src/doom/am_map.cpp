@@ -38,7 +38,9 @@
 
 #include <bitset>
 #include <cassert>
+#include <cmath>
 #include <cstdio>
+#include <numbers>
 #include <span>
 #include <string_view>
 
@@ -130,24 +132,29 @@ struct mpoint_t {
     int64_t x = 0;
     int64_t y = 0;
 
-    auto operator*(const fixed_t &pIn) -> mpoint_t
+    auto half() const -> mpoint_t
+    {
+        return { x >> 1, y >> 1 };
+    }
+
+    auto operator*(const fixed_t &pIn) const -> mpoint_t
     {
         return { FixedMul(this->x, pIn), FixedMul(this->y, pIn) };
     }
 
-    auto operator/(const fixed_t &pIn) -> mpoint_t
+    auto operator/(const fixed_t &pIn) const -> mpoint_t
     {
         return { FixedDiv(this->x, pIn), FixedDiv(this->y, pIn) };
     }
 
-    auto operator+(const mpoint_t &pIn) -> mpoint_t
+    auto operator+(const mpoint_t &mpIn) const -> mpoint_t
     {
-        return { this->x + pIn.x, this->y + pIn.y };
+        return { this->x + mpIn.x, this->y + mpIn.y };
     }
 
-    auto operator-(const mpoint_t &pIn) -> mpoint_t
+    auto operator-(const mpoint_t &mpIn) const -> mpoint_t
     {
-        return { this->x - pIn.x, this->y - pIn.y };
+        return { this->x - mpIn.x, this->y - mpIn.y };
     }
 
     auto operator*=(const fixed_t &pIn) -> mpoint_t
@@ -157,24 +164,20 @@ struct mpoint_t {
         return (*this);
     }
 
-    auto operator-=(const mpoint_t &pIn) -> mpoint_t
+    auto operator-=(const mpoint_t &mpIn) -> mpoint_t
     {
-        this->x -= pIn.x;
-        this->y -= pIn.y;
+        x = x - mpIn.x;
+        y = y - mpIn.y;
         return (*this);
     }
 
-    auto operator+=(const mpoint_t &pIn) -> mpoint_t
+    auto operator+=(const mpoint_t &mpIn) -> mpoint_t
     {
-        this->x += pIn.x;
-        this->y += pIn.y;
+        x = x + mpIn.x;
+        y = y + mpIn.y;
         return (*this);
     }
 };
-auto make_mpoint(int64_t x, int64_t y) -> mpoint_t
-{
-    return { x, y };
-}
 
 struct mline_t {
     mpoint_t a;
@@ -371,10 +374,10 @@ public:
     //
     auto AM_activateNewScale() -> void
     {
-        mapLL += mapWH / 2;
+        mapLL += mapWH.half();
         mapWH.x = FTOM(f_w);
         mapWH.y = FTOM(f_h);
-        mapLL -= mapWH / 2;
+        mapLL -= mapWH.half();
         mapUR = mapLL + mapWH;
     }
 
@@ -395,7 +398,7 @@ public:
         }
         else
         {
-            mapLL = mpoint_t { plr->mo->x, plr->mo->y } - mapWH / 2;
+            mapLL = mpoint_t { plr->mo->x, plr->mo->y } - mapWH.half();
         }
         mapUR = mapLL + mapWH;
 
@@ -413,7 +416,7 @@ public:
         // if not following the player
         if (!(!followplayer && crispy->automapoverlay))
         {
-            markpoints[markpointnum] = mapLL + mapWH / 2;
+            markpoints[markpointnum] = mapLL + mapWH.half();
         }
         else
         {
@@ -455,17 +458,26 @@ public:
     //
     // Rotation in 2D.
     // Used to rotate player arrow line character.
-    auto AM_rotate(mpoint_t &mp,
-        const angle_t        a)
-        -> void
+    auto AM_rotate(mpoint_t &mp, const angle_t a) -> void
     {
-        const auto angl = static_cast<size_t>(a) >> ANGLETOFINESHIFT;
-        const auto fcos = finecosine[angl];
-        const auto fsin = finesine[angl];
+        static double  dSin  = 0.0;
+        static double  dCos  = 1.0;
+        static angle_t old_a = 0;
+        if (old_a != a)
+        {
+            constexpr double  res     = 2147483648;
+            constexpr angle_t off     = 262144;
+            constexpr double  radians = std::numbers::pi / res;
+            const double      ra      = radians * static_cast<double>(a + off);
+            old_a                     = a;
+            dSin                      = sin(ra);
+            dCos                      = cos(ra);
+        }
+        const auto dx = static_cast<double>(mp.x);
+        const auto dy = static_cast<double>(mp.y);
 
-        const auto tmpx = FixedMul(mp.x, fcos) - FixedMul(mp.y, fsin);
-        mp.y            = FixedMul(mp.x, fsin) + FixedMul(mp.y, fcos);
-        mp.x            = tmpx;
+        mp = { .x = static_cast<fixed_t>((dx * dCos) - (dy * dSin)),
+            .y    = static_cast<fixed_t>((dx * dSin) + (dy * dCos)) };
     }
 
     // [crispy] rotate point around map center
@@ -495,7 +507,7 @@ public:
         mapLL += inc;
 
 
-        const auto half = mapWH / 2;
+        const auto half = mapWH.half();
         mapLL.x         = std::clamp(mapLL.x, min_x - half.x, max_x - half.x);
         mapLL.y         = std::clamp(mapLL.y, min_y - half.y, max_y - half.y);
 
@@ -548,7 +560,7 @@ public:
             }
         }
 
-        mapLL = (mpoint_t { plr->mo->x, plr->mo->y }) - mapWH / 2;
+        mapLL = (mpoint_t { plr->mo->x, plr->mo->y }) - mapWH.half();
         AM_changeWindowLoc();
 
         // for saving & restoring
@@ -644,11 +656,12 @@ public:
     {
         if (f_oldloc.x != plr->mo->x || f_oldloc.y != plr->mo->y)
         {
-            mapLL.x    = FTOM(MTOF(plr->mo->x)) - mapWH.x / 2;
-            mapLL.y    = FTOM(MTOF(plr->mo->y)) - mapWH.y / 2;
-            mapUR      = mapLL + mapWH;
-            f_oldloc.x = plr->mo->x;
-            f_oldloc.y = plr->mo->y;
+            const auto half = mapWH.half();
+            mapLL.x         = FTOM(MTOF(plr->mo->x)) - half.x;
+            mapLL.y         = FTOM(MTOF(plr->mo->y)) - half.y;
+            mapUR           = mapLL + mapWH;
+            f_oldloc.x      = plr->mo->x;
+            f_oldloc.y      = plr->mo->y;
         }
     }
 
@@ -1102,7 +1115,7 @@ auto AM_Ticker() -> void
     // [crispy] required for AM_rotatePoint()
     if (crispy->automaprotate)
     {
-        locals.mapcenter = locals.mapLL + locals.mapWH / 2;
+        locals.mapcenter = locals.mapLL + locals.mapWH.half();
         // [crispy] keep the map static in overlay mode
         // if not following the player
         if (!(!locals.followplayer && crispy->automapoverlay))
@@ -1394,11 +1407,11 @@ void AM_drawGrid(int color)
 
 auto AM_drawWalls() -> void
 {
-    static mline_t l;
+    //static mline_t l;
 
     for (int i = 0; i < numlines; i++)
     {
-        l = {
+        mline_t l = {
             .a = { lines[i].v1->x, lines[i].v1->y },
             .b = { lines[i].v2->x, lines[i].v2->y }
         };
@@ -1563,8 +1576,7 @@ void AM_drawPlayers(void)
 
     if (!netgame)
     {
-        pt.x = locals.plr->mo->x;
-        pt.y = locals.plr->mo->y;
+        pt = { .x = locals.plr->mo->x, .y = locals.plr->mo->y };
         if (crispy->automaprotate != 0)
         {
             locals.AM_rotatePoint(pt);
@@ -1587,18 +1599,25 @@ void AM_drawPlayers(void)
         p = &players[i];
 
         if ((deathmatch && !singledemo) && p != locals.plr)
+        {
             continue;
+        }
 
         if (!playeringame[i])
+        {
             continue;
+        }
 
         if (p->powers[pw_invisibility])
+        {
             color = 246; // *close* to black
+        }
         else
+        {
             color = their_colors[their_color];
+        }
 
-        pt.x = p->mo->x;
-        pt.y = p->mo->y;
+        pt = { p->mo->x, p->mo->y };
         if (crispy->automaprotate)
         {
             locals.AM_rotatePoint(pt);
