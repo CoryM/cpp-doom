@@ -16,39 +16,28 @@
 //	Fixed point implementation.
 //
 
-
-#include <cstdlib>
-
-#include "doomtype.hpp"
-#include "i_system.hpp"
-
 #include "m_fixed.hpp"
+
+#include <climits> // INT_MIN and INT_MAX
+#include <cstdlib> // int64_t
 
 
 // Fixme. __USE_C_FIXED__ or something.
-
-fixed_t FixedMul(fixed_t a, fixed_t b)
+auto FixedMul(const fixed_t a, const fixed_t b) -> fixed_t
 {
     return ((int64_t)a * (int64_t)b) >> FRACBITS;
 }
 
-//fixed_t fixed_t::operator*(const fixed_t &fIn)
-//{
-//    return { (this * fIn) >> FRACBITS };
-//}
-
 //
 // FixedDiv, C version.
 //
-
-fixed_t FixedDiv(const fixed_t a, const fixed_t b)
+auto FixedDiv(const fixed_t a, const fixed_t b) -> fixed_t
 {
-    if ((abs(a) >> 14) >= abs(b))
+    constexpr unsigned int MAGIC_BITSHIFT_NUMBER = 14;
+    if ((abs(a) >> MAGIC_BITSHIFT_NUMBER) >= abs(b))
     {
         return (a ^ b) < 0 ? INT_MIN : INT_MAX;
     }
-    else
-    {
-        return static_cast<fixed_t>(static_cast<int64_t>(a) << FRACBITS) / b;
-    }
+
+    return static_cast<fixed_t>((static_cast<int64_t>(a) << FRACBITS) / b);
 }
