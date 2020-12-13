@@ -206,8 +206,11 @@ cheatseq_t cheat_amap = CHEAT("iddt", 0);
 
 } // end of namespace globals
 
-class {
+class AM_MAP {
 public:
+    AM_MAP()  = default;
+    ~AM_MAP() = default;
+
     // the following is crap
     //#define LINE_NEVERSEE globals::ML_DONTDRAW
     const decltype(globals::ML_DONTDRAW) LINE_NEVERSEE = globals::ML_DONTDRAW;
@@ -708,9 +711,15 @@ public:
         }
         return oc;
     }
+};
 
+auto Generate_AM_MAP() -> AM_MAP &
+{
+    static AM_MAP return_me = {};
+    return return_me;
+}
 
-} static locals;
+static auto &locals = Generate_AM_MAP();
 
 
 // Calculates the slope and slope according to the x-axis of a line
