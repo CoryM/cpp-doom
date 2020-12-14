@@ -29,7 +29,6 @@
 #include "r_sky.hpp"
 #include "st_stuff.hpp" // [crispy] ST_refreshBackground()
 
-#include <array>
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
@@ -86,7 +85,7 @@ angle_t clipangle;
 // maps the visible view angles to screen X coordinates,
 // flattening the arc to a flat projection plane.
 // There will be many angles mapped to the same X.
-std::array<int, FINEANGLES / 2> viewangletox;
+int viewangletox[FINEANGLES / 2];
 
 // The xtoviewangleangle[] table maps a screen pixel
 // to the lowest viewangle that maps back to x ranges
@@ -805,7 +804,7 @@ void R_ExecuteSetViewSize(void)
     centerx     = viewwidth / 2;
     centerxfrac = centerx << FRACBITS;
     centeryfrac = centery << FRACBITS;
-    projection  = std::min<fixed_t>(centerxfrac, ((HIRESWIDTH >> detailshift) / 2) << FRACBITS);
+    projection  = std::min(centerxfrac, ((HIRESWIDTH >> detailshift) / 2) << FRACBITS);
 
     if (!detailshift)
     {
@@ -833,10 +832,8 @@ void R_ExecuteSetViewSize(void)
     pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(viewwidth, HIRESWIDTH >> detailshift);
 
     // thing clipping
-    for (unsigned int i = 0; i < viewwidth; i++)
-    {
+    for (i = 0; i < viewwidth; i++)
         screenheightarray[i] = viewheight;
-    }
 
     // planes
     for (i = 0; i < viewheight; i++)

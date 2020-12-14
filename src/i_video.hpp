@@ -25,24 +25,24 @@
 
 // Screen width and height.
 
-constexpr unsigned int ORIGWIDTH  = 320; // [crispy]
-constexpr unsigned int ORIGHEIGHT = 200; // [crispy]
+#define ORIGWIDTH  320 // [crispy]
+#define ORIGHEIGHT 200 // [crispy]
 
-constexpr auto MAXWIDTH  = (ORIGWIDTH << 2);  // [crispy]
-constexpr auto MAXHEIGHT = (ORIGHEIGHT << 1); // [crispy]
+#define MAXWIDTH  (ORIGWIDTH << 2)  // [crispy]
+#define MAXHEIGHT (ORIGHEIGHT << 1) // [crispy]
 
-extern unsigned int SCREENWIDTH;
-extern unsigned int SCREENHEIGHT;
-extern unsigned int HIRESWIDTH;                  // [crispy] non-widescreen SCREENWIDTH
-extern int          DELTAWIDTH;                  // [crispy] horizontal widescreen offset
-void                I_GetScreenDimensions(void); // [crispy] re-calculate DELTAWIDTH
+extern int SCREENWIDTH;
+extern int SCREENHEIGHT;
+extern int HIRESWIDTH;                  // [crispy] non-widescreen SCREENWIDTH
+extern int DELTAWIDTH;                  // [crispy] horizontal widescreen offset
+void       I_GetScreenDimensions(void); // [crispy] re-calculate DELTAWIDTH
 
 // Screen height used when aspect_ratio_correct=true.
 
 #define ORIGHEIGHT_4_3 240                   // [crispy]
 #define MAXHEIGHT_4_3  (ORIGHEIGHT_4_3 << 1) // [crispy]
 
-extern unsigned int SCREENHEIGHT_4_3;
+extern int SCREENHEIGHT_4_3;
 
 typedef bool (*grabmouse_callback_t)(void);
 
@@ -56,7 +56,7 @@ void I_GraphicsCheckCommandLine(void);
 void I_ShutdownGraphics(void);
 
 // Takes full 8 bit values.
-void           I_SetPalette(int palette);
+void                 I_SetPalette(int palette);
 extern pixel_t I_MapRGB(const uint8_t r, const uint8_t g, const uint8_t b);
 
 void I_UpdateNoBlit(void);
@@ -91,11 +91,11 @@ void I_StartTic(void);
 
 void I_EnableLoadingDisk(int xoffs, int yoffs);
 
-extern char *video_driver;
-extern bool  screenvisible;
+extern char *  video_driver;
+extern bool screenvisible;
 
 extern int      vanilla_keyboard_mapping;
-extern bool     screensaver_mode;
+extern bool  screensaver_mode;
 extern int      usegamma;
 extern pixel_t *I_VideoBuffer;
 
