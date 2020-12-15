@@ -45,8 +45,8 @@
 #include <algorithm>
 #include <utility>
 
-int SCREENWIDTH, SCREENHEIGHT, SCREENHEIGHT_4_3;
-int HIRESWIDTH; // [crispy] non-widescreen SCREENWIDTH
+uint SCREENWIDTH, SCREENHEIGHT, SCREENHEIGHT_4_3;
+uint HIRESWIDTH; // [crispy] non-widescreen SCREENWIDTH
 int DELTAWIDTH; // [crispy] horizontal widescreen offset
 
 // These are (1) the window (or the full screen) that our game is rendered to

@@ -31,9 +31,9 @@
 #define MAXWIDTH  (ORIGWIDTH << 2)  // [crispy]
 #define MAXHEIGHT (ORIGHEIGHT << 1) // [crispy]
 
-extern int SCREENWIDTH;
-extern int SCREENHEIGHT;
-extern int HIRESWIDTH;                  // [crispy] non-widescreen SCREENWIDTH
+extern unsigned int SCREENWIDTH;
+extern unsigned int SCREENHEIGHT;
+extern unsigned int HIRESWIDTH;                  // [crispy] non-widescreen SCREENWIDTH
 extern int DELTAWIDTH;                  // [crispy] horizontal widescreen offset
 void       I_GetScreenDimensions(void); // [crispy] re-calculate DELTAWIDTH
 
@@ -42,7 +42,7 @@ void       I_GetScreenDimensions(void); // [crispy] re-calculate DELTAWIDTH
 #define ORIGHEIGHT_4_3 240                   // [crispy]
 #define MAXHEIGHT_4_3  (ORIGHEIGHT_4_3 << 1) // [crispy]
 
-extern int SCREENHEIGHT_4_3;
+extern unsigned int SCREENHEIGHT_4_3;
 
 typedef bool (*grabmouse_callback_t)(void);
 
