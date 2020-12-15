@@ -18,24 +18,17 @@
 //	 e.g. inline assembly, different algorithms.
 //
 
-
-#include "doomdef.hpp"
+#include "../../utils/lump.hpp"   // State.
+#include "../../utils/memory.hpp" // State.
 #include "../deh_main.hpp"
-
 #include "../i_system.hpp"
-#include "../z_zone.hpp"
 #include "../w_wad.hpp"
-
+#include "../z_zone.hpp"
+#include "doomdef.hpp"
+#include "doomstat.hpp" // State.
 #include "r_local.hpp"
-
-// Needs access to LFB (guess what).
-#include "v_video.hpp"
-#include "v_trans.hpp"
-
-// State.
-#include "../../utils/lump.hpp"
-#include "../../utils/memory.hpp"
-#include "doomstat.hpp"
+#include "v_trans.hpp" // Needs access to LFB (guess what).
+#include "v_video.hpp" // Needs access to LFB (guess what).
 
 #include <array>
 
@@ -56,12 +49,12 @@
 //
 
 
-byte *viewimage;
-int   viewwidth;
-int   scaledviewwidth;
-int   viewheight;
-int   viewwindowx;
-int   viewwindowy;
+byte *       viewimage;
+unsigned int viewwidth;
+int          scaledviewwidth;
+int          viewheight;
+int          viewwindowx;
+int          viewwindowy;
 //pixel_t *ylookup[MAXHEIGHT];
 std::array<pixel_t *, MAXHEIGHT> ylookup;
 int                              columnofs[MAXWIDTH];
@@ -891,25 +884,29 @@ void R_DrawSpanLow(void)
 void R_InitBuffer(int width,
     int               height)
 {
-    int i;
-
     // Handle resize,
     //  e.g. smaller view windows
     //  with border and/or status bar.
     viewwindowx = (SCREENWIDTH - width) >> 1;
 
     // Column offset. For windows.
-    for (i = 0; i < width; i++)
+    for (int i = 0; i < width; i++)
+    {
         columnofs[i] = viewwindowx + i;
+    }
 
     // Samw with base row offset.
     if (width == SCREENWIDTH)
+    {
         viewwindowy = 0;
+    }
     else
+    {
         viewwindowy = (SCREENHEIGHT - SBARHEIGHT - height) >> 1;
+    }
 
     // Preclaculate all row offsets.
-    for (i = 0; i < height; i++)
+    for (int i = 0; i < height; i++)
     {
         ylookup[i] = I_VideoBuffer + (i + viewwindowy) * SCREENWIDTH;
     }

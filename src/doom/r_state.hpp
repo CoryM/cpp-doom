@@ -24,6 +24,7 @@
 #include "d_player.hpp"
 #include "r_data.hpp"
 
+#include <array>
 
 //
 // Refresh internal data structures,
@@ -41,9 +42,9 @@ extern fixed_t *spritetopoffset;
 
 extern lighttable_t *colormaps;
 
-extern int viewwidth;
-extern int scaledviewwidth;
-extern int viewheight;
+extern unsigned int viewwidth;
+extern int          scaledviewwidth;
+extern int          viewheight;
 
 // [crispy] lookup table for horizontal screen coordinates
 extern int  flipscreenwidth[MAXWIDTH];
@@ -104,7 +105,7 @@ extern player_t *viewplayer;
 // ?
 extern angle_t clipangle;
 
-extern int     viewangletox[FINEANGLES / 2];
+extern std::array<int, FINEANGLES / 2> viewangletox;
 extern angle_t xtoviewangle[MAXWIDTH + 1];
 //extern fixed_t		finetangent[FINEANGLES/2];
 
