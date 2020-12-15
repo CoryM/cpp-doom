@@ -28,68 +28,68 @@
 constexpr int ORIGWIDTH  = 320; // [crispy]
 constexpr int ORIGHEIGHT = 200; // [crispy]
 
-constexpr auto MAXWIDTH  = (ORIGWIDTH << 2);  // [crispy]
-constexpr auto MAXHEIGHT = (ORIGHEIGHT << 1); // [crispy]
+constexpr auto MAXWIDTH  = static_cast<unsigned int>(ORIGWIDTH) << 2U;  // [crispy]
+constexpr auto MAXHEIGHT = static_cast<unsigned int>(ORIGHEIGHT) << 1U; // [crispy]
 
 extern unsigned int SCREENWIDTH;
 extern unsigned int SCREENHEIGHT;
-extern unsigned int HIRESWIDTH;                  // [crispy] non-widescreen SCREENWIDTH
-extern int          DELTAWIDTH;                  // [crispy] horizontal widescreen offset
-void                I_GetScreenDimensions(void); // [crispy] re-calculate DELTAWIDTH
+extern unsigned int HIRESWIDTH;                      // [crispy] non-widescreen SCREENWIDTH
+extern int          DELTAWIDTH;                      // [crispy] horizontal widescreen offset
+auto                I_GetScreenDimensions() -> void; // [crispy] re-calculate DELTAWIDTH
 
 // Screen height used when aspect_ratio_correct=true.
 
-#define ORIGHEIGHT_4_3 240 // [crispy]
-#define MAXHEIGHT_4_3  (ORIGHEIGHT_4_3 << 1) // [crispy]
+constexpr int ORIGHEIGHT_4_3 = 240;                                             // [crispy]
+constexpr int MAXHEIGHT_4_3  = static_cast<unsigned int>(ORIGHEIGHT_4_3) << 1U; // [crispy]
 
 extern unsigned int SCREENHEIGHT_4_3;
 
-typedef bool (*grabmouse_callback_t)(void);
+typedef bool (*grabmouse_callback_t)();
 
 // Called by D_DoomMain,
 // determines the hardware configuration
 // and sets up the video mode
-void I_InitGraphics(void);
+auto I_InitGraphics() -> void;
 
-void I_GraphicsCheckCommandLine(void);
+auto I_GraphicsCheckCommandLine() -> void;
 
-void I_ShutdownGraphics(void);
+auto I_ShutdownGraphics() -> void;
 
 // Takes full 8 bit values.
-void           I_SetPalette(int palette);
+auto           I_SetPalette(int palette) -> void;
 extern pixel_t I_MapRGB(const uint8_t r, const uint8_t g, const uint8_t b);
 
-void I_UpdateNoBlit(void);
-void I_FinishUpdate(void);
+auto I_UpdateNoBlit() -> void;
+auto I_FinishUpdate() -> void;
 
-void I_ReadScreen(pixel_t *scr);
+auto I_ReadScreen(pixel_t *scr) -> void;
 
-void I_BeginRead(void);
+auto I_BeginRead() -> void;
 
-void I_SetWindowTitle(const char *title);
+auto I_SetWindowTitle(const char *title) -> void;
 
-void I_CheckIsScreensaver(void);
-void I_SetGrabMouseCallback(grabmouse_callback_t func);
+auto I_CheckIsScreensaver() -> void;
+auto I_SetGrabMouseCallback(grabmouse_callback_t func) -> void;
 
-void I_DisplayFPSDots(bool dots_on);
-void I_BindVideoVariables(void);
+auto I_DisplayFPSDots(bool dots_on) -> void;
+auto I_BindVideoVariables() -> void;
 
-void I_InitWindowTitle(void);
-void I_InitWindowIcon(void);
+auto I_InitWindowTitle() -> void;
+auto I_InitWindowIcon() -> void;
 
 // Called before processing any tics in a frame (just after displaying a frame).
 // Time consuming syncronous operations are performed here (joystick reading).
 
-void I_StartFrame(void);
+auto I_StartFrame() -> void;
 
 // Called before processing each tic in a frame.
 // Quick syncronous operations are performed here.
 
-void I_StartTic(void);
+auto I_StartTic() -> void;
 
 // Enable the loading disk image displayed when reading from disk.
 
-void I_EnableLoadingDisk(int xoffs, int yoffs);
+auto I_EnableLoadingDisk(int xoffs, int yoffs) -> void;
 
 extern char *video_driver;
 extern bool  screenvisible;
@@ -108,7 +108,7 @@ extern int vga_porch_flash;
 extern int force_software_renderer;
 
 extern char *window_position;
-void         I_GetWindowPosition(int *x, int *y, int w, int h);
+auto         I_GetWindowPosition(int *x, int *y, int w, int h) -> void;
 
 // Joystic/gamepad hysteresis
 extern unsigned int joywait;
