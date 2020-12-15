@@ -1407,7 +1407,7 @@ void I_GetScreenDimensions(void)
         // [crispy] make sure SCREENWIDTH is an integer multiple of 4 ...
         SCREENWIDTH = (SCREENWIDTH + 3) & (int)~3;
         // [crispy] ... but never exceeds MAXWIDTH (array size!)
-        SCREENWIDTH = std::min(SCREENWIDTH, MAXWIDTH);
+        SCREENWIDTH = std::min(SCREENWIDTH, static_cast<decltype(SCREENWIDTH)>(MAXWIDTH));
     }
 
     DELTAWIDTH = ((SCREENWIDTH - HIRESWIDTH) >> crispy->hires) / 2;
@@ -1621,10 +1621,9 @@ void I_RenderReadPixels(byte **data, int *w, int *h, int *p)
     {
         if (integer_scaling)
         {
-            int temp1, temp2, scale;
-            temp1 = rect.w;
-            temp2 = rect.h;
-            scale = std::min(rect.w / SCREENWIDTH, rect.h / actualheight);
+            auto temp1 = rect.w;
+            auto temp2 = rect.h;
+            auto scale = std::min<uint>(rect.w / SCREENWIDTH, rect.h / actualheight);
 
             rect.w = SCREENWIDTH * scale;
             rect.h = actualheight * scale;
@@ -1746,7 +1745,7 @@ const pixel_t I_BlendOver(const pixel_t bg, const pixel_t fg)
 
 const pixel_t (*blendfunc)(const pixel_t fg, const pixel_t bg) = I_BlendOver;
 
-pixel_t I_MapRGB(const uint8_t r, const uint8_t g, const uint8_t b)
+auto I_MapRGB(const uint8_t r, const uint8_t g, const uint8_t b) -> pixel_t
 {
     /*
 	return amask |
