@@ -804,7 +804,7 @@ void R_ExecuteSetViewSize(void)
     centerx     = viewwidth / 2;
     centerxfrac = centerx << FRACBITS;
     centeryfrac = centery << FRACBITS;
-    projection  = std::min(centerxfrac, ((static_cast<fixed_t>(HIRESWIDTH) >> detailshift) / 2) << FRACBITS);
+    projection  = std::min<fixed_t>(centerxfrac, ((HIRESWIDTH >> detailshift) / 2) << FRACBITS);
 
     if (!detailshift)
     {
@@ -828,8 +828,8 @@ void R_ExecuteSetViewSize(void)
     R_InitTextureMapping();
 
     // psprite scales
-    pspritescale  = FRACUNIT * std::min(static_cast<int>(viewwidth), static_cast<fixed_t>(HIRESWIDTH >> detailshift)) / ORIGWIDTH;
-    pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(static_cast<int>(viewwidth), static_cast<fixed_t>(HIRESWIDTH >> detailshift));
+    pspritescale  = FRACUNIT * std::min(viewwidth, HIRESWIDTH >> detailshift) / ORIGWIDTH;
+    pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(viewwidth, HIRESWIDTH >> detailshift);
 
     // thing clipping
     for (unsigned int i = 0; i < viewwidth; i++)
@@ -842,7 +842,7 @@ void R_ExecuteSetViewSize(void)
     {
         // [crispy] re-generate lookup-table for yslope[] (free look)
         // whenever "detailshift" or "screenblocks" change
-        const fixed_t num = std::min(static_cast<int>(viewwidth << detailshift), static_cast<fixed_t>(HIRESWIDTH)) / 2 * FRACUNIT;
+        const fixed_t num = std::min(viewwidth << detailshift, HIRESWIDTH) / 2 * FRACUNIT;
         for (j = 0; j < LOOKDIRS; j++)
         {
             dy            = ((i - (viewheight / 2 + ((j - LOOKDIRMIN) * (1 << crispy->hires)) * (screenblocks < 11 ? screenblocks : 11) / 10)) << FRACBITS) + FRACUNIT / 2;
@@ -868,7 +868,7 @@ void R_ExecuteSetViewSize(void)
         startmap = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
         for (j = 0; j < MAXLIGHTSCALE; j++)
         {
-            level = startmap - j * HIRESWIDTH / static_cast<fixed_t>(std::min(viewwidth << detailshift, HIRESWIDTH)) / DISTMAP;
+            level = startmap - j * HIRESWIDTH / std::min(viewwidth << detailshift, HIRESWIDTH) / DISTMAP;
 
             level = std::clamp(level, 0, NUMCOLORMAPS - 1);
 
