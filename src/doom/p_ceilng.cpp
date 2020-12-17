@@ -12,30 +12,30 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// DESCRIPTION:  Ceiling aninmation (lowering, crushing, raising)
+// DESCRIPTION:  Ceiling animation (lowering, crushing, raising)
 //
 
-
+#include "../../utils/memory.hpp" // Data.
 #include "../z_zone.hpp"
 #include "doomdef.hpp"
+#include "doomstat.hpp" // State.
 #include "p_local.hpp"
-
+#include "r_state.hpp" // State.
 #include "s_sound.hpp"
+#include "sounds.hpp" // Data.
 
-// State.
-#include "doomstat.hpp"
-#include "r_state.hpp"
-
-// Data.
-#include "../../utils/memory.hpp"
-#include "sounds.hpp"
+#include <algorithm>
+#include <array>
+#include <ranges>
+#include <stdexcept>
 
 //
 // CEILINGS
 //
 
 
-ceiling_t *activeceilings[MAXCEILINGS];
+//ceiling_t *activeceilings[MAXCEILINGS];
+std::array<ceiling_t *, MAXCEILINGS> activeceilings;
 
 
 //
@@ -242,16 +242,12 @@ int EV_DoCeiling(line_s *line,
 //
 void P_AddActiveCeiling(ceiling_t *c)
 {
-    int i;
-
-    for (i = 0; i < MAXCEILINGS; i++)
+    auto *const found = std::ranges::find(activeceilings, nullptr);
+    if (found == activeceilings.end())
     {
-        if (activeceilings[i] == NULL)
-        {
-            activeceilings[i] = c;
-            return;
-        }
+        throw std::length_error("Unable to find empty spot in arrayTest ");
     }
+    *found = c;
 }
 
 
@@ -260,18 +256,16 @@ void P_AddActiveCeiling(ceiling_t *c)
 //
 void P_RemoveActiveCeiling(ceiling_t *c)
 {
-    int i;
-
-    for (i = 0; i < MAXCEILINGS; i++)
+    auto *const found = std::ranges::find(activeceilings, c);
+    if (found == activeceilings.end())
     {
-        if (activeceilings[i] == c)
-        {
-            activeceilings[i]->sector->specialdata = NULL;
-            P_RemoveThinker(&activeceilings[i]->thinker);
-            activeceilings[i] = NULL;
-            break;
-        }
+        throw std::length_error("Unable to find matching value in arrayTest ");
     }
+    const auto index = std::distance(activeceilings.begin(), found);
+
+    activeceilings.at(index)->sector->specialdata = nullptr;
+    P_RemoveThinker(&activeceilings.at(index)->thinker);
+    activeceilings.at(index) = nullptr;
 }
 
 
@@ -280,18 +274,16 @@ void P_RemoveActiveCeiling(ceiling_t *c)
 //
 void P_ActivateInStasisCeiling(line_s *line)
 {
-    int i;
+    const auto filter = std::views::filter([line](auto i) {
+        //         not nullptr       the tag matches         and the direction is 0?
+        return ((i != nullptr) && (i->tag == line->tag) && (i->direction == 0));
+    });
 
-    for (i = 0; i < MAXCEILINGS; i++)
+    for (auto found : activeceilings | filter)
     {
-        if (activeceilings[i]
-            && (activeceilings[i]->tag == line->tag)
-            && (activeceilings[i]->direction == 0))
-        {
-            activeceilings[i]->direction             = activeceilings[i]->olddirection;
-            activeceilings[i]->thinker.function.acp1 = (actionf_p1)T_MoveCeiling;
-        }
-    }
+        found->direction             = found->olddirection;
+        found->thinker.function.acp1 = (actionf_p1)T_MoveCeiling;
+    };
 }
 
 
@@ -301,22 +293,21 @@ void P_ActivateInStasisCeiling(line_s *line)
 //
 int EV_CeilingCrushStop(line_s *line)
 {
-    int i;
-    int rtn;
+    int rtn = 0;
 
-    rtn = 0;
-    for (i = 0; i < MAXCEILINGS; i++)
+    const auto filter = std::views::filter([line](auto i) {
+        return ((i != nullptr)           // not nullptr aka theres something there
+                && (i->tag == line->tag) // matches tag your looking for
+                && (i->direction == 0)); // direction is 0?
+    });
+
+    for (auto found : activeceilings | filter)
     {
-        if (activeceilings[i]
-            && (activeceilings[i]->tag == line->tag)
-            && (activeceilings[i]->direction != 0))
-        {
-            activeceilings[i]->olddirection         = activeceilings[i]->direction;
-            activeceilings[i]->thinker.function.acv = (actionf_v)NULL;
-            activeceilings[i]->direction            = 0; // in-stasis
-            rtn                                     = 1;
-        }
-    }
+        found->olddirection         = found->direction;
+        found->thinker.function.acv = (actionf_v)NULL;
+        found->direction            = 0; // in-stasis
+        rtn                         = 1;
+    };
 
 
     return rtn;

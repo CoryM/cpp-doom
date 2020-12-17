@@ -29,7 +29,7 @@
 // End-level timer (-TIMER option)
 //
 extern bool levelTimer;
-extern int     levelTimeCount;
+extern int  levelTimeCount;
 
 
 //      Define values for map objects
@@ -46,10 +46,9 @@ void P_SpawnSpecials(void);
 void P_UpdateSpecials(void);
 
 // when needed
-bool
-    P_UseSpecialLine(mobj_t *thing,
-        line_s *             line,
-        int                  side);
+bool P_UseSpecialLine(mobj_t *thing,
+    line_s *                  line,
+    int                       side);
 
 void P_ShootSpecialLine(mobj_t *thing,
     line_s *                    line);
@@ -265,7 +264,7 @@ typedef struct
     int        count;
     plat_e     status;
     plat_e     oldstatus;
-    bool    crush;
+    bool       crush;
     int        tag;
     plattype_e type;
 
@@ -399,7 +398,7 @@ typedef struct
     char	backFrame2[9];
     char	backFrame3[9];
     char	backFrame4[9];
-    
+
 } slidename_t;
 
 
@@ -420,7 +419,7 @@ typedef struct
 #define SWAITTICS     4
 
 // how many diff. types of anims
-#define MAXSLIDEDOORS 5                            
+#define MAXSLIDEDOORS 5
 
 void P_InitSlidingDoorFrames(void);
 
@@ -446,15 +445,14 @@ typedef enum
 } ceiling_e;
 
 
-typedef struct
-{
+struct ceiling_t {
     thinker_s thinker;
     ceiling_e type;
     sector_t *sector;
     fixed_t   bottomheight;
     fixed_t   topheight;
     fixed_t   speed;
-    bool   crush;
+    bool      crush;
 
     // 1 = up, 0 = waiting, -1 = down
     int direction;
@@ -462,15 +460,16 @@ typedef struct
     // ID
     int tag;
     int olddirection;
+};
 
-} ceiling_t;
 
+#define CEILSPEED FRACUNIT
+#define CEILWAIT  150
 
-#define CEILSPEED   FRACUNIT
-#define CEILWAIT    150
-#define MAXCEILINGS 30
+constexpr size_t MAXCEILINGS = 30;
 
-extern ceiling_t *activeceilings[MAXCEILINGS];
+//extern ceiling_t *activeceilings[MAXCEILINGS];
+extern std::array<ceiling_t *, MAXCEILINGS> activeceilings;
 
 int EV_DoCeiling(line_s *line,
     ceiling_e            type);
@@ -533,7 +532,7 @@ typedef struct
 {
     thinker_s thinker;
     floor_e   type;
-    bool   crush;
+    bool      crush;
     sector_t *sector;
     int       direction;
     int       newspecial;
@@ -558,7 +557,7 @@ result_e
     T_MovePlane(sector_t *sector,
         fixed_t           speed,
         fixed_t           dest,
-        bool           crush,
+        bool              crush,
         int               floorOrCeiling,
         int               direction);
 

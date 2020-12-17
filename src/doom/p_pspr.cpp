@@ -17,22 +17,16 @@
 //	Action functions for weapons.
 //
 
-#include "doomdef.hpp"
 #include "../d_event.hpp"
-
 #include "deh_misc.hpp"
-
+#include "doomdef.hpp"
+#include "doomstat.hpp" // State.
 #include "m_random.hpp"
 #include "p_local.hpp"
-#include "s_sound.hpp"
-
-// State.
-#include "doomstat.hpp"
-
-// Data.
-#include "sounds.hpp"
-
 #include "p_pspr.hpp"
+#include "s_sound.hpp"
+#include "sounds.hpp" // Data.
+
 
 #define LOWERSPEED FRACUNIT * 6
 #define RAISESPEED FRACUNIT * 6
@@ -383,7 +377,7 @@ void A_WeaponReady(mobj_t *mobj [[maybe_unused]], player_t *player, pspdef_t *ps
 // The player can re-fire the weapon
 // without lowering it entirely.
 //
-void A_ReFire(mobj_t *mobj  [[maybe_unused]],
+void A_ReFire(mobj_t *mobj [[maybe_unused]],
     player_t *        player,
     pspdef_t *        psp [[maybe_unused]])
 {
@@ -571,9 +565,12 @@ void A_Saw(mobj_t *mobj [[maybe_unused]],
     angle = R_PointToAngle2(player->mo->x, player->mo->y, linetarget->x, linetarget->y);
     if (auto ang4_5 = (ANG90 / 20); (angle - player->mo->angle) > ANG180)
     {
-        if (static_cast<int32_t>(player->mo->angle - angle) < static_cast<int32_t>(ang4_5)) {
+        if (static_cast<int32_t>(player->mo->angle - angle) < static_cast<int32_t>(ang4_5))
+        {
             player->mo->angle = angle + ANG90 / 21;
-        } else {
+        }
+        else
+        {
             player->mo->angle -= ang4_5;
         }
     }
@@ -700,7 +697,7 @@ void P_BulletSlope(mobj_t *mo)
 // P_GunShot
 //
 void P_GunShot(mobj_t *mo,
-    bool            accurate)
+    bool               accurate)
 {
     angle_t angle;
     int     damage;
