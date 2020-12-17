@@ -1655,8 +1655,7 @@ void P_SpawnSpecials(void)
 
 
     //	Init other misc stuff
-    for (i = 0; i < MAXCEILINGS; i++)
-        activeceilings[i] = NULL;
+    activeceilings.fill(nullptr);
 
     for (i = 0; i < MAXPLATS; i++)
         activeplats[i] = NULL;

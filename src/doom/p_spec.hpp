@@ -24,6 +24,7 @@
 #define __P_SPEC__
 
 #include "p_mobj.hpp"
+#include "p_ceilng.hpp"
 
 //
 // End-level timer (-TIMER option)
@@ -427,58 +428,7 @@ void
 EV_SlidingDoor
 ( line_s*	line,
   mobj_t*	thing );
-#endif
-
-
-//
-// P_CEILNG
-//
-typedef enum
-{
-    lowerToFloor,
-    raiseToHighest,
-    lowerAndCrush,
-    crushAndRaise,
-    fastCrushAndRaise,
-    silentCrushAndRaise
-
-} ceiling_e;
-
-
-struct ceiling_t {
-    thinker_s thinker;
-    ceiling_e type;
-    sector_t *sector;
-    fixed_t   bottomheight;
-    fixed_t   topheight;
-    fixed_t   speed;
-    bool      crush;
-
-    // 1 = up, 0 = waiting, -1 = down
-    int direction;
-
-    // ID
-    int tag;
-    int olddirection;
-};
-
-
-#define CEILSPEED FRACUNIT
-#define CEILWAIT  150
-
-constexpr size_t MAXCEILINGS = 30;
-
-//extern ceiling_t *activeceilings[MAXCEILINGS];
-extern std::array<ceiling_t *, MAXCEILINGS> activeceilings;
-
-int EV_DoCeiling(line_s *line,
-    ceiling_e            type);
-
-void T_MoveCeiling(ceiling_t *ceiling);
-void P_AddActiveCeiling(ceiling_t *c);
-void P_RemoveActiveCeiling(ceiling_t *c);
-int  EV_CeilingCrushStop(line_s *line);
-void P_ActivateInStasisCeiling(line_s *line);
+#endif // unused
 
 
 //

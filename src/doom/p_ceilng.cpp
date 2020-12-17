@@ -19,13 +19,13 @@
 #include "../z_zone.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp" // State.
+#include "p_ceilng.hpp"
 #include "p_local.hpp"
 #include "r_state.hpp" // State.
 #include "s_sound.hpp"
 #include "sounds.hpp" // Data.
 
 #include <algorithm>
-#include <array>
 #include <ranges>
 #include <stdexcept>
 
@@ -34,9 +34,8 @@
 //
 
 
-//ceiling_t *activeceilings[MAXCEILINGS];
 std::array<ceiling_t *, MAXCEILINGS> activeceilings;
-
+//extern std::array<ceiling_t *, MAXCEILINGS> activeceilings;
 
 //
 // T_MoveCeiling
@@ -44,46 +43,40 @@ std::array<ceiling_t *, MAXCEILINGS> activeceilings;
 
 void T_MoveCeiling(ceiling_t *ceiling)
 {
-    result_e res;
-
     switch (ceiling->direction)
     {
-    case 0:
-        // IN STASIS
+    case 0: // IN STASIS
         break;
-    case 1:
-        // UP
-        res = T_MovePlane(ceiling->sector,
+
+    case 1: // UP
+    {
+        auto res = T_MovePlane(ceiling->sector,
             ceiling->speed,
             ceiling->topheight,
             false, 1, ceiling->direction);
 
         if (!(leveltime & 7))
         {
-            switch (ceiling->type)
+            if (ceiling->type != ceiling_e::silentCrushAndRaise)
             {
-            case silentCrushAndRaise:
-                break;
-            default:
-                S_StartSound(&ceiling->sector->soundorg, sfx_stnmov);
-                // ?
-                break;
+                S_StartSound(&ceiling->sector->soundorg, sfxenum_t::sfx_stnmov);
             }
         }
 
-        if (res == pastdest)
+        if (res == result_e::pastdest)
         {
             switch (ceiling->type)
             {
-            case raiseToHighest:
+            case ceiling_e::raiseToHighest: {
                 P_RemoveActiveCeiling(ceiling);
-                break;
+            }
+            break;
 
-            case silentCrushAndRaise:
-                S_StartSound(&ceiling->sector->soundorg, sfx_pstop);
+            case ceiling_e::silentCrushAndRaise:
+                S_StartSound(&ceiling->sector->soundorg, sfxenum_t::sfx_pstop);
                 [[fallthrough]];
-            case fastCrushAndRaise:
-            case crushAndRaise:
+            case ceiling_e::fastCrushAndRaise:
+            case ceiling_e::crushAndRaise:
                 ceiling->direction = -1;
                 break;
 
@@ -91,11 +84,12 @@ void T_MoveCeiling(ceiling_t *ceiling)
                 break;
             }
         }
-        break;
+    }
+    break;
 
-    case -1:
-        // DOWN
-        res = T_MovePlane(ceiling->sector,
+    case -1: // DOWN
+    {
+        auto res = T_MovePlane(ceiling->sector,
             ceiling->speed,
             ceiling->bottomheight,
             ceiling->crush, 1, ceiling->direction);
@@ -150,7 +144,8 @@ void T_MoveCeiling(ceiling_t *ceiling)
                 }
             }
         }
-        break;
+    }
+    break;
     }
 }
 
@@ -259,7 +254,7 @@ void P_RemoveActiveCeiling(ceiling_t *c)
     auto *const found = std::ranges::find(activeceilings, c);
     if (found == activeceilings.end())
     {
-        throw std::length_error("Unable to find matching value in arrayTest ");
+        throw std::length_error("Unable to find matching value in P_RemoveActiveCeiling ");
     }
     const auto index = std::distance(activeceilings.begin(), found);
 
