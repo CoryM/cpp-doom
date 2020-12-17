@@ -33,14 +33,29 @@
 // CEILINGS
 //
 
+constexpr fixed_t CEILSPEED   = FRACUNIT;
+constexpr size_t  MAXCEILINGS = 30;
+//#define CEILWAIT  150
 
-std::array<ceiling_t *, MAXCEILINGS> activeceilings;
-//extern std::array<ceiling_t *, MAXCEILINGS> activeceilings;
+
+static std::array<ceiling_t *, MAXCEILINGS> activeceilings;
+
+// Returns true if ceiling is in the activeceilings
+[[nodiscard]] auto P_CeilingExist(ceiling_t *ceiling) -> bool
+{
+    auto *const end   = activeceilings.end();
+    auto *const found = std::find(activeceilings.begin(), end, ceiling);
+    return found != end;
+}
+
+auto P_ClearActiveCeilings() -> void
+{
+    activeceilings.fill(nullptr);
+}
 
 //
 // T_MoveCeiling
 //
-
 void T_MoveCeiling(ceiling_t *ceiling)
 {
     switch (ceiling->direction)

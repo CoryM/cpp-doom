@@ -24,6 +24,7 @@
 #include "../deh_main.hpp"
 #include "../i_system.hpp"
 #include "../z_zone.hpp"
+#include "p_ceilng.hpp"
 #include "p_local.hpp"
 #include "p_saveg.hpp"
 
@@ -1789,19 +1790,14 @@ enum specials_e : uint8_t
 //
 void P_ArchiveSpecials(void)
 {
-    thinker_s *th;
-    int        i;
+    int i;
 
     // save off the current thinkers
-    for (th = thinkercap.next; th != &thinkercap; th = th->next)
+    for (thinker_s *th = thinkercap.next; th != &thinkercap; th = th->next)
     {
         if (th->function.acv == (actionf_v)NULL)
         {
-            for (i = 0; i < MAXCEILINGS; i++)
-                if (activeceilings[i] == (ceiling_t *)th)
-                    break;
-
-            if (i < MAXCEILINGS)
+            if (P_CeilingExist((ceiling_t *)th))
             {
                 saveg_write8(tc_ceiling);
                 saveg_write_pad();

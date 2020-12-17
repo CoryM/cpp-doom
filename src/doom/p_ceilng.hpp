@@ -9,11 +9,6 @@
 
 #include <array>
 
-#define CEILSPEED FRACUNIT
-//#define CEILWAIT  150
-
-constexpr size_t MAXCEILINGS = 30;
-
 //
 // P_CEILNG
 //
@@ -45,13 +40,14 @@ struct ceiling_t {
     int olddirection;
 };
 
-extern std::array<ceiling_t *, MAXCEILINGS> activeceilings;
-
-auto EV_DoCeiling(line_s *line, ceiling_e type) -> int;
-void T_MoveCeiling(ceiling_t *ceiling);
-void P_AddActiveCeiling(ceiling_t *c);
-void P_RemoveActiveCeiling(ceiling_t *c);
 auto EV_CeilingCrushStop(line_s *line) -> int;
+auto EV_DoCeiling(line_s *line, ceiling_e type) -> int;
 void P_ActivateInStasisCeiling(line_s *line);
+void P_AddActiveCeiling(ceiling_t *c);
+auto P_CeilingExist(ceiling_t *ceiling) -> bool;
+auto P_ClearActiveCeilings() -> void;
+void P_RemoveActiveCeiling(ceiling_t *c);
+void T_MoveCeiling(ceiling_t *ceiling);
+
 
 #endif // DOOM_P_CEILING_HPP_INCLUDE
