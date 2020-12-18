@@ -16,33 +16,50 @@
 // DESCRIPTION:  the automap code
 //
 
-#include "../../utils/lump.hpp" // Data.
-#include "../deh_main.hpp"
-#include "../doomkeys.hpp"
-#include "../z_zone.hpp"
-#include "am_map.hpp" // Data.
-#include "doomdef.hpp"
-#include "doomstat.hpp" // State.
-#include "dstrings.hpp" // Data.
-#include "i_system.hpp"
-#include "i_timer.hpp"
-#include "i_video.hpp"
-#include "m_cheat.hpp"
-#include "m_controls.hpp"
-#include "m_misc.hpp"
-#include "p_local.hpp"
-#include "r_state.hpp" // State.
-#include "st_stuff.hpp"
-#include "v_video.hpp" // Needs access to LFB.
-#include "w_wad.hpp"
+#include "am_map.hpp"
 
-#include <bitset>
-#include <cassert>
-#include <cmath>
-#include <cstdio>
-#include <numbers>
-#include <span>
-#include <string_view>
+#include <stdint.h> // for int64_t, uint64_t
+#include <string.h> // for memset
+
+#include <algorithm> // for min, clamp, max
+#include <array>     // for array, array<>::value_type
+#include <bitset>    // for bitset, operator&, operator|
+#include <cmath>     // for cos, sin
+#include <cstdio>    // for size_t, stderr
+#include <limits>    // for numeric_limits
+#include <numbers>   // for pi
+#include <span>      // for span
+
+#include "../../utils/lump.hpp" // for cache_lump_name
+#include "../common.hpp"        // for ASSERT
+#include "../crispy.hpp"        // for crispy, crispy_t
+#include "../d_event.hpp"       // for event_t, evtype_t, evtype_t::ev_keyup
+#include "../d_mode.hpp"        // for exe_doom_1_8
+#include "../deh_str.hpp"       // for DEH_String, DEH_snprintf, DEH_fprintf
+#include "../doomtype.hpp"      // for pixel_t
+#include "../i_timer.hpp"       // for I_GetTime
+#include "../i_video.hpp"       // for I_VideoBuffer, SCREENHEIGHT, SCREENW...
+#include "../m_cheat.hpp"       // for cht_CheckCheat, CHEAT, cheatseq_t
+#include "../m_controls.hpp"    // for joybautomap, key_map_east, key_map_n...
+#include "../m_fixed.hpp"       // for FRACUNIT, fixed_t, FixedDiv, FixedMul
+#include "../m_misc.hpp"        // for M_snprintf
+#include "../tables.hpp"        // for angle_t, ANG90
+#include "../v_video.hpp"       // for V_DrawPatch, V_MarkRect
+#include "../w_wad.hpp"         // for W_ReleaseLumpName
+#include "../z_zone.hpp"        // for PU, PU::STATIC
+#include "d_englsh.hpp"         // for AMSTR_FOLLOWOFF, AMSTR_FOLLOWON, AMS...
+#include "d_player.hpp"         // for player_t
+#include "doomdata.hpp"         // for ML_SECRET, ML_DONTDRAW, ML_MAPPED
+#include "doomdef.hpp"          // for MAXPLAYERS, pw_allmap, pw_invisibility
+#include "doomstat.hpp"         // for gameepisode, gamemap, players, viewa...
+#include "info.hpp"             // for MT_BLOOD, MT_PUFF, mobjinfo_t
+#include "p_local.hpp"          // for PLAYERRADIUS, MAPBLOCKUNITS, bmaporgx
+#include "p_mobj.hpp"           // for mobj_t, MF_CORPSE, MF_COUNTKILL, MF_...
+#include "r_defs.hpp"           // for line_s, vertex_t, sector_t, (anonymous)
+#include "r_state.hpp"          // for lines, flipscreenwidth, colormaps
+#include "st_stuff.hpp"         // for ST_Responder, ST_HEIGHT
+
+struct patch_t;
 
 extern bool inhelpscreens; // [crispy]
 
@@ -434,8 +451,8 @@ public:
     // sets global variables controlling zoom range.
     auto AM_findMinMaxBoundaries() -> void
     {
-        min_x = min_y = INT_MAX;
-        max_x = max_y = -INT_MAX;
+        min_x = min_y = std::numeric_limits<int>::max();
+        max_x = max_y = -std::numeric_limits<int>::min();
 
         auto vertex_span = std::span<vertex_t>(vertexes, numvertexes);
 
@@ -499,7 +516,7 @@ public:
         if (m_paninc.x || m_paninc.y)
         {
             followplayer = 0;
-            f_oldloc.x   = INT_MAX;
+            f_oldloc.x   = std::numeric_limits<int>::max();
         }
 
         auto inc = m_paninc;
@@ -517,7 +534,7 @@ public:
         mapUR = mapLL + mapWH;
 
         // [crispy] reset after moving with the mouse
-        if (f_oldloc.y == INT_MAX)
+        if (f_oldloc.y == std::numeric_limits<int>::max())
         {
             m_paninc = { 0, 0 };
         }
@@ -532,7 +549,7 @@ public:
         automapactive = true;
         //  fb = I_VideoBuffer; // [crispy] simplify
 
-        f_oldloc.x = INT_MAX;
+        f_oldloc.x = std::numeric_limits<int>::max();
         amclock    = 0;
         lightlev   = 0;
 
@@ -887,7 +904,7 @@ auto AM_Responder(event_t *ev) -> bool
             // [crispy] mouse sensitivity for strafe
             locals.m_paninc.x = locals.FTOM(ev->data2 * (mouseSensitivity_x2 + 5) / 80);
             locals.m_paninc.y = locals.FTOM(ev->data3 * (mouseSensitivity_x2 + 5) / 80);
-            locals.f_oldloc.y = INT_MAX;
+            locals.f_oldloc.y = std::numeric_limits<int>::max();
             rc                = true;
         }
     }
@@ -974,7 +991,7 @@ auto AM_Responder(event_t *ev) -> bool
         else if (key == key_map_follow)
         {
             locals.followplayer = (locals.followplayer == 0);
-            locals.f_oldloc.x   = INT_MAX;
+            locals.f_oldloc.x   = std::numeric_limits<int>::max();
             if (locals.followplayer != 0)
             {
                 locals.plr->message = DEH_String(AMSTR_FOLLOWON);

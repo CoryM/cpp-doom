@@ -19,8 +19,8 @@
 #ifndef __AMMAP_H__
 #define __AMMAP_H__
 
-#include "../d_event.hpp"
-#include "../m_cheat.hpp"
+#include "../m_cheat.hpp" // for cheatseq_t
+struct event_t;
 
 // Called by main loop.
 auto AM_Responder(event_t *ev) -> bool;
