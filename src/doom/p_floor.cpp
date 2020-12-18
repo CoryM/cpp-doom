@@ -75,7 +75,7 @@ result_e
                     P_ChangeSector(sector, crush);
                     //return crushed;
                 }
-                return pastdest;
+                return result_e::pastdest;
             }
             else
             {
@@ -86,7 +86,7 @@ result_e
                 {
                     sector->floorheight = lastpos;
                     P_ChangeSector(sector, crush);
-                    return crushed;
+                    return result_e::crushed;
                 }
             }
             break;
@@ -104,7 +104,7 @@ result_e
                     P_ChangeSector(sector, crush);
                     //return crushed;
                 }
-                return pastdest;
+                return result_e::pastdest;
             }
             else
             {
@@ -115,10 +115,10 @@ result_e
                 if (flag == true)
                 {
                     if (crush == true)
-                        return crushed;
+                        return result_e::crushed;
                     sector->floorheight = lastpos;
                     P_ChangeSector(sector, crush);
-                    return crushed;
+                    return result_e::crushed;
                 }
             }
             break;
@@ -143,7 +143,7 @@ result_e
                     P_ChangeSector(sector, crush);
                     //return crushed;
                 }
-                return pastdest;
+                return result_e::pastdest;
             }
             else
             {
@@ -155,10 +155,10 @@ result_e
                 if (flag == true)
                 {
                     if (crush == true)
-                        return crushed;
+                        return result_e::crushed;
                     sector->ceilingheight = lastpos;
                     P_ChangeSector(sector, crush);
-                    return crushed;
+                    return result_e::crushed;
                 }
             }
             break;
@@ -176,7 +176,7 @@ result_e
                     P_ChangeSector(sector, crush);
                     //return crushed;
                 }
-                return pastdest;
+                return result_e::pastdest;
             }
             else
             {
@@ -197,7 +197,7 @@ result_e
         }
         break;
     }
-    return ok;
+    return result_e::ok;
 }
 
 
@@ -216,7 +216,7 @@ void T_MoveFloor(floormove_t *floor)
     if (!(leveltime & 7))
         S_StartSound(&floor->sector->soundorg, sfx_stnmov);
 
-    if (res == pastdest)
+    if (res == result_e::pastdest)
     {
         floor->sector->specialdata = NULL;
 
@@ -270,7 +270,7 @@ void T_MoveGoobers(floormove_t *floor)
 
     // [crispy] remove thinker once both the sector's floor and ceiling
     // have reached their respective destination heights
-    if ((res1 & res2) == pastdest)
+    if ((res1 & res2) == result_e::pastdest)
     {
         floor->sector->specialdata = NULL;
         P_RemoveThinker(&floor->thinker);

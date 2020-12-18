@@ -57,11 +57,9 @@ slidename_t	slideFrameNames[MAXSLIDEDOORS] =
 //
 void T_VerticalDoor(vldoor_t *door)
 {
-    result_e res;
-
     switch (door->direction)
     {
-    case 0:
+    case 0: {
         // WAITING
         if (!--door->topcountdown)
         {
@@ -87,9 +85,9 @@ void T_VerticalDoor(vldoor_t *door)
             }
         }
         break;
+    }
 
-    case 2:
-        //  INITIAL WAIT
+    case 2: { //  INITIAL WAIT
         if (!--door->topcountdown)
         {
             switch (door->type)
@@ -105,14 +103,15 @@ void T_VerticalDoor(vldoor_t *door)
             }
         }
         break;
+    }
 
-    case -1:
+    case -1: {
         // DOWN
-        res = T_MovePlane(door->sector,
+        auto res = T_MovePlane(door->sector,
             door->speed,
             door->sector->floorheight,
             false, 1, door->direction);
-        if (res == pastdest)
+        if (res == result_e::pastdest)
         {
             switch (door->type)
             {
@@ -140,7 +139,7 @@ void T_VerticalDoor(vldoor_t *door)
                 break;
             }
         }
-        else if (res == crushed)
+        else if (res == result_e::crushed)
         {
             switch (door->type)
             {
@@ -165,15 +164,15 @@ void T_VerticalDoor(vldoor_t *door)
             }
         }
         break;
-
-    case 1:
+    }
+    case 1: {
         // UP
-        res = T_MovePlane(door->sector,
+        auto res = T_MovePlane(door->sector,
             door->speed,
             door->topheight,
             false, 1, door->direction);
 
-        if (res == pastdest)
+        if (res == result_e::pastdest)
         {
             switch (door->type)
             {
@@ -195,6 +194,7 @@ void T_VerticalDoor(vldoor_t *door)
             }
         }
         break;
+    }
     }
 }
 

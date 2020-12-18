@@ -495,13 +495,14 @@ typedef struct
 
 #define FLOORSPEED FRACUNIT
 
-typedef enum
+enum class result_e
 {
     ok,
     crushed,
     pastdest
+};
+result_e operator&(const result_e &a, const result_e &b);
 
-} result_e;
 
 result_e
     T_MovePlane(sector_t *sector,

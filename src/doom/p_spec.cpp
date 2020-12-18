@@ -23,6 +23,8 @@
 
 #include <cstdlib>
 
+#include "p_spec.hpp"
+
 #include "doomdef.hpp"
 #include "doomstat.hpp"
 
@@ -52,6 +54,11 @@
 #include "sounds.hpp"
 
 #define HUSTR_SECRETFOUND "A secret is revealed!"
+
+result_e operator&(const result_e &a, const result_e &b)
+{
+    return static_cast<result_e>(static_cast<size_t>(a) & static_cast<size_t>(b));
+}
 
 //
 // Animating textures and planes

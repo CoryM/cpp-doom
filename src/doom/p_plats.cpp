@@ -43,12 +43,10 @@ plat_t *activeplats[MAXPLATS];
 //
 void T_PlatRaise(plat_t *plat)
 {
-    result_e res;
-
     switch (plat->status)
     {
-    case up:
-        res = T_MovePlane(plat->sector,
+    case up: {
+        auto res = T_MovePlane(plat->sector,
             plat->speed,
             plat->high,
             plat->crush, 0, 1);
@@ -61,7 +59,7 @@ void T_PlatRaise(plat_t *plat)
         }
 
 
-        if (res == crushed && (!plat->crush))
+        if (res == result_e::crushed && (!plat->crush))
         {
             plat->count  = plat->wait;
             plat->status = down;
@@ -69,7 +67,7 @@ void T_PlatRaise(plat_t *plat)
         }
         else
         {
-            if (res == pastdest)
+            if (res == result_e::pastdest)
             {
                 plat->count  = plat->wait;
                 plat->status = waiting;
@@ -93,27 +91,34 @@ void T_PlatRaise(plat_t *plat)
             }
         }
         break;
+    }
 
-    case down:
-        res = T_MovePlane(plat->sector, plat->speed, plat->low, false, 0, -1);
+    case down: {
+        auto res = T_MovePlane(plat->sector, plat->speed, plat->low, false, 0, -1);
 
-        if (res == pastdest)
+        if (res == result_e::pastdest)
         {
             plat->count  = plat->wait;
             plat->status = waiting;
             S_StartSound(&plat->sector->soundorg, sfx_pstop);
         }
         break;
+    }
 
-    case waiting:
+    case waiting: {
         if (!--plat->count)
         {
             if (plat->sector->floorheight == plat->low)
+            {
                 plat->status = up;
+            }
             else
+            {
                 plat->status = down;
+            }
             S_StartSound(&plat->sector->soundorg, sfx_pstart);
         }
+    }
     case in_stasis:
         break;
     }
