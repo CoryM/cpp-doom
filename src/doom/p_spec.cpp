@@ -20,42 +20,37 @@
 //	Line Tag handling. Line and Sector triggers.
 //
 
-
-#include <cstdlib>
-
 #include "p_spec.hpp"
 
+#include "../../utils/lump.hpp"   // Data.
+#include "../../utils/memory.hpp" // Data.
+#include "deh_main.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp"
-
-#include "deh_main.hpp"
-#include "i_system.hpp"
+#include "g_game.hpp"
 #include "i_swap.hpp" // [crispy] LONG()
-#include "z_zone.hpp"
+#include "i_system.hpp"
 #include "m_argv.hpp"
 #include "m_misc.hpp"
 #include "m_random.hpp"
-#include "w_wad.hpp"
-#include "r_swirl.hpp" // [crispy] R_InitDistortedFlats()
-
-#include "r_local.hpp"
 #include "p_local.hpp"
-
-#include "g_game.hpp"
-
+#include "r_local.hpp"
+#include "r_state.hpp" // State.
+#include "r_swirl.hpp" // [crispy] R_InitDistortedFlats()
 #include "s_sound.hpp"
+#include "sounds.hpp" // Data.
+#include "w_wad.hpp"
+#include "z_zone.hpp"
 
-// State.
-#include "r_state.hpp"
+#include <array>
+#include <cstdlib>
 
-// Data.
-#include "../../utils/lump.hpp"
-#include "../../utils/memory.hpp"
-#include "sounds.hpp"
+using namespace std::literals;
+//#define HUSTR_SECRETFOUND "A secret is revealed!"
+constexpr auto HUSTR_SECRETFOUND = "A secret is revealed!"sv;
 
-#define HUSTR_SECRETFOUND "A secret is revealed!"
-
-result_e operator&(const result_e &a, const result_e &b)
+result_e
+    operator&(const result_e &a, const result_e &b)
 {
     return static_cast<result_e>(static_cast<size_t>(a) & static_cast<size_t>(b));
 }
@@ -77,14 +72,19 @@ struct local_anim_t {
 //
 // [crispy] change istexture type from int to char and
 // add PACKEDATTR for reading ANIMATED lumps from memory
-typedef PACKED_STRUCT(
+struct animdef_t {
+    signed char istexture    = 0; // if false, it is a flat
+    char        endname[9]   = {};
+    char        startname[9] = {};
+    int         speed        = 0;
+    animdef_t(signed char isT, std::string_view e, std::string_view s, int sp)
+        : istexture(isT)
+        , speed(sp)
     {
-        signed char istexture; // if false, it is a flat
-        char        endname[9];
-        char        startname[9];
-        int         speed;
-    }) animdef_t;
-
+        endname[e.copy(endname, 8)]     = '\0';
+        startname[s.copy(startname, 8)] = '\0';
+    };
+};
 
 #define MAXANIMS 32
 
@@ -106,37 +106,32 @@ extern local_anim_t *lastanim;
 //  the WAD file.
 //
 // [crispy] add support for ANIMATED lumps
-animdef_t animdefs_vanilla[] = {
-    { false, "NUKAGE3", "NUKAGE1", 8 },
-    { false, "FWATER4", "FWATER1", 8 },
-    { false, "SWATER4", "SWATER1", 8 },
-    { false, "LAVA4", "LAVA1", 8 },
-    { false, "BLOOD3", "BLOOD1", 8 },
-
-    // DOOM II flat animations.
-    { false, "RROCK08", "RROCK05", 8 },
-    { false, "SLIME04", "SLIME01", 8 },
-    { false, "SLIME08", "SLIME05", 8 },
-    { false, "SLIME12", "SLIME09", 8 },
-
-    { true, "BLODGR4", "BLODGR1", 8 },
-    { true, "SLADRIP3", "SLADRIP1", 8 },
-
-    { true, "BLODRIP4", "BLODRIP1", 8 },
-    { true, "FIREWALL", "FIREWALA", 8 },
-    { true, "GSTFONT3", "GSTFONT1", 8 },
-    { true, "FIRELAVA", "FIRELAV3", 8 },
-    { true, "FIREMAG3", "FIREMAG1", 8 },
-    { true, "FIREBLU2", "FIREBLU1", 8 },
-    { true, "ROCKRED3", "ROCKRED1", 8 },
-
-    { true, "BFALL4", "BFALL1", 8 },
-    { true, "SFALL4", "SFALL1", 8 },
-    { true, "WFALL4", "WFALL1", 8 },
-    { true, "DBRAIN4", "DBRAIN1", 8 },
-
+constexpr int frameSpeed       = 8;
+static auto   animdefs_vanilla = std::to_array<animdef_t>({
+    { false, "NUKAGE3", "NUKAGE1", frameSpeed },
+    { false, "FWATER4", "FWATER1", frameSpeed },
+    { false, "SWATER4", "SWATER1", frameSpeed },
+    { false, "LAVA4", "LAVA1", frameSpeed },
+    { false, "BLOOD3", "BLOOD1", frameSpeed },
+    { false, "RROCK08", "RROCK05", frameSpeed }, // DOOM II flat animations.
+    { false, "SLIME04", "SLIME01", frameSpeed },
+    { false, "SLIME08", "SLIME05", frameSpeed },
+    { false, "SLIME12", "SLIME09", frameSpeed },
+    { true, "BLODGR4", "BLODGR1", frameSpeed },
+    { true, "SLADRIP3", "SLADRIP1", frameSpeed },
+    { true, "BLODRIP4", "BLODRIP1", frameSpeed },
+    { true, "FIREWALL", "FIREWALA", frameSpeed },
+    { true, "GSTFONT3", "GSTFONT1", frameSpeed },
+    { true, "FIRELAVA", "FIRELAV3", frameSpeed },
+    { true, "FIREMAG3", "FIREMAG1", frameSpeed },
+    { true, "FIREBLU2", "FIREBLU1", frameSpeed },
+    { true, "ROCKRED3", "ROCKRED1", frameSpeed },
+    { true, "BFALL4", "BFALL1", frameSpeed },
+    { true, "SFALL4", "SFALL1", frameSpeed },
+    { true, "WFALL4", "WFALL1", frameSpeed },
+    { true, "DBRAIN4", "DBRAIN1", frameSpeed },
     { -1, "", "", 0 },
-};
+});
 
 // [crispy] remove MAXANIMS limit
 local_anim_t *anims;
@@ -168,7 +163,7 @@ void P_InitPicAnims(void)
     }
     else
     {
-        animdefs = animdefs_vanilla;
+        animdefs = &animdefs_vanilla[0];
     }
 
     //	Init animation
@@ -1151,7 +1146,7 @@ void P_PlayerInSpecialSector(player_t *player)
             // [crispy] play DSSECRET if available
             sfx_id = I_GetSfxLumpNum(&S_sfx[sfx_secret]) != -1 ? sfx_secret : sfx_itmbk;
 
-            player->centermessage = (crispy->secretmessage == SECRETMESSAGE_COUNT) ? str_count : HUSTR_SECRETFOUND;
+            player->centermessage = (crispy->secretmessage == SECRETMESSAGE_COUNT) ? str_count : HUSTR_SECRETFOUND.data();
             S_StartSound(NULL, sfx_id);
         }
         // [crispy] remember revealed secrets
