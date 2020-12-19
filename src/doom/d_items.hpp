@@ -16,25 +16,22 @@
 //	Items: key cards, artifacts, weapon, ammunition.
 //
 
-
-#ifndef __D_ITEMS__
-#define __D_ITEMS__
+#ifndef DOOM_D_ITEMS_HPP
+#define DOOM_D_ITEMS_HPP
 
 #include "doomdef.hpp"
 
 
 // Weapon info: sprite frames, ammunition use.
-typedef struct
-{
+struct weaponinfo_t {
     ammotype_t ammo;
     int        upstate;
     int        downstate;
     int        readystate;
     int        atkstate;
     int        flashstate;
-
-} weaponinfo_t;
+};
 
 extern weaponinfo_t weaponinfo[NUMWEAPONS];
 
-#endif
+#endif // DOOM_D_ITEMS_HPP

@@ -20,6 +20,7 @@
 #ifndef __R_DRAW__
 #define __R_DRAW__
 
+#include "r_defs.hpp"
 
 extern lighttable_t *dc_colormap[2];
 extern int           dc_x;

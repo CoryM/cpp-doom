@@ -18,59 +18,73 @@
 //	parse command line parameters, configure game parameters (turbo),
 //	and call the startup functions.
 //
-#include "../../utils/lump.hpp"
-#include "../../utils/memory.hpp"
-#include "../config.hpp"
-#include "../d_iwad.hpp"
-#include "../deh_main.hpp"
-#include "../i_endoom.hpp"
-#include "../i_input.hpp"
-#include "../i_joystick.hpp"
-#include "../i_system.hpp"
-#include "../i_timer.hpp"
-#include "../i_video.hpp"
-#include "../m_argv.hpp"
-#include "../m_config.hpp"
-#include "../m_controls.hpp"
-#include "../m_misc.hpp"
-#include "../net_client.hpp"
-#include "../net_dedicated.hpp"
-#include "../net_query.hpp"
-#include "../v_diskicon.hpp"
-#include "../v_video.hpp"
-#include "../w_main.hpp"
-#include "../w_wad.hpp"
-#include "../z_zone.hpp"
-
-#include "am_map.hpp"
 #include "d_main.hpp"
-#include "doomdef.hpp"
-#include "doomstat.hpp"
-#include "dstrings.hpp"
-#include "f_finale.hpp"
-#include "f_wipe.hpp"
-#include "g_game.hpp"
-#include "hu_stuff.hpp"
-#include "m_menu.hpp"
-#include "p_saveg.hpp"
-#include "p_setup.hpp"
-#include "r_local.hpp"
-#include "s_sound.hpp"
-#include "sounds.hpp"
-#include "st_stuff.hpp"
-#include "statdump.hpp"
-#include "wi_stuff.hpp"
 
-#include "fmt/core.h"
+#include <strings.h>   // for strcasecmp, strncasecmp
+#include <array>       // for array, to_array
+#include <cctype>      // for isspace
+#include <cstdio>      // for printf, NULL, size_t
+#include <cstdlib>     // for free
+#include <cstring>     // for strlen, memcpy, memmove, strcmp
+#include <iterator>    // for size
+#include <stdexcept>   // for logic_error
+#include <string>      // for basic_string, string, allocator
+#include <string_view> // for string_view, basic_string_view
 
-#include <array>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime> // [crispy] time_t, time(), struct tm, localtime()
-#include <string_view>
-#include <vector>
+#include "fmt/format.h" // for format, print
+
+#include "../../utils/lump.hpp"   // for cache_lump_name
+#include "../../utils/memory.hpp" // for zmalloc
+#include "../common.hpp"          // for exceptionalExit
+#include "../config.hpp"          // for PACKAGE_STRING, PROGRAM_PREFIX
+#include "../crispy.hpp"          // for crispy, crispy_t, CheckCrispySingl...
+#include "../d_event.hpp"         // for D_PopEvent, event_t (ptr only)
+#include "../d_iwad.hpp"          // for D_FindWADByName, D_SaveGameIWADName
+#include "../d_loop.hpp"          // for TryRunTics, gametic, D_StartGameLoop
+#include "../d_mode.hpp"          // for GameMode_t, GameMode_t::commercial
+#include "../deh_main.hpp"        // for DEH_AutoLoadPatches, DEH_LoadLumpB...
+#include "../deh_str.hpp"         // for DEH_String, DEH_printf, DEH_AddStr...
+#include "../i_endoom.hpp"        // for I_Endoom
+#include "../i_input.hpp"         // for I_BindInputVariables
+#include "../i_joystick.hpp"      // for I_BindJoystickVariables, I_InitJoy...
+#include "../i_system.hpp"        // for S_Error, I_AtExit, I_PrintBanner
+#include "../i_timer.hpp"         // for I_GetTime, I_InitTimer, I_Sleep
+#include "../m_argv.hpp"          // for M_ParmExists, M_CheckParm, M_GetAr...
+#include "../m_config.hpp"        // for M_BindIntVariable, M_GetAutoloadDir
+#include "../m_controls.hpp"      // for key_multi_msgplayer, M_ApplyPlatfo...
+#include "../m_misc.hpp"          // for M_StringDuplicate, M_StringCopy
+#include "../net_client.hpp"      // for NET_BindVariables, NET_Init, drone
+#include "../net_dedicated.hpp"   // for NET_DedicatedServer
+#include "../net_query.hpp"       // for NET_LANQuery, NET_MasterQuery, NET...
+#include "../v_diskicon.hpp"      // for V_EnableLoadingDisk, LOADING_DISK_H
+#include "../v_video.hpp"         // for V_DrawMouseSpeedBox, V_DrawPatchDi...
+#include "../w_main.hpp"          // for W_AutoLoadWADs, W_CheckCorrectIWAD
+#include "../z_zone.hpp"          // for PU, PU::STATIC, Z_Init, PU::CACHE
+#include "am_map.hpp"             // for AM_Drawer
+#include "d_englsh.hpp"           // for PHUSTR_1, D_DEVSTR, HUSTR_31, HUST...
+#include "d_player.hpp"           // for player_t, PST_LIVE
+#include "doomdef.hpp"            // for GS_LEVEL, GS_DEMOSCREEN, GS_FORCE_...
+#include "doomstat.hpp"           // for gamemode, gameversion, gamemission
+#include "doomtype.hpp"           // for byte, DIR_SEPARATOR_S, DIR_SEPARATOR
+#include "f_finale.hpp"           // for F_Drawer
+#include "f_wipe.hpp"             // for wipe_EndScreen, wipe_ScreenWipe
+#include "g_game.hpp"             // for G_DeferedPlayDemo, G_BeginRecording
+#include "hu_stuff.hpp"           // for HU_Drawer, HU_Erase, HU_Init, chat...
+#include "i_sound.hpp"            // for I_GetSfxLumpNum, sfxinfo_t, I_Bind...
+#include "i_video.hpp"            // for SCREENHEIGHT, I_FinishUpdate, I_Up...
+#include "m_menu.hpp"             // for M_Drawer, M_Init, M_Responder, scr...
+#include "p_saveg.hpp"            // for P_SaveGameFile
+#include "p_setup.hpp"            // for P_Init
+#include "r_draw.hpp"             // for R_DrawViewBorder, R_FillBackScreen
+#include "r_main.hpp"             // for R_RenderPlayerView, R_Init, viewwi...
+#include "r_state.hpp"            // for viewheight, scaledviewwidth
+#include "s_sound.hpp"            // for S_StartMusic, S_Init, S_UpdateSounds
+#include "sounds.hpp"             // for S_sfx, mus_dm2ttl, mus_intro, sfx_...
+#include "st_stuff.hpp"           // for ST_Drawer, ST_Init, CRISPY_HUD
+#include "statdump.hpp"           // for StatDump
+#include "w_wad.hpp"              // for W_CheckNumForName, lumpinfo_t, W_W...
+#include "wi_stuff.hpp"           // for WI_Drawer
+struct patch_t;
 
 
 //

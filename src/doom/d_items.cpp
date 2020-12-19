@@ -17,9 +17,9 @@
 
 
 // We are referring to sprite numbers.
-#include "info.hpp"
-
 #include "d_items.hpp"
+#include "doomdef.hpp" // for am_cell, am_clip, am_noammo, am_shell
+#include "info.hpp"    // for S_NULL, S_BFG, S_BFG1, S_BFGDOWN, S_BFGF...
 
 
 //
