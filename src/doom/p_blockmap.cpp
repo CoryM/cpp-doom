@@ -18,11 +18,23 @@
 //	[crispy] Create Blockmap
 //
 
-#include "../../utils/memory.hpp"
-#include "i_system.hpp"
-#include "p_local.hpp"
-#include "z_zone.hpp"
-#include <cstdlib>
+#include <cstdlib>  // for abs, free, calloc
+#include <limits.h> // for INT_MAX, INT_MIN
+#include <stdint.h> // for int32_t
+#include <stdio.h>  // for fprintf, stderr
+#include <string.h> // for memset
+
+#include "../../utils/memory.hpp" // for zmalloc
+#include "../i_system.hpp"        // for I_Realloc
+#include "../m_fixed.hpp"         // for FRACBITS, fixed_t
+#include "../z_zone.hpp"          // for PU, PU::LEVEL
+#include "p_local.hpp"            // for MAPBTOFRAC, blockmaplump, bmapwidth
+#include "r_defs.hpp"             // for vertex_t, line_s
+#include "r_state.hpp"            // for vertexes, lines, numlines, numvert...
+
+
+struct mobj_t;
+
 
 // [crispy] taken from mbfsrc/P_SETUP.C:547-707, slightly adapted
 
@@ -95,7 +107,8 @@ void P_CreateBlockMap(void)
             ady = lines[i].dy >> FRACBITS, dy = ady < 0 ? -1 : 1;
 
             // difference in preferring to move across y (>0) instead of x (<0)
-            diff = !adx ? 1 : !ady ? -1 : (((x >> MAPBTOFRAC) << MAPBTOFRAC) + (dx > 0 ? MAPBLOCKUNITS - 1 : 0) - x) * (ady = abs(ady)) * dx - (((y >> MAPBTOFRAC) << MAPBTOFRAC) + (dy > 0 ? MAPBLOCKUNITS - 1 : 0) - y) * (adx = abs(adx)) * dy;
+            diff = !adx ? 1 : !ady ? -1 :
+                                     (((x >> MAPBTOFRAC) << MAPBTOFRAC) + (dx > 0 ? MAPBLOCKUNITS - 1 : 0) - x) * (ady = abs(ady)) * dx - (((y >> MAPBTOFRAC) << MAPBTOFRAC) + (dy > 0 ? MAPBLOCKUNITS - 1 : 0) - y) * (adx = abs(adx)) * dy;
 
             // starting block, and pointer to its blocklist structure
             b = (y >> MAPBTOFRAC) * bmapwidth + (x >> MAPBTOFRAC);

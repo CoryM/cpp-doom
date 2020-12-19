@@ -16,43 +16,62 @@
 //	DOOM selection menu, options, episode etc.
 //	Sliders and icons. Kinda widget stuff.
 //
-#include "../../utils/lump.hpp"
-#include "../deh_main.hpp"
-#include "../doomkeys.hpp"
-#include "../i_input.hpp"
-#include "../i_swap.hpp"
-#include "../i_system.hpp"
-#include "../i_timer.hpp"
-#include "../i_video.hpp"
-#include "../m_misc.hpp"
-#include "../v_video.hpp"
-#include "../w_wad.hpp"
-#include "../z_zone.hpp"
-#include "d_main.hpp"
-#include "doomdef.hpp"
-#include "doomstat.hpp"
-#include "dstrings.hpp"
-#include "g_game.hpp"
-#include "hu_stuff.hpp"
-#include "m_argv.hpp"
-#include "m_controls.hpp"
-#include "m_crispy.hpp" // [crispy] Crispness menu
 #include "m_menu.hpp"
-#include "p_extsaveg.hpp" // [crispy] savewadfilename
-#include "p_saveg.hpp"
-#include "p_setup.hpp"
-#include "r_local.hpp"
-#include "s_sound.hpp"
-#include "sounds.hpp"  // Data.
-#include "v_trans.hpp" // [crispy] colored "invert mouse" message
 
-#include "fmt/core.h"
-#include <algorithm>
-#include <cctype>
-#include <cstdlib>
-#include <iostream> // needed for cout debuging
-#include <string>
-#include <string_view>
+#include <stdio.h>  // for fclose, fopen, fread, remove, FILE
+#include <string.h> // for strlen, strcmp, strchr
+
+#include <algorithm>   // for copy, max
+#include <array>       // for array
+#include <cctype>      // for isdigit, toupper
+#include <cstdlib>     // for NULL, free, size_t
+#include <iterator>    // for size, ssize
+#include <string>      // for allocator, basic_string, string
+#include <string_view> // for string_view, basic_string_view
+
+#include "fmt/format.h" // for format
+
+#include "../../utils/lump.hpp" // for cache_lump_name
+#include "../crispy.hpp"        // for crispy, crispy_t, BOBFACTOR_OFF, DEM...
+#include "../d_event.hpp"       // for event_t, evtype_t, evtype_t::ev_keydown
+#include "../d_loop.hpp"        // for gametic
+#include "../d_mode.hpp"        // for GameMode_t, GameMode_t::commercial
+#include "../deh_str.hpp"       // for DEH_String, DEH_AddStringReplacement
+#include "../doomkeys.hpp"      // for KEY_ESCAPE, KEY_ENTER, KEY_BACKSPACE
+#include "../doomtype.hpp"      // for byte, pixel_t
+#include "../i_input.hpp"       // for I_StopTextInput, mouse_y_invert, I_S...
+#include "../i_sound.hpp"       // for SNDDEVICE_PCSPEAKER, snd_sfxdevice
+#include "../i_swap.hpp"        // for SHORT
+#include "../i_system.hpp"      // for I_Quit
+#include "../i_timer.hpp"       // for I_GetTime, I_WaitVBL
+#include "../i_video.hpp"       // for joywait, ORIGWIDTH, usegamma, I_SetP...
+#include "../m_argv.hpp"        // for M_ParmExists
+#include "../m_misc.hpp"        // for M_StringCopy, M_snprintf, M_StringJoin
+#include "../v_patch.hpp"       // for patch_t
+#include "../v_trans.hpp"       // for crstr, CR_NONE, CR_GOLD, CR_DARK, cr
+#include "../v_video.hpp"       // for V_DrawPatchDirect, dp_translation
+#include "../w_wad.hpp"         // for W_WadNameForLump, W_CheckNumForName
+#include "../z_zone.hpp"        // for PU, PU::CACHE
+#include "d_englsh.hpp"         // for EMPTYSTRING, PRESSKEY, PRESSYN, DETA...
+#include "d_main.hpp"           // for D_StartTitle, gameaction
+#include "d_player.hpp"         // for player_t
+#include "doomdef.hpp"          // for GS_LEVEL, ga_loadgame
+#include "doomstat.hpp"         // for gameversion, netgame, gamemap, gamemode
+#include "dstrings.hpp"         // for doom1_endmsg, doom2_endmsg, NUM_QUIT...
+#include "g_game.hpp"           // for G_DeferedInitNew, G_CheckDemoStatus
+#include "hu_stuff.hpp"         // for HU_FONTSIZE, HU_FONTSTART
+#include "m_background.hpp"     // for crispness_background
+#include "m_controls.hpp"       // for key_menu_confirm, key_menu_activate
+#include "m_crispy.hpp"         // for M_CrispyToggleAutomapstats, M_Crispy...
+#include "p_extsaveg.hpp"       // for savewadfilename, M_ConfirmDeleteGames
+#include "p_saveg.hpp"          // for P_SaveGameFile, SAVESTRINGSIZE
+#include "p_setup.hpp"          // for savemaplumpinfo, maplumpinfo
+#include "r_defs.hpp"           // for lighttable_t
+#include "r_draw.hpp"           // for R_FillBackScreen
+#include "r_main.hpp"           // for R_SetViewSize
+#include "r_state.hpp"          // for colormaps
+#include "s_sound.hpp"          // for S_StartSound, S_SetMusicVolume, S_Se...
+#include "sounds.hpp"           // for sfx_swtchn, sfx_stnmov, sfx_pstop
 
 
 extern patch_t *hu_font[HU_FONTSIZE];

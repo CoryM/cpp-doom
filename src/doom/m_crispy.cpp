@@ -17,13 +17,25 @@
 //	[crispy] Crispness menu
 //
 
-#include "doomstat.hpp"
-#include "p_local.hpp" // [crispy] thinkercap
-#include "s_sound.hpp"
-#include "r_defs.hpp" // [crispy] laserpatch
-#include "r_sky.hpp"  // [crispy] R_InitSkyMap()
-
 #include "m_crispy.hpp"
+
+#include <array> // for array
+
+#include "../d_mode.hpp"  // for exe_chex
+#include "../i_video.hpp" // for force_software_renderer
+
+#include "d_player.hpp" // for player_t
+#include "d_think.hpp"  // for thinker_s, actionf_p1, think_t
+#include "doomdef.hpp"  // for GS_LEVEL, MAXPLAYERS
+#include "doomstat.hpp" // for demoplayback, demorecording, netgame
+#include "info.hpp"     // for MT_SKULL
+#include "p_local.hpp"  // for Crispy_PlayerSO, P_MobjThinker, thinkercap
+#include "p_mobj.hpp"   // for mobj_t, MF_NOBLOOD
+#include "r_defs.hpp"   // for laserpatch_t, laserpatch
+#include "r_draw.hpp"   // for R_FillBackScreen
+#include "r_sky.hpp"    // for R_InitSkyMap
+#include "s_sound.hpp"  // for S_UpdateSndChannels, S_UpdateStereoSepa...
+
 
 multiitem_t multiitem_bobfactor[NUM_BOBFACTORS] = {
     { BOBFACTOR_FULL, "full" },
@@ -195,7 +207,7 @@ void M_CrispyToggleColoredblood(int choice [[maybe_unused]])
     }
 }
 
-void M_CrispyToggleColoredhud(int choice[[maybe_unused]])
+void M_CrispyToggleColoredhud(int choice [[maybe_unused]])
 {
     choice             = 0;
     crispy->coloredhud = (crispy->coloredhud + 1) % NUM_COLOREDHUD;

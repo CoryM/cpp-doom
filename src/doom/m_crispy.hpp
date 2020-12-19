@@ -20,10 +20,12 @@
 #ifndef __M_CRISPY__
 #define __M_CRISPY__
 
-#include <string_view>
-struct multiitem_t
-{
-    int   value;
+#include <string_view> // for string_view
+
+#include "../crispy.hpp" // for NUM_BOBFACTORS, NUM_BRIGHTMAPS, NUM_CENTERWEAPON
+
+struct multiitem_t {
+    int              value;
     std::string_view name;
 };
 

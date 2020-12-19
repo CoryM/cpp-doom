@@ -21,7 +21,8 @@
 #define __M_MENU__
 
 
-#include "../d_event.hpp"
+struct event_t;
+
 
 //
 // MENUS

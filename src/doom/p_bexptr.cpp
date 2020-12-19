@@ -18,9 +18,25 @@
 //	[crispy] additional BOOM and MBF code pointers
 //
 
-#include "p_local.hpp"
-#include "m_random.hpp"
-#include "s_sound.hpp"
+#include <stddef.h> // for NULL
+#include <stdint.h> // for uint64_t
+
+#include "../crispy.hpp"  // for crispy_t, critical, FREEAIM_BOTH, FREEA...
+#include "../m_fixed.hpp" // for FixedMul, fixed_t, FRACUNIT, FRACBITS
+#include "../tables.hpp"  // for angle_t, ANG90, ANGLETOFINESHIFT, DBITS
+
+#include "d_items.hpp"  // for weaponinfo_t, weaponinfo
+#include "d_player.hpp" // for player_t
+#include "info.hpp"     // for state_t, mobjinfo_t, statenum_t, MT_PLA...
+#include "m_random.hpp" // for P_Random, Crispy_Random
+#include "p_local.hpp"  // for P_AimLineAttack, P_DamageMobj, P_SpawnMobj
+#include "p_mobj.hpp"   // for mobj_t, MF_NOCLIP, MF_NOGRAVITY
+#include "p_pspr.hpp"   // for pspdef_t, ps_weapon
+#include "p_spec.hpp"   // for P_CrossSpecialLinePtr, P_UseSpecialLine
+#include "r_defs.hpp"   // for line_s
+#include "r_state.hpp"  // for lines
+#include "s_sound.hpp"  // for S_StartSound
+
 
 extern void A_Explode(mobj_t *thingy);
 extern void A_FaceTarget(mobj_t *thingy);

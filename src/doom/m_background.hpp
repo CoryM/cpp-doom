@@ -1,3 +1,4 @@
+
 //
 // Copyright(C) 1993-1996 Id Software, Inc.
 // Copyright(C) 2005-2014 Simon Howard
@@ -18,7 +19,12 @@
 //	[crispy] Crispness menu tiled background
 //
 
+#ifndef DOOM_M_BACKGROUND_HPP
+#define DOOM_M_BACKGROUND_HPP
+
 #include <array>
+
+#include "../doomtype.hpp" // for byte
 
 /*
 
@@ -54,7 +60,7 @@ int main (int argc, char **argv)
 }
 */
 
-static constexpr std::array< std::array< byte, 64 >, 64 > crispness_background = {
+constexpr std::array<std::array<byte, 64>, 64> crispness_background = {
     0x8d,
     0x8c,
     0x8b,
@@ -4153,3 +4159,6 @@ static constexpr std::array< std::array< byte, 64 >, 64 > crispness_background =
     0x8d,
     0x8d,
 };
+
+
+#endif // DOOM_M_BACKGROUND_HPP

@@ -18,17 +18,15 @@
 //	This one is the original DOOM version, preserved.
 //
 
-#include <cstdio>
-#include <cstdlib>
-
-// Data.
-#include "sounds.hpp"
-#include "m_fixed.hpp"
-
 #include "info.hpp"
 
-#include "p_mobj.hpp"
-#include "event_function_decls.hpp"
+#include <cstdio> // for NULL
+
+#include "../m_fixed.hpp"           // for FRACUNIT
+#include "event_function_decls.hpp" // for A_Chase, A_FaceTarget, A_FireOldBFG
+#include "p_mobj.hpp"               // for MF_SOLID, MF_NOGRAVITY, MF_SPECIAL
+#include "sounds.hpp"               // for sfx_None, sfx_firxpl, sfx_dmact
+
 
 const char *sprnames[] = {
     "TROO", "SHTG", "PUNG", "PISG", "PISF", "SHTF", "SHT2", "CHGG", "CHGF", "MISG",
@@ -1073,12 +1071,15 @@ state_t states[NUMSTATES] = {
     { SPR_DOGS, 8, 5, {}, S_DOGS_RUN1, 0, 0 },                           // S_DOGS_RAISE6
 #define BFGDELAY          1
 #define OLDBFG_1FRAMES(x) { SPR_BFGG, 1, BFGDELAY, { A_FireOldBFG }, static_cast<statenum_t>(x + S_OLDBFG1 + 2), 0, 0 },
-#define OLDBFG_2FRAMES(x) OLDBFG_1FRAMES(x) \
-OLDBFG_1FRAMES(static_cast<statenum_t>(x + 1))
-#define OLDBFG_4FRAMES(x) OLDBFG_2FRAMES(x) \
-OLDBFG_2FRAMES(static_cast<statenum_t>(x + 2))
-#define OLDBFG_8FRAMES(x) OLDBFG_4FRAMES(x) \
-OLDBFG_4FRAMES(static_cast<statenum_t>(x + 4))
+#define OLDBFG_2FRAMES(x) \
+    OLDBFG_1FRAMES(x)     \
+    OLDBFG_1FRAMES(static_cast<statenum_t>(x + 1))
+#define OLDBFG_4FRAMES(x) \
+    OLDBFG_2FRAMES(x)     \
+    OLDBFG_2FRAMES(static_cast<statenum_t>(x + 2))
+#define OLDBFG_8FRAMES(x) \
+    OLDBFG_4FRAMES(x)     \
+    OLDBFG_4FRAMES(static_cast<statenum_t>(x + 4))
     { SPR_BFGG, 0, 10, { A_BFGsound }, static_cast<statenum_t>(S_OLDBFG1 + 1), 0, 0 }, // S_OLDBFG1
     OLDBFG_8FRAMES(0)
         OLDBFG_8FRAMES(8)
