@@ -15,17 +15,21 @@
 // Parses Action Pointer entries in dehacked files
 //
 
-#include "../deh_defs.hpp"
-#include "../deh_io.hpp"
-#include "../deh_main.hpp"
-#include "../doomtype.hpp"
-#include "info.hpp"
+#include <strings.h> // for strcasecmp
+
+#include <cstdio>  // for sscanf, NULL
+#include <cstdlib> // for atoi
+#include <cstring> // for memcmp
+#include <string>  // for basic_string
 
 #include "fmt/core.h"
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "../deh_defs.hpp" // for deh_section_t
+#include "../deh_io.hpp"   // for DEH_Warning
+#include "../deh_main.hpp" // for DEH_ParseAssignment
+#include "../sha1.hpp"     // for SHA1_UpdateInt32, sha1_context_t
+#include "d_think.hpp"     // for actionf_t, actionf_v
+#include "info.hpp"        // for state_t, states, NUMSTATES, EXTRASTATES
 
 
 actionf_t codeptrs[NUMSTATES]; // [crispy] share with deh_bexptr.c

@@ -15,18 +15,20 @@
 // Parses "Frame" sections in dehacked files
 //
 
-#include "../deh_defs.hpp"
-#include "../deh_io.hpp"
-#include "../deh_main.hpp"
-#include "../deh_mapping.hpp"
-#include "../doomtype.hpp"
-#include "d_items.hpp"
-#include "info.hpp"
+#include <cstdio>  // for sscanf, NULL
+#include <cstdlib> // for atoi
+#include <string>  // for basic_string
 
 #include "fmt/core.h"
 
-#include <cstdio>
-#include <cstdlib>
+#include "../deh_defs.hpp"    // for deh_section_t
+#include "../deh_io.hpp"      // for DEH_Warning
+#include "../deh_main.hpp"    // for DEH_ParseAssignment, DEH_VANILLA_NUMST...
+#include "../deh_mapping.hpp" // for DEH_MAPPING, DEH_SetMapping, DEH_Struc...
+#include "../sha1.hpp"        // for sha1_context_t
+#include "info.hpp"           // for state_t, spritenum_t, statenum_t, NUMS...
+
+struct deh_context_s;
 
 
 DEH_BEGIN_MAPPING(state_mapping, state_t)

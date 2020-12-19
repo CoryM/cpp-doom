@@ -17,30 +17,46 @@
 //
 
 
-#include <cstdio>
-#include <cctype>
-#include <string_view>
+#include <stdlib.h> // for free
+#include <string.h> // for strlen
 
-// Functions.
-#include "../deh_main.hpp"
-#include "../i_system.hpp"
-#include "../i_swap.hpp"
-#include "../z_zone.hpp"
-#include "../v_video.hpp"
-#include "../w_wad.hpp"
-#include "s_sound.hpp"
+#include <array>    // for array
+#include <cctype>   // for toupper
+#include <cstdio>   // for NULL, size_t
+#include <iterator> // for size
 
-// Data.
-#include "d_main.hpp"
-#include "dstrings.hpp"
-#include "sounds.hpp"
-
-#include "doomstat.hpp"
-#include "r_state.hpp"
-#include "m_controls.hpp" // [crispy] key_*
-#include "m_misc.hpp"     // [crispy] M_StringDuplicate()
-#include "m_random.hpp"   // [crispy] Crispy_Random()
-#include "event_function_decls.hpp"
+#include "../../utils/lump.hpp"     // for cache_lump_name, cache_lump_num
+#include "../crispy.hpp"            // for crispy, crispy_t
+#include "../d_event.hpp"           // for event_t, evtype_t, evtype_t::ev_...
+#include "../d_mode.hpp"            // for doom2, pack_plut, pack_tnt, doom
+#include "../d_ticcmd.hpp"          // for ticcmd_t
+#include "../deh_str.hpp"           // for DEH_String, DEH_snprintf
+#include "../i_swap.hpp"            // for SHORT, LONG
+#include "../v_video.hpp"           // for V_DrawPatch, V_DrawPatchFullScreen
+#include "../w_wad.hpp"             // for W_CheckNumForName
+#include "../z_zone.hpp"            // for PU, PU::CACHE, PU::LEVEL
+#include "d_englsh.hpp"             // for C1TEXT, C2TEXT, C3TEXT, C4TEXT
+#include "d_main.hpp"               // for gameaction
+#include "d_player.hpp"             // for player_t
+#include "d_think.hpp"              // for actionf_t
+#include "doomdef.hpp"              // for GS_FORCE_WIPE, MAXPLAYERS, games...
+#include "doomstat.hpp"             // for gamemap, gamemission, gameepisode
+#include "doomtype.hpp"             // for byte, pixel_t
+#include "event_function_decls.hpp" // for A_BruisAttack, A_BspiAttack, A_C...
+#include "hu_stuff.hpp"             // for HU_FONTSIZE, HU_FONTSTART
+#include "i_video.hpp"              // for ORIGWIDTH, SCREENWIDTH, SCREENHE...
+#include "info.hpp"                 // for state_t, mobjinfo_t, states, mob...
+#include "m_controls.hpp"           // for key_alt_strafeleft, key_alt_stra...
+#include "m_fixed.hpp"              // for FRACBITS, fixed_t
+#include "m_misc.hpp"               // for M_StringDuplicate
+#include "m_random.hpp"             // for Crispy_Random
+#include "p_mobj.hpp"               // for MF_FLIPPABLE
+#include "p_pspr.hpp"               // for FF_FRAMEMASK
+#include "r_defs.hpp"               // for spritedef_t, spriteframe_t, ligh.../
+#include "r_state.hpp"              // for colormaps, firstspritelump, sprites
+#include "s_sound.hpp"              // for S_StartSound, S_ChangeMusic, S_S...
+#include "sounds.hpp"               // for sfx_firsht, sfx_shotgn, sfx_sklatk
+#include "v_patch.hpp"              // for column_t, patch_t
 
 typedef enum
 {

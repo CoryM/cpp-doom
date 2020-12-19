@@ -20,9 +20,10 @@
 #ifndef __G_GAME__
 #define __G_GAME__
 
-#include "doomdef.hpp"
-#include "../d_event.hpp"
-#include "../d_ticcmd.hpp"
+#include "../d_mode.hpp" // for skill_t
+
+struct event_t;
+struct ticcmd_t;
 
 
 //
@@ -53,8 +54,8 @@ void G_RecordDemo(char *name);
 
 void G_BeginRecording(void);
 
-void    G_PlayDemo(char *name);
-void    G_TimeDemo(char *name);
+void G_PlayDemo(char *name);
+void G_TimeDemo(char *name);
 bool G_CheckDemoStatus(void);
 
 void G_ExitLevel(void);
@@ -66,7 +67,7 @@ void G_WorldDone(void);
 
 void G_BuildTiccmd(ticcmd_t *cmd, int maketic);
 
-void    G_Ticker(void);
+void G_Ticker(void);
 bool G_Responder(event_t *ev);
 
 void G_ScreenShot(void);

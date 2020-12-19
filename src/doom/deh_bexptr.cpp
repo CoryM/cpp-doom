@@ -15,18 +15,25 @@
 //
 // Parses [CODEPTR] sections in BEX files
 //
+#include <strings.h> // for strcasecmp
 
-#include "../deh_io.hpp"
-#include "../deh_main.hpp"
-#include "event_function_decls.hpp"
-#include "info.hpp"
+#include <array>    // for array, to_array
+#include <cstdio>   // for sscanf, NULL
+#include <cstring>  // for strcmp
+#include <iosfwd>   // for size_t
+#include <iterator> // for size
+#include <string>   // for basic_string
 
-#include "fmt/core.h"
+#include "fmt/core.h" // for format
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <string_view>
+#include "../deh_defs.hpp"          // for deh_section_t
+#include "../deh_io.hpp"            // for DEH_Warning
+#include "../deh_main.hpp"          // for DEH_ParseAssignment
+#include "d_think.hpp"              // for actionf_t
+#include "event_function_decls.hpp" // for A_BFGSpray, A_BFGsound, A_BabyMetal
+#include "info.hpp"                 // for NUMSTATES, state_t, states
+
+struct deh_context_s;
 
 struct bex_codeptr_t {
     const char *    mnemonic;

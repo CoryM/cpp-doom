@@ -15,17 +15,22 @@
 // Parses "Cheat" sections in dehacked files
 //
 
-#include "../deh_defs.hpp"
-#include "../deh_io.hpp"
-#include "../deh_main.hpp"
-#include "../doomtype.hpp"
-#include "am_map.hpp"
-#include "st_stuff.hpp"
+#include <strings.h> // for strcasecmp
+
+#include <cstdlib>  // for NULL, size_t
+#include <iterator> // for size
+#include <string>   // for basic_string
 
 #include "fmt/core.h"
 
-#include <cstdlib>
-#include <cstring>
+#include "../deh_defs.hpp" // for deh_section_t
+#include "../deh_io.hpp"   // for DEH_Warning, DEH_Error
+#include "../deh_main.hpp" // for DEH_ParseAssignment, deh_apply_cheats
+#include "../m_cheat.hpp"  // for cheatseq_t, MAX_CHEAT_LEN
+#include "am_map.hpp"      // for cheat_amap
+#include "st_stuff.hpp"    // for cheat_powerup, cheat_ammo, cheat_ammonokey
+
+struct deh_context_s;
 
 typedef struct
 {

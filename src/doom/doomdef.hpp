@@ -20,12 +20,7 @@
 #ifndef __DOOMDEF__
 #define __DOOMDEF__
 
-#include <cstdio>
-#include <cstring>
-
-#include "../doomtype.hpp"
 #include "../i_timer.hpp"
-#include "../d_mode.hpp"
 
 //
 // Global parameters/defines.

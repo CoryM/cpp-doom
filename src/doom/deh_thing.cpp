@@ -15,19 +15,26 @@
 // Parses "Thing" sections in dehacked files
 //
 
-#include "../deh_defs.hpp"
-#include "../deh_main.hpp"
-#include "../deh_mapping.hpp"
-#include "../doomtype.hpp"
+#include <string.h>  // for strtok
+#include <strings.h> // for strcasecmp
 
-#include "info.hpp"
-#include "p_mobj.hpp" // [crispy] MF_*
+#include <cstdio>   // for NULL, sscanf, size_t
+#include <cstdlib>  // for atoi
+#include <iterator> // for size
+#include <string>   // for basic_string
 
-#include "fmt/core.h"
+#include "fmt/core.h" // for format
 
-#include <cstdio>
-#include <cstdlib>
-#include <string_view>
+#include "../deh_defs.hpp"    // for deh_section_t
+#include "../deh_io.hpp"      // for DEH_Warning
+#include "../deh_main.hpp"    // for DEH_ParseAssignment
+#include "../deh_mapping.hpp" // for DEH_MAPPING, DEH_SetMapping, DEH_Struc...
+#include "../sha1.hpp"        // for sha1_context_t
+#include "info.hpp"           // for mobjinfo_t, NUMMOBJTYPES, mobjinfo
+#include "p_mobj.hpp"         // for MF_AMBUSH, MF_CORPSE, MF_COUNTITEM
+
+struct deh_context_s;
+
 
 typedef struct {
     const char * flag;

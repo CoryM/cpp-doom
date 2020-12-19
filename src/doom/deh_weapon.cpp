@@ -15,17 +15,21 @@
 // Parses "Weapon" sections in dehacked files
 //
 
-#include "../deh_defs.hpp"
-#include "../deh_main.hpp"
-#include "../deh_mapping.hpp"
-#include "../doomtype.hpp"
-#include "d_items.hpp"
+#include <cstdio>  // for sscanf, NULL
+#include <cstdlib> // for atoi
+#include <string>  // for basic_string
 
-#include "fmt/core.h"
+#include "fmt/core.h" // for format
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "../deh_defs.hpp"    // for deh_section_t
+#include "../deh_io.hpp"      // for DEH_Warning
+#include "../deh_main.hpp"    // for DEH_ParseAssignment
+#include "../deh_mapping.hpp" // for DEH_MAPPING, DEH_SetMapping, DEH_Struc...
+#include "../sha1.hpp"        // for sha1_context_t
+#include "d_items.hpp"        // for weaponinfo_t, weaponinfo
+#include "doomdef.hpp"        // for ammotype_t, NUMWEAPONS
+
+struct deh_context_s;
 
 
 DEH_BEGIN_MAPPING(weapon_mapping, weaponinfo_t)

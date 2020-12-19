@@ -16,16 +16,20 @@
 // Parses INCLUDE directives in BEX files
 //
 
-#include "../m_misc.hpp"
-#include "../deh_io.hpp"
-#include "../deh_main.hpp"
 
-#include "fmt/core.h"
+#include <cstdio>  // for sscanf, NULL
+#include <cstring> // for strlen
+#include <string>  // for allocator, char_traits, string, operator+
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <string>
+#include "fmt/core.h" // for format
+
+#include "../deh_defs.hpp" // for deh_section_t
+#include "../deh_io.hpp"   // for DEH_Warning, DEH_FileName
+#include "../deh_main.hpp" // for DEH_LoadFile
+#include "../doomtype.hpp" // for DIR_SEPARATOR_S
+#include "../m_misc.hpp"   // for M_FileExists, M_DirName
+
+struct deh_context_s;
 
 
 static bool bex_nested = false;

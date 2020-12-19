@@ -17,22 +17,30 @@
 //	all OS independend parts.
 //
 
-#include "../d_loop.hpp"
-#include "../deh_main.hpp"
-#include "../m_argv.hpp"
-#include "../m_misc.hpp"
-#include "d_main.hpp"
-#include "doomdef.hpp"
-#include "doomstat.hpp"
-#include "g_game.hpp"
-#include "i_system.hpp"
-#include "i_timer.hpp"
-#include "i_video.hpp"
-#include "m_menu.hpp"
-#include "w_checksum.hpp"
-#include "w_wad.hpp"
+#include <array>   // for array
+#include <cstdlib> // for NULL
 
-#include <cstdlib>
+#include "fmt/core.h"
+
+#include "../d_loop.hpp"   // for D_InitNetGame, D_RegisterLoopCallbacks
+#include "../d_mode.hpp"   // for skill_t
+#include "../deh_main.hpp" // for DEH_Checksum
+#include "../deh_str.hpp"  // for DEH_printf, DEH_String
+#include "../m_argv.hpp"   // for M_ParmExists
+#include "../m_misc.hpp"   // for M_StringCopy
+#include "d_main.hpp"      // for D_ProcessEvents, D_DoAdvanceDemo
+#include "d_player.hpp"    // for player_t
+#include "doomdef.hpp"     // for MAXPLAYERS
+#include "doomstat.hpp"    // for timelimit, deathmatch, consoleplayer
+#include "g_game.hpp"      // for G_BuildTiccmd, G_CheckDemoStatus, G_Ticker
+#include "m_menu.hpp"      // for M_Ticker
+#include "net_defs.hpp"    // for net_gamesettings_t, net_connect_data_t
+#include "p_mobj.hpp"      // for mobj_t
+#include "tables.hpp"      // for ANG270, ANG90
+#include "w_checksum.hpp"  // for W_Checksum
+#include "w_wad.hpp"       // for W_CheckNumForName
+
+struct ticcmd_t;
 
 
 ticcmd_t *netcmds;
@@ -119,8 +127,8 @@ static void LoadGameSettings(net_gamesettings_t *settings)
 
     if (lowres_turn)
     {
-        printf("NOTE: Turning resolution is reduced; this is probably "
-               "because there is a client recording a Vanilla demo.\n");
+        fmt::print("NOTE: Turning resolution is reduced; this is probably "
+                   "because there is a client recording a Vanilla demo.\n");
     }
 
     for (int i = 0; i < MAXPLAYERS; ++i)
@@ -278,8 +286,8 @@ void D_CheckNetGame(void)
         {
             DEH_printf("Levels will end after %d minute", timelimit);
             if (timelimit > 1)
-                printf("s");
-            printf(".\n");
+                fmt::print("s");
+            fmt::print(".\n");
         }
     }
 }

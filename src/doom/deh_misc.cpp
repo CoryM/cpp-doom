@@ -15,17 +15,23 @@
 // Parses "Misc" sections in dehacked files
 //
 
-#include "../doomtype.hpp"
-#include "../deh_defs.hpp"
-#include "../deh_io.hpp"
-#include "../deh_main.hpp"
 #include "deh_misc.hpp"
+
+#include <strings.h> // for strcasecmp
+
+#include <cstdlib>  // for atoi, size_t
+#include <iterator> // for size
+#include <string>   // for basic_string
 
 #include "fmt/core.h"
 
-#include <cstdlib>
-#include <cstring>
-#include <string_view>
+#include "../deh_defs.hpp" // for deh_section_t
+#include "../deh_io.hpp"   // for DEH_Warning
+#include "../deh_main.hpp" // for DEH_ParseAssignment
+#include "../sha1.hpp"     // for SHA1_UpdateInt32, sha1_context_t
+
+struct deh_context_s;
+
 
 // Dehacked: "Initial Health"
 // This is the initial health a player has when starting anew.

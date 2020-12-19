@@ -15,16 +15,21 @@
 // Parses "Sound" sections in dehacked files
 //
 
-#include "../doomtype.hpp"
-#include "../deh_defs.hpp"
-#include "../deh_main.hpp"
-#include "../deh_mapping.hpp"
-#include "sounds.hpp"
+#include <cstdio>  // for NULL, sscanf
+#include <cstdlib> // for atoi
+#include <string>  // for basic_string
 
 #include "fmt/core.h"
 
-#include <cstdio>
-#include <cstdlib>
+#include "../deh_defs.hpp"    // for deh_section_t
+#include "../deh_io.hpp"      // for DEH_Warning
+#include "../deh_main.hpp"    // for DEH_ParseAssignment, DEH_VANILLA_NUMSFX
+#include "../deh_mapping.hpp" // for DEH_MAPPING, DEH_SetMapping, DEH_UNSUP...
+#include "../doomtype.hpp"
+#include "../i_sound.hpp" // for sfxinfo_t
+#include "sounds.hpp"     // for NUMSFX, S_sfx
+
+struct deh_context_s;
 
 
 DEH_BEGIN_MAPPING(sound_mapping, sfxinfo_t)

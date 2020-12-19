@@ -16,53 +16,72 @@
 //
 #include "g_game.hpp"
 
-#include "../../utils/lump.hpp"
-#include "../../utils/memory.hpp"
-#include "../deh_main.hpp"
-#include "../doomkeys.hpp"
-#include "am_map.hpp"
-#include "d_main.hpp"
-#include "deh_bexpars.hpp" // [crispy] bex_pars[]
-#include "deh_misc.hpp"
-#include "doomdef.hpp"
-#include "doomstat.hpp"
-#include "dstrings.hpp"
-#include "f_finale.hpp"
-#include "hu_stuff.hpp"
-#include "i_input.hpp"
-#include "i_swap.hpp"
-#include "i_system.hpp"
-#include "i_timer.hpp"
-#include "i_video.hpp"
-#include "m_argv.hpp"
-#include "m_controls.hpp"
-#include "m_menu.hpp"
-#include "m_misc.hpp"
-#include "m_random.hpp"
-#include "p_extsaveg.hpp"
-#include "p_local.hpp"
-#include "p_saveg.hpp"
-#include "p_setup.hpp"
-#include "p_tick.hpp"
-#include "r_data.hpp"
-#include "r_sky.hpp"
-#include "s_sound.hpp"
-#include "sounds.hpp"
-#include "st_stuff.hpp"
-#include "statdump.hpp"
-#include "v_trans.hpp" // [crispy] colored "always run" message
-#include "v_video.hpp"
-#include "w_wad.hpp"
-#include "wi_stuff.hpp"
-#include "z_zone.hpp"
+#include <stdio.h>   // for fclose, fopen, fprintf, stderr
+#include <strings.h> // for strcasecmp
 
-#include <algorithm>
-#include <array>
-#include <cmath>
-#include <cstdlib>
-#include <cstring>
-#include <string_view>
+#include <algorithm> // for clamp
+#include <array>     // for array
+#include <cmath>     // for abs
+#include <cstdlib>   // for NULL, free, abs, size_t
+#include <cstring>   // for memset, memcpy, strlen
+#include <iterator>  // for size
+#include <string>    // for basic_string
 
+#include "fmt/format.h" // for format
+
+#include "../../utils/lump.hpp"   // for cache_lump_num
+#include "../../utils/memory.hpp" // for zmalloc
+#include "../crispy.hpp"          // for crispy_t, crispy, CheckCrispySingl...
+#include "../d_event.hpp"         // for event_t, evtype_t, evtype_t::ev_ke...
+#include "../d_loop.hpp"          // for gametic, ticdup, D_NonVanillaPlayback
+#include "../d_ticcmd.hpp"        // for ticcmd_t
+#include "../deh_str.hpp"         // for DEH_String
+#include "../doomtype.hpp"        // for byte
+#include "../m_argv.hpp"          // for M_ParmExists, M_CheckParm, M_GetAr...
+#include "../m_controls.hpp"      // for joybspeed, key_demo_quit, key_left
+#include "../m_fixed.hpp"         // for fixed_t, FRACUNIT, FRACBITS
+#include "../m_misc.hpp"          // for M_StringCopy, M_snprintf, M_String...
+#include "../net_defs.hpp"        // for BACKUPTICS
+#include "../tables.hpp"          // for finetangent, finesine, ANG180, ANG45
+#include "../v_trans.hpp"         // for CR_GREEN, crstr
+#include "../v_video.hpp"         // for V_ScreenShot
+#include "../w_wad.hpp"           // for W_WadNameForLump, W_CheckNumForName
+#include "../z_zone.hpp"          // for Z_Free, PU, PU::STATIC, Z_CheckHeap
+
+#include "am_map.hpp"      // for AM_Responder, AM_Stop, AM_Ticker
+#include "d_englsh.hpp"    // for GAMMALVL0, GGSAVED
+#include "d_main.hpp"      // for D_AdvanceDemo, D_PageTicker
+#include "d_player.hpp"    // for player_t, wbstartstruct_t, wbplaye...
+#include "deh_bexpars.hpp" // for bex_cpars, bex_pars
+#include "deh_misc.hpp"    // for deh_initial_bullets, deh_initial_h...
+#include "doomdata.hpp"    // for mapthing_t
+#include "doomdef.hpp"     // for MAXPLAYERS, wp_fist, wp_shotgun
+#include "doomstat.hpp"    // for gamemode, gameversion, leveltime
+#include "f_finale.hpp"    // for F_StartFinale, F_Responder, F_Ticker
+#include "hu_stuff.hpp"    // for HU_Responder, HU_Ticker, HU_dequeu...
+#include "i_input.hpp"     // for novert, MAX_MOUSE_BUTTONS, mouse_y...
+#include "i_swap.hpp"      // for LONG
+#include "i_system.hpp"    // for S_Error, I_Quit
+#include "i_timer.hpp"     // for TICRATE, I_GetTime
+#include "info.hpp"        // for mobjinfo_t, mobjinfo, state_t, states
+#include "m_menu.hpp"      // for M_StartControlPanel
+#include "m_random.hpp"    // for M_ClearRandom, P_Random
+#include "p_extsaveg.hpp"  // for P_ReadExtendedSaveGameData, savewa...
+#include "p_local.hpp"     // for P_CheckPosition, P_GetNumForMap
+#include "p_mobj.hpp"      // for mobj_t, MF_SHADOW
+#include "p_saveg.hpp"     // for save_stream, P_SaveGameFile, P_Arc...
+#include "p_setup.hpp"     // for P_SetupLevel, savemaplumpinfo
+#include "p_tick.hpp"      // for P_Ticker
+#include "r_data.hpp"      // for R_TextureNumForName, R_CheckTextur...
+#include "r_defs.hpp"      // for subsector_t, sector_t
+#include "r_draw.hpp"      // for R_FillBackScreen
+#include "r_main.hpp"      // for R_PointInSubsector
+#include "r_sky.hpp"       // for skytexture, R_InitSkyMap, SKYFLATNAME
+#include "s_sound.hpp"     // for S_StartSound, S_ResumeSound, S_Pau...
+#include "sounds.hpp"      // for sfx_swtchn, sfx_telept
+#include "st_stuff.hpp"    // for ST_Responder, ST_Ticker, defdemotics
+#include "statdump.hpp"    // for StatCopy
+#include "wi_stuff.hpp"    // for WI_End, WI_Start, WI_Ticker
 
 #define SAVEGAMESIZE 0x2c000
 

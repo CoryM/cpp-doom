@@ -16,15 +16,22 @@
 // Parses [STRINGS] sections in BEX files
 //
 
-#include <cstdio>
-#include <cstring>
-#include <string_view>
+#include <strings.h> // for strcasecmp
 
-#include "../deh_defs.hpp"
-#include "../deh_io.hpp"
-#include "../deh_main.hpp"
+#include <cstdio>      // for NULL, sscanf, size_t
+#include <cstring>     // for strcmp
+#include <iterator>    // for size
+#include <string_view> // for string_view, basic_string_view
 
-#include "dstrings.hpp"
+#include "../deh_defs.hpp" // for deh_section_t
+#include "../deh_io.hpp"   // for DEH_Warning
+#include "../deh_main.hpp" // for DEH_ParseAssignment
+#include "../deh_str.hpp"  // for DEH_AddStringReplacement
+#include "d_englsh.hpp"    // for AMSTR_FOLLOWOFF, AMSTR_FOLLOWON, AMSTR_...
+#include "dstrings.hpp"    // for SAVEGAMENAME
+
+struct deh_context_s;
+
 
 struct bex_string_t {
     const std::string_view macro;

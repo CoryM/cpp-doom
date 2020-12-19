@@ -15,14 +15,19 @@
 //
 // Parses [PARS] sections in BEX files
 //
-
-#include "../deh_io.hpp"
 #include "deh_bexpars.hpp"
+
+#include <cstdio>  // for sscanf
+#include <cstring> // for strcmp
+#include <string>  // for basic_string
 
 #include "fmt/core.h"
 
-#include <cstdio>
-#include <cstring>
+#include "../deh_defs.hpp" // for deh_section_t
+#include "../deh_io.hpp"   // for DEH_Warning
+
+struct deh_context_s;
+
 
 int bex_pars[6][10] = { { 0 } };
 int bex_cpars[32]   = { 0 };
