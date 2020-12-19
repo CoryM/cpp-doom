@@ -15,19 +15,24 @@
 // DESCRIPTION:  heads-up text and input code
 //
 
-
-#include <cctype>
-
-#include "doomdef.hpp"
-
-#include "../doomkeys.hpp"
-#include "../v_video.hpp"
-#include "../i_swap.hpp"
-
 #include "hu_lib.hpp"
-#include "r_local.hpp"
-#include "r_draw.hpp"
-#include "v_trans.hpp" // [crispy] colored HUlib_drawTextLine()
+
+#include <stddef.h> // for NULL
+
+#include <cctype> // for toupper
+
+#include "../crispy.hpp"   // for crispy, crispy_t, COLOREDHUD_TEXT
+#include "../doomkeys.hpp" // for KEY_BACKSPACE, KEY_ENTER
+#include "../doomtype.hpp" // for byte
+#include "../i_swap.hpp"   // for SHORT
+#include "../i_video.hpp"  // for DELTAWIDTH, ORIGWIDTH, SCREENWIDTH
+#include "../v_video.hpp"  // for V_DrawPatchDirect, dp_translation
+#include "r_draw.hpp"      // for R_VideoErase
+#include "r_main.hpp"      // for viewwindowx, viewwindowy
+#include "r_state.hpp"     // for scaledviewwidth, viewheight
+#include "v_patch.hpp"     // for patch_t
+#include "v_trans.hpp"     // for CRMAX, cr, cr_esc
+
 
 // bool : whether the screen is always erased
 #define noterased viewwindowx
@@ -58,9 +63,8 @@ void HUlib_initTextLine(hu_textline_t *t,
     HUlib_clearTextLine(t);
 }
 
-bool
-    HUlib_addCharToTextLine(hu_textline_t *t,
-        char                               ch)
+bool HUlib_addCharToTextLine(hu_textline_t *t,
+    char                                    ch)
 {
 
     if (t->len == HU_MAXLINELENGTH)
@@ -88,7 +92,7 @@ bool HUlib_delCharFromTextLine(hu_textline_t *t)
 }
 
 void HUlib_drawTextLine(hu_textline_t *l,
-    bool                            drawcursor)
+    bool                               drawcursor)
 {
 
     int           i;
@@ -192,7 +196,7 @@ void HUlib_initSText(hu_stext_t *s,
     int                          h,
     patch_t **                   font,
     int                          startchar,
-    bool *                    on)
+    bool *                       on)
 {
 
     int i;
@@ -276,7 +280,7 @@ void HUlib_initIText(hu_itext_t *it,
     int                          y,
     patch_t **                   font,
     int                          startchar,
-    bool *                    on)
+    bool *                       on)
 {
     it->lm     = 0; // default left margin is start of text
     it->on     = on;
@@ -315,9 +319,8 @@ void HUlib_addPrefixToIText(hu_itext_t *it,
 
 // wrapper function for handling general keyed input.
 // returns true if it ate the key
-bool
-    HUlib_keyInIText(hu_itext_t *it,
-        unsigned char            ch)
+bool HUlib_keyInIText(hu_itext_t *it,
+    unsigned char                 ch)
 {
     ch = toupper(ch);
 

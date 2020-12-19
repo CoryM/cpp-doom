@@ -18,8 +18,10 @@
 #ifndef __HULIB__
 #define __HULIB__
 
-// We are referring to patches.
-#include "r_defs.hpp"
+#include "../doomkeys.hpp" // for KEY_BACKSPACE
+
+struct patch_t;
+
 
 // font stuff
 #define HU_CHARERASE KEY_BACKSPACE
@@ -121,7 +123,7 @@ void HUlib_initSText(hu_stext_t *s,
     int                          h,
     patch_t **                   font,
     int                          startchar,
-    bool *                    on);
+    bool *                       on);
 
 // add a new line
 void HUlib_addLineToSText(hu_stext_t *s);
@@ -143,7 +145,7 @@ void HUlib_initIText(hu_itext_t *it,
     int                          y,
     patch_t **                   font,
     int                          startchar,
-    bool *                    on);
+    bool *                       on);
 
 // enforces left margin
 void HUlib_delCharFromIText(hu_itext_t *it);
@@ -159,9 +161,8 @@ void HUlib_addPrefixToIText(hu_itext_t *it,
     char *                              str);
 
 // whether eaten
-bool
-    HUlib_keyInIText(hu_itext_t *it,
-        unsigned char            ch);
+bool HUlib_keyInIText(hu_itext_t *it,
+    unsigned char                 ch);
 
 void HUlib_drawIText(hu_itext_t *it);
 

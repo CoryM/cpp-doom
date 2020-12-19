@@ -16,18 +16,19 @@
 //	Mission begin melt/wipe screen special effect.
 //
 
-#include <algorithm>
-#include <cstring>
-
-#include "../z_zone.hpp"
-#include "../i_video.hpp"
-#include "../v_video.hpp"
-#include "m_random.hpp"
-
-#include "doomtype.hpp"
-
-#include "../../utils/memory.hpp"
 #include "f_wipe.hpp"
+
+#include <algorithm> // for max, min
+#include <cstring>   // for memcpy, NULL
+
+#include "../../utils/memory.hpp" // for zmalloc
+#include "../crispy.hpp"          // for crispy, crispy_t
+#include "../doomtype.hpp"        // for dpixel_t, pixel_t
+#include "../i_video.hpp"         // for I_ReadScreen, SCREENHEIGHT, SCREEN...
+#include "../v_video.hpp"         // for V_DrawBlock, V_MarkRect
+#include "../z_zone.hpp"          // for Z_Free, Z_Malloc, PU, PU::STATIC
+#include "m_random.hpp"           // for M_Random
+
 
 //
 //                       SCREEN WIPE PACKAGE

@@ -15,32 +15,50 @@
 // DESCRIPTION:  Heads-up displays
 //
 
-#include "../../utils/lump.hpp"
-#include "../deh_main.hpp"
-#include "../doomkeys.hpp"
-#include "../i_input.hpp"
-#include "../i_swap.hpp"
-#include "../i_video.hpp"
-#include "doomdef.hpp"
-#include "doomstat.hpp"
-#include "dstrings.hpp"
-#include "hu_lib.hpp"
 #include "hu_stuff.hpp"
-#include "m_argv.hpp" // [crispy] M_ParmExists()
-#include "m_controls.hpp"
-#include "m_misc.hpp"
-#include "p_setup.hpp" // maplumpinfo
-#include "r_state.hpp" // [crispy] colormaps
-#include "s_sound.hpp"
-#include "sounds.hpp"
-#include "st_stuff.hpp" // [crispy] ST_HEIGHT
-#include "v_trans.hpp"  // [crispy] colored kills/items/secret/etc. messages
-#include "v_video.hpp"  // [crispy] V_DrawPatch() et al.
-#include "w_wad.hpp"
-#include "z_zone.hpp"
 
-// Data.
-#include <cctype>
+#include <stdlib.h>  // for free, NULL, size_t
+#include <strings.h> // for strcasecmp
+
+#include <array>       // for array
+#include <cctype>      // for toupper
+#include <iterator>    // for size
+#include <string_view> // for basic_string_view
+
+#include "../../utils/lump.hpp" // for cache_lump_num
+#include "../crispy.hpp"        // for crispy, crispy_t, WIDGETS_ALWAYS
+#include "../d_event.hpp"       // for event_t, evtype_t, evtype_t::ev_keydown
+#include "../d_mode.hpp"        // for doom2, doom, exe_chex, pack_nerve
+#include "../d_ticcmd.hpp"      // for ticcmd_t
+#include "../deh_str.hpp"       // for DEH_String, DEH_HasStringReplacement
+#include "../doomkeys.hpp"      // for KEY_ENTER, KEY_ESCAPE, KEY_LALT, KEY...
+#include "../doomtype.hpp"      // for byte
+#include "../i_input.hpp"       // for I_StartTextInput, I_StopTextInput
+#include "../i_swap.hpp"        // for SHORT
+#include "d_englsh.hpp"         // for HUSTR_E1M5, HUSTR_CHATMACRO0, HUSTR_...
+#include "d_items.hpp"          // for weaponinfo_t, weaponinfo
+#include "d_player.hpp"         // for player_t, PST_LIVE
+#include "doomdef.hpp"          // for MAXPLAYERS, pw_showfps, am_noammo
+#include "doomstat.hpp"         // for gamemap, automapactive, consoleplayer
+#include "hu_lib.hpp"           // for HUlib_addCharToTextLine, HUlib_drawT...
+#include "m_argv.hpp"           // for M_ParmExists
+#include "m_controls.hpp"       // for key_message_refresh, key_multi_msg
+#include "m_fixed.hpp"          // for FRACBITS
+#include "m_misc.hpp"           // for M_snprintf, M_StringCopy, M_StringRe...
+#include "p_mobj.hpp"           // for mobj_t
+#include "p_setup.hpp"          // for maplumpinfo
+#include "r_defs.hpp"           // for laserpatch_t, laserpatch, lighttable_t
+#include "r_state.hpp"          // for colormaps
+#include "s_sound.hpp"          // for S_StartSound
+#include "sounds.hpp"           // for sfx_radio, sfx_tink
+#include "st_stuff.hpp"         // for ST_DrawDemoTimer, CRISPY_HUD, defdem...
+#include "tables.hpp"           // for ANG1
+#include "v_patch.hpp"          // for patch_t
+#include "v_trans.hpp"          // for crstr, CR_GRAY, CR_GOLD, CR_RED, CR_...
+#include "v_video.hpp"          // for V_DrawHorizLine, dp_translation, dp_...
+#include "w_wad.hpp"            // for W_WadNameForLump, W_CacheLumpName
+#include "z_zone.hpp"           // for PU, PU::STATIC
+
 
 //
 // Locally used constants, shortcuts.

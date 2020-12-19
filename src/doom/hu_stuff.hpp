@@ -18,7 +18,11 @@
 #ifndef __HU_STUFF_H__
 #define __HU_STUFF_H__
 
-#include "../d_event.hpp"
+#include "../i_timer.hpp" // for TICRATE
+#include "../i_video.hpp" // for DELTAWIDTH
+
+struct event_t;
+
 
 //
 // Globally visible constants.
