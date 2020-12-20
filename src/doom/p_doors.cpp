@@ -15,24 +15,27 @@
 // DESCRIPTION: Door animation code (opening/closing)
 //
 
+#include <stdio.h> // for NULL, fprintf, stderr
 
-#include "../z_zone.hpp"
-#include "doomdef.hpp"
-#include "../deh_main.hpp"
-#include "p_local.hpp"
-#include "i_system.hpp"
+#include "../../utils/memory.hpp" // for zmalloc
+#include "../crispy.hpp"          // for crispy, crispy_t
+#include "../deh_str.hpp"         // for DEH_String
+#include "../i_timer.hpp"         // for TICRATE
+#include "../m_fixed.hpp"         // for FRACUNIT
+#include "../z_zone.hpp"          // for PU, PU::LEVSPEC
+#include "d_englsh.hpp"           // for PD_BLUEK, PD_BLUEO, PD_REDK, PD_REDO
+#include "d_player.hpp"           // for player_t
+#include "d_think.hpp"            // for actionf_p1, think_t, thinker_s
+#include "doomdata.hpp"           // for NO_INDEX
+#include "doomdef.hpp"            // for it_bluecard, it_redcard, it_yellow...
+#include "p_local.hpp"            // for P_AddThinker, P_RemoveThinker, KEY...
+#include "p_mobj.hpp"             // for mobj_t
+#include "p_spec.hpp"             // for vldoor_t, P_FindLowestCeilingSurro...
+#include "r_defs.hpp"             // for sector_t, line_s, side_t
+#include "r_state.hpp"            // for sectors, sides
+#include "s_sound.hpp"            // for S_StartSound
+#include "sounds.hpp"             // for sfx_doropn, sfx_oof, sfx_bdcls
 
-#include "s_sound.hpp"
-
-
-// State.
-#include "doomstat.hpp"
-#include "r_state.hpp"
-
-// Data.
-#include "../../utils/memory.hpp"
-#include "dstrings.hpp"
-#include "sounds.hpp"
 
 #if 0
 //
