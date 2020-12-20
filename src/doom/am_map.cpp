@@ -180,21 +180,21 @@ struct mpoint_t {
         return { this->x - mpIn.x, this->y - mpIn.y };
     }
 
-    [[nodiscard]] auto operator*=(const fixed_t &pIn) -> mpoint_t
+    auto operator*=(const fixed_t &pIn) -> mpoint_t
     {
         this->x = FixedMul(this->x, pIn);
         this->y = FixedMul(this->y, pIn);
         return (*this);
     }
 
-    [[nodiscard]] auto operator-=(const mpoint_t &mpIn) -> mpoint_t
+    auto operator-=(const mpoint_t &mpIn) -> mpoint_t
     {
         x = x - mpIn.x;
         y = y - mpIn.y;
         return (*this);
     }
 
-    [[nodiscard]] auto operator+=(const mpoint_t &mpIn) -> mpoint_t
+    auto operator+=(const mpoint_t &mpIn) -> mpoint_t
     {
         x = x + mpIn.x;
         y = y + mpIn.y;
