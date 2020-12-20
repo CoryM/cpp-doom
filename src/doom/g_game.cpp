@@ -1634,7 +1634,7 @@ void G_DoCompleted(void)
         if (playeringame[i])
             G_PlayerFinishLevel(i); // take away cards and stuff
 
-    if (automapactive)
+    if (globals::automapactive)
         AM_Stop();
 
     if (gamemode != GameMode_t::commercial)
@@ -1842,9 +1842,9 @@ void G_DoCompleted(void)
     // will agree with Compet-n.
     wminfo.totaltimes = (totalleveltimes += (leveltime - leveltime % TICRATE));
 
-    gamestate     = GS_INTERMISSION;
-    viewactive    = false;
-    automapactive = false;
+    gamestate              = GS_INTERMISSION;
+    viewactive             = false;
+    globals::automapactive = false;
 
     // [crispy] no statdump output for ExM8
     if (gamemode == GameMode_t::commercial || gamemap != 8)
@@ -2333,14 +2333,14 @@ void G_InitNew(skill_t skill,
     for (i = 0; i < MAXPLAYERS; i++)
         players[i].playerstate = PST_REBORN;
 
-    usergame      = true; // will be set false if a demo
-    paused        = false;
-    demoplayback  = false;
-    automapactive = false;
-    viewactive    = true;
-    gameepisode   = episode;
-    gamemap       = map;
-    gameskill     = skill;
+    usergame               = true; // will be set false if a demo
+    paused                 = false;
+    demoplayback           = false;
+    globals::automapactive = false;
+    viewactive             = true;
+    gameepisode            = episode;
+    gamemap                = map;
+    gameskill              = skill;
 
     // [crispy] CPhipps - total time for all completed levels
     totalleveltimes = 0;

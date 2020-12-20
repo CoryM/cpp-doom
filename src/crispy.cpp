@@ -20,16 +20,19 @@
 
 #include "crispy.hpp"
 
+[[nodiscard]] auto crispy_t::b_extautomap() const -> bool
+{
+    return (extautomap != 0);
+}
+
 // [crispy] "regular" config variables
 //static crispy_t crispy_s = {};
-auto crispy_s = crispy_t({
-	.extautomap = 1,
-	.extsaveg = 1,
-	.hires = 1,
-	.smoothscaling = 1,
-	.soundfix = 1,
-	.vsync = 1}
-);
+auto crispy_s = crispy_t({ .extautomap = 1,
+    .extsaveg                          = 1,
+    .hires                             = 1,
+    .smoothscaling                     = 1,
+    .soundfix                          = 1,
+    .vsync                             = 1 });
 
 crispy_t *const crispy = &crispy_s;
 

@@ -709,7 +709,7 @@ void P_KillMobj(mobj_t *source,
         target->player->fixedcolormap = target->player->powers[pw_infrared] ? 1 : 0;
 
         if (target->player == &players[consoleplayer]
-            && automapactive)
+            && globals::automapactive)
         {
             // don't die in auto map,
             // switch view prior to dying

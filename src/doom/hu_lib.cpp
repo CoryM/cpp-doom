@@ -27,6 +27,7 @@
 #include "../i_swap.hpp"   // for SHORT
 #include "../i_video.hpp"  // for DELTAWIDTH, ORIGWIDTH, SCREENWIDTH
 #include "../v_video.hpp"  // for V_DrawPatchDirect, dp_translation
+#include "am_map.hpp"      // for globals::automapactive
 #include "r_draw.hpp"      // for R_VideoErase
 #include "r_main.hpp"      // for viewwindowx, viewwindowy
 #include "r_state.hpp"     // for scaledviewwidth, viewheight
@@ -37,7 +38,7 @@
 // bool : whether the screen is always erased
 #define noterased viewwindowx
 
-extern bool automapactive; // in AM_map.c
+extern bool globals::automapactive; // in AM_map.c
 
 void HUlib_init(void)
 {
@@ -161,7 +162,7 @@ void HUlib_eraseTextLine(hu_textline_t *l)
     // and the text must either need updating or refreshing
     // (because of a recent change back from the automap)
 
-    if (!automapactive && viewwindowx && (l->needsupdate || crispy->cleanscreenshot || crispy->screenshotmsg == 4))
+    if (!globals::automapactive && viewwindowx && (l->needsupdate || crispy->cleanscreenshot || crispy->screenshotmsg == 4))
     {
         lh = (SHORT(l->f[0]->height) + 1) << crispy->hires;
         // [crispy] support line breaks

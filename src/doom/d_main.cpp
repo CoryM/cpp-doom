@@ -216,7 +216,7 @@ auto D_Display() -> bool
         {
             break;
         }
-        if (automapactive && (crispy->automapoverlay == 0))
+        if (globals::automapactive && (crispy->automapoverlay == 0))
         {
             // [crispy] update automap while playing
             R_RenderPlayerView(&players[displayplayer]);
@@ -251,7 +251,7 @@ auto D_Display() -> bool
     I_UpdateNoBlit();
 
     // draw the view directly
-    if (gamestate == GS_LEVEL && (!automapactive || crispy->automapoverlay) && gametic)
+    if (gamestate == GS_LEVEL && (!globals::automapactive || crispy->automapoverlay) && gametic)
     {
         R_RenderPlayerView(&players[displayplayer]);
 
@@ -262,7 +262,7 @@ auto D_Display() -> bool
 
     // [crispy] in automap overlay mode,
     // the HUD is drawn on top of everything else
-    if (gamestate == GS_LEVEL && gametic && !(automapactive && crispy->automapoverlay))
+    if (gamestate == GS_LEVEL && gametic && !(globals::automapactive && crispy->automapoverlay))
         HU_Drawer();
 
     // clean up border stuff
@@ -279,7 +279,7 @@ auto D_Display() -> bool
     }
 
     // see if the border needs to be updated to the screen
-    if (gamestate == GS_LEVEL && (!automapactive || crispy->automapoverlay) && scaledviewwidth != SCREENWIDTH)
+    if (gamestate == GS_LEVEL && (!globals::automapactive || crispy->automapoverlay) && scaledviewwidth != SCREENWIDTH)
     {
         if (menuactive || menuactivestate || !viewactivestate)
             borderdrawcount = 3;
@@ -304,7 +304,7 @@ auto D_Display() -> bool
 
     // [crispy] in automap overlay mode,
     // draw the automap and HUD on top of everything else
-    if (automapactive && crispy->automapoverlay)
+    if (globals::automapactive && crispy->automapoverlay)
     {
         AM_Drawer();
         HU_Drawer();
@@ -324,7 +324,7 @@ auto D_Display() -> bool
     if (paused)
     {
         int y = 4;
-        if (!(automapactive && !crispy->automapoverlay))
+        if (!(globals::automapactive && !crispy->automapoverlay))
         {
             y = (viewwindowy >> crispy->hires) + 4;
         }

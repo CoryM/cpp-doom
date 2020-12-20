@@ -1896,12 +1896,12 @@ void ST_diffDraw(void)
 void ST_Drawer(bool fullscreen, bool refresh)
 {
 
-    st_statusbaron = (!fullscreen) || (automapactive && !crispy->automapoverlay && !crispy->widescreen);
+    st_statusbaron = (!fullscreen) || (globals::automapactive && !crispy->automapoverlay && !crispy->widescreen);
     // [crispy] immediately redraw status bar after help screens have been shown
     st_firsttime = st_firsttime || refresh || inhelpscreens;
 
     // [crispy] distinguish classic status bar with background and player face from Crispy HUD
-    st_crispyhud        = screenblocks >= CRISPY_HUD && (!automapactive || crispy->automapoverlay);
+    st_crispyhud        = screenblocks >= CRISPY_HUD && (!globals::automapactive || crispy->automapoverlay);
     st_classicstatusbar = st_statusbaron && !st_crispyhud && !crispy->widescreen;
     st_statusbarface    = st_classicstatusbar || (st_crispyhud && screenblocks == CRISPY_HUD);
 

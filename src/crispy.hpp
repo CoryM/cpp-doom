@@ -87,6 +87,7 @@ struct crispy_t {
     const char *platform   = nullptr;
 
     void (*post_rendering_hook)(void) = nullptr;
+    [[nodiscard]] auto b_extautomap() const -> bool;
 };
 
 extern crispy_t *const crispy;

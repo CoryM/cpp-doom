@@ -35,11 +35,12 @@
 #include "../doomtype.hpp"      // for byte
 #include "../i_input.hpp"       // for I_StartTextInput, I_StopTextInput
 #include "../i_swap.hpp"        // for SHORT
+#include "am_map.hpp"           // for globals::automapactive
 #include "d_englsh.hpp"         // for HUSTR_E1M5, HUSTR_CHATMACRO0, HUSTR_...
 #include "d_items.hpp"          // for weaponinfo_t, weaponinfo
 #include "d_player.hpp"         // for player_t, PST_LIVE
 #include "doomdef.hpp"          // for MAXPLAYERS, pw_showfps, am_noammo
-#include "doomstat.hpp"         // for gamemap, automapactive, consoleplayer
+#include "doomstat.hpp"         // for gamemap, consoleplayer
 #include "hu_lib.hpp"           // for HUlib_addCharToTextLine, HUlib_drawT...
 #include "m_argv.hpp"           // for M_ParmExists
 #include "m_controls.hpp"       // for key_message_refresh, key_multi_msg
@@ -785,7 +786,7 @@ static auto HU_DrawCrosshair() -> void
     static patch_t *patch;
     extern byte *   R_LaserspotColor(void);
 
-    if (weaponinfo[plr->readyweapon].ammo == am_noammo || plr->playerstate != PST_LIVE || automapactive || menuactive || paused || secret_on)
+    if (weaponinfo[plr->readyweapon].ammo == am_noammo || plr->playerstate != PST_LIVE || globals::automapactive || menuactive || paused || secret_on)
     {
         return;
     }
@@ -816,7 +817,7 @@ auto HU_Drawer() -> void
     }
 
     // [crispy] translucent messages for translucent HUD
-    if (screenblocks > CRISPY_HUD + 1 && (!automapactive || crispy->automapoverlay))
+    if (screenblocks > CRISPY_HUD + 1 && (!globals::automapactive || crispy->automapoverlay))
     {
         dp_translucent = true;
     }
@@ -843,15 +844,15 @@ auto HU_Drawer() -> void
         dp_translation = cr[CR_GOLD];
     }
 
-    if (automapactive)
+    if (globals::automapactive)
     {
         HUlib_drawTextLine(&w_title, false);
     }
 
-    if (crispy->automapstats == WIDGETS_ALWAYS || (automapactive && crispy->automapstats == WIDGETS_AUTOMAP))
+    if (crispy->automapstats == WIDGETS_ALWAYS || (globals::automapactive && crispy->automapstats == WIDGETS_AUTOMAP))
     {
         // [crispy] move obtrusive line out of player view
-        if (automapactive && (!crispy->automapoverlay || screenblocks < CRISPY_HUD - 1) && !crispy->widescreen)
+        if (globals::automapactive && (!crispy->automapoverlay || screenblocks < CRISPY_HUD - 1) && !crispy->widescreen)
         {
             HUlib_drawTextLine(&w_map, false);
         }
@@ -861,12 +862,12 @@ auto HU_Drawer() -> void
         HUlib_drawTextLine(&w_scrts, false);
     }
 
-    if (crispy->leveltime == WIDGETS_ALWAYS || (automapactive && crispy->leveltime == WIDGETS_AUTOMAP))
+    if (crispy->leveltime == WIDGETS_ALWAYS || (globals::automapactive && crispy->leveltime == WIDGETS_AUTOMAP))
     {
         HUlib_drawTextLine(&w_ltime, false);
     }
 
-    if (crispy->playercoords == WIDGETS_ALWAYS || (automapactive && crispy->playercoords == WIDGETS_AUTOMAP))
+    if (crispy->playercoords == WIDGETS_ALWAYS || (globals::automapactive && crispy->playercoords == WIDGETS_AUTOMAP))
     {
         HUlib_drawTextLine(&w_coordx, false);
         HUlib_drawTextLine(&w_coordy, false);
@@ -1013,7 +1014,7 @@ auto HU_Ticker() -> void
         }
     }
 
-    if (automapactive)
+    if (globals::automapactive)
     {
         // [crispy] move map title to the bottom
         if ((crispy->automapoverlay && screenblocks >= CRISPY_HUD - 1) || crispy->widescreen)
@@ -1022,7 +1023,7 @@ auto HU_Ticker() -> void
             w_title.y = HU_TITLEY;
     }
 
-    if (crispy->automapstats == WIDGETS_ALWAYS || (automapactive && crispy->automapstats == WIDGETS_AUTOMAP))
+    if (crispy->automapstats == WIDGETS_ALWAYS || (globals::automapactive && crispy->automapstats == WIDGETS_AUTOMAP))
     {
         // [crispy] count spawned monsters
         if (extrakills)
@@ -1051,7 +1052,7 @@ auto HU_Ticker() -> void
             HUlib_addCharToTextLine(&w_scrts, *(s++));
     }
 
-    if (crispy->leveltime == WIDGETS_ALWAYS || (automapactive && crispy->leveltime == WIDGETS_AUTOMAP))
+    if (crispy->leveltime == WIDGETS_ALWAYS || (globals::automapactive && crispy->leveltime == WIDGETS_AUTOMAP))
     {
         const int time = leveltime / TICRATE;
 
@@ -1067,7 +1068,7 @@ auto HU_Ticker() -> void
             HUlib_addCharToTextLine(&w_ltime, *(s++));
     }
 
-    if (crispy->playercoords == WIDGETS_ALWAYS || (automapactive && crispy->playercoords == WIDGETS_AUTOMAP))
+    if (crispy->playercoords == WIDGETS_ALWAYS || (globals::automapactive && crispy->playercoords == WIDGETS_AUTOMAP))
     {
         M_snprintf(str, sizeof(str), "%sX %s%-5d", cr_stat2, crstr[CR_GRAY],
             (plr->mo->x) >> FRACBITS);

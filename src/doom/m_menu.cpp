@@ -52,6 +52,7 @@
 #include "../v_video.hpp"       // for V_DrawPatchDirect, dp_translation
 #include "../w_wad.hpp"         // for W_WadNameForLump, W_CheckNumForName
 #include "../z_zone.hpp"        // for PU, PU::CACHE
+#include "am_map.hpp"           // for globals::automapactive
 #include "d_englsh.hpp"         // for EMPTYSTRING, PRESSKEY, PRESSYN, DETA...
 #include "d_main.hpp"           // for D_StartTitle, gameaction
 #include "d_player.hpp"         // for player_t
@@ -2469,7 +2470,7 @@ bool M_Responder(event_t *ev)
     {
         if (key == key_menu_decscreen) // Screen size down
         {
-            if (automapactive || chat_on)
+            if (globals::automapactive || chat_on)
                 return false;
             M_SizeDisplay(0);
             S_StartSound(NULL, sfx_stnmov);
@@ -2477,7 +2478,7 @@ bool M_Responder(event_t *ev)
         }
         else if (key == key_menu_incscreen) // Screen size up
         {
-            if (automapactive || chat_on)
+            if (globals::automapactive || chat_on)
                 return false;
             M_SizeDisplay(1);
             S_StartSound(NULL, sfx_stnmov);

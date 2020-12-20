@@ -18,14 +18,13 @@
 
 #include "am_map.hpp"
 
-#include <stdint.h> // for int64_t, uint64_t
-#include <string.h> // for memset
-
 #include <algorithm> // for min, clamp, max
 #include <array>     // for array, array<>::value_type
 #include <bitset>    // for bitset, operator&, operator|
 #include <cmath>     // for cos, sin
+#include <cstdint>   // for int64_t, uint64_t
 #include <cstdio>    // for size_t, stderr
+#include <cstring>   // for memset
 #include <limits>    // for numeric_limits
 #include <numbers>   // for pi
 #include <span>      // for span
@@ -62,6 +61,13 @@
 struct patch_t;
 
 extern bool inhelpscreens; // [crispy]
+
+namespace globals {
+
+bool       automapactive = false;
+cheatseq_t cheat_amap    = CHEAT("iddt", 0);
+
+} // end of namespace globals
 
 
 // For use if I do walls with outsides/insides
@@ -104,17 +110,17 @@ constexpr int XHAIRCOLORS              = GRAYS;
 
 constexpr auto CDWALLCOLORS = []() {
     constexpr auto crispy_orange = 215;
-    return (crispy->extautomap ? crispy_orange : YELLOWS); // [crispy] orange
+    return (crispy->b_extautomap() ? crispy_orange : YELLOWS); // [crispy] orange
 };
 
 constexpr auto FDWALLCOLORS = []() {
     constexpr auto crispy_brown = 55;
-    return (crispy->extautomap ? crispy_brown : BROWNS); // [crispy] lt brown
+    return (crispy->b_extautomap() ? crispy_brown : BROWNS); // [crispy] lt brown
 };
 
 constexpr auto WALLCOLORS = []() {
     constexpr auto crispy_red = 23;
-    return (crispy->extautomap ? crispy_red : REDS); // [crispy] red-brown
+    return (crispy->b_extautomap() ? crispy_red : REDS); // [crispy] red-brown
 };
 
 // drawing stuff
@@ -149,46 +155,46 @@ struct mpoint_t {
     int64_t x = 0;
     int64_t y = 0;
 
-    auto half() const -> mpoint_t
+    [[nodiscard]] auto half() const -> mpoint_t
     {
         return { x >> 1, y >> 1 };
     }
 
-    auto operator*(const fixed_t &pIn) const -> mpoint_t
+    [[nodiscard]] auto operator*(const fixed_t &pIn) const -> mpoint_t
     {
         return { FixedMul(this->x, pIn), FixedMul(this->y, pIn) };
     }
 
-    auto operator/(const fixed_t &pIn) const -> mpoint_t
+    [[nodiscard]] auto operator/(const fixed_t &pIn) const -> mpoint_t
     {
         return { FixedDiv(this->x, pIn), FixedDiv(this->y, pIn) };
     }
 
-    auto operator+(const mpoint_t &mpIn) const -> mpoint_t
+    [[nodiscard]] auto operator+(const mpoint_t &mpIn) const -> mpoint_t
     {
         return { this->x + mpIn.x, this->y + mpIn.y };
     }
 
-    auto operator-(const mpoint_t &mpIn) const -> mpoint_t
+    [[nodiscard]] auto operator-(const mpoint_t &mpIn) const -> mpoint_t
     {
         return { this->x - mpIn.x, this->y - mpIn.y };
     }
 
-    auto operator*=(const fixed_t &pIn) -> mpoint_t
+    [[nodiscard]] auto operator*=(const fixed_t &pIn) -> mpoint_t
     {
         this->x = FixedMul(this->x, pIn);
         this->y = FixedMul(this->y, pIn);
         return (*this);
     }
 
-    auto operator-=(const mpoint_t &mpIn) -> mpoint_t
+    [[nodiscard]] auto operator-=(const mpoint_t &mpIn) -> mpoint_t
     {
         x = x - mpIn.x;
         y = y - mpIn.y;
         return (*this);
     }
 
-    auto operator+=(const mpoint_t &mpIn) -> mpoint_t
+    [[nodiscard]] auto operator+=(const mpoint_t &mpIn) -> mpoint_t
     {
         x = x + mpIn.x;
         y = y + mpIn.y;
@@ -213,15 +219,6 @@ enum keycolor_t
     yellow_key,
     blue_key
 };
-
-
-bool automapactive = false;
-
-namespace globals {
-
-cheatseq_t cheat_amap = CHEAT("iddt", 0);
-
-} // end of namespace globals
 
 class AM_MAP {
 public:
@@ -546,7 +543,7 @@ public:
     {
         static event_t st_notify = { evtype_t::ev_keyup, globals::AM_MSGENTERED, 0, 0 };
 
-        automapactive = true;
+        globals::automapactive = true;
         //  fb = I_VideoBuffer; // [crispy] simplify
 
         f_oldloc.x = std::numeric_limits<int>::max();
@@ -695,7 +692,7 @@ public:
     auto AM_DoorColor(const int type) -> keycolor_t
     {
         keycolor_t oc = no_key;
-        if (crispy->extautomap)
+        if (crispy->b_extautomap())
         {
             switch (type)
             {
@@ -821,7 +818,7 @@ auto AM_Stop() -> void
     static event_t st_notify = { evtype_t::ev_keyup, globals::AM_MSGEXITED, 0 };
 
     locals.AM_unloadPics();
-    automapactive = false;
+    globals::automapactive = false;
     ST_Responder(&st_notify);
     locals.stopped = true;
 }
@@ -860,7 +857,7 @@ auto AM_Responder(event_t *ev) -> bool
         constexpr unsigned int waitTime = 5;
         joywait                         = I_GetTime() + waitTime;
 
-        if (!automapactive)
+        if (!globals::automapactive)
         {
             AM_Start();
             viewactive = false;
@@ -875,7 +872,7 @@ auto AM_Responder(event_t *ev) -> bool
         return true;
     }
 
-    if (!automapactive)
+    if (!globals::automapactive)
     {
         if (ev->type == evtype_t::ev_keydown && ev->data1 == key_map_toggle)
         {
@@ -1113,7 +1110,7 @@ auto AM_Responder(event_t *ev) -> bool
 //
 auto AM_Ticker() -> void
 {
-    if (!automapactive)
+    if (!globals::automapactive)
         return;
 
     locals.amclock++;
@@ -1479,7 +1476,7 @@ auto AM_drawWalls() -> void
             }
             // [crispy] draw exit lines in white (no Boom exit lines 197, 198)
             // NB: Choco does not have this at all, Boom/PrBoom+ have this disabled by default
-            if (crispy->extautomap && (lines[i].special == 11 || lines[i].special == 51 || lines[i].special == 52 || lines[i].special == 124))
+            if (crispy->b_extautomap() && (lines[i].special == 11 || lines[i].special == 51 || lines[i].special == 52 || lines[i].special == 124))
             {
                 AM_drawMline(&l, WHITE);
                 continue;
@@ -1487,11 +1484,11 @@ auto AM_drawWalls() -> void
             if (!lines[i].backsector)
             {
                 // [crispy] draw 1S secret sector boundaries in purple
-                if (crispy->extautomap && locals.cheating && (lines[i].frontsector->special == 9))
+                if (crispy->b_extautomap() && locals.cheating && (lines[i].frontsector->special == 9))
                     AM_drawMline(&l, SECRETWALLCOLORS);
 #ifdef CRISPY_HIGHLIGHT_REVEALED_SECRETS
                 // [crispy] draw revealed secret sector boundaries in green
-                else if (crispy->extautomap && crispy->secretmessage && (lines[i].frontsector->oldspecial == 9))
+                else if (crispy->b_extautomap() && crispy->secretmessage && (lines[i].frontsector->oldspecial == 9))
                     AM_drawMline(&l, REVEALEDSECRETWALLCOLORS);
 #endif
                 else
@@ -1502,9 +1499,9 @@ auto AM_drawWalls() -> void
                 // [crispy] draw teleporters in green
                 // and also WR teleporters 97 if they are not secret
                 // (no monsters-only teleporters 125, 126; no Boom teleporters)
-                if (lines[i].special == 39 || (crispy->extautomap && !(lines[i].flags & ML_SECRET) && lines[i].special == 97))
+                if (lines[i].special == 39 || (crispy->b_extautomap() && !(lines[i].flags & ML_SECRET) && lines[i].special == 97))
                 { // teleporters
-                    AM_drawMline(&l, crispy->extautomap ? (GREENS + GREENRANGE / 2) : (WALLCOLORS() + WALLRANGE / 2));
+                    AM_drawMline(&l, crispy->b_extautomap() ? (GREENS + GREENRANGE / 2) : (WALLCOLORS() + WALLRANGE / 2));
                 }
                 else if (lines[i].flags & ML_SECRET) // secret door
                 {
@@ -1521,13 +1518,13 @@ auto AM_drawWalls() -> void
                 }
 #if defined CRISPY_HIGHLIGHT_REVEALED_SECRETS
                 // [crispy] draw revealed secret sector boundaries in green
-                else if (crispy->extautomap && crispy->secretmessage && (lines[i].backsector->oldspecial == 9 || lines[i].frontsector->oldspecial == 9))
+                else if (crispy->b_extautomap() && crispy->secretmessage && (lines[i].backsector->oldspecial == 9 || lines[i].frontsector->oldspecial == 9))
                 {
                     AM_drawMline(&l, REVEALEDSECRETWALLCOLORS);
                 }
 #endif
                 // [crispy] draw 2S secret sector boundaries in purple
-                else if (crispy->extautomap && locals.cheating && (lines[i].backsector->special == 9 || lines[i].frontsector->special == 9))
+                else if (crispy->b_extautomap() && locals.cheating && (lines[i].backsector->special == 9 || lines[i].frontsector->special == 9))
                 {
                     AM_drawMline(&l, SECRETWALLCOLORS);
                 }
@@ -1674,7 +1671,7 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
                 locals.AM_rotatePoint(pt);
             }
 
-            if (crispy->extautomap != 0)
+            if (crispy->b_extautomap())
             {
                 keycolor_t key;
                 // [crispy] skull keys and key cards
@@ -1798,7 +1795,7 @@ void AM_drawCrosshair(int color)
 
 auto AM_Drawer() -> void
 {
-    if (!automapactive) { return; }
+    if (!globals::automapactive) { return; }
 
     if (!crispy->automapoverlay)
     {

@@ -16,10 +16,18 @@
 //  AutoMap module.
 //
 
-#ifndef __AMMAP_H__
-#define __AMMAP_H__
+#ifndef DOOM_AM_MAP_HPP
+#define DOOM_AM_MAP_HPP
 
 #include "../m_cheat.hpp" // for cheatseq_t
+
+namespace globals {
+
+extern bool       automapactive;
+extern cheatseq_t cheat_amap;
+
+} // end of namespace globals
+
 struct event_t;
 
 // Called by main loop.
@@ -45,4 +53,4 @@ constexpr int AM_MSGEXITED  = 0x616D7800; // amx?
 extern cheatseq_t cheat_amap;
 }
 
-#endif
+#endif // DOOM_AM_MAP_HPP

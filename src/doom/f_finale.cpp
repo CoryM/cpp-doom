@@ -35,6 +35,7 @@
 #include "../v_video.hpp"           // for V_DrawPatch, V_DrawPatchFullScreen
 #include "../w_wad.hpp"             // for W_CheckNumForName
 #include "../z_zone.hpp"            // for PU, PU::CACHE, PU::LEVEL
+#include "am_map.hpp"               // for globals::automapactive
 #include "d_englsh.hpp"             // for C1TEXT, C2TEXT, C3TEXT, C4TEXT
 #include "d_main.hpp"               // for gameaction
 #include "d_player.hpp"             // for player_t
@@ -135,10 +136,10 @@ void F_StartFinale(void)
 {
     size_t i;
 
-    gameaction    = ga_nothing;
-    gamestate     = GS_FINALE;
-    viewactive    = false;
-    automapactive = false;
+    gameaction             = ga_nothing;
+    gamestate              = GS_FINALE;
+    viewactive             = false;
+    globals::automapactive = false;
 
     if (logical_gamemission == doom)
     {
