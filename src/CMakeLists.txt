@@ -197,3 +197,25 @@ target_link_libraries("${PROGRAM_PREFIX}test" test doom Catch2::Catch2 ${EXTRA_L
 #if(FoundIPO)
 #set_property(TARGET "${PROGRAM_PREFIX}test" PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
 #endif()
+
+# ------------------- cpp-build -------------------
+
+set(TEST_FILES
+    build-info/b_main.cpp
+    build-info/b_main.hpp
+)
+
+add_executable("${PROGRAM_PREFIX}build" ${TEST_FILES})
+target_include_directories("${PROGRAM_PREFIX}build" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
+
+target_link_libraries(
+    "${PROGRAM_PREFIX}build"
+    ${EXTRA_LIBS}
+    project_options
+)
+
+if(FoundIPO)
+  set_property(TARGET "${PROGRAM_PREFIX}doom" PROPERTY INTERPROCEDURAL_OPTIMIZATION True)
+endif()
+
+#----------------------
