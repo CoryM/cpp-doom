@@ -202,7 +202,7 @@ target_link_libraries("${PROGRAM_PREFIX}test" test doom Catch2::Catch2 ${EXTRA_L
 
 set(TEST_FILES
     build-info/b_main.cpp
-    build-info/b_main.hpp
+    build-info/compiler_feature.hpp
 )
 
 add_executable("${PROGRAM_PREFIX}build" ${TEST_FILES})
