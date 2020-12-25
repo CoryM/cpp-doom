@@ -200,12 +200,29 @@ target_link_libraries("${PROGRAM_PREFIX}test" test doom Catch2::Catch2 ${EXTRA_L
 
 # ------------------- cpp-build -------------------
 
-set(TEST_FILES
+set(BUILD_INFO_FILES
     build-info/b_main.cpp
     build-info/compiler_feature.hpp
+    build-info/compiler_feature.cpp
+    build-info/config.hpp
+    build-info/config.cpp
+    build-info/cxx.hpp
+    build-info/cxx.cpp
+    build-info/cxx-attributes.cpp
+    build-info/cxx-attributes.hpp
+    build-info/cxx11.hpp
+    build-info/cxx11.cpp
+    build-info/cxx14.hpp
+    build-info/cxx14.cpp
+    build-info/cxx17.hpp
+    build-info/cxx17.cpp
+    build-info/cxx20.hpp
+    build-info/cxx20.cpp
+    build-info/cxx23.hpp
+    build-info/cxx23.cpp
 )
 
-add_executable("${PROGRAM_PREFIX}build" ${TEST_FILES})
+add_executable("${PROGRAM_PREFIX}build" ${BUILD_INFO_FILES})
 target_include_directories("${PROGRAM_PREFIX}build" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
 
 target_link_libraries(
