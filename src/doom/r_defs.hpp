@@ -31,6 +31,7 @@
 // We rely on the thinker data struct
 // to handle sound origins in sectors.
 #include "d_think.hpp"
+#include "m_bbox.hpp"
 // SECTORS do store MObjs anyway.
 #include "p_mobj.hpp"
 
@@ -70,7 +71,7 @@ typedef struct
     // using the law of cosines in p_setup.c:P_RemoveSlimeTrails();
     fixed_t r_x;
     fixed_t r_y;
-    bool moved;
+    bool    moved;
 } vertex_t;
 
 
@@ -83,70 +84,68 @@ struct line_s;
 //  moving objects (doppler), because
 //  position is prolly just buffered, not
 //  updated.
-struct degenmobj_t
-{
+struct degenmobj_t {
     thinker_s thinker = {}; // not used for anything
-    fixed_t   x = 0;
-    fixed_t   y = 0;
-    fixed_t   z = 0;
+    fixed_t   x       = 0;
+    fixed_t   y       = 0;
+    fixed_t   z       = 0;
 };
 
 //
 // The SECTORS record, at runtime.
 // Stores things/mobjs.
 //
-struct sector_t
-{
-    fixed_t floorheight      = 0;
-    fixed_t ceilingheight    = 0;
-    short   floorpic         = 0;
-    short   ceilingpic       = 0;
-    short   lightlevel       = 0;
-    short   special          = 0;
-    short   tag              = 0;
+struct sector_t {
+    fixed_t floorheight   = 0;
+    fixed_t ceilingheight = 0;
+    short   floorpic      = 0;
+    short   ceilingpic    = 0;
+    short   lightlevel    = 0;
+    short   special       = 0;
+    short   tag           = 0;
 
     // 0 = untraversed, 1,2 = sndlines -1
-    int soundtraversed       = 0;
+    int soundtraversed = 0;
 
     // thing that made a sound (or null)
-    mobj_t *soundtarget      = nullptr;
+    mobj_t *soundtarget = nullptr;
 
     // mapblock bounding box for height changes
-    int blockbox[4]          = {};
+    BoundingBox blockbox;
 
     // origin for any sounds played by the sector
-    degenmobj_t soundorg    = {};
+    degenmobj_t soundorg = {};
 
     // if == validcount, already checked
-    int validcount           = 0;
+    int validcount = 0;
 
     // list of mobjs in sector
-    mobj_t *thinglist        = nullptr;
+    mobj_t *thinglist = nullptr;
 
     // thinker_s for reversable actions
-    void *specialdata        = nullptr;
-   
-    int         linecount    = 0;
-    struct line_s **lines    = nullptr; // [linecount] size
+    void *specialdata = nullptr;
+
+    int             linecount = 0;
+    struct line_s **lines     = nullptr; // [linecount] size
 
     // [crispy] WiggleFix: [kb] for R_FixWiggle()
-    int cachedheight         = 0;
-    int scaleindex           = 0;
+    int cachedheight = 0;
+    int scaleindex   = 0;
 
     // [crispy] add support for MBF sky tranfers
-    int sky                  = 0;
+    int sky = 0;
 
     // [AM] Previous position of floor and ceiling before
     //      think.  Used to interpolate between positions.
     fixed_t oldfloorheight   = 0;
-    fixed_t oldceilingheight = 0 ;
+    fixed_t oldceilingheight = 0;
 
     // [AM] Gametic when the old positions were recorded.
     //      Has a dual purpose; it prevents movement thinkers
     //      from storing old positions twice in a tic, and
     //      prevents the renderer from attempting to interpolate
     //      if old values were not updated recently.
-    int oldgametic           = 0;
+    int oldgametic = 0;
 
     // [AM] Interpolated floor and ceiling height.
     //      Calculated once per tic and used inside
@@ -155,7 +154,7 @@ struct sector_t
     fixed_t interpceilingheight = 0;
 
     // [crispy] revealed secrets
-    short oldspecial         = 0;
+    short oldspecial = 0;
 };
 
 
@@ -218,7 +217,8 @@ struct line_s {
 
     // Neat. Another bounding box, for the extent
     //  of the LineDef.
-    fixed_t bbox[4];
+    //fixed_t bbox[4];
+    BoundingBox bbox;
 
     // To aid move clipping.
     slopetype_t slopetype;
@@ -389,7 +389,6 @@ struct vissprite_t {
     // [crispy] color translation table for blood colored by monster class
     byte *translation;
     pixel_t (*blendfunc)(const pixel_t fg, const pixel_t bg);
-
 };
 
 

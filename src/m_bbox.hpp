@@ -21,8 +21,23 @@
 #define __M_BBOX__
 
 #include <climits>
+#include <limits>
 
 #include "m_fixed.hpp"
+
+struct BoundingBox {
+    fixed_t Top    = std::numeric_limits<fixed_t>::min();
+    fixed_t Bottom = std::numeric_limits<fixed_t>::max();
+    fixed_t Left   = std::numeric_limits<fixed_t>::max();
+    fixed_t Right  = std::numeric_limits<fixed_t>::min();
+
+    BoundingBox() = default;
+    BoundingBox(fixed_t x, fixed_t y);
+    ~BoundingBox() = default;
+
+    auto ClearBox() -> void;
+    auto AddToBox(fixed_t x, fixed_t y) -> void;
+};
 
 
 // Bounding box coordinate storage.

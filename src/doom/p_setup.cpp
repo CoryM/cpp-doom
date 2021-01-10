@@ -595,29 +595,29 @@ void P_LoadLineDefs(int lump)
 
         if (v1->x < v2->x)
         {
-            ld->bbox[BOXLEFT]  = v1->x;
-            ld->bbox[BOXRIGHT] = v2->x;
+            ld->bbox.Left  = v1->x;
+            ld->bbox.Right = v2->x;
         }
         else
         {
-            ld->bbox[BOXLEFT]  = v2->x;
-            ld->bbox[BOXRIGHT] = v1->x;
+            ld->bbox.Left  = v2->x;
+            ld->bbox.Right = v1->x;
         }
 
         if (v1->y < v2->y)
         {
-            ld->bbox[BOXBOTTOM] = v1->y;
-            ld->bbox[BOXTOP]    = v2->y;
+            ld->bbox.Bottom = v1->y;
+            ld->bbox.Top    = v2->y;
         }
         else
         {
-            ld->bbox[BOXBOTTOM] = v2->y;
-            ld->bbox[BOXTOP]    = v1->y;
+            ld->bbox.Bottom = v2->y;
+            ld->bbox.Top    = v1->y;
         }
 
         // [crispy] calculate sound origin of line to be its midpoint
-        ld->soundorg.x = ld->bbox[BOXLEFT] / 2 + ld->bbox[BOXRIGHT] / 2;
-        ld->soundorg.y = ld->bbox[BOXTOP] / 2 + ld->bbox[BOXBOTTOM] / 2;
+        ld->soundorg.x = ld->bbox.Left / 2 + ld->bbox.Right / 2;
+        ld->soundorg.y = ld->bbox.Top / 2 + ld->bbox.Bottom / 2;
 
         ld->sidenum[0] = SHORT(mld->sidenum[0]);
         ld->sidenum[1] = SHORT(mld->sidenum[1]);
@@ -763,8 +763,9 @@ void P_GroupLines(void)
     sector_t *   sector;
     subsector_t *ss;
     seg_t *      seg;
-    fixed_t      bbox[4];
-    int          block;
+    //fixed_t      bbox[4];
+    BoundingBox bbox;
+    int         block;
 
     // look up sector number for each subsector
     ss = subsectors;
@@ -833,36 +834,36 @@ void P_GroupLines(void)
     sector = sectors;
     for (i = 0; i < numsectors; i++, sector++)
     {
-        M_ClearBox(bbox);
+        bbox.ClearBox();
 
         for (j = 0; j < sector->linecount; j++)
         {
             li = sector->lines[j];
 
-            M_AddToBox(bbox, li->v1->x, li->v1->y);
-            M_AddToBox(bbox, li->v2->x, li->v2->y);
+            bbox.AddToBox(li->v1->x, li->v1->y);
+            bbox.AddToBox(li->v2->x, li->v2->y);
         }
 
         // set the degenmobj_t to the middle of the bounding box
-        sector->soundorg.x = (bbox[BOXRIGHT] + bbox[BOXLEFT]) / 2;
-        sector->soundorg.y = (bbox[BOXTOP] + bbox[BOXBOTTOM]) / 2;
+        sector->soundorg.x = (bbox.Right + bbox.Left) / 2;
+        sector->soundorg.y = (bbox.Top + bbox.Bottom) / 2;
 
         // adjust bounding box to map blocks
-        block                    = (bbox[BOXTOP] - bmaporgy + MAXRADIUS) >> MAPBLOCKSHIFT;
-        block                    = block >= bmapheight ? bmapheight - 1 : block;
-        sector->blockbox[BOXTOP] = block;
+        block                = (bbox.Top - bmaporgy + MAXRADIUS) >> MAPBLOCKSHIFT;
+        block                = block >= bmapheight ? bmapheight - 1 : block;
+        sector->blockbox.Top = block;
 
-        block                       = (bbox[BOXBOTTOM] - bmaporgy - MAXRADIUS) >> MAPBLOCKSHIFT;
-        block                       = block < 0 ? 0 : block;
-        sector->blockbox[BOXBOTTOM] = block;
+        block                   = (bbox.Bottom - bmaporgy - MAXRADIUS) >> MAPBLOCKSHIFT;
+        block                   = block < 0 ? 0 : block;
+        sector->blockbox.Bottom = block;
 
-        block                      = (bbox[BOXRIGHT] - bmaporgx + MAXRADIUS) >> MAPBLOCKSHIFT;
-        block                      = block >= bmapwidth ? bmapwidth - 1 : block;
-        sector->blockbox[BOXRIGHT] = block;
+        block                  = (bbox.Right - bmaporgx + MAXRADIUS) >> MAPBLOCKSHIFT;
+        block                  = block >= bmapwidth ? bmapwidth - 1 : block;
+        sector->blockbox.Right = block;
 
-        block                     = (bbox[BOXLEFT] - bmaporgx - MAXRADIUS) >> MAPBLOCKSHIFT;
-        block                     = block < 0 ? 0 : block;
-        sector->blockbox[BOXLEFT] = block;
+        block                 = (bbox.Left - bmaporgx - MAXRADIUS) >> MAPBLOCKSHIFT;
+        block                 = block < 0 ? 0 : block;
+        sector->blockbox.Left = block;
     }
 }
 

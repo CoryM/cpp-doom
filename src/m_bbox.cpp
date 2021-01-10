@@ -22,6 +22,33 @@
 
 #include "m_bbox.hpp"
 
+#include <algorithm>
+#include <limits>
+
+BoundingBox::BoundingBox(const fixed_t x, const fixed_t y)
+    : Top(y)
+    , Bottom(y)
+    , Left(x)
+    , Right(x)
+{
+}
+
+auto BoundingBox::ClearBox() -> void
+{
+    Top    = std::numeric_limits<fixed_t>::min();
+    Right  = std::numeric_limits<fixed_t>::min();
+    Bottom = std::numeric_limits<fixed_t>::max();
+    Left   = std::numeric_limits<fixed_t>::max();
+}
+
+auto BoundingBox::AddToBox(fixed_t x, fixed_t y) -> void
+{
+    Left   = std::min(Left, x);
+    Right  = std::max(Right, x);
+    Bottom = std::min(Bottom, y);
+    Top    = std::max(Top, y);
+}
+
 
 void M_ClearBox(fixed_t *box)
 {

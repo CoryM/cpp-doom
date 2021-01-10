@@ -554,28 +554,28 @@ void P_LoadLineDefs_Hexen(int lump)
 
         if (v1->x < v2->x)
         {
-            ld->bbox[BOXLEFT]  = v1->x;
-            ld->bbox[BOXRIGHT] = v2->x;
+            ld->bbox.Left  = v1->x;
+            ld->bbox.Right = v2->x;
         }
         else
         {
-            ld->bbox[BOXLEFT]  = v2->x;
-            ld->bbox[BOXRIGHT] = v1->x;
+            ld->bbox.Left  = v2->x;
+            ld->bbox.Right = v1->x;
         }
         if (v1->y < v2->y)
         {
-            ld->bbox[BOXBOTTOM] = v1->y;
-            ld->bbox[BOXTOP]    = v2->y;
+            ld->bbox.Bottom = v1->y;
+            ld->bbox.Top    = v2->y;
         }
         else
         {
-            ld->bbox[BOXBOTTOM] = v2->y;
-            ld->bbox[BOXTOP]    = v1->y;
+            ld->bbox.Bottom = v2->y;
+            ld->bbox.Top    = v1->y;
         }
 
         // [crispy] calculate sound origin of line to be its midpoint
-        ld->soundorg.x = ld->bbox[BOXLEFT] / 2 + ld->bbox[BOXRIGHT] / 2;
-        ld->soundorg.y = ld->bbox[BOXTOP] / 2 + ld->bbox[BOXBOTTOM] / 2;
+        ld->soundorg.x = ld->bbox.Left / 2 + ld->bbox.Right / 2;
+        ld->soundorg.y = ld->bbox.Top / 2 + ld->bbox.Bottom / 2;
 
         ld->sidenum[0] = SHORT(mld->sidenum[0]);
         ld->sidenum[1] = SHORT(mld->sidenum[1]);

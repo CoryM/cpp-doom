@@ -206,10 +206,10 @@ static void SpechitOverrun(line_s *ld);
 //
 bool PIT_CheckLine(line_s *ld)
 {
-    if (tmbbox[BOXRIGHT] <= ld->bbox[BOXLEFT]
-        || tmbbox[BOXLEFT] >= ld->bbox[BOXRIGHT]
-        || tmbbox[BOXTOP] <= ld->bbox[BOXBOTTOM]
-        || tmbbox[BOXBOTTOM] >= ld->bbox[BOXTOP])
+    if (tmbbox[BOXRIGHT] <= ld->bbox.Left
+        || tmbbox[BOXLEFT] >= ld->bbox.Right
+        || tmbbox[BOXTOP] <= ld->bbox.Bottom
+        || tmbbox[BOXBOTTOM] >= ld->bbox.Top)
         return true;
 
     if (P_BoxOnLineSide(tmbbox, ld) != -1)
@@ -1143,9 +1143,9 @@ bool PTR_ShootTraverse(intercept_t *in)
     // check angles to see if the thing can be aimed at
     dist = FixedMul(attackrange, in->frac);
     // [crispy] mobj or actual sprite height
-    thingheight = (shootthing->player && critical->freeaim == FREEAIM_DIRECT) ?
-                      th->info->actualheight :
-                      th->height;
+    thingheight   = (shootthing->player && critical->freeaim == FREEAIM_DIRECT) ?
+                        th->info->actualheight :
+                        th->height;
     thingtopslope = FixedDiv(th->z + thingheight - shootz, dist);
 
     if (thingtopslope < aimslope)
@@ -1578,8 +1578,8 @@ bool P_ChangeSector(sector_t *sector,
     crushchange = crunch;
 
     // re-check heights for all things near the moving sector
-    for (x = sector->blockbox[BOXLEFT]; x <= sector->blockbox[BOXRIGHT]; x++)
-        for (y = sector->blockbox[BOXBOTTOM]; y <= sector->blockbox[BOXTOP]; y++)
+    for (x = sector->blockbox.Left; x <= sector->blockbox.Right; x++)
+        for (y = sector->blockbox.Bottom; y <= sector->blockbox.Top; y++)
             P_BlockThingsIterator(x, y, PIT_ChangeSector);
 
 
