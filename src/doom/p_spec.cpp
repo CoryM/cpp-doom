@@ -246,7 +246,7 @@ side_t *
         int     line,
         int     side)
 {
-    return &sides[(sectors[currentSector].lines[line])->sidenum[side]];
+    return &sides[(sectors[currentSector].lines[line])->sidenum.at(side)];
 }
 
 
@@ -261,7 +261,7 @@ sector_t *
         int       line,
         int       side)
 {
-    return sides[(sectors[currentSector].lines[line])->sidenum[side]].sector;
+    return sides[(sectors[currentSector].lines[line])->sidenum.at(side)].sector;
 }
 
 

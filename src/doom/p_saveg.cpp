@@ -1543,7 +1543,6 @@ void P_UnArchivePlayers(void)
 void P_ArchiveWorld(void)
 {
     int       i;
-    int       j;
     sector_t *sec;
     line_s *  li;
     side_t *  si;
@@ -1567,12 +1566,14 @@ void P_ArchiveWorld(void)
         saveg_write16(li->flags);
         saveg_write16(li->special);
         saveg_write16(li->tag);
-        for (j = 0; j < 2; j++)
+        for (auto sn : li->sidenum)
         {
-            if (li->sidenum[j] == NO_INDEX) // [crispy] extended nodes
+            if (sn == NO_INDEX)
+            { // [crispy] extended nodes
                 continue;
+            }
 
-            si = &sides[li->sidenum[j]];
+            si = &sides[sn];
 
             saveg_write16(si->textureoffset >> FRACBITS);
             saveg_write16(si->rowoffset >> FRACBITS);
@@ -1590,7 +1591,6 @@ void P_ArchiveWorld(void)
 void P_UnArchiveWorld(void)
 {
     int       i;
-    int       j;
     sector_t *sec;
     line_s *  li;
     side_t *  si;
@@ -1627,11 +1627,13 @@ void P_UnArchiveWorld(void)
         li->flags   = saveg_read16();
         li->special = saveg_read16();
         li->tag     = saveg_read16();
-        for (j = 0; j < 2; j++)
+        for (auto sn : li->sidenum)
         {
-            if (li->sidenum[j] == NO_INDEX) // [crispy] extended nodes
+            if (sn == NO_INDEX)
+            { // [crispy] extended nodes
                 continue;
-            si                = &sides[li->sidenum[j]];
+            }
+            si                = &sides[sn];
             si->textureoffset = saveg_read16() << FRACBITS;
             si->rowoffset     = saveg_read16() << FRACBITS;
             si->toptexture    = saveg_read16();

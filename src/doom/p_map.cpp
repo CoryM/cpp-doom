@@ -1101,7 +1101,7 @@ bool PTR_ShootTraverse(intercept_t *in)
             const int lineside = P_PointOnLineSide(x, y, li);
             int       side;
 
-            if ((side = li->sidenum[lineside]) != NO_INDEX)
+            if ((side = li->sidenum.at(lineside)) != NO_INDEX)
             {
                 const sector_t *const sector = sides[side].sector;
 

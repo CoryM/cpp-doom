@@ -113,20 +113,20 @@ void P_LoadSegs_DeePBSP(int lump)
         side        = SHORT(ml->side);
 
         // e6y: check for wrong indexes
-        if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
+        if ((unsigned)ldef->sidenum.at(side) >= (unsigned)numsides)
         {
             S_Error(fmt::format("P_LoadSegs: linedef {} for seg {} references a non-existent sidedef {}",
-                linedef, i, (unsigned)ldef->sidenum[side]));
+                linedef, i, (unsigned)ldef->sidenum.at(side)));
         }
 
-        li->sidedef     = &sides[ldef->sidenum[side]];
-        li->frontsector = sides[ldef->sidenum[side]].sector;
+        li->sidedef     = &sides[ldef->sidenum.at(side)];
+        li->frontsector = sides[ldef->sidenum.at(side)].sector;
         // [crispy] recalculate
         li->offset = GetOffset(li->v1, (ml->side ? ldef->v2 : ldef->v1));
 
         if (ldef->flags & ML_TWOSIDED)
         {
-            int sidenum = ldef->sidenum[side ^ 1];
+            int sidenum = ldef->sidenum.at(side ^ 1);
 
             if (sidenum < 0 || sidenum >= numsides)
             {
@@ -393,14 +393,14 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
         side        = ml->side;
 
         // e6y: check for wrong indexes
-        if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
+        if ((unsigned)ldef->sidenum.at(side) >= (unsigned)numsides)
         {
             S_Error(fmt::format("P_LoadSegs: linedef {} for seg {} references a non-existent sidedef {}",
-                linedef, i, (unsigned)ldef->sidenum[side]));
+                linedef, i, (unsigned)ldef->sidenum.at(side)));
         }
 
-        li->sidedef     = &sides[ldef->sidenum[side]];
-        li->frontsector = sides[ldef->sidenum[side]].sector;
+        li->sidedef     = &sides[ldef->sidenum.at(side)];
+        li->frontsector = sides[ldef->sidenum.at(side)].sector;
 
         // seg angle and offset are not included
         li->angle  = R_PointToAngle2(segs[i].v1->x, segs[i].v1->y, segs[i].v2->x, segs[i].v2->y);
@@ -408,7 +408,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
 
         if (ldef->flags & ML_TWOSIDED)
         {
-            int sidenum = ldef->sidenum[side ^ 1];
+            int sidenum = ldef->sidenum.at(side ^ 1);
 
             if (sidenum < 0 || sidenum >= numsides)
             {

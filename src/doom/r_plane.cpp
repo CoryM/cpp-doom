@@ -451,7 +451,7 @@ void R_DrawPlanes(void)
             if (pl->picnum & PL_SKYFLAT)
             {
                 const line_s *l = &lines[pl->picnum & ~PL_SKYFLAT];
-                const side_t *s = *l->sidenum + sides;
+                const side_t *s = l->sidenum.front() + sides;
                 texture         = texturetranslation[s->toptexture];
                 dc_texturemid   = s->rowoffset - 28 * FRACUNIT;
                 // [crispy] stretch sky

@@ -20,6 +20,7 @@
 #ifndef __R_DEFS__
 #define __R_DEFS__
 
+#include <array>
 
 // Screenwidth.
 #include "doomdef.hpp"
@@ -213,7 +214,7 @@ struct line_s {
 
     // Visual appearance: SideDefs.
     //  sidenum[1] will be -1 (NO_INDEX) if one sided
-    unsigned short sidenum[2]; // [crispy] extended nodes
+    std::array<unsigned short, 2> sidenum; // [crispy] extended nodes
 
     // Neat. Another bounding box, for the extent
     //  of the LineDef.

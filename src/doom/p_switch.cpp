@@ -281,7 +281,9 @@ void P_ChangeSwitchTexture(line_s *line,
             sides[line->sidenum[0]].toptexture = switchlist[i ^ 1];
 
             if (useAgain)
+            {
                 P_StartButton(line, top, switchlist[i], BUTTONTIME);
+            }
 
             //	    return;
         }
@@ -295,7 +297,9 @@ void P_ChangeSwitchTexture(line_s *line,
                 sides[line->sidenum[0]].midtexture = switchlist[i ^ 1];
 
                 if (useAgain)
+                {
                     P_StartButton(line, middle, switchlist[i], BUTTONTIME);
+                }
 
                 //		return;
             }
@@ -309,7 +313,9 @@ void P_ChangeSwitchTexture(line_s *line,
                     sides[line->sidenum[0]].bottomtexture = switchlist[i ^ 1];
 
                     if (useAgain)
+                    {
                         P_StartButton(line, bottom, switchlist[i], BUTTONTIME);
+                    }
 
                     //		    return;
                 }

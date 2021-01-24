@@ -213,20 +213,20 @@ void P_LoadSegs(int lump)
         side        = SHORT(ml->side);
 
         // e6y: check for wrong indexes
-        if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
+        if (static_cast<unsigned>(ldef->sidenum.at(side)) >= static_cast<unsigned>(numsides))
         {
             S_Error(fmt::format("P_LoadSegs: linedef {} for seg {} references a non-existent sidedef {}",
-                linedef, i, (unsigned)ldef->sidenum[side]));
+                linedef, i, (unsigned)ldef->sidenum.at(side)));
         }
 
-        li->sidedef     = &sides[ldef->sidenum[side]];
-        li->frontsector = sides[ldef->sidenum[side]].sector;
+        li->sidedef     = &sides[ldef->sidenum.at(side)];
+        li->frontsector = sides[ldef->sidenum.at(side)].sector;
         // [crispy] recalculate
         li->offset = GetOffset(li->v1, (ml->side ? ldef->v2 : ldef->v1));
 
         if (ldef->flags & ML_TWOSIDED)
         {
-            sidenum = ldef->sidenum[side ^ 1];
+            sidenum = ldef->sidenum.at(side ^ 1);
 
             // If the sidenum is out of range, this may be a "glass hack"
             // impassible window.  Point at side #0 (this may not be
