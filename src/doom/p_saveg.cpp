@@ -19,6 +19,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <span>
 
 #include "dstrings.hpp"
 #include "../deh_main.hpp"
@@ -335,8 +336,8 @@ static void saveg_read_mobj_t(mobj_t *str)
     // struct mobj_t* bprev;
     str->bprev = static_cast<mobj_t *>(saveg_readp());
 
-    // struct subsector_s* subsector;
-    str->subsector = static_cast<subsector_s *>(saveg_readp());
+    // struct subsector_t* subsector;
+    str->subsector = static_cast<subsector_t *>(saveg_readp());
 
     // fixed_t floorz;
     str->floorz = saveg_read32();
@@ -500,7 +501,7 @@ static void saveg_write_mobj_t(mobj_t *str)
     // struct mobj_t* bprev;
     saveg_writep(str->bprev);
 
-    // struct subsector_s* subsector;
+    // struct subsector_t* subsector;
     saveg_writep(str->subsector);
 
     // fixed_t floorz;
@@ -1588,52 +1589,46 @@ void P_ArchiveWorld(void)
 //
 // P_UnArchiveWorld
 //
-void P_UnArchiveWorld(void)
+void P_UnArchiveWorld()
 {
-    int       i;
-    sector_t *sec;
-    line_s *  li;
-    side_t *  si;
-
     // do sectors
-    for (i = 0, sec = sectors; i < numsectors; i++, sec++)
+    for (auto &sec : std::span(sectors, numsectors))
     {
         // [crispy] add overflow guard for the flattranslation[] array
-        short      floorpic, ceilingpic;
         extern int numflats;
-        sec->floorheight   = saveg_read16() << FRACBITS;
-        sec->ceilingheight = saveg_read16() << FRACBITS;
-        floorpic           = saveg_read16();
-        ceilingpic         = saveg_read16();
-        sec->lightlevel    = saveg_read16();
-        sec->special       = saveg_read16(); // needed?
-        sec->tag           = saveg_read16(); // needed?
-        sec->specialdata   = 0;
-        sec->soundtarget   = 0;
+        sec.floorheight   = saveg_read16() << FRACBITS;
+        sec.ceilingheight = saveg_read16() << FRACBITS;
+        short floorpic    = saveg_read16();
+        short ceilingpic  = saveg_read16();
+        sec.lightlevel    = saveg_read16();
+        sec.special       = saveg_read16(); // needed?
+        sec.tag           = saveg_read16(); // needed?
+        sec.specialdata   = 0;
+        sec.soundtarget   = 0;
         // [crispy] add overflow guard for the flattranslation[] array
         if (floorpic >= 0 && floorpic < numflats)
         {
-            sec->floorpic = floorpic;
+            sec.floorpic = floorpic;
         }
         if (ceilingpic >= 0 && ceilingpic < numflats)
         {
-            sec->ceilingpic = ceilingpic;
+            sec.ceilingpic = ceilingpic;
         }
     }
 
     // do lines
-    for (i = 0, li = lines; i < numlines; i++, li++)
+    for (auto &li : std::span(lines, numlines))
     {
-        li->flags   = saveg_read16();
-        li->special = saveg_read16();
-        li->tag     = saveg_read16();
-        for (auto sn : li->sidenum)
+        li.flags   = saveg_read16();
+        li.special = saveg_read16();
+        li.tag     = saveg_read16();
+        for (auto sn : li.sidenum)
         {
             if (sn == NO_INDEX)
             { // [crispy] extended nodes
                 continue;
             }
-            si                = &sides[sn];
+            side_t *si        = &sides[sn];
             si->textureoffset = saveg_read16() << FRACBITS;
             si->rowoffset     = saveg_read16() << FRACBITS;
             si->toptexture    = saveg_read16();
@@ -1647,18 +1642,17 @@ void P_UnArchiveWorld(void)
 //
 // Thinkers
 //
-typedef enum
+enum thinkerclass_t
 {
     tc_end,
     tc_mobj
-
-} thinkerclass_t;
+};
 
 
 //
 // P_ArchiveThinkers
 //
-void P_ArchiveThinkers(void)
+void P_ArchiveThinkers()
 {
     thinker_s *th;
 
@@ -1685,7 +1679,7 @@ void P_ArchiveThinkers(void)
 //
 // P_UnArchiveThinkers
 //
-void P_UnArchiveThinkers(void)
+void P_UnArchiveThinkers()
 {
     byte       tclass;
     thinker_s *currentthinker;
@@ -1741,7 +1735,7 @@ void P_UnArchiveThinkers(void)
 
 // [crispy] after all the thinkers have been restored, replace all indices in
 // the mobj->target and mobj->tracers fields by the corresponding current pointers again
-void P_RestoreTargets(void)
+void P_RestoreTargets()
 {
     mobj_t *   mo;
     thinker_s *th;
@@ -1790,7 +1784,7 @@ enum specials_e : uint8_t
 // T_Glow, (glow_t: sector_t *),
 // T_PlatRaise, (plat_t: sector_t *), - active list
 //
-void P_ArchiveSpecials(void)
+void P_ArchiveSpecials()
 {
     int i;
 

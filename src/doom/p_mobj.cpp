@@ -27,11 +27,11 @@
 #include "p_local.hpp"
 #include "sounds.hpp"
 
-#include "st_stuff.hpp"
 #include "hu_stuff.hpp"
+#include "st_stuff.hpp"
 
-#include "s_sound.hpp"
 #include "s_musinfo.hpp" // [crispy] S_ParseMusInfo()
+#include "s_sound.hpp"
 
 #include "../../utils/memory.hpp"
 #include "doomstat.hpp"
@@ -49,14 +49,11 @@ int test;
 // Use a heuristic approach to detect infinite state cycles: Count the number
 // of times the loop in P_SetMobjState() executes and exit with an error once
 // an arbitrary very large limit is reached.
-
 #define MOBJ_CYCLE_LIMIT 1000000
 
-bool P_SetMobjState(mobj_t *mobj,
-    statenum_t              state)
+auto P_SetMobjState(mobj_t *mobj, statenum_t state) -> bool
 {
-    state_t *st;
-    int      cycle_counter = 0;
+    int cycle_counter = 0;
 
     do
     {
@@ -67,18 +64,20 @@ bool P_SetMobjState(mobj_t *mobj,
             return false;
         }
 
-        st           = &states[state];
-        mobj->state  = st;
-        mobj->tics   = st->tics;
-        mobj->sprite = st->sprite;
-        mobj->frame  = st->frame;
+        auto &st     = states[state];
+        mobj->state  = &st;
+        mobj->tics   = st.tics;
+        mobj->sprite = st.sprite;
+        mobj->frame  = st.frame;
 
         // Modified handling.
         // Call action functions when the state is set
-        if (st->action.acp3)
-            st->action.acp3(mobj, NULL, NULL); // [crispy] let pspr action pointers get called from mobj states
+        if (st.action.acp3)
+        {
+            st.action.acp3(mobj, NULL, NULL); // [crispy] let pspr action pointers get called from mobj states
+        }
 
-        state = st->nextstate;
+        state = st.nextstate;
 
         if (cycle_counter++ > MOBJ_CYCLE_LIMIT)
         {
@@ -881,12 +880,7 @@ void P_SpawnPlayer(mapthing_t *mthing)
 //
 void P_SpawnMapThing(mapthing_t *mthing)
 {
-    int     i;
-    int     bit;
     mobj_t *mobj;
-    fixed_t x;
-    fixed_t y;
-    fixed_t z;
     int     musid = 0;
 
     // count deathmatch start positions
@@ -915,31 +909,45 @@ void P_SpawnMapThing(mapthing_t *mthing)
         playerstarts[mthing->type - 1]       = *mthing;
         playerstartsingame[mthing->type - 1] = true;
         if (!deathmatch)
+        {
             P_SpawnPlayer(mthing);
+        }
 
         return;
     }
 
     // check for apropriate skill level
     if (!netgame && (mthing->options & 16))
+    {
         return;
+    }
 
+    int bit;
     if (gameskill == sk_baby)
+    {
         bit = 1;
+    }
     else if (gameskill == sk_nightmare)
+    {
         bit = 4;
+    }
     else
+    {
         bit = 1 << (gameskill - 1);
+    }
 
     // [crispy] warn about mapthings without any skill tag set
     if (!(mthing->options & (MTF_EASY | MTF_NORMAL | MTF_HARD)))
     {
-        fprintf(stderr, "P_SpawnMapThing: Mapthing type %i without any skill tag at (%i, %i)\n",
+        fmt::print(stderr, "P_SpawnMapThing: Mapthing type {} without any skill tag at ({}, {})\n",
             mthing->type, mthing->x, mthing->y);
+        // I_PrintbackTrace();
     }
 
     if (!(mthing->options & bit))
+    {
         return;
+    }
 
     // [crispy] support MUSINFO lump (dynamic music changing)
     if (mthing->type >= 14100 && mthing->type <= 14164)
@@ -949,53 +957,63 @@ void P_SpawnMapThing(mapthing_t *mthing)
     }
 
     // find which type to spawn
+    int i;
     for (i = 0; i < NUMMOBJTYPES; i++)
+    {
         if (mthing->type == mobjinfo[i].doomednum)
+        {
             break;
+        }
+    }
 
     if (i == NUMMOBJTYPES)
     {
         // [crispy] ignore unknown map things
         fprintf(stderr, "P_SpawnMapThing: Unknown type %i at (%i, %i)\n",
-            mthing->type,
-            mthing->x, mthing->y);
+            mthing->type, mthing->x, mthing->y);
         return;
     }
 
     // don't spawn keycards and players in deathmatch
     if (deathmatch && mobjinfo[i].flags & MF_NOTDMATCH)
+    {
         return;
+    }
 
     // don't spawn any monsters if -nomonsters
-    if (nomonsters
-        && (i == MT_SKULL
-            || (mobjinfo[i].flags & MF_COUNTKILL)))
+    if (nomonsters && (i == MT_SKULL || (mobjinfo[i].flags & MF_COUNTKILL)))
     {
         return;
     }
 
     // spawn it
-    x = mthing->x << FRACBITS;
-    y = mthing->y << FRACBITS;
-
-    if (mobjinfo[i].flags & MF_SPAWNCEILING)
-        z = ONCEILINGZ;
-    else
-        z = ONFLOORZ;
+    const fixed_t x = mthing->x << FRACBITS;
+    const fixed_t y = mthing->y << FRACBITS;
+    const fixed_t z = (mobjinfo[i].flags & MF_SPAWNCEILING) ? ONCEILINGZ : ONFLOORZ;
 
     mobj             = P_SpawnMobj(x, y, z, static_cast<mobjtype_t>(i));
     mobj->spawnpoint = *mthing;
 
     if (mobj->tics > 0)
+    {
         mobj->tics = 1 + (P_Random() % mobj->tics);
+    }
+
     if (mobj->flags & MF_COUNTKILL)
+    {
         totalkills++;
+    }
+
     if (mobj->flags & MF_COUNTITEM)
+    {
         totalitems++;
+    }
 
     mobj->angle = ANG45 * (static_cast<angle_t>(mthing->angle) / 45);
     if (mthing->options & MTF_AMBUSH)
+    {
         mobj->flags |= MF_AMBUSH;
+    }
 
     // [crispy] support MUSINFO lump (dynamic music changing)
     if (i == MT_MUSICSOURCE)
@@ -1005,7 +1023,9 @@ void P_SpawnMapThing(mapthing_t *mthing)
 
     // [crispy] Lost Souls bleed Puffs
     if (crispy->coloredblood && i == MT_SKULL)
+    {
         mobj->flags |= MF_NOBLOOD;
+    }
 
     // [crispy] randomly colorize space marine corpse objects
     if (!netgame && crispy->coloredblood && (mobj->info->spawnstate == S_PLAY_DIE7 || mobj->info->spawnstate == S_PLAY_XDIE9))
@@ -1014,12 +1034,23 @@ void P_SpawnMapThing(mapthing_t *mthing)
     }
 
     // [crispy] blinking key or skull in the status bar
-    if (mobj->sprite == SPR_BSKU)
+    switch (mobj->sprite)
+    {
+    case SPR_BSKU: {
         st_keyorskull[it_bluecard] = 3;
-    else if (mobj->sprite == SPR_RSKU)
+        break;
+    }
+    case SPR_RSKU: {
         st_keyorskull[it_redcard] = 3;
-    else if (mobj->sprite == SPR_YSKU)
+        break;
+    }
+    case SPR_YSKU: {
         st_keyorskull[it_yellowcard] = 3;
+        break;
+    }
+    default: {
+    }
+    }
 }
 
 
@@ -1047,7 +1078,8 @@ void P_SpawnPuffSafe(fixed_t x,
 {
     mobj_t *th;
 
-    z += safe ? (Crispy_SubRandom() << 10) : (P_SubRandom() << 10);
+    z += safe ? (Crispy_SubRandom() << 10) :
+                (P_SubRandom() << 10);
 
     th       = P_SpawnMobjSafe(x, y, z, MT_PUFF, safe);
     th->momZ = FRACUNIT;

@@ -223,7 +223,7 @@ struct mobj_t {
     mobj_t *bnext = nullptr;
     mobj_t *bprev = nullptr;
 
-    struct subsector_s *subsector = nullptr;
+    struct subsector_t *subsector = nullptr;
 
     // The closest interval over all contacted Sectors.
     fixed_t floorz   = 0;

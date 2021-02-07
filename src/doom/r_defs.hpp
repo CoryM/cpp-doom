@@ -163,8 +163,7 @@ struct sector_t {
 // The SideDef.
 //
 
-typedef struct
-{
+struct side_t {
     // add this to the calculated texture column
     fixed_t textureoffset;
 
@@ -182,20 +181,20 @@ typedef struct
 
     // [crispy] smooth texture scrolling
     fixed_t basetextureoffset;
-} side_t;
+};
 
 
 //
 // Move clipping aid for LineDefs.
 //
-typedef enum
+enum slopetype_t
 {
     ST_HORIZONTAL,
     ST_VERTICAL,
     ST_POSITIVE,
     ST_NEGATIVE
 
-} slopetype_t;
+};
 
 
 struct line_s {
@@ -213,12 +212,10 @@ struct line_s {
     short          tag;
 
     // Visual appearance: SideDefs.
-    //  sidenum[1] will be -1 (NO_INDEX) if one sided
     std::array<unsigned short, 2> sidenum; // [crispy] extended nodes
 
     // Neat. Another bounding box, for the extent
     //  of the LineDef.
-    //fixed_t bbox[4];
     BoundingBox bbox;
 
     // To aid move clipping.
@@ -246,20 +243,17 @@ struct line_s {
 // Basically, this is a list of LineSegs,
 //  indicating the visible walls that define
 //  (all or some) sides of a convex BSP leaf.
-//
-typedef struct subsector_s {
+struct subsector_t {
     sector_t *sector;
     int       numlines;  // [crispy] extended nodes
     int       firstline; // [crispy] extended nodes
-
-} subsector_t;
+};
 
 
 //
 // The LineSeg.
 //
-typedef struct
-{
+struct seg_t {
     vertex_t *v1;
     vertex_t *v2;
 
@@ -279,14 +273,13 @@ typedef struct
     uint32_t length;  // [crispy] fix long wall wobble
     angle_t  r_angle; // [crispy] re-calculated angle used for rendering
     int      fakecontrast;
-} seg_t;
+};
 
 
 //
 // BSP node.
 //
-typedef struct
-{
+struct node_t {
     // Partition line.
     fixed_t x;
     fixed_t y;
@@ -298,8 +291,7 @@ typedef struct
 
     // If NF_SUBSECTOR its a subsector.
     int children[2]; // [crispy] extended nodes
-
-} node_t;
+};
 
 
 // PC direct to screen pointers
@@ -323,7 +315,7 @@ typedef pixel_t lighttable_t;
 //
 // ?
 //
-typedef struct drawseg_s {
+struct drawseg_t {
     seg_t *curline;
     int    x1;
     int    x2;
@@ -346,8 +338,7 @@ typedef struct drawseg_s {
     int *sprtopclip;       // [crispy] 32-bit integer math
     int *sprbottomclip;    // [crispy] 32-bit integer math
     int *maskedtexturecol; // [crispy] 32-bit integer math
-
-} drawseg_t;
+};
 
 
 // A vissprite_t is a thing
@@ -408,8 +399,7 @@ struct vissprite_t {
 // Some sprites will only have one picture used
 // for all views: NNNNF0
 //
-typedef struct
-{
+struct spriteframe_t {
     // If false use 0 for any position.
     // Note: as eight entries are available,
     //  we might as well insert the same name eight times.
@@ -420,27 +410,23 @@ typedef struct
 
     // Flip bit (1 = flip) to use for view angles 0-7.
     byte flip[16]; // [crispy] support 16 sprite rotations
-
-} spriteframe_t;
+};
 
 
 //
 // A sprite definition:
 //  a number of animation frames.
 //
-typedef struct
-{
+struct spritedef_t {
     int            numframes;
     spriteframe_t *spriteframes;
-
-} spritedef_t;
+};
 
 
 //
 // Now what is a visplane, anyway?
 //
-typedef struct
-{
+struct visplane_t {
     fixed_t height;
     int     picnum;
     int     lightlevel;
@@ -458,15 +444,15 @@ typedef struct
     // See above.
     unsigned int bottom[MAXWIDTH]; // [crispy] hires / 32-bit integer math
     unsigned int pad4;             // [crispy] hires / 32-bit integer math
+};
 
-} visplane_t;
-
-typedef struct
-{
+struct laserpatch_t {
     char c;
     char a[9];
-    int  l, w, h;
-} laserpatch_t;
+    int  l;
+    int  w;
+    int  h;
+};
 extern laserpatch_t *laserpatch;
 
 

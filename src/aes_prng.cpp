@@ -93,12 +93,11 @@
  * Please ensure that the first two fields are 16-byte aligned
  * relative to the start of the structure, i.e., don't move them!
  */
-typedef struct
-{
+struct aes_context_t {
     uint32_t key_enc[AES_MAX_KEYLENGTH_U32];
     uint32_t key_dec[AES_MAX_KEYLENGTH_U32];
     uint32_t key_length;
-} aes_context_t;
+};
 
 static inline uint8_t get_byte(const uint32_t x, const unsigned n)
 {
@@ -2432,7 +2431,7 @@ static void AES_Encrypt(aes_context_t *ctx, uint8_t *out,
     dst[3] = cpu_to_le32(b0[3]);
 }
 
-static bool       prng_enabled = false;
+static bool          prng_enabled = false;
 static aes_context_t prng_context;
 static uint32_t      prng_input_counter;
 static uint32_t      prng_values[4];
