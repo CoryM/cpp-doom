@@ -61,13 +61,6 @@
 
 struct patch_t;
 
-namespace globals {
-
-bool       automapactive = false;
-cheatseq_t cheat_amap    = CHEAT("iddt", 0);
-
-} // end of namespace globals
-
 
 // For use if I do walls with outsides/insides
 constexpr int REDS       = (256 - 5 * 16);
@@ -543,7 +536,7 @@ public:
     {
         static event_t st_notify = { evtype_t::ev_keyup, globals::AM_MSGENTERED, 0, 0 };
 
-        globals::automapactive = true;
+        globals::doom::automapactive = true;
         //  fb = I_VideoBuffer; // [crispy] simplify
 
         f_oldloc.x = std::numeric_limits<int>::max();
@@ -784,7 +777,7 @@ public:
         static event_t st_notify = { evtype_t::ev_keyup, globals::AM_MSGEXITED, 0 };
 
         AM_unloadPics();
-        globals::automapactive = false;
+        globals::doom::automapactive = false;
         ST_Responder(&st_notify);
         stopped = true;
     }
@@ -821,7 +814,7 @@ public:
             constexpr unsigned int waitTime = 5;
             joywait                         = I_GetTime() + waitTime;
 
-            if (!globals::automapactive)
+            if (!globals::doom::automapactive)
             {
                 AM_Start();
                 viewactive = false;
@@ -836,7 +829,7 @@ public:
             return true;
         }
 
-        if (!globals::automapactive)
+        if (!globals::doom::automapactive)
         {
             if (ev->type == evtype_t::ev_keydown && ev->data1 == key_map_toggle)
             {
@@ -1013,7 +1006,7 @@ public:
             }
 
             if (((deathmatch == 0) || gameversion <= exe_doom_1_8)
-                && cht_CheckCheat(&globals::cheat_amap, ev->data2) != 0)
+                && cht_CheckCheat(&globals::doom::cheat_amap, ev->data2) != 0)
             {
                 rc       = false;
                 cheating = (cheating + 1) % 3;
@@ -1052,7 +1045,7 @@ public:
 
     auto AM_Ticker() -> void
     {
-        if (!globals::automapactive)
+        if (!globals::doom::automapactive)
             return;
 
         amclock++;
@@ -1801,7 +1794,7 @@ void AM_drawCrosshair(int color)
 
 auto AM_Drawer() -> void
 {
-    if (!globals::automapactive) { return; }
+    if (!globals::doom::automapactive) { return; }
 
     if (!crispy->automapoverlay)
     {

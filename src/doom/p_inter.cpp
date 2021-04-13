@@ -22,6 +22,7 @@
 #include "doomdef.hpp"
 #include "doomstat.hpp"
 #include "dstrings.hpp"
+#include "globals_doom.hpp" // for Globals::Doom namespace
 #include "i_system.hpp"
 #include "m_random.hpp"
 #include "p_inter.hpp"
@@ -709,7 +710,7 @@ void P_KillMobj(mobj_t *source,
         target->player->fixedcolormap = target->player->powers[pw_infrared] ? 1 : 0;
 
         if (target->player == &players[consoleplayer]
-            && globals::automapactive)
+            && globals::doom::automapactive)
         {
             // don't die in auto map,
             // switch view prior to dying

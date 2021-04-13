@@ -24,10 +24,10 @@
 #include <vector>
 
 #include "../d_loop.hpp"
-#include "am_map.hpp" // for globals::automapactive
 #include "doomdef.hpp"
-#include "doomstat.hpp" // [AM] leveltime, paused, menuactive
-#include "i_system.hpp" // [crispy] I_Realloc()
+#include "doomstat.hpp"     // [AM] leveltime, paused, menuactive
+#include "globals_doom.hpp" // for Globals::Doom namespace
+#include "i_system.hpp"     // [crispy] I_Realloc()
 #include "m_bbox.hpp"
 #include "m_menu.hpp"
 #include "p_local.hpp" // [crispy] MLOOKUNIT
@@ -1042,7 +1042,7 @@ void R_RenderPlayerView(player_t *player)
     R_ClearDrawSegs();
     R_ClearPlanes();
     R_ClearSprites();
-    if (globals::automapactive && !crispy->automapoverlay)
+    if (globals::doom::automapactive && !crispy->automapoverlay)
     {
         R_RenderBSPNode(numnodes - 1);
         return;

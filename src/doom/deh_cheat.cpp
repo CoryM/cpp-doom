@@ -27,8 +27,9 @@
 #include "../deh_io.hpp"   // for DEH_Warning, DEH_Error
 #include "../deh_main.hpp" // for DEH_ParseAssignment, deh_apply_cheats
 #include "../m_cheat.hpp"  // for cheatseq_t, MAX_CHEAT_LEN
-#include "am_map.hpp"      // for cheat_amap
-#include "st_stuff.hpp"    // for cheat_powerup, cheat_ammo, cheat_ammonokey
+//#include "am_map.hpp"      // for cheat_amap
+#include "globals_doom.hpp" // for Globals::Doom namespace
+#include "st_stuff.hpp"     // for cheat_powerup, cheat_ammo, cheat_ammonokey
 
 struct deh_context_s;
 
@@ -55,7 +56,7 @@ static deh_cheat_t allcheats[] = {
     { "BEHOLD menu", &cheat_powerup[6] },
     { "Level Warp", &cheat_clev },
     { "Player Position", &cheat_mypos },
-    { "Map cheat", &globals::cheat_amap },
+    { "Map cheat", &globals::doom::cheat_amap },
 };
 
 static deh_cheat_t *FindCheatByName(char *name)

@@ -21,24 +21,22 @@
 
 #include <cctype> // for toupper
 
-#include "../crispy.hpp"   // for crispy, crispy_t, COLOREDHUD_TEXT
-#include "../doomkeys.hpp" // for KEY_BACKSPACE, KEY_ENTER
-#include "../doomtype.hpp" // for byte
-#include "../i_swap.hpp"   // for SHORT
-#include "../i_video.hpp"  // for DELTAWIDTH, ORIGWIDTH, SCREENWIDTH
-#include "../v_video.hpp"  // for V_DrawPatchDirect, dp_translation
-#include "am_map.hpp"      // for globals::automapactive
-#include "r_draw.hpp"      // for R_VideoErase
-#include "r_main.hpp"      // for viewwindowx, viewwindowy
-#include "r_state.hpp"     // for scaledviewwidth, viewheight
-#include "v_patch.hpp"     // for patch_t
-#include "v_trans.hpp"     // for CRMAX, cr, cr_esc
+#include "../crispy.hpp"    // for crispy, crispy_t, COLOREDHUD_TEXT
+#include "../doomkeys.hpp"  // for KEY_BACKSPACE, KEY_ENTER
+#include "../doomtype.hpp"  // for byte
+#include "../i_swap.hpp"    // for SHORT
+#include "../i_video.hpp"   // for DELTAWIDTH, ORIGWIDTH, SCREENWIDTH
+#include "../v_video.hpp"   // for V_DrawPatchDirect, dp_translation
+#include "globals_doom.hpp" // for Globals::Doom namespace
+#include "r_draw.hpp"       // for R_VideoErase
+#include "r_main.hpp"       // for viewwindowx, viewwindowy
+#include "r_state.hpp"      // for scaledviewwidth, viewheight
+#include "v_patch.hpp"      // for patch_t
+#include "v_trans.hpp"      // for CRMAX, cr, cr_esc
 
 
 // bool : whether the screen is always erased
 #define noterased viewwindowx
-
-extern bool globals::automapactive; // in AM_map.c
 
 void HUlib_init(void)
 {
@@ -162,7 +160,7 @@ void HUlib_eraseTextLine(hu_textline_t *l)
     // and the text must either need updating or refreshing
     // (because of a recent change back from the automap)
 
-    if (!globals::automapactive && viewwindowx && (l->needsupdate || crispy->cleanscreenshot || crispy->screenshotmsg == 4))
+    if (!globals::doom::automapactive && viewwindowx && (l->needsupdate || crispy->cleanscreenshot || crispy->screenshotmsg == 4))
     {
         lh = (SHORT(l->f[0]->height) + 1) << crispy->hires;
         // [crispy] support line breaks

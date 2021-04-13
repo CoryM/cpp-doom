@@ -48,40 +48,41 @@
 #include "../w_wad.hpp"           // for W_WadNameForLump, W_CheckNumForName
 #include "../z_zone.hpp"          // for Z_Free, PU, PU::STATIC, Z_CheckHeap
 
-#include "am_map.hpp"      // for AM_Responder, AM_Stop, AM_Ticker
-#include "d_englsh.hpp"    // for GAMMALVL0, GGSAVED
-#include "d_main.hpp"      // for D_AdvanceDemo, D_PageTicker
-#include "d_player.hpp"    // for player_t, wbstartstruct_t, wbplaye...
-#include "deh_bexpars.hpp" // for bex_cpars, bex_pars
-#include "deh_misc.hpp"    // for deh_initial_bullets, deh_initial_h...
-#include "doomdata.hpp"    // for mapthing_t
-#include "doomdef.hpp"     // for MAXPLAYERS, wp_fist, wp_shotgun
-#include "doomstat.hpp"    // for gamemode, gameversion, leveltime
-#include "f_finale.hpp"    // for F_StartFinale, F_Responder, F_Ticker
-#include "hu_stuff.hpp"    // for HU_Responder, HU_Ticker, HU_dequeu...
-#include "i_input.hpp"     // for novert, MAX_MOUSE_BUTTONS, mouse_y...
-#include "i_swap.hpp"      // for LONG
-#include "i_system.hpp"    // for S_Error, I_Quit
-#include "i_timer.hpp"     // for TICRATE, I_GetTime
-#include "info.hpp"        // for mobjinfo_t, mobjinfo, state_t, states
-#include "m_menu.hpp"      // for M_StartControlPanel
-#include "m_random.hpp"    // for M_ClearRandom, P_Random
-#include "p_extsaveg.hpp"  // for P_ReadExtendedSaveGameData, savewa...
-#include "p_local.hpp"     // for P_CheckPosition, P_GetNumForMap
-#include "p_mobj.hpp"      // for mobj_t, MF_SHADOW
-#include "p_saveg.hpp"     // for save_stream, P_SaveGameFile, P_Arc...
-#include "p_setup.hpp"     // for P_SetupLevel, savemaplumpinfo
-#include "p_tick.hpp"      // for P_Ticker
-#include "r_data.hpp"      // for R_TextureNumForName, R_CheckTextur...
-#include "r_defs.hpp"      // for subsector_t, sector_t
-#include "r_draw.hpp"      // for R_FillBackScreen
-#include "r_main.hpp"      // for R_PointInSubsector
-#include "r_sky.hpp"       // for skytexture, R_InitSkyMap, SKYFLATNAME
-#include "s_sound.hpp"     // for S_StartSound, S_ResumeSound, S_Pau...
-#include "sounds.hpp"      // for sfx_swtchn, sfx_telept
-#include "st_stuff.hpp"    // for ST_Responder, ST_Ticker, defdemotics
-#include "statdump.hpp"    // for StatCopy
-#include "wi_stuff.hpp"    // for WI_End, WI_Start, WI_Ticker
+#include "am_map.hpp"
+#include "d_englsh.hpp"     // for GAMMALVL0, GGSAVED
+#include "d_main.hpp"       // for D_AdvanceDemo, D_PageTicker
+#include "d_player.hpp"     // for player_t, wbstartstruct_t, wbplaye...
+#include "deh_bexpars.hpp"  // for bex_cpars, bex_pars
+#include "deh_misc.hpp"     // for deh_initial_bullets, deh_initial_h...
+#include "doomdata.hpp"     // for mapthing_t
+#include "doomdef.hpp"      // for MAXPLAYERS, wp_fist, wp_shotgun
+#include "doomstat.hpp"     // for gamemode, gameversion, leveltime
+#include "f_finale.hpp"     // for F_StartFinale, F_Responder, F_Ticker
+#include "globals_doom.hpp" // for Globals::Doom namespace
+#include "hu_stuff.hpp"     // for HU_Responder, HU_Ticker, HU_dequeu...
+#include "i_input.hpp"      // for novert, MAX_MOUSE_BUTTONS, mouse_y...
+#include "i_swap.hpp"       // for LONG
+#include "i_system.hpp"     // for S_Error, I_Quit
+#include "i_timer.hpp"      // for TICRATE, I_GetTime
+#include "info.hpp"         // for mobjinfo_t, mobjinfo, state_t, states
+#include "m_menu.hpp"       // for M_StartControlPanel
+#include "m_random.hpp"     // for M_ClearRandom, P_Random
+#include "p_extsaveg.hpp"   // for P_ReadExtendedSaveGameData, savewa...
+#include "p_local.hpp"      // for P_CheckPosition, P_GetNumForMap
+#include "p_mobj.hpp"       // for mobj_t, MF_SHADOW
+#include "p_saveg.hpp"      // for save_stream, P_SaveGameFile, P_Arc...
+#include "p_setup.hpp"      // for P_SetupLevel, savemaplumpinfo
+#include "p_tick.hpp"       // for P_Ticker
+#include "r_data.hpp"       // for R_TextureNumForName, R_CheckTextur...
+#include "r_defs.hpp"       // for subsector_t, sector_t
+#include "r_draw.hpp"       // for R_FillBackScreen
+#include "r_main.hpp"       // for R_PointInSubsector
+#include "r_sky.hpp"        // for skytexture, R_InitSkyMap, SKYFLATNAME
+#include "s_sound.hpp"      // for S_StartSound, S_ResumeSound, S_Pau...
+#include "sounds.hpp"       // for sfx_swtchn, sfx_telept
+#include "st_stuff.hpp"     // for ST_Responder, ST_Ticker, defdemotics
+#include "statdump.hpp"     // for StatCopy
+#include "wi_stuff.hpp"     // for WI_End, WI_Start, WI_Ticker
 
 #define SAVEGAMESIZE 0x2c000
 
@@ -1634,7 +1635,7 @@ void G_DoCompleted(void)
         if (playeringame[i])
             G_PlayerFinishLevel(i); // take away cards and stuff
 
-    if (globals::automapactive)
+    if (globals::doom::automapactive)
         AM_Stop();
 
     if (gamemode != GameMode_t::commercial)
@@ -1842,9 +1843,9 @@ void G_DoCompleted(void)
     // will agree with Compet-n.
     wminfo.totaltimes = (totalleveltimes += (leveltime - leveltime % TICRATE));
 
-    gamestate              = GS_INTERMISSION;
-    viewactive             = false;
-    globals::automapactive = false;
+    gamestate                    = GS_INTERMISSION;
+    viewactive                   = false;
+    globals::doom::automapactive = false;
 
     // [crispy] no statdump output for ExM8
     if (gamemode == GameMode_t::commercial || gamemap != 8)
@@ -2333,14 +2334,14 @@ void G_InitNew(skill_t skill,
     for (i = 0; i < MAXPLAYERS; i++)
         players[i].playerstate = PST_REBORN;
 
-    usergame               = true; // will be set false if a demo
-    paused                 = false;
-    demoplayback           = false;
-    globals::automapactive = false;
-    viewactive             = true;
-    gameepisode            = episode;
-    gamemap                = map;
-    gameskill              = skill;
+    usergame                     = true; // will be set false if a demo
+    paused                       = false;
+    demoplayback                 = false;
+    globals::doom::automapactive = false;
+    viewactive                   = true;
+    gameepisode                  = episode;
+    gamemap                      = map;
+    gameskill                    = skill;
 
     // [crispy] CPhipps - total time for all completed levels
     totalleveltimes = 0;

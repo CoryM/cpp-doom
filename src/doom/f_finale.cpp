@@ -35,7 +35,6 @@
 #include "../v_video.hpp"           // for V_DrawPatch, V_DrawPatchFullScreen
 #include "../w_wad.hpp"             // for W_CheckNumForName
 #include "../z_zone.hpp"            // for PU, PU::CACHE, PU::LEVEL
-#include "am_map.hpp"               // for globals::automapactive
 #include "d_englsh.hpp"             // for C1TEXT, C2TEXT, C3TEXT, C4TEXT
 #include "d_main.hpp"               // for gameaction
 #include "d_player.hpp"             // for player_t
@@ -44,6 +43,7 @@
 #include "doomstat.hpp"             // for gamemap, gamemission, gameepisode
 #include "doomtype.hpp"             // for byte, pixel_t
 #include "event_function_decls.hpp" // for A_BruisAttack, A_BspiAttack, A_C...
+#include "globals_doom.hpp"         // for Globals::Doom namespace
 #include "hu_stuff.hpp"             // for HU_FONTSIZE, HU_FONTSTART
 #include "i_video.hpp"              // for ORIGWIDTH, SCREENWIDTH, SCREENHE...
 #include "info.hpp"                 // for state_t, mobjinfo_t, states, mob...
@@ -136,10 +136,10 @@ void F_StartFinale(void)
 {
     size_t i;
 
-    gameaction             = ga_nothing;
-    gamestate              = GS_FINALE;
-    viewactive             = false;
-    globals::automapactive = false;
+    gameaction                   = ga_nothing;
+    gamestate                    = GS_FINALE;
+    viewactive                   = false;
+    globals::doom::automapactive = false;
 
     if (logical_gamemission == doom)
     {

@@ -37,15 +37,4 @@ auto AM_Drawer() -> void;
 // if the level is completed while it is up.
 auto AM_Stop() -> void;
 
-namespace globals {
-// Used by ST StatusBar stuff.
-constexpr int AM_MSGHEADER  = 0x616D0000; // am??
-constexpr int AM_MSGENTERED = 0x616D6500; // ame?
-constexpr int AM_MSGEXITED  = 0x616D7800; // amx?
-
-extern cheatseq_t cheat_amap;
-extern bool       automapactive;
-
-} // namespace globals
-
 #endif // DOOM_AM_MAP_HPP

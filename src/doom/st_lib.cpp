@@ -23,7 +23,7 @@
 #include "../v_video.hpp"
 #include "../w_wad.hpp"
 #include "../z_zone.hpp"
-#include "am_map.hpp" // for globals::automapactive
+#include "globals_doom.hpp" // for Globals::Doom namespace
 #include "doomdef.hpp"
 #include "r_local.hpp"
 #include "st_lib.hpp"
@@ -34,8 +34,7 @@
 #include <cstdio>
 
 // in AM_map.c
-extern bool globals::automapactive;
-extern int  screenblocks;
+extern int screenblocks;
 
 
 //
@@ -116,7 +115,7 @@ void STlib_drawNum(st_number_t *n,
     if (n->y - ST_Y < 0)
         S_Error("drawNum: n->y - ST_Y < 0");
 
-    if (screenblocks < CRISPY_HUD || (globals::automapactive && !crispy->automapoverlay && !crispy->widescreen))
+    if (screenblocks < CRISPY_HUD || (globals::doom::automapactive && !crispy->automapoverlay && !crispy->widescreen))
         V_CopyRect(x, n->y - ST_Y, st_backing_screen, w * numdigits, h, x, n->y);
 
     // if non-number, do not draw it
@@ -228,7 +227,7 @@ void STlib_updateMultIcon(st_multicon_t *mi,
             if (y - ST_Y < 0)
                 S_Error("updateMultIcon: y - ST_Y < 0");
 
-            if (screenblocks < CRISPY_HUD || (globals::automapactive && !crispy->automapoverlay && !crispy->widescreen))
+            if (screenblocks < CRISPY_HUD || (globals::doom::automapactive && !crispy->automapoverlay && !crispy->widescreen))
                 V_CopyRect(x, y - ST_Y, st_backing_screen, w, h, x, y);
         }
         V_DrawPatch(mi->x, mi->y, mi->p[*mi->inum]);
@@ -274,7 +273,7 @@ void STlib_updateBinIcon(st_binicon_t *bi,
 
         if (*bi->val)
             V_DrawPatch(bi->x, bi->y, bi->p);
-        else if (screenblocks < CRISPY_HUD || (globals::automapactive && !crispy->automapoverlay && !crispy->widescreen))
+        else if (screenblocks < CRISPY_HUD || (globals::doom::automapactive && !crispy->automapoverlay && !crispy->widescreen))
             V_CopyRect(x, y - ST_Y, st_backing_screen, w, h, x, y);
 
         bi->oldval = *bi->val;

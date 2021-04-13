@@ -21,10 +21,10 @@
 #include <cstdlib>
 
 #include "../i_system.hpp"
-#include "am_map.hpp" // for globals::automapactive
 #include "doomdef.hpp"
 #include "doomstat.hpp"
-#include "r_bmaps.hpp" // [crispy] brightmaps
+#include "globals_doom.hpp" // for Globals::Doom namespace
+#include "r_bmaps.hpp"      // [crispy] brightmaps
 #include "r_local.hpp"
 #include "r_sky.hpp"
 
@@ -546,7 +546,7 @@ void R_StoreWallRange(int start,
     linedef->flags |= ML_MAPPED;
 
     // [crispy] (flags & ML_MAPPED) is all we need to know for automap
-    if (globals::automapactive && !crispy->automapoverlay)
+    if (globals::doom::automapactive && !crispy->automapoverlay)
         return;
 
     // calculate rw_distance for scale calculation
