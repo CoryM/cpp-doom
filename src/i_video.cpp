@@ -47,7 +47,7 @@
 
 uint SCREENWIDTH, SCREENHEIGHT, SCREENHEIGHT_4_3;
 uint HIRESWIDTH; // [crispy] non-widescreen SCREENWIDTH
-int DELTAWIDTH; // [crispy] horizontal widescreen offset
+int  DELTAWIDTH; // [crispy] horizontal widescreen offset
 
 // These are (1) the window (or the full screen) that our game is rendered to
 // and (2) the renderer that scales the texture (see below) into this window.
@@ -1413,18 +1413,12 @@ void I_GetScreenDimensions(void)
     DELTAWIDTH = ((SCREENWIDTH - HIRESWIDTH) >> crispy->hires) / 2;
 }
 
-void I_InitGraphics(void)
+auto I_InitGraphics() -> void
 {
-    SDL_Event dummy;
-    char *    env;
-
     // Pass through the XSCREENSAVER_WINDOW environment variable to
     // SDL_WINDOWID, to embed the SDL window into the Xscreensaver
     // window.
-
-    env = getenv("XSCREENSAVER_WINDOW");
-
-    if (env != NULL)
+    if (char *env = getenv("XSCREENSAVER_WINDOW"); env != nullptr)
     {
         char winenv[30];
         int  winid;
@@ -1494,8 +1488,8 @@ void I_InitGraphics(void)
 
     memset(I_VideoBuffer, 0, SCREENWIDTH * SCREENHEIGHT * sizeof(*I_VideoBuffer));
 
+    SDL_Event dummy;
     // clear out any events waiting at the start and center the mouse
-
     while (SDL_PollEvent(&dummy))
         ;
 
