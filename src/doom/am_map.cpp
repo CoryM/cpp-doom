@@ -61,8 +61,6 @@
 
 struct patch_t;
 
-// extern bool inhelpscreens; // [crispy]
-
 namespace globals {
 
 bool       automapactive = false;

@@ -18,7 +18,7 @@
 //
 
 
-#include "z_zone.hpp"
+#include "../z_zone.hpp"
 #include "p_local.hpp"
 #include "s_musinfo.hpp" // [crispy] T_MAPMusic()
 
