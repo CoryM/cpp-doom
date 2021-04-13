@@ -786,7 +786,7 @@ static auto HU_DrawCrosshair() -> void
     static patch_t *patch;
     extern byte *   R_LaserspotColor(void);
 
-    if (weaponinfo[plr->readyweapon].ammo == am_noammo || plr->playerstate != PST_LIVE || globals::automapactive || menuactive || paused || secret_on)
+    if (weaponinfo[plr->readyweapon].ammo == am_noammo || plr->playerstate != PST_LIVE || globals::automapactive || globals::doom::menuactive || paused || secret_on)
     {
         return;
     }
@@ -822,7 +822,7 @@ auto HU_Drawer() -> void
         dp_translucent = true;
     }
 
-    if (secret_on && !menuactive)
+    if (secret_on && !globals::doom::menuactive)
     {
         dp_translation = cr[CR_GOLD];
         HUlib_drawSText(&w_secret);

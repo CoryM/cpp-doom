@@ -1128,7 +1128,7 @@ bool ST_Responder(event_t *ev)
         }
 
         // 'clev' change-level cheat
-        if (!netgame && cht_CheckCheat(&cheat_clev, ev->data2) && !menuactive) // [crispy] prevent only half the screen being updated
+        if (!netgame && cht_CheckCheat(&cheat_clev, ev->data2) && !globals::doom::menuactive) // [crispy] prevent only half the screen being updated
         {
             char buf[3];
             int  epsd;
@@ -1263,7 +1263,7 @@ bool ST_Responder(event_t *ev)
             }
         }
         // [crispy] eat up the first digit typed after a cheat expecting two parameters
-        else if (!netgame && cht_CheckCheat(&cheat_clev1, ev->data2) && !menuactive)
+        else if (!netgame && cht_CheckCheat(&cheat_clev1, ev->data2) && !globals::doom::menuactive)
         {
             char buf[2];
 
@@ -1611,7 +1611,7 @@ void ST_doPaletteStuff(void)
             palette = NUMREDPALS - 1;
 
         // [crispy] tune down a bit so the menu remains legible
-        if (menuactive || paused)
+        if (globals::doom::menuactive || paused)
             palette >>= 1;
 
         palette += STARTREDPALS;

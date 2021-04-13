@@ -140,7 +140,7 @@ static bool joypadSave = false; // was the save action initiated by joypad?
 char saveOldString[SAVESTRINGSIZE];
 
 // bool inhelpscreens;
-bool menuactive;
+//bool menuactive;
 
 #define SKULLXOFF         -32
 #define LINEHEIGHT        16
@@ -1899,12 +1899,12 @@ void M_StartMessage(const char *string,
     void (*routine)(int),
     bool input)
 {
-    messageLastMenuActive = menuactive;
-    messageToPrint        = 1;
-    messageString         = string;
-    messageRoutine        = routine;
-    messageNeedsInput     = input;
-    menuactive            = true;
+    messageLastMenuActive     = globals::doom::menuactive;
+    messageToPrint            = 1;
+    messageString             = string;
+    messageRoutine            = routine;
+    messageNeedsInput         = input;
+    globals::doom::menuactive = true;
     // [crispy] entering menus while recording demos pauses the game
     if (demorecording && !paused)
     {
@@ -2192,7 +2192,7 @@ bool M_Responder(event_t *ev)
         // First click on close button = bring up quit confirm message.
         // Second click on close button = confirm quit
 
-        if (menuactive && messageToPrint && messageRoutine == M_QuitResponse)
+        if (globals::doom::menuactive && messageToPrint && messageRoutine == M_QuitResponse)
         {
             M_QuitResponse(key_menu_confirm);
         }
@@ -2214,7 +2214,7 @@ bool M_Responder(event_t *ev)
     {
         // Simulate key presses from joystick events to interact with the menu.
 
-        if (menuactive)
+        if (globals::doom::menuactive)
         {
             if (ev->data3 < 0)
             {
@@ -2440,14 +2440,14 @@ bool M_Responder(event_t *ev)
             }
         }
 
-        menuactive = messageLastMenuActive;
+        globals::doom::menuactive = messageLastMenuActive;
         if (messageRoutine)
             messageRoutine(key);
 
         // [crispy] stay in menu
         if (messageToPrint < 2)
         {
-            menuactive = false;
+            globals::doom::menuactive = false;
         }
         messageToPrint = 0; // [crispy] moved here
         S_StartSound(NULL, sfx_swtchx);
@@ -2467,7 +2467,7 @@ bool M_Responder(event_t *ev)
     }
 
     // F-Keys
-    if (!menuactive)
+    if (!globals::doom::menuactive)
     {
         if (key == key_menu_decscreen) // Screen size down
         {
@@ -2587,7 +2587,7 @@ bool M_Responder(event_t *ev)
     }
 
     // Pop-up menu?
-    if (!menuactive)
+    if (!globals::doom::menuactive)
     {
         if (key == key_menu_activate)
         {
@@ -2770,16 +2770,16 @@ bool M_Responder(event_t *ev)
 void M_StartControlPanel(void)
 {
     // intro might call this repeatedly
-    if (menuactive)
+    if (globals::doom::menuactive)
         return;
 
     // [crispy] entering menus while recording demos pauses the game
     if (demorecording && !paused)
         sendpause = true;
 
-    menuactive  = 1;
-    currentMenu = &MainDef;            // JDC
-    itemOn      = currentMenu->lastOn; // JDC
+    globals::doom::menuactive = 1;
+    currentMenu               = &MainDef;            // JDC
+    itemOn                    = currentMenu->lastOn; // JDC
 }
 
 // Display OPL debug messages - hack for GENMIDI development.
@@ -2884,7 +2884,7 @@ void M_Drawer(void)
         M_DrawOPLDev();
     }
 
-    if (!menuactive)
+    if (!globals::doom::menuactive)
         return;
 
     if (currentMenu->routine)
@@ -2941,7 +2941,7 @@ void M_Drawer(void)
 //
 void M_ClearMenus(void)
 {
-    menuactive = 0;
+    globals::doom::menuactive = 0;
 
     // [crispy] entering menus while recording demos pauses the game
     if (demorecording && paused)
@@ -2980,16 +2980,16 @@ void M_Ticker(void)
 //
 void M_Init(void)
 {
-    currentMenu      = &MainDef;
-    menuactive       = 0;
-    itemOn           = currentMenu->lastOn;
-    whichSkull       = 0;
-    skullAnimCounter = 10;
-    screenSize       = screenblocks - 3;
+    currentMenu               = &MainDef;
+    globals::doom::menuactive = 0;
+    itemOn                    = currentMenu->lastOn;
+    whichSkull                = 0;
+    skullAnimCounter          = 10;
+    screenSize                = screenblocks - 3;
     M_SizeDisplay(-1); // [crispy] initialize screenSize_min
     messageToPrint        = 0;
     messageString         = NULL;
-    messageLastMenuActive = menuactive;
+    messageLastMenuActive = globals::doom::menuactive;
     quickSaveSlot         = -1;
 
     // Here we could catch other version dependencies,

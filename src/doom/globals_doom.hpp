@@ -8,6 +8,7 @@ namespace globals::doom {
 
 // Pulled from m_menu.cpp
 static bool inhelpscreens = false;
+static bool menuactive    = false;
 
 } // namespace globals::doom
 

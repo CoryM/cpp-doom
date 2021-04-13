@@ -78,7 +78,7 @@ void P_RemoveThinker(thinker_s *thinker)
 // P_AllocateThinker
 // Allocates memory and adds a new thinker at the end of the list.
 //
-[[deprecated("function does nothing")]]void P_AllocateThinker(thinker_s *thinker [[maybe_unused]])
+[[deprecated("function does nothing")]] void P_AllocateThinker(thinker_s *thinker [[maybe_unused]])
 {
 }
 
@@ -130,7 +130,7 @@ void P_Ticker(void)
 
     // pause if in menu and at least one tic has been run
     if (!netgame
-        && menuactive
+        && globals::doom::menuactive
         && !demoplayback
         && players[consoleplayer].viewz != 1)
     {

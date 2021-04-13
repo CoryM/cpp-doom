@@ -279,7 +279,7 @@ auto D_Display() -> bool
     // see if the border needs to be updated to the screen
     if (gamestate == GS_LEVEL && (!globals::automapactive || crispy->automapoverlay) && scaledviewwidth != SCREENWIDTH)
     {
-        if (menuactive || menuactivestate || !viewactivestate)
+        if (globals::doom::menuactive || menuactivestate || !viewactivestate)
             borderdrawcount = 3;
         if (borderdrawcount)
         {
@@ -295,7 +295,7 @@ auto D_Display() -> bool
         V_DrawMouseSpeedBox(testcontrols_mousespeed);
     }
 
-    menuactivestate    = menuactive;
+    menuactivestate    = globals::doom::menuactive;
     viewactivestate    = viewactive;
     inhelpscreensstate = globals::doom::inhelpscreens;
     oldgamestate = wipegamestate = gamestate;
@@ -471,7 +471,7 @@ bool D_GrabMouseCallback(void)
 
     // when menu is active or game is paused, release the mouse
 
-    if (menuactive || paused)
+    if (globals::doom::menuactive || paused)
         return false;
 
     // only grab mouse when playing levels (but not demos)

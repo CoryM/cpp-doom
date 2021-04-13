@@ -27,6 +27,7 @@
 
 // We need globally shared data structures,
 //  for defining the global state variables.
+#include "globals_doom.hpp"
 #include "doomdata.hpp"
 #include "d_loop.hpp"
 
@@ -143,8 +144,8 @@ extern int snd_DesiredSfxDevice;
 //  status bar explicitely.
 extern bool statusbaractive;
 
-extern bool menuactive; // Menu overlayed?
-extern bool paused;     // Game Pause?
+//extern bool menuactive; // Menu overlayed?
+extern bool paused; // Game Pause?
 
 
 extern bool viewactive;

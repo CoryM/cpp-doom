@@ -848,7 +848,7 @@ public:
             }
         }
         // [crispy] zoom and move Automap with the mouse (wheel)
-        else if (ev->type == evtype_t::ev_mouse && !crispy->automapoverlay && !menuactive && !globals::doom::inhelpscreens)
+        else if (ev->type == evtype_t::ev_mouse && !crispy->automapoverlay && !globals::doom::menuactive && !globals::doom::inhelpscreens)
         {
             if (mousebprevweapon >= 0 && ev->data1 & (1 << mousebprevweapon))
             {

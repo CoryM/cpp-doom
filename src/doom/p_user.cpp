@@ -190,7 +190,7 @@ void P_MovePlayer(player_t *player)
             cmd->lookdir = MLOOKUNIT * 5 * look;
         }
     }
-    if (!menuactive && !demoplayback)
+    if (!globals::doom::menuactive && !demoplayback)
     {
         player->lookdir = std::clamp(player->lookdir + cmd->lookdir,
             -LOOKDIRMIN * MLOOKUNIT,
