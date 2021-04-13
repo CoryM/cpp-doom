@@ -28,6 +28,7 @@
 #include "doomstat.hpp" // State.
 #include "dstrings.hpp" // Data.
 #include "g_game.hpp"
+#include "globals_doom.hpp" // for Globals::Doom namespace
 #include "i_system.hpp"
 #include "i_video.hpp"
 #include "m_argv.hpp"
@@ -50,8 +51,8 @@
 #include <cstdio>
 
 
-extern int  screenblocks;  // [crispy] for the Crispy HUD
-extern bool inhelpscreens; // [crispy] prevent palette changes
+extern int screenblocks; // [crispy] for the Crispy HUD
+//extern bool inhelpscreens; // [crispy] prevent palette changes
 
 //
 // STATUS BAR DATA
@@ -1644,7 +1645,7 @@ void ST_doPaletteStuff(void)
     }
 
     // [crispy] prevent palette changes when in help screen or Crispness menu
-    if (inhelpscreens)
+    if (globals::doom::inhelpscreens)
     {
         palette = 0;
     }
@@ -1898,7 +1899,7 @@ void ST_Drawer(bool fullscreen, bool refresh)
 
     st_statusbaron = (!fullscreen) || (globals::automapactive && !crispy->automapoverlay && !crispy->widescreen);
     // [crispy] immediately redraw status bar after help screens have been shown
-    st_firsttime = st_firsttime || refresh || inhelpscreens;
+    st_firsttime = st_firsttime || refresh || globals::doom::inhelpscreens;
 
     // [crispy] distinguish classic status bar with background and player face from Crispy HUD
     st_crispyhud        = screenblocks >= CRISPY_HUD && (!globals::automapactive || crispy->automapoverlay);

@@ -51,6 +51,7 @@
 #include "doomdata.hpp"         // for ML_SECRET, ML_DONTDRAW, ML_MAPPED
 #include "doomdef.hpp"          // for MAXPLAYERS, pw_allmap, pw_invisibility
 #include "doomstat.hpp"         // for gameepisode, gamemap, players, viewa...
+#include "globals_doom.hpp"     // for Globals::Doom namespace
 #include "info.hpp"             // for MT_BLOOD, MT_PUFF, mobjinfo_t
 #include "p_local.hpp"          // for PLAYERRADIUS, MAPBLOCKUNITS, bmaporgx
 #include "p_mobj.hpp"           // for mobj_t, MF_CORPSE, MF_COUNTKILL, MF_...
@@ -60,7 +61,7 @@
 
 struct patch_t;
 
-extern bool inhelpscreens; // [crispy]
+// extern bool inhelpscreens; // [crispy]
 
 namespace globals {
 
@@ -847,7 +848,7 @@ public:
             }
         }
         // [crispy] zoom and move Automap with the mouse (wheel)
-        else if (ev->type == evtype_t::ev_mouse && !crispy->automapoverlay && !menuactive && !inhelpscreens)
+        else if (ev->type == evtype_t::ev_mouse && !crispy->automapoverlay && !menuactive && !globals::doom::inhelpscreens)
         {
             if (mousebprevweapon >= 0 && ev->data1 & (1 << mousebprevweapon))
             {
@@ -992,7 +993,7 @@ public:
             else if (key == key_map_overlay)
             {
                 // [crispy] force redraw status bar
-                inhelpscreens = true;
+                globals::doom::inhelpscreens = true;
 
                 crispy->automapoverlay = !crispy->automapoverlay;
                 if (crispy->automapoverlay)

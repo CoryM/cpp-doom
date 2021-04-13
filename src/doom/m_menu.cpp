@@ -60,6 +60,7 @@
 #include "doomstat.hpp"         // for gameversion, netgame, gamemap, gamemode
 #include "dstrings.hpp"         // for doom1_endmsg, doom2_endmsg, NUM_QUIT...
 #include "g_game.hpp"           // for G_DeferedInitNew, G_CheckDemoStatus
+#include "globals_doom.hpp"     // for Globals::Doom namespace
 #include "hu_stuff.hpp"         // for HU_FONTSIZE, HU_FONTSTART
 #include "m_background.hpp"     // for crispness_background
 #include "m_controls.hpp"       // for key_menu_confirm, key_menu_activate
@@ -138,7 +139,7 @@ static bool joypadSave = false; // was the save action initiated by joypad?
 // old save description before edit
 char saveOldString[SAVESTRINGSIZE];
 
-bool inhelpscreens;
+// bool inhelpscreens;
 bool menuactive;
 
 #define SKULLXOFF         -32
@@ -1126,7 +1127,7 @@ void M_QuickLoad(void)
 //
 void M_DrawReadThis1(void)
 {
-    inhelpscreens = true;
+    globals::doom::inhelpscreens = true;
 
     V_DrawPatchFullScreen(cache_lump_name<patch_t *>(DEH_String("HELP2"), PU::CACHE), false);
 }
@@ -1137,7 +1138,7 @@ void M_DrawReadThis1(void)
 //
 void M_DrawReadThis2(void)
 {
-    inhelpscreens = true;
+    globals::doom::inhelpscreens = true;
 
     // We only ever draw the second page if this is
     // gameversion == exe_doom_1_9 and gamemode == registered
@@ -1147,7 +1148,7 @@ void M_DrawReadThis2(void)
 
 void M_DrawReadThisCommercial(void)
 {
-    inhelpscreens = true;
+    globals::doom::inhelpscreens = true;
 
     V_DrawPatchFullScreen(cache_lump_name<patch_t *>(DEH_String("HELP"), PU::CACHE), false);
 }
@@ -1394,7 +1395,7 @@ static void M_DrawCrispnessBackground(void)
         }
     }
 
-    inhelpscreens = true;
+    globals::doom::inhelpscreens = true;
 }
 
 static char crispy_menu_text[48];
@@ -2565,7 +2566,7 @@ bool M_Responder(event_t *ev)
                 extern void R_InitColormaps(void);
                 I_SetPalette(0);
                 R_InitColormaps();
-                inhelpscreens = true;
+                globals::doom::inhelpscreens = true;
                 R_FillBackScreen();
                 viewactive = false;
             }
@@ -2830,7 +2831,7 @@ void M_Drawer(void)
     const char * name;
     int          start;
 
-    inhelpscreens = false;
+    globals::doom::inhelpscreens = false;
 
     // Horiz. & Vertically center string and print it.
     if (messageToPrint)

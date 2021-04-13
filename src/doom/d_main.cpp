@@ -20,7 +20,6 @@
 //
 #include "d_main.hpp"
 
-#include <strings.h>   // for strcasecmp, strncasecmp
 #include <array>       // for array, to_array
 #include <cctype>      // for isspace
 #include <cstdio>      // for printf, NULL, size_t
@@ -30,6 +29,7 @@
 #include <stdexcept>   // for logic_error
 #include <string>      // for basic_string, string, allocator
 #include <string_view> // for string_view, basic_string_view
+#include <strings.h>   // for strcasecmp, strncasecmp
 
 #include "fmt/format.h" // for format, print
 
@@ -69,6 +69,7 @@
 #include "f_finale.hpp"           // for F_Drawer
 #include "f_wipe.hpp"             // for wipe_EndScreen, wipe_ScreenWipe
 #include "g_game.hpp"             // for G_DeferedPlayDemo, G_BeginRecording
+#include "globals_doom.hpp"       // for Globals::Doom namespace
 #include "hu_stuff.hpp"           // for HU_Drawer, HU_Erase, HU_Init, chat...
 #include "i_sound.hpp"            // for I_GetSfxLumpNum, sfxinfo_t, I_Bind...
 #include "i_video.hpp"            // for SCREENHEIGHT, I_FinishUpdate, I_Up...
@@ -95,15 +96,12 @@ struct patch_t;
 // Manages timing and IO,
 //  calls all ?_Responder, ?_Ticker, and ?_Drawer,
 //  calls I_GetTime, I_StartFrame, and I_StartTic
-//
 void D_DoomLoop();
 
 // Location where savegames are stored
-
 char *savegamedir;
 
 // location of IWAD and WAD files
-
 char *iwadfile;
 
 
@@ -116,7 +114,7 @@ bool fastparm;    // checkparm of -fast
 //extern  int	sfxVolume;
 //extern  int	musicVolume;
 
-extern bool inhelpscreens;
+// extern bool inhelpscreens;
 
 skill_t startskill;
 int     startepisode;
@@ -224,7 +222,7 @@ auto D_Display() -> bool
         }
         if (wipe || (viewheight != SCREENHEIGHT && fullscreen))
             redrawsbar = true;
-        if (inhelpscreensstate && !inhelpscreens)
+        if (inhelpscreensstate && !globals::doom::inhelpscreens)
             redrawsbar = true; // just put away the help screen
         ST_Drawer(viewheight == SCREENHEIGHT, redrawsbar);
         fullscreen = viewheight == SCREENHEIGHT;
@@ -299,7 +297,7 @@ auto D_Display() -> bool
 
     menuactivestate    = menuactive;
     viewactivestate    = viewactive;
-    inhelpscreensstate = inhelpscreens;
+    inhelpscreensstate = globals::doom::inhelpscreens;
     oldgamestate = wipegamestate = gamestate;
 
     // [crispy] in automap overlay mode,
