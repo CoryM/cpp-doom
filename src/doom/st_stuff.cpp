@@ -50,9 +50,7 @@
 #include <algorithm>
 #include <cstdio>
 
-
 extern int screenblocks; // [crispy] for the Crispy HUD
-//extern bool inhelpscreens; // [crispy] prevent palette changes
 
 //
 // STATUS BAR DATA

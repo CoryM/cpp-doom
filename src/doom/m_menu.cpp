@@ -139,9 +139,6 @@ static bool joypadSave = false; // was the save action initiated by joypad?
 // old save description before edit
 char saveOldString[SAVESTRINGSIZE];
 
-// bool inhelpscreens;
-//bool menuactive;
-
 #define SKULLXOFF         -32
 #define LINEHEIGHT        16
 #define CRISPY_LINEHEIGHT 10 // [crispy] Crispness menu
@@ -2377,15 +2374,16 @@ bool M_Responder(event_t *ev)
         case KEY_ESCAPE:
             saveStringEnter = 0;
             I_StopTextInput();
-            M_StringCopy(savegamestrings[saveSlot], saveOldString,
-                SAVESTRINGSIZE);
+            M_StringCopy(savegamestrings[saveSlot], saveOldString, SAVESTRINGSIZE);
             break;
 
         case KEY_ENTER:
             saveStringEnter = 0;
             I_StopTextInput();
             if (savegamestrings[saveSlot][0])
+            {
                 M_DoSave(saveSlot);
+            }
             break;
 
         default:

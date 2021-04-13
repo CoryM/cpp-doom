@@ -114,8 +114,6 @@ bool fastparm;    // checkparm of -fast
 //extern  int	sfxVolume;
 //extern  int	musicVolume;
 
-// extern bool inhelpscreens;
-
 skill_t startskill;
 int     startepisode;
 int     startmap;
