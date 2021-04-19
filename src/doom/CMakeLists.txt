@@ -27,7 +27,7 @@ add_library(doom STATIC
             f_finale.cpp      f_finale.hpp
             f_wipe.cpp        f_wipe.hpp
             g_game.cpp        g_game.hpp
-                              globals_doom.hpp
+            globals_doom.cpp  globals_doom.hpp
             hu_lib.cpp        hu_lib.hpp
             hu_stuff.cpp      hu_stuff.hpp
             info.cpp          info.hpp

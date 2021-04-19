@@ -12,14 +12,13 @@ constexpr int AM_MSGHEADER  = 0x616D0000; // am??
 constexpr int AM_MSGENTERED = 0x616D6500; // ame?
 constexpr int AM_MSGEXITED  = 0x616D7800; // amx?
 namespace doom {
-
     // am_map.cpp
-    static bool       automapactive = false;
-    static cheatseq_t cheat_amap    = CHEAT("iddt", 0);
+    extern bool       automapactive;
+    extern cheatseq_t cheat_amap;
 
     // Pulled from m_menu.cpp
-    static bool inhelpscreens = false;
-    static bool menuactive    = false;
+    extern bool inhelpscreens;
+    extern bool menuactive;
 
 } // namespace doom
 
