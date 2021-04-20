@@ -20,6 +20,9 @@ namespace doom {
     extern bool inhelpscreens;
     extern bool menuactive;
 
+    // r_draw.cpp
+    extern int viewwidth;
+
 } // namespace doom
 
 } // namespace globals

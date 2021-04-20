@@ -533,7 +533,7 @@ void R_StoreWallRange(int start,
     }
 
 #ifdef RANGECHECK
-    if (start >= viewwidth || start > stop)
+    if (start >= globals::doom::viewwidth || start > stop)
     {
         S_Error(fmt::format("Bad R_RenderWallRange: {} to {}", start, stop));
     }

@@ -26,6 +26,7 @@
 #include "../z_zone.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp" // State.
+#include "globals_doom.hpp"
 #include "r_local.hpp"
 #include "v_trans.hpp" // Needs access to LFB (guess what).
 #include "v_video.hpp" // Needs access to LFB (guess what).
@@ -49,12 +50,11 @@
 //
 
 
-byte *       viewimage;
-unsigned int viewwidth;
-int          scaledviewwidth;
-int          viewheight;
-int          viewwindowx;
-int          viewwindowy;
+byte *viewimage;
+int   scaledviewwidth;
+int   viewheight;
+int   viewwindowx;
+int   viewwindowy;
 //pixel_t *ylookup[MAXHEIGHT];
 std::array<pixel_t *, MAXHEIGHT> ylookup;
 int                              columnofs[MAXWIDTH];

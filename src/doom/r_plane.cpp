@@ -23,6 +23,7 @@
 #include "../z_zone.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp"
+#include "globals_doom.hpp"
 #include "r_bmaps.hpp" // [crispy] R_BrightmapForTexName()
 #include "r_local.hpp"
 #include "r_sky.hpp"
@@ -124,7 +125,7 @@ void R_MapPlane(int y,
 #ifdef RANGECHECK
     if (x2 < x1
         || x1 < 0
-        || x2 >= viewwidth
+        || x2 >= globals::doom::viewwidth
         || y > viewheight)
     {
         S_Error(fmt::format("R_MapPlane: {}, {} at {}", x1, x2, y));
@@ -194,7 +195,7 @@ void R_ClearPlanes(void)
     angle_t angle;
 
     // opening / clipping determination
-    for (i = 0; i < viewwidth; i++)
+    for (i = 0; i < globals::doom::viewwidth; i++)
     {
         floorclip[i]   = viewheight;
         ceilingclip[i] = -1;

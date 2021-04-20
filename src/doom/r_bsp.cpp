@@ -17,12 +17,10 @@
 //
 
 
-#include "doomdef.hpp"
-
-#include "../m_bbox.hpp"
-
 #include "../i_system.hpp"
-
+#include "../m_bbox.hpp"
+#include "doomdef.hpp"
+#include "globals_doom.hpp"
 #include "r_main.hpp"
 #include "r_plane.hpp"
 #include "r_things.hpp"
@@ -226,11 +224,11 @@ void R_ClipPassWallSegment(int first,
 //
 // R_ClearClipSegs
 //
-void R_ClearClipSegs(void)
+void R_ClearClipSegs()
 {
     solidsegs[0].first = -0x7fffffff;
     solidsegs[0].last  = -1;
-    solidsegs[1].first = viewwidth;
+    solidsegs[1].first = globals::doom::viewwidth;
     solidsegs[1].last  = 0x7fffffff;
     newend             = solidsegs + 2;
 }

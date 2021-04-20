@@ -608,7 +608,7 @@ void R_InitTextureMapping(void)
         if (finetangent[i] > FRACUNIT * 2)
             t = -1;
         else if (finetangent[i] < -FRACUNIT * 2)
-            t = viewwidth + 1;
+            t = globals::doom::viewwidth + 1;
         else
         {
             t = FixedMul(finetangent[i], focallength);
@@ -616,8 +616,8 @@ void R_InitTextureMapping(void)
 
             if (t < -1)
                 t = -1;
-            else if (t > viewwidth + 1)
-                t = viewwidth + 1;
+            else if (t > globals::doom::viewwidth + 1)
+                t = globals::doom::viewwidth + 1;
         }
         viewangletox[i] = t;
     }
@@ -625,7 +625,7 @@ void R_InitTextureMapping(void)
     // Scan viewangletox[] to generate xtoviewangle[]:
     //  xtoviewangle will give the smallest view angle
     //  that maps to x.
-    for (x = 0; x <= viewwidth; x++)
+    for (x = 0; x <= globals::doom::viewwidth; x++)
     {
         i = 0;
         while (viewangletox[i] > x)
@@ -641,8 +641,8 @@ void R_InitTextureMapping(void)
 
         if (viewangletox[i] == -1)
             viewangletox[i] = 0;
-        else if (viewangletox[i] == viewwidth + 1)
-            viewangletox[i] = viewwidth;
+        else if (viewangletox[i] == globals::doom::viewwidth + 1)
+            viewangletox[i] = globals::doom::viewwidth;
     }
 
     clipangle = xtoviewangle[0];
@@ -797,11 +797,11 @@ void R_ExecuteSetViewSize(void)
         viewheight      = ((setblocks * 168 / 10) & ~7) << crispy->hires;
     }
 
-    detailshift = setdetail;
-    viewwidth   = scaledviewwidth >> detailshift;
+    detailshift              = setdetail;
+    globals::doom::viewwidth = scaledviewwidth >> detailshift;
 
     centery     = viewheight / 2;
-    centerx     = viewwidth / 2;
+    centerx     = globals::doom::viewwidth / 2;
     centerxfrac = centerx << FRACBITS;
     centeryfrac = centery << FRACBITS;
     projection  = std::min<fixed_t>(centerxfrac, ((HIRESWIDTH >> detailshift) / 2) << FRACBITS);
@@ -828,11 +828,11 @@ void R_ExecuteSetViewSize(void)
     R_InitTextureMapping();
 
     // psprite scales
-    pspritescale  = FRACUNIT * std::min(viewwidth, HIRESWIDTH >> detailshift) / ORIGWIDTH;
-    pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(viewwidth, HIRESWIDTH >> detailshift);
+    pspritescale  = FRACUNIT * std::min(globals::doom::viewwidth, HIRESWIDTH >> detailshift) / ORIGWIDTH;
+    pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(globals::doom::viewwidth, HIRESWIDTH >> detailshift);
 
     // thing clipping
-    for (unsigned int i = 0; i < viewwidth; i++)
+    for (unsigned int i = 0; i < globals::doom::viewwidth; i++)
     {
         screenheightarray[i] = viewheight;
     }
@@ -842,7 +842,7 @@ void R_ExecuteSetViewSize(void)
     {
         // [crispy] re-generate lookup-table for yslope[] (free look)
         // whenever "detailshift" or "screenblocks" change
-        const fixed_t num = std::min(viewwidth << detailshift, HIRESWIDTH) / 2 * FRACUNIT;
+        const fixed_t num = std::min(globals::doom::viewwidth << detailshift, HIRESWIDTH) / 2 * FRACUNIT;
         for (j = 0; j < LOOKDIRS; j++)
         {
             dy            = ((i - (viewheight / 2 + ((j - LOOKDIRMIN) * (1 << crispy->hires)) * (screenblocks < 11 ? screenblocks : 11) / 10)) << FRACBITS) + FRACUNIT / 2;
@@ -852,7 +852,7 @@ void R_ExecuteSetViewSize(void)
     }
     yslope = yslopes[LOOKDIRMIN];
 
-    for (i = 0; i < viewwidth; i++)
+    for (i = 0; i < globals::doom::viewwidth; i++)
     {
         cosadj       = abs(finecosine[xtoviewangle[i] >> ANGLETOFINESHIFT]);
         distscale[i] = FixedDiv(FRACUNIT, cosadj);
@@ -868,7 +868,7 @@ void R_ExecuteSetViewSize(void)
         startmap = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
         for (j = 0; j < MAXLIGHTSCALE; j++)
         {
-            level = startmap - j * HIRESWIDTH / std::min(viewwidth << detailshift, HIRESWIDTH) / DISTMAP;
+            level = startmap - j * HIRESWIDTH / std::min(globals::doom::viewwidth << detailshift, HIRESWIDTH) / DISTMAP;
 
             level = std::clamp(level, 0, NUMCOLORMAPS - 1);
 
@@ -901,7 +901,7 @@ void R_Init(void)
     R_InitPointToAngle();
     printf(".");
     R_InitTables();
-    // viewwidth / viewheight / detailLevel are set by the defaults
+    // globals::doom::viewwidth / viewheight / detailLevel are set by the defaults
     printf(".");
 
     R_SetViewSize(screenblocks, detailLevel);

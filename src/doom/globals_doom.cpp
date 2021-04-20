@@ -11,6 +11,9 @@ namespace doom {
     constinit bool inhelpscreens = false;
     constinit bool menuactive    = false;
 
+    // r_draw.cpp
+    constinit int viewwidth = 0;
+
 } // namespace doom
 
 } // namespace globals

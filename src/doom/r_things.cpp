@@ -25,6 +25,7 @@
 #include "../z_zone.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp"
+#include "globals_doom.hpp"
 #include "p_local.hpp" // [crispy] MLOOKUNIT
 #include "r_bmaps.hpp" // [crispy] R_BrightmapForTexName()
 #include "r_local.hpp"
@@ -678,7 +679,7 @@ void R_ProjectSprite(mobj_t *thing)
     x1 = (centerxfrac + FixedMul(tx, xscale)) >> FRACBITS;
 
     // off the right side?
-    if (x1 > viewwidth)
+    if (x1 > globals::doom::viewwidth)
         return;
 
     tx += spritewidth[lump];
@@ -712,7 +713,7 @@ void R_ProjectSprite(mobj_t *thing)
     vis->gzt         = gzt; // [JN] killough 3/27/98
     vis->texturemid  = gzt - viewz;
     vis->x1          = x1 < 0 ? 0 : x1;
-    vis->x2          = x2 >= viewwidth ? viewwidth - 1 : x2;
+    vis->x2          = x2 >= globals::doom::viewwidth ? globals::doom::viewwidth - 1 : x2;
     iscale           = FixedDiv(FRACUNIT, xscale);
 
     if (flip)
@@ -890,7 +891,7 @@ static void R_DrawLSprite(void)
     tx += SHORT(patch->width) << FRACBITS;
     vis->x2 = ((centerxfrac + FixedMul(tx, xscale)) >> FRACBITS) - 1;
 
-    if (vis->x1 < 0 || vis->x1 >= viewwidth || vis->x2 < 0 || vis->x2 >= viewwidth)
+    if (vis->x1 < 0 || vis->x1 >= globals::doom::viewwidth || vis->x2 < 0 || vis->x2 >= globals::doom::viewwidth)
         return;
 
     R_DrawVisSprite(vis, vis->x1, vis->x2);
@@ -980,7 +981,7 @@ void R_DrawPSprite(pspdef_t *psp, psprnum_t psprnum) // [crispy] differentiate g
     x1 = (centerxfrac + FixedMul(tx, pspritescale)) >> FRACBITS;
 
     // off the right side
-    if (x1 > viewwidth)
+    if (x1 > globals::doom::viewwidth)
         return;
 
     tx += spritewidth[lump];
@@ -997,7 +998,7 @@ void R_DrawPSprite(pspdef_t *psp, psprnum_t psprnum) // [crispy] differentiate g
     // [crispy] weapons drawn 1 pixel too high when player is idle
     vis->texturemid = (BASEYCENTER << FRACBITS) + FRACUNIT / 4 - (psp->sy2 + abs(psp->dy) - spritetopoffset[lump]);
     vis->x1         = x1 < 0 ? 0 : x1;
-    vis->x2         = x2 >= viewwidth ? viewwidth - 1 : x2;
+    vis->x2         = x2 >= globals::doom::viewwidth ? globals::doom::viewwidth - 1 : x2;
     vis->scale      = pspritescale << detailshift;
 
     if (flip)
