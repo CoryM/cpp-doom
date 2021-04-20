@@ -828,11 +828,11 @@ void R_ExecuteSetViewSize(void)
     R_InitTextureMapping();
 
     // psprite scales
-    pspritescale  = FRACUNIT * std::min(globals::doom::viewwidth, HIRESWIDTH >> detailshift) / ORIGWIDTH;
-    pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(globals::doom::viewwidth, HIRESWIDTH >> detailshift);
+    pspritescale  = FRACUNIT * std::min(globals::doom::viewwidth, static_cast<int>(HIRESWIDTH >> detailshift)) / ORIGWIDTH;
+    pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(globals::doom::viewwidth, static_cast<int>(HIRESWIDTH >> detailshift));
 
     // thing clipping
-    for (unsigned int i = 0; i < globals::doom::viewwidth; i++)
+    for (int i = 0; i < globals::doom::viewwidth; i++)
     {
         screenheightarray[i] = viewheight;
     }
@@ -842,7 +842,7 @@ void R_ExecuteSetViewSize(void)
     {
         // [crispy] re-generate lookup-table for yslope[] (free look)
         // whenever "detailshift" or "screenblocks" change
-        const fixed_t num = std::min(globals::doom::viewwidth << detailshift, HIRESWIDTH) / 2 * FRACUNIT;
+        const fixed_t num = std::min(globals::doom::viewwidth << detailshift, static_cast<int>(HIRESWIDTH)) / 2 * FRACUNIT;
         for (j = 0; j < LOOKDIRS; j++)
         {
             dy            = ((i - (viewheight / 2 + ((j - LOOKDIRMIN) * (1 << crispy->hires)) * (screenblocks < 11 ? screenblocks : 11) / 10)) << FRACBITS) + FRACUNIT / 2;
@@ -863,12 +863,10 @@ void R_ExecuteSetViewSize(void)
     scalelight.resize(LIGHTLEVELS, std::vector<lighttable_t *>(MAXLIGHTSCALE, nullptr));
     for (i = 0; i < LIGHTLEVELS; i++)
     {
-        //scalelight[i] = static_cast<lighttable_t **>(malloc(MAXLIGHTSCALE * sizeof(**scalelight)));
-
         startmap = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
         for (j = 0; j < MAXLIGHTSCALE; j++)
         {
-            level = startmap - j * HIRESWIDTH / std::min(globals::doom::viewwidth << detailshift, HIRESWIDTH) / DISTMAP;
+            level = startmap - j * static_cast<int>(HIRESWIDTH) / std::min(static_cast<int>(static_cast<unsigned int>(globals::doom::viewwidth) << detailshift), static_cast<int>(HIRESWIDTH)) / DISTMAP;
 
             level = std::clamp(level, 0, NUMCOLORMAPS - 1);
 
@@ -877,7 +875,7 @@ void R_ExecuteSetViewSize(void)
     }
 
     // [crispy] lookup table for horizontal screen coordinates
-    for (i = 0, j = SCREENWIDTH - 1; i < SCREENWIDTH; i++, j--)
+    for (i = 0, j = static_cast<int>(SCREENWIDTH) - 1; i < static_cast<int>(SCREENWIDTH); i++, j--)
     {
         flipscreenwidth[i] = crispy->fliplevels ? j : i;
     }

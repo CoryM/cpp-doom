@@ -31,27 +31,22 @@
 #include "r_local.hpp"
 #include "v_trans.hpp" // [crispy] colored blood sprites
 
+#include <array>
 #include <cstdio>
 #include <cstdlib>
 
-#define MINZ        (FRACUNIT * 4)
-#define BASEYCENTER (ORIGHEIGHT / 2)
+constexpr int MINZ        = (FRACUNIT * 4);
+constexpr int BASEYCENTER = (ORIGHEIGHT / 2);
 
-//void R_DrawColumn (void);
-//void R_DrawFuzzColumn (void);
-
-
-typedef struct
-{
-    int x1;
-    int x2;
-
-    int column;
-    int topclip;
-    int bottomclip;
-
-} maskdraw_t;
-
+// struct {
+//     int x1;
+//     int x2;
+//
+//     int column;
+//     int topclip;
+//     int bottomclip;
+//
+// } maskdraw_t;
 
 static degenmobj_t laserspot_m = {};
 degenmobj_t *      laserspot   = &laserspot_m;
@@ -107,7 +102,6 @@ void R_InstallSpriteLump(int lump,
     char                     rot,
     bool                     flipped)
 {
-    int r;
     // [crispy] support 16 sprite rotations
     unsigned rotation = (rot >= 'A') ? rot - 'A' + 10 : (rot >= '0') ? rot - '0' :
                                                                        17;
@@ -120,7 +114,9 @@ void R_InstallSpriteLump(int lump,
     }
 
     if ((int)frame > maxframe)
-        maxframe = frame;
+    {
+        maxframe = static_cast<int>(frame);
+    }
 
     if (rotation == 0)
     {
@@ -139,13 +135,13 @@ void R_InstallSpriteLump(int lump,
 
         // [crispy] moved ...
         //	sprtemp[frame].rotate = false;
-        for (r = 0; r < 8; r++)
+        for (size_t r = 0; r < 8; r++)
         {
             // [crispy] only if not yet substituted
             if (sprtemp[frame].lump[r] == -1)
             {
                 sprtemp[frame].lump[r] = lump - firstspritelump;
-                sprtemp[frame].flip[r] = (byte)flipped;
+                sprtemp[frame].flip[r] = static_cast<byte>(flipped);
                 // [crispy] ... here
                 sprtemp[frame].rotate = false;
             }
@@ -209,8 +205,10 @@ void R_InitSpriteDefs(const char **namelist)
 
     // count the number of sprite names
     check = namelist;
-    while (*check != NULL)
+    while (*check != nullptr)
+    {
         check++;
+    }
 
     numsprites = check - namelist;
 
@@ -328,9 +326,7 @@ static int   numvissprites;
 //
 void R_InitSprites(const char **namelist)
 {
-    int i;
-
-    for (i = 0; i < SCREENWIDTH; i++)
+    for (unsigned int i = 0; i < SCREENWIDTH; i++)
     {
         negonearray[i] = -1;
     }
