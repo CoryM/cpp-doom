@@ -631,8 +631,8 @@ void R_StoreWallRange(int start,
         rw_midtexturemid += sidedef->rowoffset;
 
         ds_p->silhouette    = SIL_BOTH;
-        ds_p->sprtopclip    = screenheightarray;
-        ds_p->sprbottomclip = negonearray;
+        ds_p->sprtopclip    = screenheightarray.data();
+        ds_p->sprbottomclip = negonearray.data();
         ds_p->bsilheight    = INT_MAX;
         ds_p->tsilheight    = INT_MIN;
     }
@@ -679,14 +679,14 @@ void R_StoreWallRange(int start,
 
         if (backsector->interpceilingheight <= frontsector->interpfloorheight || doorclosed)
         {
-            ds_p->sprbottomclip = negonearray;
+            ds_p->sprbottomclip = negonearray.data();
             ds_p->bsilheight    = INT_MAX;
             ds_p->silhouette |= SIL_BOTTOM;
         }
 
         if (backsector->interpfloorheight >= frontsector->interpceilingheight || doorclosed)
         {
-            ds_p->sprtopclip = screenheightarray;
+            ds_p->sprtopclip = screenheightarray.data();
             ds_p->tsilheight = INT_MIN;
             ds_p->silhouette |= SIL_TOP;
         }

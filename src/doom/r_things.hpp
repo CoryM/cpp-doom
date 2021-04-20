@@ -29,8 +29,8 @@ extern vissprite_t  vsprsortedhead;
 
 // Constant arrays used for psprite clipping
 //  and initializing clipping.
-extern int negonearray[MAXWIDTH];       // [crispy] 32-bit integer math
-extern int screenheightarray[MAXWIDTH]; // [crispy] 32-bit integer math
+extern std::array<int, MAXWIDTH> negonearray;       // [crispy] 32-bit integer math
+extern std::array<int, MAXWIDTH> screenheightarray; // [crispy] 32-bit integer math
 
 // vars for R_DrawMaskedColumn
 extern int *   mfloorclip;   // [crispy] 32-bit integer math

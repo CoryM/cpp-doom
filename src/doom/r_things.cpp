@@ -75,9 +75,8 @@ lighttable_t **spritelights;
 
 // constant arrays
 //  used for psprite clipping and initializing clipping
-int negonearray[MAXWIDTH];       // [crispy] 32-bit integer math
-int screenheightarray[MAXWIDTH]; // [crispy] 32-bit integer math
-
+std::array<int, MAXWIDTH> negonearray;       // [crispy] 32-bit integer math
+std::array<int, MAXWIDTH> screenheightarray; // [crispy] 32-bit integer math
 
 //
 // INITIALIZATION FUNCTIONS
@@ -1073,8 +1072,8 @@ void R_DrawPlayerSprites(void)
         spritelights = &scalelight[lightnum][0];
 
     // clip to screen bounds
-    mfloorclip   = screenheightarray;
-    mceilingclip = negonearray;
+    mfloorclip   = screenheightarray.data();
+    mceilingclip = negonearray.data();
 
     if (crispy->crosshair == CROSSHAIR_PROJECTED)
         R_DrawLSprite();
