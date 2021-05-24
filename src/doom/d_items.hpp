@@ -19,6 +19,8 @@
 #ifndef DOOM_D_ITEMS_HPP
 #define DOOM_D_ITEMS_HPP
 
+#include <array>
+
 #include "doomdef.hpp"
 
 
@@ -32,6 +34,6 @@ struct weaponinfo_t {
     int        flashstate;
 };
 
-extern weaponinfo_t weaponinfo[NUMWEAPONS];
+extern std::array<weaponinfo_t, NUMWEAPONS> weaponinfo;
 
 #endif // DOOM_D_ITEMS_HPP
