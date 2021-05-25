@@ -168,18 +168,9 @@ void T_MoveCeiling(ceiling_t *ceiling)
 //
 // EV_DoCeiling
 // Move a ceiling up/down and all around!
-//
-int EV_DoCeiling(line_s *line,
-    ceiling_e            type)
+auto EV_DoCeiling(line_s *line,
+    ceiling_e             type) -> int
 {
-    int        secnum;
-    int        rtn;
-    sector_t * sec;
-    ceiling_t *ceiling;
-
-    secnum = -1;
-    rtn    = 0;
-
     //	Reactivate in-stasis ceilings...for certain types.
     switch (type)
     {
@@ -191,15 +182,19 @@ int EV_DoCeiling(line_s *line,
         break;
     }
 
+    int secnum = -1;
+    int rtn    = 0;
     while ((secnum = P_FindSectorFromLineTag(line, secnum)) >= 0)
     {
-        sec = &sectors[secnum];
+        auto *sec = &sectors[secnum];
         if (sec->specialdata)
+        {
             continue;
+        }
 
         // new door thinker
-        rtn     = 1;
-        ceiling = zmalloc<decltype(ceiling)>(sizeof(*ceiling), PU::LEVSPEC, 0);
+        rtn                = 1;
+        ceiling_t *ceiling = zmalloc<decltype(ceiling)>(sizeof(*ceiling), PU::LEVSPEC, 0);
         P_AddThinker(&ceiling->thinker);
         sec->specialdata               = ceiling;
         ceiling->thinker.function.acp1 = (actionf_p1)T_MoveCeiling;
@@ -227,7 +222,9 @@ int EV_DoCeiling(line_s *line,
         case lowerToFloor:
             ceiling->bottomheight = sec->floorheight;
             if (type != lowerToFloor)
+            {
                 ceiling->bottomheight += 8 * FRACUNIT;
+            }
             ceiling->direction = -1;
             ceiling->speed     = CEILSPEED;
             break;
@@ -282,7 +279,7 @@ void P_RemoveActiveCeiling(ceiling_t *c)
 //
 // Restart a ceiling that's in-stasis
 //
-void P_ActivateInStasisCeiling(line_s *line)
+auto P_ActivateInStasisCeiling(line_s *line) -> void
 {
     const auto filter = std::views::filter([line](auto i) {
         //         not nullptr       the tag matches         and the direction is 0?
@@ -301,7 +298,7 @@ void P_ActivateInStasisCeiling(line_s *line)
 // EV_CeilingCrushStop
 // Stop a ceiling from crushing!
 //
-int EV_CeilingCrushStop(line_s *line)
+auto EV_CeilingCrushStop(line_s *line) -> int
 {
     int rtn = 0;
 
