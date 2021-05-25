@@ -764,7 +764,7 @@ auto R_ExecuteSetViewSize() -> void
     setsizeneeded = false;
 
     // [crispy] make absolutely sure screenblocks is never < 11 in widescreen mode
-    if (crispy->widescreen)
+    if (static_cast<bool>(crispy->widescreen))
     {
         extern void M_SizeDisplay(int choice);
 
@@ -796,7 +796,7 @@ auto R_ExecuteSetViewSize() -> void
     centeryfrac = centery << FRACBITS;
     projection  = std::min<fixed_t>(centerxfrac, ((HIRESWIDTH >> detailshift) / 2) << FRACBITS);
 
-    if (!detailshift)
+    if (!static_cast<bool>(detailshift))
     {
         colfunc = basecolfunc = R_DrawColumn;
         fuzzcolfunc           = R_DrawFuzzColumn;
@@ -822,10 +822,7 @@ auto R_ExecuteSetViewSize() -> void
     pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(globals::doom::viewwidth, static_cast<int>(HIRESWIDTH >> detailshift));
 
     // thing clipping
-    for (int i = 0; i < globals::doom::viewwidth; i++)
-    {
-        screenheightarray[i] = viewheight;
-    }
+    std::fill_n(screenheightarray.begin(), globals::doom::viewwidth, viewheight);
 
     // planes
     for (int i = 0; i < viewheight; i++)
@@ -835,9 +832,8 @@ auto R_ExecuteSetViewSize() -> void
         const fixed_t num = std::min(globals::doom::viewwidth << detailshift, static_cast<int>(HIRESWIDTH)) / 2 * FRACUNIT;
         for (int j = 0; j < LOOKDIRS; j++)
         {
-            fixed_t dy    = ((i - (viewheight / 2 + ((j - LOOKDIRMIN) * (1 << crispy->hires)) * (screenblocks < 11 ? screenblocks : 11) / 10)) << FRACBITS) + FRACUNIT / 2;
-            dy            = abs(dy);
-            yslopes[j][i] = FixedDiv(num, dy);
+            const fixed_t dy = abs(((i - (viewheight / 2 + ((j - LOOKDIRMIN) * (1 << crispy->hires)) * (screenblocks < 11 ? screenblocks : 11) / 10)) << FRACBITS) + FRACUNIT / 2);
+            yslopes[j][i]    = FixedDiv(num, dy);
         }
     }
     yslope = yslopes[LOOKDIRMIN];
