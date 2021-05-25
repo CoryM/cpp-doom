@@ -336,7 +336,7 @@ auto D_Display() -> bool
     return wipe;
 }
 
-void EnableLoadingDisk(void) // [crispy] un-static
+void EnableLoadingDisk() // [crispy] un-static
 {
     const char *disk_lump_name;
 
@@ -361,7 +361,7 @@ void EnableLoadingDisk(void) // [crispy] un-static
 // Add configuration file variable bindings.
 //
 
-void D_BindVariables(void)
+void D_BindVariables()
 {
     int i;
 
@@ -460,20 +460,21 @@ void D_BindVariables(void)
 // Called to determine whether to grab the mouse pointer
 //
 
-bool D_GrabMouseCallback(void)
+auto D_GrabMouseCallback() -> bool
 {
     // Drone players don't need mouse focus
-
     if (drone)
+    {
         return false;
+    }
 
     // when menu is active or game is paused, release the mouse
-
     if (globals::doom::menuactive || paused)
+    {
         return false;
+    }
 
     // only grab mouse when playing levels (but not demos)
-
     return (gamestate == GS_LEVEL) && !demoplayback && !advancedemo;
 }
 
@@ -482,13 +483,13 @@ bool D_GrabMouseCallback(void)
 //
 void D_RunFrame()
 {
-    int         nowtime;
-    int         tics;
     static int  wipestart;
-    static bool wipe;
+    static bool wipe = false;
 
     if (wipe)
     {
+        int nowtime = 0;
+        int tics    = 0;
         do
         {
             nowtime = I_GetTime();
@@ -497,15 +498,14 @@ void D_RunFrame()
         } while (tics <= 0);
 
         wipestart = nowtime;
-        wipe      = !wipe_ScreenWipe(wipe_Melt, 0, 0, SCREENWIDTH, SCREENHEIGHT, tics);
+        wipe      = !static_cast<bool>(wipe_ScreenWipe(wipe_Melt, 0, 0, static_cast<int>(SCREENWIDTH), static_cast<int>(SCREENHEIGHT), tics));
         I_UpdateNoBlit();
         M_Drawer();       // menu is drawn even on top of wipes
         I_FinishUpdate(); // page flip or blit buffer
         return;
     }
 
-    // frame synchronous IO operations
-    I_StartFrame();
+    I_StartFrame(); // frame synchronous IO operations
 
     TryRunTics(); // will run at least one tic
 
@@ -541,7 +541,7 @@ void D_RunFrame()
 //
 //  D_DoomLoop
 //
-void D_DoomLoop(void)
+void D_DoomLoop()
 {
     if (gamevariant == bfgedition && (demorecording || (gameaction == ga_playdemo) || netgame))
     {
@@ -600,7 +600,7 @@ const char *pagename;
 // D_PageTicker
 // Handles timing for warped projection
 //
-void D_PageTicker(void)
+void D_PageTicker()
 {
     if (--pagetic < 0)
         D_AdvanceDemo();
@@ -610,7 +610,7 @@ void D_PageTicker(void)
 //
 // D_PageDrawer
 //
-void D_PageDrawer(void)
+void D_PageDrawer()
 {
     V_DrawPatchFullScreen(cache_lump_name<patch_t *>(pagename, PU::CACHE), crispy->fliplevels);
 }
@@ -620,7 +620,7 @@ void D_PageDrawer(void)
 // D_AdvanceDemo
 // Called after each demo or intro demosequence finishes
 //
-void D_AdvanceDemo(void)
+void D_AdvanceDemo()
 {
     advancedemo = true;
 }
@@ -630,7 +630,7 @@ void D_AdvanceDemo(void)
 // This cycles through the demo sequences.
 // FIXME - version dependend demo numbers?
 //
-void D_DoAdvanceDemo(void)
+void D_DoAdvanceDemo()
 {
     players[consoleplayer].playerstate = PST_LIVE; // not reborn
     advancedemo                        = false;
@@ -725,7 +725,7 @@ void D_DoAdvanceDemo(void)
 //
 // D_StartTitle
 //
-void D_StartTitle(void)
+void D_StartTitle()
 {
     gameaction   = ga_nothing;
     demosequence = -1;
@@ -858,7 +858,7 @@ static void SetMissionForPackName(const char *pack_name)
 // Find out what version of Doom is playing.
 //
 
-void D_IdentifyVersion(void)
+void D_IdentifyVersion()
 {
     // gamemission is set up by the D_FindIWAD function.  But if
     // we specify '-iwad', we have to identify using
@@ -942,7 +942,7 @@ void D_IdentifyVersion(void)
 
 // Set the gamedescription string
 
-void D_SetGameDescription(void)
+void D_SetGameDescription()
 {
     gamedescription = "Unknown";
 
@@ -1083,7 +1083,7 @@ static constexpr struct
 
 // Initialize the game version
 
-static void InitGameVersion(void)
+static void InitGameVersion()
 {
     byte *demolump;
     char  demolumpname[6];
@@ -1229,7 +1229,7 @@ static void InitGameVersion(void)
     }
 }
 
-void PrintGameVersion(void)
+void PrintGameVersion()
 {
     int i;
 
@@ -1247,7 +1247,7 @@ void PrintGameVersion(void)
 
 // Function called at exit to display the ENDOOM screen
 
-static void D_Endoom(void)
+static void D_Endoom()
 {
     byte *endoom;
 
@@ -1267,7 +1267,7 @@ static void D_Endoom(void)
 }
 
 // Load dehacked patches needed for certain IWADs.
-static void LoadIwadDeh(void)
+static void LoadIwadDeh()
 {
     // The Freedoom IWADs have DEHACKED lumps that must be loaded.
     if (gamevariant == freedoom || gamevariant == freedm)
@@ -1320,7 +1320,7 @@ static void LoadIwadDeh(void)
 }
 
 // [crispy] support loading SIGIL.WAD (and SIGIL_SHREDS.WAD) alongside DOOM.WAD
-static void LoadSigilWad(void)
+static void LoadSigilWad()
 {
     struct s_sigilLumps {
         const std::string_view name;
@@ -1456,7 +1456,7 @@ static void LoadSigilWad(void)
 }
 
 // [crispy] support loading NERVE.WAD alongside DOOM2.WAD
-static void LoadNerveWad(void)
+static void LoadNerveWad()
 {
     int i, j, k;
 
@@ -1513,7 +1513,7 @@ static void LoadNerveWad(void)
 }
 
 // [crispy] support loading MASTERLEVELS.WAD alongside DOOM2.WAD
-static void LoadMasterlevelsWad(void)
+static void LoadMasterlevelsWad()
 {
     int i, j;
 
@@ -1534,7 +1534,7 @@ static void G_CheckDemoStatusAtExit(void)
 //
 // D_DoomMain
 //
-void D_DoomMain(void)
+void D_DoomMain()
 {
     int  p;
     char file[256];
@@ -2034,8 +2034,8 @@ void D_DoomMain(void)
     D_SetGameDescription();
 
     {
-        auto *v     = D_SaveGameIWADName(gamemission);
-        savegamedir = M_GetSaveGameDir(v);
+        const auto *v = D_SaveGameIWADName(gamemission);
+        savegamedir   = M_GetSaveGameDir(v);
     }
 
     // Check for -file in shareware

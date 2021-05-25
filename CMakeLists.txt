@@ -57,10 +57,11 @@ endif()
 
 # Any settings that should apply to all targets in this directory and all
 # subdirectories should go here.  Use judiciously.
-add_compile_options("-Wall" "-march=native" "-mtune=native" "-Wextra" "-pedantic" "-pthread" "-Og" "-Wno-attributes")
+add_compile_options("-Wall" "-Wextra" "-pedantic" "-Wshadow" "-pthread" "-Og" "-Wno-attributes" "-march=native" "-mtune=native")
 add_link_options("-O2")
 add_compile_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g3")
 add_link_options("-fsanitize=undefined" "-fsanitize=address" "-fno-optimize-sibling-calls" "-fsanitize-address-use-after-scope" "-fno-omit-frame-pointer" "-g3")
+
 
 find_package(SFML 2.5.0 COMPONENTS system window graphics audio REQUIRED)
 

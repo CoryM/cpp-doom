@@ -656,14 +656,8 @@ void R_InitTextureMapping(void)
 //
 #define DISTMAP 2
 
-void R_InitLightTables(void)
+auto R_InitLightTables() -> void
 {
-    int i;
-    int j;
-    int level;
-    int startmap;
-    int scale;
-
     if (!scalelight.empty())
     {
         scalelight.clear();
@@ -676,7 +670,7 @@ void R_InitLightTables(void)
 
     if (zlight)
     {
-        for (i = 0; i < LIGHTLEVELS; i++)
+        for (int i = 0; i < LIGHTLEVELS; i++)
         {
             free(zlight[i]);
         }
@@ -712,23 +706,26 @@ void R_InitLightTables(void)
 
     // Calculate the light levels to use
     //  for each level / distance combination.
-    for (i = 0; i < LIGHTLEVELS; i++)
+    for (int i = 0; i < LIGHTLEVELS; i++)
     {
-        zlight[i] =
-            static_cast<lighttable_t **>(malloc(MAXLIGHTZ * sizeof(**zlight)));
+        zlight[i] = static_cast<lighttable_t **>(malloc(MAXLIGHTZ * sizeof(**zlight)));
 
-        startmap = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
-        for (j = 0; j < MAXLIGHTZ; j++)
+        const int startmap_v = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
+        for (int j = 0; j < MAXLIGHTZ; j++)
         {
-            scale = FixedDiv((ORIGWIDTH / 2 * FRACUNIT), (j + 1) << LIGHTZSHIFT);
+            int scale = FixedDiv((ORIGWIDTH / 2 * FRACUNIT), (j + 1) << LIGHTZSHIFT);
             scale >>= LIGHTSCALESHIFT;
-            level = startmap - scale / DISTMAP;
+            int level = startmap_v - scale / DISTMAP;
 
             if (level < 0)
+            {
                 level = 0;
+            }
 
             if (level >= NUMCOLORMAPS)
+            {
                 level = NUMCOLORMAPS - 1;
+            }
 
             zlight[i][j] = colormaps + level * 256;
         }
@@ -762,15 +759,8 @@ void R_SetViewSize(int blocks,
 //
 // R_ExecuteSetViewSize
 //
-void R_ExecuteSetViewSize(void)
+auto R_ExecuteSetViewSize() -> void
 {
-    fixed_t cosadj;
-    fixed_t dy;
-    int     i;
-    int     j;
-    int     level;
-    int     startmap;
-
     setsizeneeded = false;
 
     // [crispy] make absolutely sure screenblocks is never < 11 in widescreen mode
@@ -838,44 +828,42 @@ void R_ExecuteSetViewSize(void)
     }
 
     // planes
-    for (i = 0; i < viewheight; i++)
+    for (int i = 0; i < viewheight; i++)
     {
         // [crispy] re-generate lookup-table for yslope[] (free look)
         // whenever "detailshift" or "screenblocks" change
         const fixed_t num = std::min(globals::doom::viewwidth << detailshift, static_cast<int>(HIRESWIDTH)) / 2 * FRACUNIT;
-        for (j = 0; j < LOOKDIRS; j++)
+        for (int j = 0; j < LOOKDIRS; j++)
         {
-            dy            = ((i - (viewheight / 2 + ((j - LOOKDIRMIN) * (1 << crispy->hires)) * (screenblocks < 11 ? screenblocks : 11) / 10)) << FRACBITS) + FRACUNIT / 2;
+            fixed_t dy    = ((i - (viewheight / 2 + ((j - LOOKDIRMIN) * (1 << crispy->hires)) * (screenblocks < 11 ? screenblocks : 11) / 10)) << FRACBITS) + FRACUNIT / 2;
             dy            = abs(dy);
             yslopes[j][i] = FixedDiv(num, dy);
         }
     }
     yslope = yslopes[LOOKDIRMIN];
 
-    for (i = 0; i < globals::doom::viewwidth; i++)
+    for (int i = 0; i < globals::doom::viewwidth; i++)
     {
-        cosadj       = abs(finecosine[xtoviewangle[i] >> ANGLETOFINESHIFT]);
-        distscale[i] = FixedDiv(FRACUNIT, cosadj);
+        fixed_t cosadj = abs(finecosine[xtoviewangle[i] >> ANGLETOFINESHIFT]);
+        distscale[i]   = FixedDiv(FRACUNIT, cosadj);
     }
 
     // Calculate the light levels to use
     //  for each level / scale combination.
     scalelight.resize(LIGHTLEVELS, std::vector<lighttable_t *>(MAXLIGHTSCALE, nullptr));
-    for (i = 0; i < LIGHTLEVELS; i++)
+    for (int i = 0; i < LIGHTLEVELS; i++)
     {
-        startmap = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
-        for (j = 0; j < MAXLIGHTSCALE; j++)
+        const int startmap_v = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
+        for (int j = 0; j < MAXLIGHTSCALE; j++)
         {
-            level = startmap - j * static_cast<int>(HIRESWIDTH) / std::min(static_cast<int>(static_cast<unsigned int>(globals::doom::viewwidth) << detailshift), static_cast<int>(HIRESWIDTH)) / DISTMAP;
+            const int level = startmap_v - j * static_cast<int>(HIRESWIDTH) / std::min(static_cast<int>(static_cast<unsigned int>(globals::doom::viewwidth) << detailshift), static_cast<int>(HIRESWIDTH)) / DISTMAP;
 
-            level = std::clamp(level, 0, NUMCOLORMAPS - 1);
-
-            scalelight[i][j] = colormaps + level * 256;
+            scalelight[i][j] = colormaps + std::clamp(level, 0, NUMCOLORMAPS - 1) * 256;
         }
     }
 
     // [crispy] lookup table for horizontal screen coordinates
-    for (i = 0, j = static_cast<int>(SCREENWIDTH) - 1; i < static_cast<int>(SCREENWIDTH); i++, j--)
+    for (int i = 0, j = static_cast<int>(SCREENWIDTH) - 1; i < static_cast<int>(SCREENWIDTH); i++, j--)
     {
         flipscreenwidth[i] = crispy->fliplevels ? j : i;
     }
