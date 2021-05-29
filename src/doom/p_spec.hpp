@@ -243,7 +243,7 @@ typedef enum
 } plat_e;
 
 
-typedef enum
+enum plattype_e
 {
     perpetualRaise,
     downWaitUpStay,
@@ -251,11 +251,10 @@ typedef enum
     raiseToNearestAndChange,
     blazeDWUS
 
-} plattype_e;
+};
 
 
-typedef struct
-{
+struct plat_t {
     thinker_s  thinker;
     sector_t * sector;
     fixed_t    speed;
@@ -268,8 +267,7 @@ typedef struct
     bool       crush;
     int        tag;
     plattype_e type;
-
-} plat_t;
+};
 
 
 #define PLATWAIT  3
@@ -293,8 +291,7 @@ void P_ActivateInStasis(int tag);
 
 //
 // P_DOORS
-//
-typedef enum
+enum vldoor_e
 {
     vld_normal,
     vld_close30ThenOpen,
@@ -305,11 +302,10 @@ typedef enum
     vld_blazeOpen,
     vld_blazeClose
 
-} vldoor_e;
+};
 
 
-typedef struct
-{
+struct vldoor_t {
     thinker_s thinker;
     vldoor_e  type;
     sector_t *sector;
@@ -321,11 +317,11 @@ typedef struct
 
     // tics to wait at the top
     int topwait;
+
     // (keep in case a door going down is reset)
     // when it reaches 0, start going down
     int topcountdown;
-
-} vldoor_t;
+};
 
 
 #define VDOORSPEED FRACUNIT * 2
