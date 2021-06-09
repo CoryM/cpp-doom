@@ -57,10 +57,160 @@ slidename_t	slideFrameNames[MAXSLIDEDOORS] =
 // VERTICAL DOORS
 //
 
+/*
 //
 // T_VerticalDoor
 //
 void T_VerticalDoor(vldoor_t *door)
+{
+    switch (door->direction)
+    {
+    case 0: {
+        // WAITING
+        if (!static_cast<bool>(--door->topcountdown))
+        {
+            switch (door->type)
+            {
+            case vld_blazeRaise:
+                door->direction = -1; // time to go back down
+                S_StartSound(&door->sector->soundorg, sfx_bdcls);
+                break;
+
+            case vld_normal:
+                door->direction = -1; // time to go back down
+                S_StartSound(&door->sector->soundorg, sfx_dorcls);
+                break;
+
+            case vld_close30ThenOpen:
+                door->direction = 1;
+                S_StartSound(&door->sector->soundorg, sfx_doropn);
+                break;
+
+            default:
+                break;
+            }
+        }
+        break;
+    }
+
+    case 2: { //  INITIAL WAIT
+        if (!static_cast<bool>(--door->topcountdown))
+        {
+            switch (door->type)
+            {
+            case vld_raiseIn5Mins:
+                door->direction = 1;
+                door->type      = vld_normal;
+                S_StartSound(&door->sector->soundorg, sfx_doropn);
+                break;
+
+            default:
+                break;
+            }
+        }
+        break;
+    }
+
+    case -1: {
+        // DOWN
+        auto res = T_MovePlane(door->sector,
+            door->speed,
+            door->sector->floorheight,
+            false, 1, door->direction);
+        if (res == result_e::pastdest)
+        {
+            switch (door->type)
+            {
+            case vld_blazeRaise:
+            case vld_blazeClose:
+                door->sector->specialdata = nullptr;
+                P_RemoveThinker(&door->thinker); // unlink and free
+                // [crispy] fix "fast doors make two closing sounds"
+                if (!static_cast<bool>(crispy->soundfix))
+                {
+                    S_StartSound(&door->sector->soundorg, sfx_bdcls);
+                }
+                break;
+
+            case vld_normal:
+            case vld_close:
+                door->sector->specialdata = nullptr;
+                P_RemoveThinker(&door->thinker); // unlink and free
+                break;
+
+            case vld_close30ThenOpen:
+                door->direction    = 0;
+                door->topcountdown = TICRATE * 30;
+                break;
+
+            default:
+                break;
+            }
+        }
+        else if (res == result_e::crushed)
+        {
+            switch (door->type)
+            {
+            case vld_blazeClose:
+            case vld_close: // DO NOT GO BACK UP!
+                break;
+
+            // [crispy] fix "fast doors reopening with wrong sound"
+            case vld_blazeRaise:
+                if (static_cast<bool>(crispy->soundfix))
+                {
+                    door->direction = 1;
+                    S_StartSound(&door->sector->soundorg, sfx_bdopn);
+                    break;
+                };
+                [[fallthrough]];
+
+            default:
+                door->direction = 1;
+                S_StartSound(&door->sector->soundorg, sfx_doropn);
+                break;
+            }
+        }
+        break;
+    }
+    case 1: {
+        // UP
+        auto res = T_MovePlane(door->sector,
+            door->speed,
+            door->topheight,
+            false, 1, door->direction);
+
+        if (res == result_e::pastdest)
+        {
+            switch (door->type)
+            {
+            case vld_blazeRaise:
+            case vld_normal:
+                door->direction    = 0; // wait at top
+                door->topcountdown = door->topwait;
+                break;
+
+            case vld_close30ThenOpen:
+            case vld_blazeOpen:
+            case vld_open:
+                door->sector->specialdata = nullptr;
+                P_RemoveThinker(&door->thinker); // unlink and free
+                break;
+
+            default:
+                break;
+            }
+        }
+        break;
+    }
+    }
+}
+*/
+
+
+//
+// T_VerticalDoor
+auto T_VerticalDoor(vldoor_t *door) -> void
 {
     switch (door->direction)
     {
@@ -611,9 +761,7 @@ void P_SpawnDoorCloseIn30(sector_t *sec)
 //
 void P_SpawnDoorRaiseIn5Mins(sector_t *sec, int secnum [[maybe_unused]])
 {
-    vldoor_t *door;
-
-    door = zmalloc<decltype(door)>(sizeof(*door), PU::LEVSPEC, 0);
+    vldoor_t *door = zmalloc<decltype(door)>(sizeof(*door), PU::LEVSPEC, nullptr);
 
     P_AddThinker(&door->thinker);
 

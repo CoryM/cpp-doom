@@ -49,8 +49,7 @@ using namespace std::literals;
 //#define HUSTR_SECRETFOUND "A secret is revealed!"
 constexpr auto HUSTR_SECRETFOUND = "A secret is revealed!"sv;
 
-result_e
-    operator&(const result_e &a, const result_e &b)
+auto operator&(const result_e &a, const result_e &b) -> result_e
 {
     return static_cast<result_e>(static_cast<size_t>(a) & static_cast<size_t>(b));
 }
@@ -86,7 +85,9 @@ struct animdef_t {
     };
 };
 
-#define MAXANIMS 32
+//#define MAXANIMS 32
+constexpr size_t MAXANIMS = 32;
+
 
 // [crispy] remove MAXANIMS limit
 extern local_anim_t *anims;
@@ -148,47 +149,40 @@ extern short   numlinespecials;
 extern line_s *linespeciallist[MAXLINEANIMS];
 
 
-void P_InitPicAnims(void)
+auto P_InitPicAnims() -> void
 {
-    int  i;
     bool init_swirl = false;
 
     // [crispy] add support for ANIMATED lumps
-    animdef_t *animdefs;
     const bool from_lump = (W_CheckNumForName("ANIMATED") != -1);
 
-    if (from_lump)
-    {
-        animdefs = cache_lump_name<animdef_t *>("ANIMATED", PU::STATIC);
-    }
-    else
-    {
-        animdefs = &animdefs_vanilla[0];
-    }
+    animdef_t *animdefs = (from_lump) ? cache_lump_name<animdef_t *>("ANIMATED", PU::STATIC) : &animdefs_vanilla[0];
 
     //	Init animation
     lastanim = anims;
-    for (i = 0; animdefs[i].istexture != -1; i++)
+    for (int i = 0; animdefs[i].istexture != -1; i++)
     {
-        const char *startname, *endname;
+        auto &current_anime = animdefs[i];
 
         // [crispy] remove MAXANIMS limit
         if (lastanim >= anims + maxanims)
         {
-            size_t newmax = maxanims ? 2 * maxanims : MAXANIMS;
+            size_t newmax = static_cast<bool>(maxanims) ? 2 * maxanims : MAXANIMS;
             anims         = static_cast<decltype(anims)>(I_Realloc(anims, newmax * sizeof(*anims)));
             lastanim      = anims + maxanims;
             maxanims      = newmax;
         }
 
-        startname = DEH_String(animdefs[i].startname);
-        endname   = DEH_String(animdefs[i].endname);
+        auto *startname = DEH_String(current_anime.startname);
+        auto *endname   = DEH_String(current_anime.endname);
 
-        if (animdefs[i].istexture)
+        if (static_cast<bool>(animdefs[i].istexture))
         {
             // different episode ?
             if (R_CheckTextureNumForName(startname) == -1)
+            {
                 continue;
+            }
 
             lastanim->picnum  = R_TextureNumForName(endname);
             lastanim->basepic = R_TextureNumForName(startname);
@@ -196,7 +190,9 @@ void P_InitPicAnims(void)
         else
         {
             if (W_CheckNumForName(startname) == -1)
+            {
                 continue;
+            }
 
             lastanim->picnum  = R_FlatNumForName(endname);
             lastanim->basepic = R_FlatNumForName(startname);

@@ -16,24 +16,19 @@
 //	Movement, collision handling.
 //	Shooting and aiming.
 //
-#include "deh_misc.hpp"
 
+#include "../i_system.hpp"
 #include "../m_bbox.hpp"
-#include "m_random.hpp"
-#include "i_system.hpp"
-
+#include "deh_misc.hpp"
 #include "doomdef.hpp"
+#include "doomstat.hpp" // State.
 #include "m_argv.hpp"
 #include "m_misc.hpp"
+#include "m_random.hpp"
 #include "p_local.hpp"
-
+#include "r_state.hpp" // State.
 #include "s_sound.hpp"
-
-// State.
-#include "doomstat.hpp"
-#include "r_state.hpp"
-// Data.
-#include "sounds.hpp"
+#include "sounds.hpp" // Data.
 
 #include <algorithm>
 #include <cstdio>
@@ -47,7 +42,7 @@
 // PrBoom-plus, at least so that the big spechits emulation list
 // on Doomworld can also be used with Chocolate Doom.
 
-#define DEFAULT_SPECHIT_MAGIC 0x01C09C98
+constexpr unsigned int DEFAULT_SPECHIT_MAGIC = 0x01C09C98;
 
 // This is from a post by myk on the Doomworld forums,
 // outputted from entryway's spechit_magic generator for
@@ -57,7 +52,7 @@
 // the generator (hacked doom2.exe) and provide it
 // with -spechit.
 
-//#define DEFAULT_SPECHIT_MAGIC 0x84f968e8
+//constexpr unsigned int DEFAULT_SPECHIT_MAGIC = 0x84f968e8;
 
 
 fixed_t tmbbox[4];

@@ -340,8 +340,7 @@ int EV_DoLockedDoor(line_s *line,
 void T_VerticalDoor(vldoor_t *door);
 void P_SpawnDoorCloseIn30(sector_t *sec);
 
-void P_SpawnDoorRaiseIn5Mins(sector_t *sec,
-    int                                secnum);
+void P_SpawnDoorRaiseIn5Mins(sector_t *sec, int secnum);
 
 
 #if 0 // UNUSED
