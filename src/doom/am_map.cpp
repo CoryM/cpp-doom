@@ -149,7 +149,8 @@ struct mpoint_t {
 
     [[nodiscard]] auto half() const -> mpoint_t
     {
-        return { x >> 1, y >> 1 };
+        //return { x >> 1, y >> 1 };
+        return { x / 2, y / 2 };
     }
 
     [[nodiscard]] auto operator*(const fixed_t &pIn) const -> mpoint_t
@@ -214,27 +215,49 @@ enum keycolor_t
 
 class AM_MAP {
 private:
-public:
-    AM_MAP()  = default;
-    ~AM_MAP() = default;
-
-    // the following is crap
-    //#define LINE_NEVERSEE globals::ML_DONTDRAW
-    const decltype(globals::ML_DONTDRAW) LINE_NEVERSEE = globals::ML_DONTDRAW;
-
     int cheating = 0;
     int grid     = 0;
+    struct box {
+        int x = 0;
+        int y = 0;
+        int w = 0;
+        int h = 0;
+    };
 
-    // location of window on screen
-    int f_x = 0;
-    int f_y = 0;
-
-    // size of window on screen
-    int f_w = 0;
-    int f_h = 0;
+    // size and location of window on screen
+    box window = {};
 
     int lightlev = 0; // used for funky strobing effect
     int amclock  = 0;
+
+public:
+    AM_MAP() = default;
+
+    // the following is crap
+    //#define LINE_NEVERSEE globals::ML_DONTDRAW
+    //const decltype(globals::ML_DONTDRAW) LINE_NEVERSEE = globals::ML_DONTDRAW;
+    static const auto LINE_NEVERSEE = globals::ML_DONTDRAW;
+
+    [[nodiscard]] auto has_grid() const -> bool
+    {
+        return grid != 0;
+    }
+
+    [[nodiscard]] auto is_cheating_2() const -> bool
+    {
+        return cheating == 2;
+    }
+
+    [[nodiscard]] auto get_window_info() const -> box
+    {
+        return window;
+    }
+
+    [[nodiscard]] auto get_lightlev() const
+    {
+        return lightlev;
+    }
+
 
     mpoint_t m_paninc;         // how far the window pans each tic (map coords)
     fixed_t  mtof_zoommul = 0; // how far the window zooms in each tic (map coords)
@@ -370,14 +393,14 @@ public:
     // translates between frame-buffer and map coordinates
     [[nodiscard]] auto CXMTOF(int64_t x) const -> int
     {
-        return static_cast<int>(f_x + MTOF(x - mapLL.x));
+        return static_cast<int>(window.x + MTOF(x - mapLL.x));
     }
 
 
     // translates between frame-buffer and map coordinates
     [[nodiscard]] auto CYMTOF(int64_t y) const -> int
     {
-        return static_cast<int>(f_y + (f_h - MTOF(y - mapLL.y)));
+        return static_cast<int>(window.y + (window.h - MTOF(y - mapLL.y)));
     }
 
     //
@@ -385,8 +408,8 @@ public:
     auto AM_activateNewScale() -> void
     {
         mapLL += mapWH.half();
-        mapWH.x = FTOM(f_w);
-        mapWH.y = FTOM(f_h);
+        mapWH.x = FTOM(window.w);
+        mapWH.y = FTOM(window.h);
         mapLL -= mapWH.half();
         mapUR = mapLL + mapWH;
     }
@@ -413,7 +436,7 @@ public:
         mapUR = mapLL + mapWH;
 
         // Change the scaling multipliers
-        scale_mtof = FixedDiv(static_cast<unsigned int>(f_w) << FRACBITS, mapWH.x);
+        scale_mtof = FixedDiv(static_cast<unsigned int>(window.w) << FRACBITS, mapWH.x);
         scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
     }
 
@@ -441,34 +464,48 @@ public:
     // sets global variables controlling zoom range.
     auto AM_findMinMaxBoundaries() -> void
     {
-        min_x = min_y = std::numeric_limits<int>::max();
-        max_x = max_y = -std::numeric_limits<int>::min();
+        struct minax {
+            int min = std::numeric_limits<int>::max();
+            int max = std::numeric_limits<int>::min();
 
-        auto vertex_span = std::span<vertex_t>(vertexes, numvertexes);
+            inline void operator()(const int i)
+            {
+                min = std::min(min, i);
+                max = std::max(max, i);
+            };
+        };
+        minax mm_x = {};
+        minax mm_y = {};
 
-        for (auto &i : vertex_span)
+        //auto vertex_span = std::span<vertex_t>(vertexes, numvertexes);
+
+        //for (auto const &i : vertex_span)
+        for (auto const &i : std::span<vertex_t>(vertexes, numvertexes))
         {
-            min_x = std::min(min_x, i.x);
-            max_x = std::max(max_x, i.x);
-            min_y = std::min(min_y, i.y);
-            max_y = std::max(max_y, i.y);
+            mm_x(i.x);
+            mm_y(i.y);
         }
 
         // [crispy] cope with huge level dimensions which span the entire INT range
-        max_w = max_x / 2 - min_x / 2;
-        max_h = max_y / 2 - min_y / 2;
+        max_w = mm_x.max / 2 - mm_x.min / 2;
+        max_h = mm_y.max / 2 - mm_y.min / 2;
 
-        const fixed_t a = FixedDiv(f_w << FRACBITS, max_w);
-        const fixed_t b = FixedDiv(f_h << FRACBITS, max_h);
+        max_x = mm_x.max;
+        min_x = mm_x.min;
+        max_y = mm_y.max;
+        min_y = mm_y.min;
+
+        const fixed_t a = FixedDiv(window.w << FRACBITS, max_w);
+        const fixed_t b = FixedDiv(window.h << FRACBITS, max_h);
 
         min_scale_mtof = std::min(a, b) / 2;
-        max_scale_mtof = FixedDiv(f_h << FRACBITS, 2 * PLAYERRADIUS);
+        max_scale_mtof = FixedDiv(window.h << FRACBITS, 2 * PLAYERRADIUS);
     }
 
     //
     // Rotation in 2D.
     // Used to rotate player arrow line character.
-    auto AM_rotate(mpoint_t &mp, const angle_t a) -> void
+    static auto AM_rotate(mpoint_t &mp, const angle_t a) -> void
     {
         static double  dSin  = 0.0;
         static double  dCos  = 1.0;
@@ -479,9 +516,9 @@ public:
             constexpr angle_t off     = 262144;
             constexpr double  radians = std::numbers::pi / res;
             const double      ra      = radians * static_cast<double>(a + off);
-            old_a                     = a;
             dSin                      = sin(ra);
             dCos                      = cos(ra);
+            old_a                     = a;
         }
         const auto dx = static_cast<double>(mp.x);
         const auto dy = static_cast<double>(mp.y);
@@ -548,8 +585,8 @@ public:
         ftom_zoommul = FRACUNIT;
         mtof_zoommul = FRACUNIT;
 
-        mapWH.x = FTOM(f_w);
-        mapWH.y = FTOM(f_h);
+        mapWH.x = FTOM(window.w);
+        mapWH.y = FTOM(window.h);
 
         // find player to center on initially
         if (playeringame[consoleplayer])
@@ -678,7 +715,7 @@ public:
     // Clear automap frame buffer.
     auto AM_clearFB(const int color) -> void
     {
-        memset(I_VideoBuffer, color, f_w * f_h * sizeof(*I_VideoBuffer));
+        memset(I_VideoBuffer, color, window.w * window.h * sizeof(*I_VideoBuffer));
     }
 
     // [crispy] keyed linedefs (PR, P1, SR, S1)
@@ -727,14 +764,14 @@ public:
     {
         //leveljuststarted = 0;
 
-        f_x = 0;
-        f_y = 0;
-        f_w = SCREENWIDTH;
-        f_h = SCREENHEIGHT;
+        window.x = 0;
+        window.y = 0;
+        window.w = SCREENWIDTH;
+        window.h = SCREENHEIGHT;
         // [crispy] automap without status bar in widescreen mode
         if (crispy->widescreen == 0)
         {
-            f_h -= (ST_HEIGHT << crispy->hires);
+            window.h -= (ST_HEIGHT << crispy->hires);
         }
 
         AM_clearMarks();
@@ -756,12 +793,12 @@ public:
 
     auto AM_ReInit() -> void
     {
-        f_w = SCREENWIDTH;
-        f_h = SCREENHEIGHT;
+        window.w = SCREENWIDTH;
+        window.h = SCREENHEIGHT;
         // [crispy] automap without status bar in widescreen mode
         if (!crispy->widescreen)
         {
-            f_h -= (ST_HEIGHT << crispy->hires);
+            window.h -= (ST_HEIGHT << crispy->hires);
         }
 
         AM_findMinMaxBoundaries();
@@ -1102,8 +1139,8 @@ public:
         };
 
         auto get_edge_code = [this, edge_code, topBit, bottomBit, leftBit, rightBit](const fpoint_t m) {
-            auto oc = edge_code(m.y, 0, f_h, topBit, bottomBit);
-            oc |= edge_code(m.x, 0, f_w, leftBit, rightBit);
+            auto oc = edge_code(m.y, 0, window.h, topBit, bottomBit);
+            oc |= edge_code(m.x, 0, window.w, leftBit, rightBit);
             return oc;
         };
 
@@ -1155,12 +1192,12 @@ public:
             else if ((outside & bottomBit).any())
             {
                 ASSERT(dy != 0, "Divide by zero in bottom trim.  dy is zero");
-                tmp = { fl->a.x - (dx * (fl->a.y - f_h)) / dy, f_h - 1 };
+                tmp = { fl->a.x - (dx * (fl->a.y - window.h)) / dy, window.h - 1 };
             }
             else if ((outside & rightBit).any())
             {
                 ASSERT(dx != 0, "Divide by zero in right trim.  dx is zero");
-                tmp = { f_w - 1, fl->a.y - (dy * (f_w - 1 - fl->a.x)) / -dx };
+                tmp = { window.w - 1, fl->a.y - (dy * (window.w - 1 - fl->a.x)) / -dx };
             }
             else if ((outside & leftBit).any())
             {
@@ -1195,10 +1232,10 @@ public:
         const int              color)
     {
         // For debugging only
-        if (fl->a.x < 0 || fl->a.x >= f_w
-            || fl->a.y < 0 || fl->a.y >= f_h
-            || fl->b.x < 0 || fl->b.x >= f_w
-            || fl->b.y < 0 || fl->b.y >= f_h)
+        if (fl->a.x < 0 || fl->a.x >= window.w
+            || fl->a.y < 0 || fl->a.y >= window.h
+            || fl->b.x < 0 || fl->b.x >= window.w
+            || fl->b.y < 0 || fl->b.y >= window.h)
         {
             static int fuck = 0;
             DEH_fprintf(stderr, "fuck %d \r", fuck++);
@@ -1206,7 +1243,7 @@ public:
         }
 
         const auto PUTDOT = [=, this](const auto xx, const auto yy, const auto cc) {
-            I_VideoBuffer[yy * f_w + flipscreenwidth[xx]] = colormaps[cc];
+            I_VideoBuffer[yy * window.w + flipscreenwidth[xx]] = colormaps[cc];
         };
 
         const int dx = fl->b.x - fl->a.x;
@@ -1700,7 +1737,7 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
                         (key == red_key)    ? REDS :
                         (key == yellow_key) ? YELLOWS :
                         (key == blue_key)   ? BLUES :
-                                              colors + locals.lightlev,
+                                              colors + locals.get_lightlev(),
                         pt);
                 }
                 // [crispy] draw blood splats and puffs as small squares
@@ -1723,7 +1760,7 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
                                            (t->flags & MF_CORPSE) ? GRAYS :
                                                                     // [crispy] ... and countable items in yellow
                                            (t->flags & MF_COUNTITEM) ? YELLOWS :
-                                                                       colors + locals.lightlev;
+                                                                       colors + locals.get_lightlev();
 
                     locals.AM_drawLineCharacter(locals.thintriangle_guy,
                         // [crispy] triangle size represents actual thing size
@@ -1734,7 +1771,7 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
             else
             {
                 locals.AM_drawLineCharacter(locals.thintriangle_guy,
-                    16 << FRACBITS, t->angle, colors + locals.lightlev, { t->x, t->y });
+                    16 << FRACBITS, t->angle, colors + locals.get_lightlev(), { t->x, t->y });
             }
             t = t->snext;
         }
@@ -1757,10 +1794,14 @@ void AM_drawMarks(void)
             {
                 locals.AM_rotatePoint(pt);
             }
+            const auto window_info = locals.get_window_info();
+
             int fx = (flipscreenwidth[locals.CXMTOF(pt.x)] >> crispy->hires) - 1 - DELTAWIDTH;
             int fy = (locals.CYMTOF(pt.y) >> crispy->hires) - 2;
-            if (fx >= locals.f_x && fx <= (locals.f_w >> crispy->hires) - w && fy >= locals.f_y && fy <= (locals.f_h >> crispy->hires) - h)
+            if (fx >= window_info.x && fx <= (window_info.w >> crispy->hires) - w && fy >= window_info.y && fy <= (window_info.h >> crispy->hires) - h)
+            {
                 V_DrawPatch(fx, fy, locals.marknums[i]);
+            }
         }
     }
 }
@@ -1774,8 +1815,9 @@ void AM_drawCrosshair(int color)
 
         if (!h.a.x)
         {
-            h.a.x = h.b.x = v.a.x = v.b.x = locals.f_x + locals.f_w / 2;
-            h.a.y = h.b.y = v.a.y = v.b.y = locals.f_y + locals.f_h / 2;
+            const auto window_info = locals.get_window_info();
+            h.a.x = h.b.x = v.a.x = v.b.x = window_info.x + window_info.w / 2;
+            h.a.y = h.b.y = v.a.y = v.b.y = window_info.y + window_info.h / 2;
             h.a.x -= 2;
             h.b.x += 2;
             v.a.y -= 2;
@@ -1800,13 +1842,13 @@ auto AM_Drawer() -> void
     {
         locals.AM_clearFB(BACKGROUND);
     }
-    if (locals.grid != 0)
+    if (locals.has_grid())
     {
         locals.AM_drawGrid(GRIDCOLORS);
     }
     locals.AM_drawWalls();
     locals.AM_drawPlayers();
-    if (locals.cheating == 2)
+    if (locals.is_cheating_2())
     {
         AM_drawThings(THINGCOLORS, THINGRANGE);
     }
@@ -1814,7 +1856,9 @@ auto AM_Drawer() -> void
 
     AM_drawMarks();
 
-    V_MarkRect(locals.f_x, locals.f_y, locals.f_w, locals.f_h);
+    const auto window_info = locals.get_window_info();
+
+    V_MarkRect(window_info.x, window_info.y, window_info.w, window_info.h);
 }
 
 // [crispy] extended savegames
