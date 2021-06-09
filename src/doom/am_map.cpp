@@ -230,6 +230,36 @@ private:
     int lightlev = 0; // used for funky strobing effect
     int amclock  = 0;
 
+    mpoint_t m_paninc;         // how far the window pans each tic (map coords)
+    fixed_t  mtof_zoommul = 0; // how far the window zooms in each tic (map coords)
+    fixed_t  ftom_zoommul = 0; // how far the window zooms in each tic (I_VideoBuffer coords)
+
+    mpoint_t mapLL; // LL x,y where the window is on the map (map coords)
+    mpoint_t mapUR; // UR x,y where the window is on the map (map coords)
+    mpoint_t mapWH; // width/height of window on map (map coords)
+
+    mpoint_t old_map_ll; // LL x,y where the window is on the map (map coords)
+    mpoint_t old_map_wh; // UR x,y where the window is on the map (map coords)
+
+    fixed_t min_scale_mtof = 0; // used to tell when to stop zooming out
+    fixed_t max_scale_mtof = 0; // used to tell when to stop zooming in
+
+    // based on level size
+    fixed_t min_x = 0;
+    fixed_t min_y = 0;
+    fixed_t max_x = 0;
+    fixed_t max_y = 0;
+
+    fixed_t max_w = 0; // max_x-min_x,
+    fixed_t max_h = 0; // max_y-min_y
+
+    // based on player size
+    // const fixed_t min_w = 2 * PLAYERRADIUS;
+    // const fixed_t min_h = 2 * PLAYERRADIUS;
+
+    mpoint_t f_oldloc; // old location used by the Follower routine
+
+
 public:
     AM_MAP() = default;
 
@@ -258,38 +288,6 @@ public:
         return lightlev;
     }
 
-
-    mpoint_t m_paninc;         // how far the window pans each tic (map coords)
-    fixed_t  mtof_zoommul = 0; // how far the window zooms in each tic (map coords)
-    fixed_t  ftom_zoommul = 0; // how far the window zooms in each tic (I_VideoBuffer coords)
-
-    mpoint_t mapLL; // LL x,y where the window is on the map (map coords)
-    mpoint_t mapUR; // UR x,y where the window is on the map (map coords)
-    mpoint_t mapWH; // width/height of window on map (map coords)
-
-    mpoint_t old_map_ll; // LL x,y where the window is on the map (map coords)
-    mpoint_t old_map_wh; // UR x,y where the window is on the map (map coords)
-
-    fixed_t min_scale_mtof = 0; // used to tell when to stop zooming out
-    fixed_t max_scale_mtof = 0; // used to tell when to stop zooming in
-
-
-    // based on level size
-    fixed_t min_x = 0;
-    fixed_t min_y = 0;
-    fixed_t max_x = 0;
-    fixed_t max_y = 0;
-
-    fixed_t max_w = 0; // max_x-min_x,
-    fixed_t max_h = 0; // max_y-min_y
-
-    // based on player size
-    const fixed_t min_w = 2 * PLAYERRADIUS;
-    const fixed_t min_h = 2 * PLAYERRADIUS;
-
-
-    // old location used by the Follower routine
-    mpoint_t f_oldloc;
 
     // used by MTOF to scale from map-to-frame-buffer coords
     fixed_t scale_mtof = static_cast<fixed_t>(INITSCALEMTOF);
