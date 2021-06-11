@@ -259,6 +259,25 @@ private:
 
     mpoint_t f_oldloc; // old location used by the Follower routine
 
+    // used by MTOF to scale from map-to-frame-buffer coords
+    fixed_t scale_mtof = static_cast<fixed_t>(INITSCALEMTOF);
+
+    // used by FTOM to scale from frame-buffer-to-map coords (=1/locals.scale_mtof)
+    fixed_t scale_ftom = { 0 };
+
+    player_t *plr = nullptr; // the player represented by an arrow
+
+    std::array<patch_t *, AM_NUMMARKPOINTS> marknums = {}; // numbers used for marking by the automap
+    std::array<mpoint_t, AM_NUMMARKPOINTS>  markpoints;    // where the points are
+
+    int      markpointnum = 0; // next point to be assigned
+    int      followplayer = 1; // specifies whether to follow the player around
+    bool     stopped      = true;
+    mpoint_t mapcenter;
+    angle_t  mapangle = 0;
+    // [crispy] moved here for extended savegames
+    int lastlevel   = -1;
+    int lastepisode = -1;
 
 public:
     AM_MAP() = default;
@@ -288,30 +307,64 @@ public:
         return lightlev;
     }
 
+    [[nodiscard]] auto is_player_mo(mobj_t *const t) const -> bool
+    {
+        return (t == plr->mo);
+    }
 
-    // used by MTOF to scale from map-to-frame-buffer coords
-    fixed_t scale_mtof = static_cast<fixed_t>(INITSCALEMTOF);
+    [[nodiscard]] auto get_marknums(const int i) const -> patch_t *
+    {
+        return marknums.at(i);
+    }
 
-    // used by FTOM to scale from frame-buffer-to-map coords (=1/locals.scale_mtof)
-    fixed_t scale_ftom = { 0 };
+    [[nodiscard]] auto get_markpoint(const int i) -> mpoint_t
+    {
+        return markpoints.at(i);
+    }
 
-    player_t *plr = nullptr; // the player represented by an arrow
+    auto run_markpoints(auto func) -> void
+    {
+        for (auto &i : markpoints)
+        {
+            func(i);
+        }
+    }
 
-    std::array<patch_t *, AM_NUMMARKPOINTS> marknums = {};    // numbers used for marking by the automap
-    std::array<mpoint_t, AM_NUMMARKPOINTS>  markpoints;       // where the points are
-    int                                     markpointnum = 0; // next point to be assigned
+    [[nodiscard]] auto get_markpointnum() const -> int
+    {
+        return markpointnum;
+    }
 
-    int followplayer = 1; // specifies whether to follow the player around
+    auto set_markpointnum(int new_num) -> void
+    {
+        markpointnum = new_num;
+    }
 
-    bool stopped = true;
+    [[nodiscard]] auto is_following_player() const -> bool
+    {
+        return static_cast<bool>(followplayer);
+    }
 
-    mpoint_t mapcenter;
-    angle_t  mapangle = 0;
+    [[nodiscard]] auto get_lastlevel() const -> int
+    {
+        return lastlevel;
+    }
 
+    auto set_lastlevel(int new_lastlevel) -> void
+    {
+        lastlevel = new_lastlevel;
+    }
 
-    // [crispy] moved here for extended savegames
-    int lastlevel   = -1;
-    int lastepisode = -1;
+    [[nodiscard]] auto get_lastepisode() const -> int
+    {
+        return lastepisode;
+    }
+
+    auto set_lastepisode(int new_lastepisode) -> void
+    {
+        lastepisode = new_lastepisode;
+    }
+
 
     //
     // The vector graphics for the automap.
@@ -320,18 +373,18 @@ public:
     //
 #define R (FRACUNIT)
 
-    const std::array<mline_t, 3> thintriangle_guy = { { //
+    static constexpr std::array<mline_t, 3> thintriangle_guy = { { //
         { { (fixed_t)(-.5 * R), (fixed_t)(-.7 * R) }, { (fixed_t)(R), (fixed_t)(0) } },
         { { (fixed_t)(R), (fixed_t)(0) }, { (fixed_t)(-.5 * R), (fixed_t)(.7 * R) } },
         { { (fixed_t)(-.5 * R), (fixed_t)(.7 * R) }, { (fixed_t)(-.5 * R), (fixed_t)(-.7 * R) } } } };
 
     // [crispy] print keys as crosses
-    const std::array<mline_t, 2> cross_mark = { {
+    static constexpr std::array<mline_t, 2> cross_mark = { {
         { { -R, 0 }, { R, 0 } },
         { { 0, -R }, { 0, R } },
     } };
 
-    const std::array<mline_t, 4> square_mark = { {
+    static constexpr std::array<mline_t, 4> square_mark = { {
         { { -R, 0 }, { 0, R } },
         { { 0, R }, { R, 0 } },
         { { R, 0 }, { 0, -R } },
@@ -343,32 +396,32 @@ public:
 
 #define R ((8 * PLAYERRADIUS) / 7)
 
-    const std::array<mline_t, 7> player_arrow = { {       // >---->
-        { { -R + R / 8, 0 }, { R, 0 } },                  // >---->
-        { { R, 0 }, { R - R / 2, R / 4 } },               // >---->
-        { { R, 0 }, { R - R / 2, -R / 4 } },              // >---->
-        { { -R + R / 8, 0 }, { -R - R / 8, R / 4 } },     // >---->
-        { { -R + R / 8, 0 }, { -R - R / 8, -R / 4 } },    // >---->
-        { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 4 } }, // >---->
+    static constexpr std::array<mline_t, 7> player_arrow = { { // >---->
+        { { -R + R / 8, 0 }, { R, 0 } },                       // >---->
+        { { R, 0 }, { R - R / 2, R / 4 } },                    // >---->
+        { { R, 0 }, { R - R / 2, -R / 4 } },                   // >---->
+        { { -R + R / 8, 0 }, { -R - R / 8, R / 4 } },          // >---->
+        { { -R + R / 8, 0 }, { -R - R / 8, -R / 4 } },         // >---->
+        { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 4 } },      // >---->
         { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 4 } } } };
 
 
-    const std::array<mline_t, 16> cheat_player_arrow = { {          //
-        { { -R + R / 8, 0 }, { R, 0 } },                            // -----
-        { { R, 0 }, { R - R / 2, R / 6 } },                         // ----->
-        { { R, 0 }, { R - R / 2, -R / 6 } },                        //
-        { { -R + R / 8, 0 }, { -R - R / 8, R / 6 } },               // >----->
-        { { -R + R / 8, 0 }, { -R - R / 8, -R / 6 } },              //
-        { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 6 } },           // >>----->
-        { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 6 } },          //
-        { { -R / 2, 0 }, { -R / 2, -R / 6 } },                      // >>-d--->
-        { { -R / 2, -R / 6 }, { -R / 2 + R / 6, -R / 6 } },         //
-        { { -R / 2 + R / 6, -R / 6 }, { -R / 2 + R / 6, R / 4 } },  //
-        { { -R / 6, 0 }, { -R / 6, -R / 6 } },                      // >>-dd-->
-        { { -R / 6, -R / 6 }, { 0, -R / 6 } },                      //
-        { { 0, -R / 6 }, { 0, R / 4 } },                            //
-        { { R / 6, R / 4 }, { R / 6, -R / 7 } },                    // >>-ddt->
-        { { R / 6, -R / 7 }, { R / 6 + R / 32, -R / 7 - R / 32 } }, //
+    static constexpr std::array<mline_t, 16> cheat_player_arrow = { { //
+        { { -R + R / 8, 0 }, { R, 0 } },                              // -----
+        { { R, 0 }, { R - R / 2, R / 6 } },                           // ----->
+        { { R, 0 }, { R - R / 2, -R / 6 } },                          //
+        { { -R + R / 8, 0 }, { -R - R / 8, R / 6 } },                 // >----->
+        { { -R + R / 8, 0 }, { -R - R / 8, -R / 6 } },                //
+        { { -R + 3 * R / 8, 0 }, { -R + R / 8, R / 6 } },             // >>----->
+        { { -R + 3 * R / 8, 0 }, { -R + R / 8, -R / 6 } },            //
+        { { -R / 2, 0 }, { -R / 2, -R / 6 } },                        // >>-d--->
+        { { -R / 2, -R / 6 }, { -R / 2 + R / 6, -R / 6 } },           //
+        { { -R / 2 + R / 6, -R / 6 }, { -R / 2 + R / 6, R / 4 } },    //
+        { { -R / 6, 0 }, { -R / 6, -R / 6 } },                        // >>-dd-->
+        { { -R / 6, -R / 6 }, { 0, -R / 6 } },                        //
+        { { 0, -R / 6 }, { 0, R / 4 } },                              //
+        { { R / 6, R / 4 }, { R / 6, -R / 7 } },                      // >>-ddt->
+        { { R / 6, -R / 7 }, { R / 6 + R / 32, -R / 7 - R / 32 } },   //
         { { R / 6 + R / 32, -R / 7 - R / 32 }, { R / 6 + R / 10, -R / 7 } } } };
 
 #undef R
@@ -386,7 +439,6 @@ public:
     {
         return (static_cast<uint64_t>(x * scale_mtof) >> FRACBITS) >> FRACBITS;
     }
-
 
     // translates between frame-buffer and map coordinates
     [[nodiscard]] auto CXMTOF(int64_t x) const -> int
@@ -1694,7 +1746,7 @@ void AM_drawThings(int colors, int colorrange [[maybe_unused]])
         while (t != nullptr)
         {
             // [crispy] do not draw an extra triangle for the player
-            if (t == locals.plr->mo)
+            if (locals.is_player_mo(t)) //(t == locals.plr->mo)
             {
                 t = t->snext;
                 continue;
@@ -1780,14 +1832,14 @@ void AM_drawMarks(void)
 {
     for (int i = 0; i < AM_NUMMARKPOINTS; i++)
     {
-        if (locals.markpoints[i].x != -1)
+        auto pt = locals.get_markpoint(i);
+        if (pt.x != -1)
         {
             //      w = SHORT(locals.marknums[i]->width);
             //      h = SHORT(locals.marknums[i]->height);
             int w = 5; // because something's wrong with the wad, i guess
             int h = 6; // because something's wrong with the wad, i guess
             // [crispy] center marks around player
-            auto pt = locals.markpoints[i];
             if (crispy->automaprotate)
             {
                 locals.AM_rotatePoint(pt);
@@ -1798,7 +1850,7 @@ void AM_drawMarks(void)
             int fy = (locals.CYMTOF(pt.y) >> crispy->hires) - 2;
             if (fx >= window_info.x && fx <= (window_info.w >> crispy->hires) - w && fy >= window_info.y && fy <= (window_info.h >> crispy->hires) - h)
             {
-                V_DrawPatch(fx, fy, locals.marknums[i]);
+                V_DrawPatch(fx, fy, locals.get_marknums(i));
             }
         }
     }
@@ -1807,7 +1859,7 @@ void AM_drawMarks(void)
 void AM_drawCrosshair(int color)
 {
     // [crispy] draw an actual crosshair
-    if (!locals.followplayer)
+    if (!locals.is_following_player())
     {
         static fline_t h, v;
 
@@ -1862,16 +1914,17 @@ auto AM_Drawer() -> void
 // [crispy] extended savegames
 void AM_GetMarkPoints(int *n, long *p)
 {
-    *n = locals.markpointnum;
+    *n = locals.get_markpointnum();
     *p = -1L;
 
     // [crispy] prevent saving locals.markpoints from previous map
-    if (locals.lastlevel == gamemap && locals.lastepisode == gameepisode)
+    if (locals.get_lastlevel() == gamemap && locals.get_lastepisode() == gameepisode)
     {
         for (int i = 0; i < AM_NUMMARKPOINTS; i++)
         {
-            *p++ = (long)locals.markpoints[i].x;
-            *p++ = (locals.markpoints[i].x == -1) ? 0L : (long)locals.markpoints[i].y;
+            auto mark_point = locals.get_markpoint(i);
+            *p++            = static_cast<long>(mark_point.x);
+            *p++            = (mark_point.x == -1) ? 0L : static_cast<long>(mark_point.y);
         }
     }
 }
@@ -1879,14 +1932,13 @@ void AM_GetMarkPoints(int *n, long *p)
 void AM_SetMarkPoints(int n, long *p)
 {
     locals.AM_LevelInit();
-    locals.lastlevel   = gamemap;
-    locals.lastepisode = gameepisode;
+    locals.set_lastlevel(gamemap);
+    locals.set_lastepisode(gameepisode);
 
-    locals.markpointnum = n;
+    locals.set_markpointnum(n);
 
-    for (auto &i : locals.markpoints)
-    {
-        i.x = (int64_t)*p++;
-        i.y = (int64_t)*p++;
-    }
+    locals.run_markpoints([p](auto &i) mutable {
+        i.x = static_cast<int64_t>(*p++);
+        i.y = static_cast<int64_t>(*p++);
+    });
 }
