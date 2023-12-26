@@ -35,6 +35,9 @@ STRIFE*.pcx
 /CMakeSettings.json
 /out
 
+# VSCode-specific ignores
+/.vscode*
+
 # These are the default patterns globally ignored by Subversion:
 *.o
 *.lo
