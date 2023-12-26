@@ -21,15 +21,27 @@
 #include "crispy.hpp"
 
 // [crispy] "regular" config variables
-static crispy_t crispy_s = {
-    0,
-    .extautomap    = 1,
-    .extsaveg      = 1,
-    .hires         = 1,
-    .smoothscaling = 1,
-    .soundfix      = 1,
-    .vsync         = 1,
+auto init_crispy_s = [](){
+    crispy_t crispy_s = {};
+    crispy_s.extautomap    = 1;
+    crispy_s.extsaveg      = 1;
+    crispy_s.hires         = 1;
+    crispy_s.smoothscaling = 1;
+    crispy_s.soundfix      = 1;
+    crispy_s.vsync         = 1;
+    return crispy_s;
 };
+static auto crispy_s = init_crispy_s();
+//static crispy_t crispy_s = {
+//    0,
+//    .extautomap    = 1,
+//    .extsaveg      = 1,
+//    .hires         = 1,
+//    .smoothscaling = 1,
+//    .soundfix      = 1,
+//    .vsync         = 1,
+//};
+
 crispy_t *const crispy = &crispy_s;
 
 // [crispy] "critical" config variables

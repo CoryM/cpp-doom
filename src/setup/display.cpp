@@ -84,7 +84,8 @@ static int usegamma = 0;
 int graphical_startup = 0; // [crispy]
 int show_endoom = 0; // [crispy]
 int show_diskicon = 1;
-int png_screenshots = 1; // [crispy]
+// Defined in i_video.cpp
+//int png_screenshots = 1; // [crispy]
 
 static int system_video_env_set;
 

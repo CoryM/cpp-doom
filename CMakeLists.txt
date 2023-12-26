@@ -1,8 +1,8 @@
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 cmake_minimum_required(VERSION 3.7.2)
-project("Crispy Doom" VERSION 5.7.2 LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 20)
+project("Cpp Doom" VERSION 5.7.2 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 23)
 
 # Autotools variables
 set(top_srcdir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -10,10 +10,10 @@ set(top_builddir ${CMAKE_CURRENT_BINARY_DIR})
 
 # AC_INIT variables
 set(PACKAGE_NAME "${PROJECT_NAME}")
-set(PACKAGE_TARNAME "crispy-doom")
+set(PACKAGE_TARNAME "cpp-doom")
 set(PACKAGE_VERSION "${PROJECT_VERSION}")
 set(PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")
-set(PACKAGE_BUGREPORT "https://github.com/fabiangreffrath/crispy-doom/issues")
+set(PACKAGE_BUGREPORT "https://github.com/fabiangreffrath/cpp-doom/issues")
 
 string(REGEX REPLACE " Doom$" "" PACKAGE_SHORTNAME "${PACKAGE_NAME}")
 set(PACKAGE_COPYRIGHT "Copyright (C) 1993-2020")
@@ -25,8 +25,7 @@ if(MSVC)
     add_definitions("/D_CRT_SECURE_NO_WARNINGS" "/D_CRT_SECURE_NO_DEPRECATE"
                     "/D_CRT_NONSTDC_NO_DEPRECATE")
 else()
-    add_compile_options("-Wall" "-Wdeclaration-after-statement"
-                        "-Wredundant-decls")
+    add_compile_options("-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-fmax-errors=1")
 endif()
 
 find_package(SDL2 2.0.1)
