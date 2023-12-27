@@ -27,6 +27,7 @@ if(MSVC)
 else()
     add_compile_options("-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-fmax-errors=1")
 endif()
+add_compile_definitions( -DCRISPY_TRUECOLOR )
 
 find_package(SDL2 2.0.1)
 find_package(SDL2_mixer 2.0.0)
