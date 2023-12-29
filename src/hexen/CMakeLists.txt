@@ -54,5 +54,5 @@ add_library(hexen STATIC
                                 textdefs.hpp
                                 xddefs.hpp)
 
-target_include_directories(hexen PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../")
-target_link_libraries(hexen SDL2::SDL2 SDL2::mixer SDL2::net)
+#target_include_directories(hexen PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../")
+#target_link_libraries(hexen SDL2::SDL2 SDL2::mixer SDL2::net)

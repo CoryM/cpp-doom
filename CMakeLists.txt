@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.7.2)
 project("Cpp Doom" VERSION 5.7.2 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Autotools variables
 set(top_srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(top_builddir ${CMAKE_CURRENT_BINARY_DIR})
@@ -25,7 +27,27 @@ if(MSVC)
     add_definitions("/D_CRT_SECURE_NO_WARNINGS" "/D_CRT_SECURE_NO_DEPRECATE"
                     "/D_CRT_NONSTDC_NO_DEPRECATE")
 else()
-    add_compile_options("-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-fmax-errors=1")
+    add_compile_options("-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-fmax-errors=1" 
+        "-fsanitize=address" 
+        "-fsanitize=undefined"
+        "-fsanitize=leak" 
+        "-fsanitize=pointer-compare"
+        "-fsanitize=pointer-subtract"
+        "-fno-omit-frame-pointer" 
+        "-fno-optimize-sibling-calls"
+        "-fno-common" 
+        "-fno-omit-frame-pointer")
+
+    add_link_options(
+        "-fsanitize=address"
+        "-fsanitize=undefined"
+        "-fsanitize=leak" 
+        "-fsanitize=pointer-compare"
+        "-fsanitize=pointer-subtract"
+        "-fno-omit-frame-pointer" 
+        "-fno-optimize-sibling-calls"
+        "-fno-common" 
+        "-fno-omit-frame-pointer")
 endif()
 add_compile_definitions( -DCRISPY_TRUECOLOR )
 

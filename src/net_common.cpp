@@ -14,10 +14,10 @@
 // Common code shared between the client and server
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <stdarg.h>
-#include <string.h>
+#include <cstring>
 
 #include "doomtype.hpp"
 #include "d_mode.hpp"

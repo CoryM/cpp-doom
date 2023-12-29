@@ -16,7 +16,7 @@
 #include "sound.hpp"
 
 #include <functional>
-#include <stdlib.h>
+#include <cstdlib>
 #include <utility>
 
 #include "SDL_mixer.h"

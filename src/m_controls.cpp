@@ -14,7 +14,7 @@
 // GNU General Public License for more details.
 //
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "doomtype.hpp"
 #include "doomkeys.hpp"

@@ -19,9 +19,9 @@
 
 #ifdef HAVE_LINUX_KD_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <errno.h>
 #include <linux/kd.h>
 #include <sys/ioctl.h>

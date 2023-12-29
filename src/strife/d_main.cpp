@@ -20,10 +20,10 @@
 //
 
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "config.h"
 #include "deh_main.hpp"

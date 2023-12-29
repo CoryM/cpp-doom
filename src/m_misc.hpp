@@ -20,7 +20,7 @@
 #ifndef __M_MISC__
 #define __M_MISC__
 
-#include <stdio.h>
+#include <cstdio>
 #include <stdarg.h>
 
 #include "doomtype.hpp"

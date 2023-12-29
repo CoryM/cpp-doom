@@ -18,8 +18,8 @@
 //	that are associated with states/frames. 
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "m_random.hpp"
 #include "i_system.hpp"
@@ -2129,7 +2129,7 @@ void A_SpawnSparkPuff(mobj_t* actor)
 
 // haleyjd 09/05/10: [STRIFE] Removed:
 // A_PosAttack, A_SPosAttack, A_CPosAttack, A_CPosRefire, A_SpidRefire, 
-// A_BspiAttack, A_TroopAttack, A_SargAttack, A_HeadAttack, A_CyberAttack,
+// A_BspiAttack, A_TroopAttack, A_SargAttack, { A_HeadAttack }, A_CyberAttack,
 // A_BruisAttack, A_SkelMissile
 
 

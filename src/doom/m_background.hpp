@@ -26,7 +26,7 @@ been converted from a raw lump in Doom's flat format with the following
 code. The actual artwork has been created by Julia Nechaevskaya, thank
 you so incredibly much for this! - Fabian
 
-#include <stdio.h>
+#include <cstdio>
 
 int main (int argc, char **argv)
 {

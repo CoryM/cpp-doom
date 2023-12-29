@@ -13,8 +13,8 @@
 //
 
 #include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include <vector>
 
 #include "doomkeys.hpp"

@@ -19,7 +19,7 @@
 //
 
 
-#include <stdlib.h> // [crispy] abs()
+#include <cstdlib> // [crispy] abs()
 #include "doomdef.hpp"
 #include "d_event.hpp"
 

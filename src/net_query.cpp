@@ -15,10 +15,10 @@
 //     Querying servers to find their current status.
 //
 
-#include <stdio.h>
+#include <cstdio>
 #include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 #include "i_system.hpp"
 #include "i_timer.hpp"

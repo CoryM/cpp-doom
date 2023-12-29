@@ -20,8 +20,8 @@
 //
 
 #include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 #include "z_zone.hpp"
 #include "i_glob.hpp"

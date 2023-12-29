@@ -34,9 +34,9 @@
 
 #ifdef HAVE_BSD_SPEAKER
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <errno.h>
 #include <signal.h>
 #include <sys/ioctl.h>

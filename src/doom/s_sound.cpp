@@ -15,8 +15,8 @@
 // DESCRIPTION:  none
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "i_sound.hpp"
 #include "i_system.hpp"

@@ -21,9 +21,9 @@
 
 #include "SDL_version.h" // [crispy]
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <math.h>
 
 #include "i_system.hpp"

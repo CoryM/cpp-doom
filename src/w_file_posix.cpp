@@ -24,7 +24,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
-#include <string.h>
+#include <cstring>
 
 #include "m_misc.hpp"
 #include "w_file.hpp"

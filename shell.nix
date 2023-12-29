@@ -6,7 +6,7 @@ gcc13Stdenv.mkDerivation {
 
     buildInputs = [ 
         # Debugers
-        gdb 
+        gdb
         
         # Build utils
         cmake
@@ -15,8 +15,7 @@ gcc13Stdenv.mkDerivation {
         pkg-config
         
         # Compilers
-        #gcc13  # included with gcc13Stdenv
-        llvmPackages_17.clang-unwrapped
+        #llvmPackages_17.clang-unwrapped
         
         # Libraries
         SDL2.dev
@@ -28,17 +27,16 @@ gcc13Stdenv.mkDerivation {
         zlib.dev
         #pngpp
         libpng.dev
+        
+        # Editors 
+	      vscode-fhs # Included here so it can find the Standard Libraries
     ];
 
-    # Define witch compiler to use
-    CXX = "${gcc13}/bin/g++";
-    CC = "${gcc13}/bin/gcc";
-
-    # Following should be initilized to CXX and CC by cmake
-    #CMAKE_C_COMPILER = "${gcc13}/bin/gcc";
-    #CMAKE_CXX_COMPILER = "${gcc13}/bin/g++";
-
-    # Sometimes the PATH needs some help
-    #PATH = "${cmake}/bin:${ninja}/bin:${gcc}/bin:$PATH";
+    shellHook = ''
+      export CXX="${gcc13}/bin/g++"
+      export CC="${gcc13}/bin/gcc"
+      # ${gcc13} give the wrapper not the nix store path with the includes
+      #export CPLUS_INCLUDE_PATH="${gcc13}"
+    '';
 }
 
