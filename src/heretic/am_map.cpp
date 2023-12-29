@@ -16,7 +16,7 @@
 
 // AM_map.c
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "doomdef.hpp"
 #include "deh_str.hpp"
@@ -29,6 +29,8 @@
 
 #include "doomkeys.hpp"
 #include "v_video.hpp"
+
+#include "../../utils/lump.hpp"
 
 vertex_t KeyPoints[NUMKEYS];
 
@@ -336,7 +338,7 @@ void AM_initVariables(void)
     //static event_t st_notify = { ev_keyup, AM_MSGENTERED };
 
     automapactive = true;
-    fb = I_VideoBuffer;
+    fb = reinterpret_cast<decltype(fb)>(I_VideoBuffer);
 
     f_oldloc.x = INT_MAX;
     amclock = 0;
@@ -375,7 +377,7 @@ void AM_initVariables(void)
         for (think = thinkercap.next; think != &thinkercap;
              think = think->next)
         {
-            if (think->function != P_MobjThinker)
+            if (think->function.acp1 != (actionf_p1)P_MobjThinker)
             {                   //not a mobj
                 continue;
             }
@@ -411,7 +413,8 @@ void AM_loadPics(void)
     M_snprintf(namebuf, sizeof(namebuf), "AMMNUM%d", i);
     marknums[i] = W_CacheLumpName(namebuf, PU_STATIC);
   }*/
-    maplump = cache_lump_name<patch_t *>(DEH_String("AUTOPAGE"), PU_STATIC);
+    //maplump = cache_lump_name<patch_t *>(DEH_String("AUTOPAGE"), PU_STATIC);
+    maplump = cache_lump_name<decltype(maplump)>(DEH_String("AUTOPAGE"), PU_STATIC);
 }
 
 /*void AM_unloadPics(void)

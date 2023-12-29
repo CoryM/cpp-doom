@@ -21,7 +21,7 @@
 #ifndef __DOOMDATA__
 #define __DOOMDATA__
 
-#include "doomtype.hpp"
+#include "../doomtype.hpp"
 
 /*
 ===============================================================================
@@ -118,13 +118,13 @@ typedef PACKED_STRUCT (
     unsigned short children[2]; // if NF_SUBSECTOR its a subsector
 }) mapnode_t;
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] mapthing_t
 {
     short x, y;
     short angle;
     short type;
     short options;
-}) mapthing_t;
+};
 
 #define	MTF_EASY		1
 #define	MTF_NORMAL		2

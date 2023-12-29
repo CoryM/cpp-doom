@@ -107,7 +107,7 @@ int EV_DoDonut(line_t * line);
 
 ===============================================================================
 */
-typedef struct
+struct lightflash_t
 {
     thinker_t thinker;
     sector_t *sector;
@@ -116,9 +116,9 @@ typedef struct
     int minlight;
     int maxtime;
     int mintime;
-} lightflash_t;
+};
 
-typedef struct
+struct strobe_t
 {
     thinker_t thinker;
     sector_t *sector;
@@ -127,16 +127,16 @@ typedef struct
     int maxlight;
     int darktime;
     int brighttime;
-} strobe_t;
+};
 
-typedef struct
+struct glow_t
 {
     thinker_t thinker;
     sector_t *sector;
     int minlight;
     int maxlight;
     int direction;
-} glow_t;
+};
 
 #define GLOWSPEED		8
 #define	STROBEBRIGHT	5
@@ -199,23 +199,23 @@ void P_InitSwitchList(void);
 
 ===============================================================================
 */
-typedef enum
+enum plat_e
 {
     up,
     down,
     waiting,
     in_stasis
-} plat_e;
+};
 
-typedef enum
+enum plattype_e
 {
     perpetualRaise,
     downWaitUpStay,
     raiseAndChange,
     raiseToNearestAndChange
-} plattype_e;
+};
 
-typedef struct
+struct plat_t
 {
     thinker_t thinker;
     sector_t *sector;
@@ -229,7 +229,7 @@ typedef struct
     boolean crush;
     int tag;
     plattype_e type;
-} plat_t;
+};
 
 #define	PLATWAIT	3
 #define	PLATSPEED	FRACUNIT
@@ -260,7 +260,7 @@ typedef enum
     vld_raiseIn5Mins
 } vldoor_e;
 
-typedef struct
+struct vldoor_t
 {
     thinker_t thinker;
     vldoor_e type;
@@ -271,7 +271,7 @@ typedef struct
     int topwait;                // tics to wait at the top
     // (keep in case a door going down is reset)
     int topcountdown;           // when it reaches 0, start going down
-} vldoor_t;
+};
 
 #define	VDOORSPEED	FRACUNIT*2
 #define	VDOORWAIT		150
@@ -298,7 +298,7 @@ typedef enum
     fastCrushAndRaise
 } ceiling_e;
 
-typedef struct
+struct ceiling_t
 {
     thinker_t thinker;
     ceiling_e type;
@@ -309,7 +309,7 @@ typedef struct
     int direction;              // 1 = up, 0 = waiting, -1 = down
     int tag;                    // ID
     int olddirection;
-} ceiling_t;
+};
 
 #define	CEILSPEED		FRACUNIT
 #define	CEILWAIT		150
@@ -348,7 +348,7 @@ typedef enum
     raiseBuildStep              // One step of a staircase
 } floor_e;
 
-typedef struct
+struct floormove_t
 {
     thinker_t thinker;
     floor_e type;
@@ -359,7 +359,7 @@ typedef struct
     short texture;
     fixed_t floordestheight;
     fixed_t speed;
-} floormove_t;
+};
 
 #define	FLOORSPEED	FRACUNIT
 

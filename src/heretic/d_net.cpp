@@ -17,7 +17,7 @@
 //	all OS independend parts.
 //
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "i_system.hpp"
 #include "i_timer.hpp"

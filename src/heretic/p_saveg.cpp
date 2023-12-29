@@ -16,7 +16,7 @@
 
 // P_tick.c
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "doomdef.hpp"
 #include "i_swap.hpp"
@@ -725,13 +725,13 @@ static void saveg_read_thinker_t(thinker_t *str)
 {
     // struct thinker_s *prev, *next;
     SV_ReadLong();
-    str->prev = NULL;
+    str->prev = nullptr;
     SV_ReadLong();
-    str->next = NULL;
+    str->next = nullptr;
 
     // think_t function;
     SV_ReadLong();
-    str->function = NULL;
+    str->function.acv = nullptr;
 }
 
 static void saveg_write_thinker_t(thinker_t *str)
@@ -741,7 +741,8 @@ static void saveg_write_thinker_t(thinker_t *str)
     SV_WritePtr(str->next);
 
     // think_t function;
-    SV_WritePtr(str->function);
+    // SV_WritePtr(str->function);
+    SV_WritePtr(str->function.acv);
 }
 
 
@@ -1662,7 +1663,7 @@ void P_ArchiveThinkers(void)
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
-        if (th->function == P_MobjThinker)
+        if (th->function.acp1 == P_MobjThinker)
         {
             SV_WriteByte(tc_mobj);
             saveg_write_mobj_t((mobj_t *) th);
@@ -1695,7 +1696,7 @@ void P_UnArchiveThinkers(void)
     while (currentthinker != &thinkercap)
     {
         next = currentthinker->next;
-        if (currentthinker->function == P_MobjThinker)
+        if (currentthinker->function.acp1 == P_MobjThinker)
             P_RemoveMobj((mobj_t *) currentthinker);
         else
             Z_Free(currentthinker);
@@ -1770,37 +1771,37 @@ void P_ArchiveSpecials(void)
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
-        if (th->function == T_MoveCeiling)
+        if (th->function.acc1 == T_MoveCeiling)
         {
             SV_WriteByte(tc_ceiling);
             saveg_write_ceiling_t((ceiling_t *) th);
         }
-        else if (th->function == T_VerticalDoor)
+        else if (th->function.acd1 == T_VerticalDoor)
         {
             SV_WriteByte(tc_door);
             saveg_write_vldoor_t((vldoor_t *) th);
         }
-        else if (th->function == T_MoveFloor)
+        else if (th->function.acf1 == T_MoveFloor)
         {
             SV_WriteByte(tc_floor);
             saveg_write_floormove_t((floormove_t *) th);
         }
-        else if (th->function == T_PlatRaise)
+        else if (th->function.acPlat == T_PlatRaise)
         {
             SV_WriteByte(tc_plat);
             saveg_write_plat_t((plat_t *) th);
         }
-        else if (th->function == T_LightFlash)
+        else if (th->function.acl1 == T_LightFlash)
         {
             SV_WriteByte(tc_flash);
             saveg_write_lightflash_t((lightflash_t *) th);
         }
-        else if (th->function == T_StrobeFlash)
+        else if (th->function.acs1 == T_StrobeFlash)
         {
             SV_WriteByte(tc_strobe);
             saveg_write_strobe_t((strobe_t *) th);
         }
-        else if (th->function == T_Glow)
+        else if (th->function.acg1 == T_Glow)
         {
             SV_WriteByte(tc_glow);
             saveg_write_glow_t((glow_t *) th);

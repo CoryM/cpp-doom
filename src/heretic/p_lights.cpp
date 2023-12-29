@@ -125,7 +125,7 @@ void P_SpawnStrobeFlash(sector_t * sector, int fastOrSlow, int inSync)
     flash->sector = sector;
     flash->darktime = fastOrSlow;
     flash->brighttime = STROBEBRIGHT;
-    flash->thinker.function = T_StrobeFlash;
+    flash->thinker.function.acs1 = T_StrobeFlash;
     flash->maxlight = sector->lightlevel;
     flash->minlight = P_FindMinSurroundingLight(sector, sector->lightlevel);
 
@@ -267,7 +267,7 @@ void P_SpawnGlowingLight(sector_t * sector)
     g->sector = sector;
     g->minlight = P_FindMinSurroundingLight(sector, sector->lightlevel);
     g->maxlight = sector->lightlevel;
-    g->thinker.function = T_Glow;
+    g->thinker.function.acg1 = T_Glow;
     g->direction = -1;
 
     sector->special = 0;

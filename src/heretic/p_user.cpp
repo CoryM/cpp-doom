@@ -16,13 +16,15 @@
 
 // P_user.c
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "doomdef.hpp"
 #include "deh_str.hpp"
 #include "m_random.hpp"
 #include "p_local.hpp"
 #include "s_sound.hpp"
+
+#include "../../utils/lump.hpp"
 
 void P_PlayerNextArtifact(player_t * player);
 
@@ -387,7 +389,7 @@ void P_DeathThink(player_t * player)
     {
         if (player == &players[consoleplayer])
         {
-            I_SetPalette(cache_lump_name<patch_t *>(DEH_String("PLAYPAL"), PU_CACHE));
+            I_SetPalette(cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
             inv_ptr = 0;
             curpos = 0;
             newtorch = 0;

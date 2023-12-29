@@ -251,7 +251,7 @@ int EV_DoFloor(line_t * line, floor_e floortype)
         floor = Z_Malloc(sizeof(*floor), PU_LEVSPEC, 0);
         P_AddThinker(&floor->thinker);
         sec->specialdata = floor;
-        floor->thinker.function = T_MoveFloor;
+        floor->thinker.function.acf1 = T_MoveFloor;
         floor->type = floortype;
         floor->crush = false;
         switch (floortype)

@@ -96,7 +96,7 @@ void T_PlatRaise(plat_t * plat)
             }
             break;
         case waiting:
-            if (!--plat->count)
+            if ((--plat->count) == 0)
             {
                 if (plat->sector->floorheight == plat->low)
                     plat->status = up;
@@ -227,7 +227,7 @@ void EV_StopPlat(line_t * line)
         {
             (activeplats[j])->oldstatus = (activeplats[j])->status;
             (activeplats[j])->status = in_stasis;
-            (activeplats[j])->thinker.function = NULL;
+            (activeplats[j])->thinker.function.acv = nullptr;
         }
 }
 

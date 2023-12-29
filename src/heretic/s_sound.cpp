@@ -14,7 +14,7 @@
 // GNU General Public License for more details.
 //
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "doomdef.hpp"
 #include "i_system.hpp"
@@ -30,6 +30,7 @@
 #include "w_wad.hpp"
 #include "z_zone.hpp"
 
+#include "../../utils/lump.hpp"
 /*
 ===============================================================================
 

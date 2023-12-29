@@ -15,8 +15,9 @@
 // Parses "Frame" sections in dehacked files
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <functional>
+#include <cstdio>
+#include <cstdlib>
 
 #include "doomtype.hpp"
 #include "info.hpp"
@@ -28,12 +29,13 @@
 #include "deh_htic.hpp"
 
 #include "p_action.hpp"
+#include "p_enemy.hpp"
 
-typedef struct
+struct hhe_action_pointer_t
 {
     int offsets[deh_hhe_num_versions];
     void (*func)();
-} hhe_action_pointer_t;
+};
 
 // Offsets of action pointers within the Heretic executables.
 // Different versions have different offsets.
@@ -298,7 +300,9 @@ static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
             return;
         }
 
-        state->action = func;
+        //state->action = func;
+        state->action = (actionf_p1) func;
+        
     }
     else
     {

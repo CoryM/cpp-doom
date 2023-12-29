@@ -23,16 +23,16 @@ add_library(heretic STATIC
                                 p_action.hpp
             p_ceilng.cpp
             p_doors.cpp
-            p_enemy.cpp
+            p_enemy.cpp          p_enemy.hpp
             p_floor.cpp
-            p_inter.cpp
+            p_inter.cpp          p_inter.hpp
             p_lights.cpp
-            p_local.hpp
+            p_local.cpp          p_local.hpp
             p_map.cpp
             p_maputl.cpp
-            p_mobj.cpp
+            p_mobj.cpp           p_mobj.hpp
             p_plats.cpp
-            p_pspr.cpp
+            p_pspr.cpp           p_pspr.hpp
             p_saveg.cpp
             p_setup.cpp
             p_sight.cpp

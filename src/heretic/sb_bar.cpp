@@ -27,6 +27,8 @@
 #include "s_sound.hpp"
 #include "v_video.hpp"
 
+#include "../../utils/lump.hpp"
+
 // Types
 
 typedef struct Cheat_s
@@ -411,7 +413,7 @@ static void ShadeLine(int x, int y, int height, int shade)
     height <<= crispy->hires;
 
     shades = colormaps + 9 * 256 + shade * 2 * 256;
-    dest = I_VideoBuffer + y * SCREENWIDTH + x;
+    dest = reinterpret_cast<byte *>(I_VideoBuffer + y * SCREENWIDTH + x);
     while (height--)
     {
         if (crispy->hires)

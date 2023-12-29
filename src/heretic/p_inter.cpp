@@ -24,6 +24,8 @@
 #include "p_local.hpp"
 #include "s_sound.hpp"
 
+#include "p_inter.hpp"
+
 #define BONUSADD 6
 
 int WeaponValue[] = {
@@ -1230,8 +1232,7 @@ void P_AutoUseHealth(player_t * player, int saveHealth)
 ==================
 */
 
-void P_DamageMobj
-    (mobj_t * target, mobj_t * inflictor, mobj_t * source, int damage)
+void P_DamageMobj(mobj_t * target, mobj_t * inflictor, mobj_t * source, int damage)
 {
     unsigned ang;
     int saved;

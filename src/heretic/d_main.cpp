@@ -16,8 +16,8 @@
 
 // D_main.c
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "txt_main.hpp"
 #include "txt_io.hpp"
@@ -45,6 +45,8 @@
 #include "s_sound.hpp"
 #include "w_main.hpp"
 #include "v_video.hpp"
+
+#include "../../utils/lump.hpp"
 
 #define CT_KEY_GREEN    'g'
 #define CT_KEY_YELLOW   'y'
@@ -636,7 +638,8 @@ void initStartup(void)
 
     // Blit main screen
     textScreen = TXT_GetScreenData();
-    loading = cache_lump_name<patch_t *>(DEH_String("LOADING"), PU_CACHE);
+    //loading = cache_lump_name<patch_t *>(DEH_String("LOADING"), PU_CACHE);
+    loading = cache_lump_name<decltype(loading)>(DEH_String("LOADING"), PU_CACHE);
     memcpy(textScreen, loading, 4000);
 
     // Print version string
@@ -769,7 +772,7 @@ static void D_Endoom(void)
         return;
     }
 
-    endoom_data = cache_lump_name<patch_t *>(DEH_String("ENDTEXT"), PU_STATIC);
+    endoom_data = cache_lump_name<decltype(endoom_data)>(DEH_String("ENDTEXT"), PU_STATIC);
 
     I_Endoom(endoom_data);
 }

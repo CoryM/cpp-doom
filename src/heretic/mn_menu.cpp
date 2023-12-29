@@ -16,8 +16,8 @@
 
 // MN_menu.c
 
-#include <stdlib.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cctype>
 
 #include "deh_str.hpp"
 #include "doomdef.hpp"
@@ -31,6 +31,8 @@
 #include "r_local.hpp"
 #include "s_sound.hpp"
 #include "v_video.hpp"
+
+#include "../../utils/lump.hpp"
 
 // Macros
 
@@ -1730,7 +1732,7 @@ void MN_DeactivateMenu(void)
 
 void MN_DrawInfo(void)
 {
-    I_SetPalette(cache_lump_name<patch_t *>("PLAYPAL", PU_CACHE));
+    I_SetPalette(cache_lump_name<byte *>("PLAYPAL", PU_CACHE));
     V_DrawRawScreen(W_CacheLumpNum(W_GetNumForName("TITLE") + InfoType,
                                    PU_CACHE));
 //      V_DrawPatch(0, 0, W_CacheLumpNum(W_GetNumForName("TITLE")+InfoType,

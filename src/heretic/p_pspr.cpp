@@ -22,6 +22,8 @@
 #include "p_local.hpp"
 #include "s_sound.hpp"
 
+#include "p_pspr.hpp"
+
 // Macros
 
 #define LOWERSPEED FRACUNIT*6
@@ -339,7 +341,7 @@ void P_SetPsprite(player_t * player, int position, statenum_t stnum)
         }
         if (state->action)
         {                       // Call action routine.
-            state->action(player, psp);
+            state->action.acp2(player, psp);
             if (!psp->state)
             {
                 break;
@@ -419,7 +421,7 @@ void P_PostChickenWeapon(player_t * player, weapontype_t weapon)
 
 void P_BringUpWeapon(player_t * player)
 {
-    statenum_t new;
+    statenum_t new_state;
 
     if (player->pendingweapon == wp_nochange)
     {
@@ -431,15 +433,15 @@ void P_BringUpWeapon(player_t * player)
     }
     if (player->powers[pw_weaponlevel2])
     {
-        new = wpnlev2info[player->pendingweapon].upstate;
+        new_state = wpnlev2info[player->pendingweapon].upstate;
     }
     else
     {
-        new = wpnlev1info[player->pendingweapon].upstate;
+        new_state = wpnlev1info[player->pendingweapon].upstate;
     }
     player->pendingweapon = wp_nochange;
     player->psprites[ps_weapon].sy = WEAPONBOTTOM;
-    P_SetPsprite(player, ps_weapon, new);
+    P_SetPsprite(player, ps_weapon, new_state);
 }
 
 //---------------------------------------------------------------------------

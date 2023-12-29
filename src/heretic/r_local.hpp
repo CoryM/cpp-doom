@@ -18,8 +18,11 @@
 #ifndef __R_LOCAL__
 #define __R_LOCAL__
 
+#include "doomdef.hpp"
 #include "i_video.hpp"
 #include "v_patch.hpp"
+
+#include "../m_fixed.hpp"
 
 #define	ANGLETOSKYSHIFT		22      // sky map is 256*128*4 maps
 
@@ -58,7 +61,7 @@
 
 //================ used by play and refresh
 
-typedef struct
+struct vertex_t
 {
     fixed_t x, y;
 
@@ -69,7 +72,7 @@ typedef struct
     fixed_t	r_x;
     fixed_t	r_y;
     boolean	moved;
-} vertex_t;
+};
 
 struct line_s;
 
@@ -225,7 +228,7 @@ extern visplane_t *floorplane, *ceilingplane;
 
 typedef struct
 {
-    boolean rotate;             // if false use 0 for any position
+    bool rotate;             // if false use 0 for any position
     short lump[8];              // lump to use for view angles 0-7
     byte flip[8];               // flip (1 = flip) to use for view angles 0-7
 } spriteframe_t;

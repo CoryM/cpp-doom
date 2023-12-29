@@ -14,8 +14,8 @@
 // GNU General Public License for more details.
 //
 // R_things.c
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include "doomdef.hpp"
 #include "deh_str.hpp"
 #include "i_swap.hpp"
@@ -168,6 +168,9 @@ void R_InitSpriteDefs(const char **namelist)
     {
         spritename = DEH_String(namelist[i]);
         memset(sprtemp, -1, sizeof(sprtemp));
+        for (int j = 0; j < 26; j++) {
+            sprtemp[j].rotate = true;
+        };
 
         maxframe = -1;
 
@@ -481,7 +484,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
 
 void R_ProjectSprite(mobj_t * thing)
 {
-    fixed_t trx, try;
+    fixed_t trX, trY;
     fixed_t gxt, gyt;
     fixed_t tx, tz;
     fixed_t xscale;
@@ -504,19 +507,19 @@ void R_ProjectSprite(mobj_t * thing)
 //
 // transform the origin point
 //
-    trx = thing->x - viewx;
-    try = thing->y - viewy;
+    trX = thing->x - viewx;
+    trY = thing->y - viewy;
 
-    gxt = FixedMul(trx, viewcos);
-    gyt = -FixedMul(try, viewsin);
+    gxt = FixedMul(trX, viewcos);
+    gyt = -FixedMul(trY, viewsin);
     tz = gxt - gyt;
 
     if (tz < MINZ)
         return;                 // thing is behind view plane
     xscale = FixedDiv(projection, tz);
 
-    gxt = -FixedMul(trx, viewsin);
-    gyt = FixedMul(try, viewcos);
+    gxt = -FixedMul(trX, viewsin);
+    gyt = FixedMul(trY, viewcos);
     tx = -(gyt + gxt);
 
     if (abs(tx) > (tz << 2))

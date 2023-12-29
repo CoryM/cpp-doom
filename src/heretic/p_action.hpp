@@ -20,6 +20,13 @@
 #ifndef HERETIC_P_ACTION_H
 #define HERETIC_P_ACTION_H
 
+#include "doomdef.hpp"
+#include "p_enemy.hpp"
+#include "p_inter.hpp"
+#include "p_mobj.hpp"
+#include "p_pspr.hpp"
+
+/*
 void A_FreeTargMobj();
 void A_RestoreSpecialThing1();
 void A_RestoreSpecialThing2();
@@ -146,6 +153,7 @@ void A_MinotaurAtk3();
 void A_MinotaurCharge();
 void A_MntrFloorFire();
 void A_ESound();
+*/
 
 #endif /* #ifndef HERETIC_P_ACTION_H */
 

@@ -73,7 +73,7 @@ boolean P_SetMobjState(mobj_t * mobj, statenum_t state)
     mobj->frame = st->frame;
     if (st->action)
     {                           // Call action function
-        st->action(mobj);
+        st->action.acp3(mobj, NULL, NULL); // [crispy] let pspr action pointers get called from mobj states
     }
     return (true);
 }
@@ -747,7 +747,7 @@ void P_MobjThinker(mobj_t * mobj)
     if (mobj->momx || mobj->momy || (mobj->flags & MF_SKULLFLY))
     {
         P_XYMovement(mobj);
-        if (mobj->thinker.function == (think_t) - 1)
+        if (mobj->thinker.function)
         {                       // mobj was removed
             return;
         }
@@ -794,7 +794,7 @@ void P_MobjThinker(mobj_t * mobj)
         {
             P_ZMovement(mobj);
         }
-        if (mobj->thinker.function == (think_t) - 1)
+        if (mobj->thinker.function)
         {                       // mobj was removed
             return;
         }

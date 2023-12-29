@@ -30,6 +30,8 @@
 #include "i_video.hpp"
 #include "v_video.hpp"
 
+#include "../../utils/lump.hpp"
+
 typedef enum
 {
     SINGLE,
@@ -162,7 +164,7 @@ extern void AM_Stop(void);
 
 void IN_Start(void)
 {
-    I_SetPalette(cache_lump_name<patch_t *>(DEH_String("PLAYPAL"), PU_CACHE));
+    I_SetPalette(cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
     IN_LoadPics();
     IN_InitStats();
     intermission = true;
@@ -581,8 +583,8 @@ void IN_DrawStatBack(void)
     byte *src;
     byte *dest;
 
-    src = cache_lump_name<patch_t *>(DEH_String("FLOOR16"), PU_CACHE);
-    dest = I_VideoBuffer;
+    src = cache_lump_name<byte *>(DEH_String("FLOOR16"), PU_CACHE);
+    dest = reinterpret_cast<byte *>(I_VideoBuffer);
 
     for (y = 0; y < SCREENHEIGHT; y++)
     {

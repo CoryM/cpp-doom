@@ -16,7 +16,7 @@
 
 // P_enemy.c
 
-#include <stdlib.h>
+#include <cstdlib>
 #include "doomdef.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"
@@ -24,6 +24,8 @@
 #include "p_local.hpp"
 #include "s_sound.hpp"
 #include "v_video.hpp"
+
+#include "../../utils/lump.hpp"
 
 // Macros
 
@@ -480,7 +482,7 @@ boolean P_LookForMonsters(mobj_t * actor)
     count = 0;
     for (think = thinkercap.next; think != &thinkercap; think = think->next)
     {
-        if (think->function != P_MobjThinker)
+        if (think->function.acp1 != (actionf_p1)P_MobjThinker)
         {                       // Not a mobj thinker
             continue;
         }
@@ -2320,7 +2322,7 @@ void P_Massacre(void)
 
     for (think = thinkercap.next; think != &thinkercap; think = think->next)
     {
-        if (think->function != P_MobjThinker)
+        if (think->function.acp1 != (actionf_p1)P_MobjThinker)
         {                       // Not a mobj thinker
             continue;
         }
@@ -2365,7 +2367,7 @@ void A_BossDeath(mobj_t * actor)
     // Make sure all bosses are dead
     for (think = thinkercap.next; think != &thinkercap; think = think->next)
     {
-        if (think->function != P_MobjThinker)
+        if (think->function.acp1 != (actionf_p1)P_MobjThinker)
         {                       // Not a mobj thinker
             continue;
         }

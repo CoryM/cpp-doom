@@ -150,7 +150,7 @@ typedef enum
     NUMSPRITES
 } spritenum_t;
 
-typedef enum
+enum statenum_t
 {
     S_NULL,
     S_FREETARGMOBJ,
@@ -1361,14 +1361,123 @@ typedef enum
     S_SND_WIND,
     S_SND_WATERFALL,
     NUMSTATES
-} statenum_t;
+};
+
+//
+// Experimental stuff.
+// To compile this as "ANSI C with classes"
+//  we will need to handle the various
+//  action functions cleanly.
+//
+
+struct mobj_t;
+struct player_t;
+struct pspdef_t;
+struct ceiling_t;
+struct vldoor_t;
+struct floormove_t;
+struct lightflash_t;
+struct strobe_t;
+struct glow_t;
+struct plat_t;
+
+typedef void (*actionf_v)();
+typedef void (*actionf_p1)(mobj_t *mo);
+typedef void (*actionf_c1)(ceiling_t * ceiling);
+typedef void (*actionf_d1)(vldoor_t * door);
+typedef void (*actionf_f1)(floormove_t * floor);
+typedef void (*actionf_g1)(glow_t * glow);
+typedef void (*actionf_l1)(lightflash_t * flash);
+typedef void (*actionf_s1)(strobe_t * flash);
+typedef void (*actionf_plat)(plat_t * plat);
+typedef void (*actionf_p2)(player_t *player, pspdef_t *psp);
+typedef void (*actionf_p3)(mobj_t *mo, player_t *player, pspdef_t *psp); // [crispy] let pspr action pointers get called from mobj states
+
+union actionf_t {
+    actionf_v  acv;
+    actionf_p1 acp1;
+    actionf_c1 acc1;
+    actionf_d1 acd1;
+    actionf_f1 acf1;
+    actionf_g1 acg1;
+    actionf_l1 acl1;
+    actionf_s1 acs1;
+    actionf_plat acPlat;
+    actionf_p2 acp2;
+    actionf_p3 acp3; // [crispy] let pspr action pointers get called from mobj states
+
+    actionf_t()
+        : acv { nullptr }
+    {
+    }
+    actionf_t(actionf_v f)
+        : acv { f }
+    {
+    }
+    actionf_t(actionf_p1 f)
+        : acp1 { f }
+    {
+        
+    }
+    actionf_t(actionf_c1 f)
+        : acc1 { f }
+    {
+        
+    }
+    actionf_t(actionf_d1 f) 
+        : acd1 { f }
+    {
+        
+    }
+    actionf_t(actionf_f1 f) 
+        : acf1 { f }
+    {
+
+    }
+    actionf_t(actionf_g1 f) 
+        : acg1 { f }
+    {
+        
+    }
+    actionf_t(actionf_l1 f) 
+        : acl1 { f }
+    {
+        
+    }
+    actionf_t(actionf_s1 f) 
+        : acs1 { f }
+    {
+        
+    }
+    actionf_t(actionf_plat f)
+        : acPlat { f }
+    {
+        
+    }
+    actionf_t(actionf_p2 f)
+        : acp2 { f }
+    {
+    }
+    actionf_t(actionf_p3 f)
+        : acp3 { f }
+    {
+    }
+
+    operator bool()
+    {
+        return acv != nullptr;
+    };
+
+};
+
 
 typedef struct
 {
     spritenum_t sprite;
     int frame;
     int tics;
-    void (*action) ();
+    //void (*action) ();
+    actionf_t  action;
     statenum_t nextstate;
     int misc1, misc2;
 } state_t;
@@ -1378,7 +1487,7 @@ extern const char *sprnames[];
 
 
 
-typedef enum
+enum mobjtype_t
 {
     MT_MISC0,
     MT_ITEMSHIELD1,
@@ -1542,7 +1651,14 @@ typedef enum
     MT_SOUNDWIND,
     MT_SOUNDWATERFALL,
     NUMMOBJTYPES
-} mobjtype_t;
+};
+
+// prefix and postfx  increment and decrement
+mobjtype_t operator++(mobjtype_t &mt, int);
+mobjtype_t operator--(mobjtype_t &mt, int);
+mobjtype_t operator++(mobjtype_t &mt);
+mobjtype_t operator--(mobjtype_t &mt);
+
 
 typedef struct
 {

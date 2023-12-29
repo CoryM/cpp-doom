@@ -18,8 +18,8 @@
 
 #ifndef __DOOMDEF__
 #define __DOOMDEF__
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 //haleyjd: removed WATCOMC
 #include <limits.h>
 
@@ -127,36 +127,41 @@ typedef enum
 ===============================================================================
 */
 
-// think_t is a function pointer to a routine to handle an actor
-typedef void (*think_t) ();
+// Historically, "think_t" is yet another
+//  function pointer to a routine to handle
+//  an actor.
+typedef actionf_t think_t;
 
-typedef struct thinker_s
-{
-    struct thinker_s *prev, *next;
-    think_t function;
+// Doubly linked list of actors.
+typedef struct thinker_s {
+    struct thinker_s *prev;
+    struct thinker_s *next;
+    think_t           function;
+
 } thinker_t;
+
 
 typedef union
 {
     int i;
-    struct mobj_s *m;
+    struct mobj_t *m;
 } specialval_t;
 
 struct player_s;
 
-typedef struct mobj_s
+struct mobj_t
 {
     thinker_t thinker;          // thinker links
 
 // info for drawing
     fixed_t x, y, z;
-    struct mobj_s *snext, *sprev;       // links in sector (if needed)
+    struct mobj_t *snext, *sprev;       // links in sector (if needed)
     angle_t angle;
     spritenum_t sprite;         // used to find patch_t and flip value
     int frame;                  // might be ord with FF_FULLBRIGHT
 
 // interaction info
-    struct mobj_s *bnext, *bprev;       // links in blocks (if needed)
+    struct mobj_t *bnext, *bprev;       // links in blocks (if needed)
     struct subsector_s *subsector;
     fixed_t floorz, ceilingz;   // closest together of contacted secs
     fixed_t radius, height;     // for movement checking
@@ -176,18 +181,18 @@ typedef struct mobj_s
     int health;
     int movedir;                // 0-7
     int movecount;              // when 0, select a new dir
-    struct mobj_s *target;      // thing being chased/attacked (or NULL)
+    struct mobj_t *target;      // thing being chased/attacked (or NULL)
     // also the originator for missiles
     int reactiontime;           // if non 0, don't attack yet
     // used by player to freeze a bit after
     // teleporting
     int threshold;              // if >0, the target will be chased
     // no matter what (even if shot)
-    struct player_s *player;    // only valid if type == MT_PLAYER
+    struct player_t *player;    // only valid if type == MT_PLAYER
     int lastlook;               // player number last looked for
 
     mapthing_t spawnpoint;      // for nightmare respawn
-} mobj_t;
+};
 
 // each sector has a degenmobj_t in it's center for sound origin purposes
 typedef struct
@@ -283,29 +288,29 @@ typedef enum
 
 // psprites are scaled shapes directly on the view screen
 // coordinates are given for a 320*200 view screen
-typedef enum
+enum psprnum_t
 {
     ps_weapon,
     ps_flash,
     NUMPSPRITES
-} psprnum_t;
+};
 
-typedef struct
+struct pspdef_t
 {
     state_t *state;             // a NULL state means not active
     int tics;
     fixed_t sx, sy;
-} pspdef_t;
+};
 
-typedef enum
+enum keytype_t
 {
     key_yellow,
     key_green,
     key_blue,
     NUMKEYS
-} keytype_t;
+};
 
-typedef enum
+enum weapontype_t
 {
     wp_staff,
     wp_goldwand,
@@ -318,7 +323,7 @@ typedef enum
     wp_beak,
     NUMWEAPONS,
     wp_nochange
-} weapontype_t;
+};
 
 #define AMMO_GWND_WIMPY 10
 #define AMMO_GWND_HEFTY 50
@@ -333,7 +338,7 @@ typedef enum
 #define AMMO_MACE_WIMPY 20
 #define AMMO_MACE_HEFTY 100
 
-typedef enum
+enum ammotype_t
 {
     am_goldwand,
     am_crossbow,
@@ -343,7 +348,7 @@ typedef enum
     am_mace,
     NUMAMMO,
     am_noammo                   // staff, gauntlets
-} ammotype_t;
+};
 
 typedef struct
 {
@@ -359,7 +364,7 @@ typedef struct
 extern weaponinfo_t wpnlev1info[NUMWEAPONS];
 extern weaponinfo_t wpnlev2info[NUMWEAPONS];
 
-typedef enum
+enum artitype_t
 {
     arti_none,
     arti_invulnerability,
@@ -373,9 +378,9 @@ typedef enum
     arti_fly,
     arti_teleport,
     NUMARTIFACTS
-} artitype_t;
+};
 
-typedef enum
+enum powertype_t
 {
     pw_None,
     pw_invulnerability,
@@ -387,7 +392,7 @@ typedef enum
     pw_shield,
     pw_health2,
     NUMPOWERS
-} powertype_t;
+};
 
 #define	INVULNTICS (30*35)
 #define	INVISTICS (60*35)
@@ -416,7 +421,7 @@ typedef struct
 ================
 */
 
-typedef struct player_s
+struct  player_t
 {
     mobj_t *mo;
     playerstate_t playerstate;
@@ -467,7 +472,7 @@ typedef struct player_s
     int chickenPeck;            // chicken peck countdown
     mobj_t *rain1;              // active rain maker 1
     mobj_t *rain2;              // active rain maker 2
-} player_t;
+};
 
 #define CF_NOCLIP		1
 #define	CF_GODMODE		2

@@ -21,6 +21,8 @@
 #include "i_video.hpp"
 #include "v_video.hpp"
 
+#include "../../utils/lump.hpp"
+
 /*
 
 All drawing to the view buffer is accomplished in this file.  The other refresh
@@ -378,7 +380,7 @@ void R_InitBuffer(int width, int height)
     else
         viewwindowy = (SCREENHEIGHT - SBARHEIGHT - height) >> 1;
     for (i = 0; i < height; i++)
-        ylookup[i] = I_VideoBuffer + (i + viewwindowy) * SCREENWIDTH;
+        ylookup[i] = reinterpret_cast<byte *>(I_VideoBuffer + (i + viewwindowy) * SCREENWIDTH);
 }
 
 
@@ -403,13 +405,13 @@ void R_DrawViewBorder(void)
 
     if (gamemode == shareware)
     {
-        src = cache_lump_name<patch_t *>(DEH_String("FLOOR04"), PU_CACHE);
+        src = cache_lump_name<byte *>(DEH_String("FLOOR04"), PU_CACHE);
     }
     else
     {
-        src = cache_lump_name<patch_t *>(DEH_String("FLAT513"), PU_CACHE);
+        src = cache_lump_name<byte *>(DEH_String("FLAT513"), PU_CACHE);
     }
-    dest = I_VideoBuffer;
+    dest = reinterpret_cast<byte *>(I_VideoBuffer);
 
     for (y = 0; y < SCREENHEIGHT - SBARHEIGHT; y++)
     {
@@ -469,13 +471,13 @@ void R_DrawTopBorder(void)
 
     if (gamemode == shareware)
     {
-        src = cache_lump_name<patch_t *>(DEH_String("FLOOR04"), PU_CACHE);
+        src = cache_lump_name<byte *>(DEH_String("FLOOR04"), PU_CACHE);
     }
     else
     {
-        src = cache_lump_name<patch_t *>(DEH_String("FLAT513"), PU_CACHE);
+        src = cache_lump_name<byte *>(DEH_String("FLAT513"), PU_CACHE);
     }
-    dest = I_VideoBuffer;
+    dest = reinterpret_cast<byte *>(I_VideoBuffer);
 
     for (y = 0; y < 30; y++)
     {

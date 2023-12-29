@@ -15,7 +15,7 @@
 //
 // F_finale.c
 
-#include <ctype.h>
+#include <cctype>
 
 #include "doomdef.hpp"
 #include "deh_str.hpp"
@@ -23,6 +23,8 @@
 #include "i_video.hpp"
 #include "s_sound.hpp"
 #include "v_video.hpp"
+
+#include "../../utils/lump.hpp"
 
 static int finalestage;                // 0 = text, 1 = art screen
 static int finalecount;
@@ -165,7 +167,7 @@ void F_TextWrite(void)
 // erase the entire screen to a tiled background
 //
     src = W_CacheLumpName(finaleflat, PU_CACHE);
-    dest = I_VideoBuffer;
+    dest = reinterpret_cast<decltype(dest)>(I_VideoBuffer);
     for (y = 0; y < SCREENHEIGHT; y++)
     {
         for (x = 0; x < SCREENWIDTH / 64; x++)
@@ -228,7 +230,7 @@ void F_DrawPatchCol(int x, patch_t * patch, int col)
     int count;
 
     column = (column_t *) ((byte *) patch + LONG(patch->columnofs[col]));
-    desttop = I_VideoBuffer + x;
+    desttop = reinterpret_cast<decltype(desttop)>(I_VideoBuffer + x);
 
 // step through the posts in a column
 
@@ -265,24 +267,24 @@ void F_DemonScroll(void)
     {
         return;
     }
-    p1 = cache_lump_name<patch_t *>(DEH_String("FINAL1"), PU_LEVEL);
-    p2 = cache_lump_name<patch_t *>(DEH_String("FINAL2"), PU_LEVEL);
+    p1 = cache_lump_name<byte *>(DEH_String("FINAL1"), PU_LEVEL);
+    p2 = cache_lump_name<byte *>(DEH_String("FINAL2"), PU_LEVEL);
     if (finalecount < 70)
     {
-        V_CopyScaledBuffer(I_VideoBuffer, p1, ORIGHEIGHT * ORIGWIDTH);
+        V_CopyScaledBuffer(I_VideoBuffer, reinterpret_cast<pixel_t *>(p1), ORIGHEIGHT * ORIGWIDTH);
         nextscroll = finalecount;
         return;
     }
     if (yval < 64000)
     {
-        V_CopyScaledBuffer(I_VideoBuffer, p2 + ORIGHEIGHT * ORIGWIDTH - yval, yval);
-        V_CopyScaledBuffer(I_VideoBuffer + (yval << (2 * crispy->hires)), p1, ORIGHEIGHT * ORIGWIDTH - yval);
+        V_CopyScaledBuffer(I_VideoBuffer, reinterpret_cast<pixel_t *>(p2 + ORIGHEIGHT * ORIGWIDTH - yval), yval);
+        V_CopyScaledBuffer(I_VideoBuffer + (yval << (2 * crispy->hires)), reinterpret_cast<pixel_t *>(p1), ORIGHEIGHT * ORIGWIDTH - yval);
         yval += ORIGWIDTH;
         nextscroll = finalecount + 3;
     }
     else
     {                           //else, we'll just sit here and wait, for now
-        V_CopyScaledBuffer(I_VideoBuffer, p2, ORIGWIDTH * ORIGHEIGHT);
+        V_CopyScaledBuffer(I_VideoBuffer, reinterpret_cast<pixel_t *>(p2), ORIGWIDTH * ORIGHEIGHT);
     }
 }
 
@@ -317,7 +319,7 @@ void F_DrawUnderwater(void)
                 palette = W_CacheLumpName(lumpname, PU_STATIC);
                 I_SetPalette(palette);
                 W_ReleaseLumpName(lumpname);
-                V_DrawRawScreen(cache_lump_name<patch_t *>(DEH_String("E2END"), PU_CACHE));
+                V_DrawRawScreen(cache_lump_name<pixel_t *>(DEH_String("E2END"), PU_CACHE));
             }
             paused = false;
             MenuActive = false;
@@ -333,7 +335,7 @@ void F_DrawUnderwater(void)
                 W_ReleaseLumpName(lumpname);
                 underwawa = false;
             }
-            V_DrawRawScreen(cache_lump_name<patch_t *>(DEH_String("TITLE"), PU_CACHE));
+            V_DrawRawScreen(cache_lump_name<pixel_t *>(DEH_String("TITLE"), PU_CACHE));
             //D_StartTitle(); // go to intro/demo mode.
     }
 }
@@ -420,11 +422,11 @@ void F_Drawer(void)
             case 1:
                 if (gamemode == shareware)
                 {
-                    V_DrawRawScreen(cache_lump_name<patch_t *>("ORDER", PU_CACHE));
+                    V_DrawRawScreen(cache_lump_name<pixel_t *>("ORDER", PU_CACHE));
                 }
                 else
                 {
-                    V_DrawRawScreen(cache_lump_name<patch_t *>("CREDIT", PU_CACHE));
+                    V_DrawRawScreen(cache_lump_name<pixel_t *>("CREDIT", PU_CACHE));
                 }
                 break;
             case 2:
@@ -435,7 +437,7 @@ void F_Drawer(void)
                 break;
             case 4:            // Just show credits screen for extended episodes
             case 5:
-                V_DrawRawScreen(cache_lump_name<patch_t *>("CREDIT", PU_CACHE));
+                V_DrawRawScreen(cache_lump_name<pixel_t *>("CREDIT", PU_CACHE));
                 break;
         }
     }
