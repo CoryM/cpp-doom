@@ -41,12 +41,12 @@ target_link_libraries("${PROGRAM_PREFIX}server" SDL2::SDL2 SDL2::net)
 set(GAME_SOURCE_FILES
     aes_prng.cpp          aes_prng.hpp
     d_event.cpp           d_event.hpp
-                        doomkeys.hpp
-                        doomtype.hpp
+                          doomkeys.hpp
+                          doomtype.hpp
     d_iwad.cpp            d_iwad.hpp
     d_loop.cpp            d_loop.hpp
     d_mode.cpp            d_mode.hpp
-                        d_ticcmd.hpp
+                          d_ticcmd.hpp
     deh_str.cpp           deh_str.hpp
     gusconf.cpp           gusconf.hpp
     i_cdmus.cpp           i_cdmus.hpp
@@ -54,7 +54,7 @@ set(GAME_SOURCE_FILES
     i_glob.cpp            i_glob.hpp
     i_input.cpp           i_input.hpp
     i_joystick.cpp        i_joystick.hpp
-                        i_swap.hpp
+                          i_swap.hpp
     i_midipipe.cpp        i_midipipe.hpp
     i_musicpack.cpp
     i_oplmusic.cpp
@@ -124,7 +124,6 @@ set(DEHACKED_SOURCE_FILES
 set(SOURCE_FILES ${COMMON_SOURCE_FILES} ${GAME_SOURCE_FILES})
 set(SOURCE_FILES_WITH_DEH ${SOURCE_FILES} ${DEHACKED_SOURCE_FILES})
 
-# set(EXTRA_LIBS SDL2::SDL2main SDL2::SDL2 SDL2::mixer SDL2::net textscreen pcsound opl)
 set(EXTRA_LIBS SDL2::SDL2 SDL2::mixer SDL2::net textscreen pcsound opl)
 if(SAMPLERATE_FOUND)
     list(APPEND EXTRA_LIBS samplerate::samplerate)
@@ -133,47 +132,75 @@ if(PNG_FOUND)
     list(APPEND EXTRA_LIBS PNG::PNG)
 endif()
 
+# ------------ Doom ------------
 if(WIN32)
-    add_executable("${PROGRAM_PREFIX}doom" WIN32 ${SOURCE_FILES_WITH_DEH} "${CMAKE_CURRENT_BINARY_DIR}/resource.rc")
+    add_executable("${PROGRAM_PREFIX}doom" WIN32)
+    set_target_properties("${PROGRAM_PREFIX}doom" PROPERTIES LINK_FLAGS "/MANIFEST:NO")
+    target_sources("${PROGRAM_PREFIX}doom" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/resource.rc")
 else()
-    add_executable("${PROGRAM_PREFIX}doom" ${SOURCE_FILES_WITH_DEH})
+    add_executable("${PROGRAM_PREFIX}doom")
 endif()
 
-target_include_directories("${PROGRAM_PREFIX}doom" PRIVATE ${GAME_INCLUDE_DIRS})
+target_sources("${PROGRAM_PREFIX}doom" 
+        PRIVATE 
+            ${SOURCE_FILES_WITH_DEH}
+        
+        PRIVATE FILE_SET HEADERS
+          BASE_DIRS
+            ${CMAKE_CURRENT_SOURCE_DIR}
+            ${GAME_INCLUDE_DIRS}
+        #PRIVATE FILE_SET CXX_MODULES
+    )
+
 target_link_libraries("${PROGRAM_PREFIX}doom" doom ${EXTRA_LIBS})
 
-if(MSVC)
-    set_target_properties("${PROGRAM_PREFIX}doom" PROPERTIES
-                          LINK_FLAGS "/MANIFEST:NO")
-endif()
+# ------------ Heretic ------------
 
 if(WIN32)
-    add_executable("${PROGRAM_PREFIX}heretic" WIN32 ${SOURCE_FILES_WITH_DEH} "${CMAKE_CURRENT_BINARY_DIR}/resource.rc")
+    add_executable("${PROGRAM_PREFIX}heretic" WIN32)
+    set_target_properties("${PROGRAM_PREFIX}heretic" PROPERTIES LINK_FLAGS "/MANIFEST:NO")
+    target_sources("${PROGRAM_PREFIX}heretic" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/resource.rc")
 else()
-    add_executable("${PROGRAM_PREFIX}heretic" ${SOURCE_FILES_WITH_DEH})
+    add_executable("${PROGRAM_PREFIX}heretic")
 endif()
 
-target_include_directories("${PROGRAM_PREFIX}heretic" PRIVATE ${GAME_INCLUDE_DIRS})
+target_sources("${PROGRAM_PREFIX}heretic"
+        PRIVATE 
+            ${SOURCE_FILES_WITH_DEH}
+        
+        PRIVATE FILE_SET HEADERS
+          BASE_DIRS
+            ${CMAKE_CURRENT_SOURCE_DIR}
+            ${GAME_INCLUDE_DIRS}
+        #PRIVATE FILE_SET CXX_MODULES
+    )
+
 target_link_libraries("${PROGRAM_PREFIX}heretic" heretic ${EXTRA_LIBS})
 
-if(MSVC)
-    set_target_properties("${PROGRAM_PREFIX}heretic" PROPERTIES
-                          LINK_FLAGS "/MANIFEST:NO")
-endif()
+# ------------ Hexen ------------
 
 if(WIN32)
-    add_executable("${PROGRAM_PREFIX}hexen" WIN32 ${SOURCE_FILES} "${CMAKE_CURRENT_BINARY_DIR}/resource.rc")
+    add_executable("${PROGRAM_PREFIX}hexen" WIN32)
+    set_target_properties("${PROGRAM_PREFIX}hexen" PROPERTIES LINK_FLAGS "/MANIFEST:NO")
+    target_sources("${PROGRAM_PREFIX}hexen" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/resource.rc")
 else()
-    add_executable("${PROGRAM_PREFIX}hexen" ${SOURCE_FILES})
+    add_executable("${PROGRAM_PREFIX}hexen")
 endif()
 
-target_include_directories("${PROGRAM_PREFIX}hexen" PRIVATE ${GAME_INCLUDE_DIRS})
+target_sources("${PROGRAM_PREFIX}hexen"
+        PRIVATE 
+            ${SOURCE_FILES_WITH_DEH}
+        
+        PRIVATE FILE_SET HEADERS
+          BASE_DIRS
+            ${CMAKE_CURRENT_SOURCE_DIR}
+            ${GAME_INCLUDE_DIRS}
+        #PRIVATE FILE_SET CXX_MODULES
+    )
+
 target_link_libraries("${PROGRAM_PREFIX}hexen" hexen ${EXTRA_LIBS})
 
-if(MSVC)
-    set_target_properties("${PROGRAM_PREFIX}hexen" PROPERTIES
-                          LINK_FLAGS "/MANIFEST:NO")
-endif()
+# ------------ Strife ------------
 
 if(WIN32)
     add_executable("${PROGRAM_PREFIX}strife" WIN32 ${SOURCE_FILES_WITH_DEH} "${CMAKE_CURRENT_BINARY_DIR}/resource.rc")
@@ -189,6 +216,8 @@ if(MSVC)
                           LINK_FLAGS "/MANIFEST:NO")
 endif()
 
+
+# ------------ Setup ------------
 # Source files needed for chocolate-setup:
 
 set(SETUP_FILES
@@ -243,7 +272,6 @@ endif()
 
 target_include_directories("${PROGRAM_PREFIX}setup"
                            PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
-#target_link_libraries("${PROGRAM_PREFIX}setup" SDL2::SDL2main SDL2::SDL2 SDL2::mixer SDL2::net setup textscreen)
 target_link_libraries("${PROGRAM_PREFIX}setup" SDL2::SDL2 SDL2::mixer SDL2::net PNG::PNG samplerate::samplerate pcsound opl setup textscreen)
 
 if(MSVC)
@@ -251,14 +279,16 @@ if(MSVC)
                           LINK_FLAGS "/MANIFEST:NO")
 endif()
 
+# ------------ midiread ------------
+
 add_executable(midiread midifile.cpp z_native.cpp i_system.cpp m_argv.cpp m_misc.cpp d_iwad.cpp deh_str.cpp m_config.cpp)
 target_compile_definitions(midiread PRIVATE "-DTEST")
 target_include_directories(midiread PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
-#target_link_libraries(midiread SDL2::SDL2main SDL2::SDL2)
 target_link_libraries(midiread SDL2::SDL2)
+
+# ------------ mus2mid ------------
 
 add_executable(mus2mid mus2mid.cpp memio.cpp z_native.cpp i_system.cpp m_argv.cpp m_misc.cpp d_iwad.cpp deh_str.cpp m_config.cpp)
 target_compile_definitions(mus2mid PRIVATE "-DSTANDALONE")
 target_include_directories(mus2mid PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
-#target_link_libraries(mus2mid SDL2::SDL2main SDL2::SDL2)
 target_link_libraries(mus2mid SDL2::SDL2)

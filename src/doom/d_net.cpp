@@ -17,6 +17,8 @@
 //	all OS independend parts.
 //
 
+#include "d_net.hpp"
+
 #include <cstdlib>
 
 #include "d_main.hpp"
@@ -104,7 +106,6 @@ static loop_interface_t doom_loop_interface = {
 
 // Load game settings from the specified structure and
 // set global variables.
-
 static void LoadGameSettings(net_gamesettings_t *settings)
 {
     deathmatch    = settings->deathmatch;
@@ -133,7 +134,6 @@ static void LoadGameSettings(net_gamesettings_t *settings)
 
 // Save the game settings from global variables to the specified
 // game settings structure.
-
 static void SaveGameSettings(net_gamesettings_t *settings)
 {
     // Fill in game settings structure with appropriate parameters
@@ -240,10 +240,8 @@ void D_ConnectNetGame(void)
     }
 }
 
-//
 // D_CheckNetGame
 // Works out player numbers among the net participants
-//
 void D_CheckNetGame(void)
 {
     net_gamesettings_t settings;
