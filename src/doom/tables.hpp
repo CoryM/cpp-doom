@@ -34,9 +34,10 @@
 #ifndef __TABLES__
 #define __TABLES__
 
-#include "doomtype.hpp"
+//#include "m_fixed.hpp"
+import m_fixed;
 
-import m_fixed; //#include "m_fixed.hpp"
+#include "doomtype.hpp"
 
 #define FINEANGLES 8192
 #define FINEMASK   (FINEANGLES - 1)

@@ -20,6 +20,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+import m_fixed;
+
 #include "dstrings.hpp"
 #include "deh_main.hpp"
 #include "i_system.hpp"

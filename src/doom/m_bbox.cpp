@@ -13,25 +13,31 @@
 // GNU General Public License for more details.
 //
 // DESCRIPTION:
-//	Fixed point arithemtics, implementation.
+//	Main loop menu stuff.
+//	Random number LUT.
+//	Default Config File.
+//	PCX Screenshots.
 //
 
-
-#ifndef __M_FIXED__
-#define __M_FIXED__
+#include "m_bbox.hpp"
 
 
-//
-// Fixed point, 32bit as 16.16.
-//
-#define FRACBITS        16
-#define FRACUNIT        (1 << FRACBITS)
-#define FIXED2DOUBLE(x) (x / (double)FRACUNIT)
+void M_ClearBox(fixed_t *box)
+{
+    box[BOXTOP] = box[BOXRIGHT] = INT_MIN;
+    box[BOXBOTTOM] = box[BOXLEFT] = INT_MAX;
+}
 
-typedef int fixed_t;
-
-fixed_t FixedMul(fixed_t a, fixed_t b);
-fixed_t FixedDiv(fixed_t a, fixed_t b);
-
-
-#endif
+void M_AddToBox(fixed_t *box,
+    fixed_t              x,
+    fixed_t              y)
+{
+    if (x < box[BOXLEFT])
+        box[BOXLEFT] = x;
+    else if (x > box[BOXRIGHT])
+        box[BOXRIGHT] = x;
+    if (y < box[BOXBOTTOM])
+        box[BOXBOTTOM] = y;
+    else if (y > box[BOXTOP])
+        box[BOXTOP] = y;
+}

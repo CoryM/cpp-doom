@@ -16,34 +16,39 @@
 //	Fixed point implementation.
 //
 
+module;
 
-#include <cstdlib>
+#include <cstdint>
+#include <cmath>
 
-#include "doomtype.hpp"
-#include "i_system.hpp"
+export module m_fixed;
 
-#include "m_fixed.hpp"
+//
+// Fixed point, 32bit as 16.16.
+//
+export using fixed_t = int32_t;
 
+export constexpr int32_t FRACBITS        = 16;
+export constexpr int32_t FRACUNIT        = (1 << FRACBITS);
+
+export double FIXED2DOUBLE(fixed_t x) {
+    return static_cast<double>(x) / FRACUNIT;
+};
 
 // Fixme. __USE_C_FIXED__ or something.
 
-fixed_t
-    FixedMul(fixed_t a,
+export fixed_t FixedMul(fixed_t a,
         fixed_t      b)
 {
     return ((int64_t)a * (int64_t)b) >> FRACBITS;
 }
 
 
-//
-// FixedDiv, C version.
-//
-
-fixed_t FixedDiv(fixed_t a, fixed_t b)
+export fixed_t FixedDiv(fixed_t a, fixed_t b)
 {
     if ((abs(a) >> 14) >= abs(b))
     {
-        return (a ^ b) < 0 ? INT_MIN : INT_MAX;
+        return (a ^ b) < 0 ? INT32_MIN : INT32_MAX;
     }
     else
     {

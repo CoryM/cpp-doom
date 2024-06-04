@@ -22,7 +22,8 @@
 
 // Basics.
 #include "tables.hpp"
-#include "m_fixed.hpp"
+//#include "m_fixed.hpp"
+import m_fixed;
 
 // We need the thinker_t stuff.
 #include "d_think.hpp"

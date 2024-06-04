@@ -33,7 +33,6 @@ set(DEDSERV_FILES
 add_executable("${PROGRAM_PREFIX}server" WIN32 ${COMMON_SOURCE_FILES} ${DEDSERV_FILES})
 target_include_directories("${PROGRAM_PREFIX}server"
                            PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
-#target_link_libraries("${PROGRAM_PREFIX}server" SDL2::SDL2main SDL2::net)
 target_link_libraries("${PROGRAM_PREFIX}server" SDL2::SDL2 SDL2::net)
 
 # Source files used by the game binaries (chocolate-doom, etc.)
@@ -42,7 +41,7 @@ set(GAME_SOURCE_FILES
     aes_prng.cpp          aes_prng.hpp
     d_event.cpp           d_event.hpp
                           doomkeys.hpp
-                          doomtype.hpp
+    doomtype.cpp          doomtype.hpp
     d_iwad.cpp            d_iwad.hpp
     d_loop.cpp            d_loop.hpp
     d_mode.cpp            d_mode.hpp
@@ -67,11 +66,10 @@ set(GAME_SOURCE_FILES
     i_videohr.cpp         i_videohr.hpp
     midifile.cpp          midifile.hpp
     mus2mid.cpp           mus2mid.hpp
-    m_bbox.cpp            m_bbox.hpp
+    #m_bbox.cpp            m_bbox.hpp
     m_cheat.cpp           m_cheat.hpp
     m_config.cpp          m_config.hpp
     m_controls.cpp        m_controls.hpp
-    m_fixed.cpp           m_fixed.hpp
     net_client.cpp        net_client.hpp
     net_common.cpp        net_common.hpp
     net_dedicated.cpp     net_dedicated.hpp
@@ -90,7 +88,7 @@ set(GAME_SOURCE_FILES
     tables.cpp            tables.hpp
     v_diskicon.cpp        v_diskicon.hpp
     v_video.cpp           v_video.hpp
-                        v_patch.hpp
+                          v_patch.hpp
     v_trans.cpp           v_trans.hpp
     w_checksum.cpp        w_checksum.hpp
     w_main.cpp            w_main.hpp
@@ -132,7 +130,7 @@ if(PNG_FOUND)
     list(APPEND EXTRA_LIBS PNG::PNG)
 endif()
 
-# ------------ Doom ------------
+# ------------ cpp-doom ------------
 if(WIN32)
     add_executable("${PROGRAM_PREFIX}doom" WIN32)
     set_target_properties("${PROGRAM_PREFIX}doom" PROPERTIES LINK_FLAGS "/MANIFEST:NO")
@@ -149,7 +147,8 @@ target_sources("${PROGRAM_PREFIX}doom"
           BASE_DIRS
             ${CMAKE_CURRENT_SOURCE_DIR}
             ${GAME_INCLUDE_DIRS}
-        #PRIVATE FILE_SET CXX_MODULES
+        #PRIVATE FILE_SET CXX_MODULES FILES
+        #    m_fixed.cxx
     )
 
 target_link_libraries("${PROGRAM_PREFIX}doom" doom ${EXTRA_LIBS})

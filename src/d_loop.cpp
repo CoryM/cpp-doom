@@ -28,7 +28,7 @@
 #include "i_video.hpp"
 
 #include "m_argv.hpp"
-#include "m_fixed.hpp"
+import m_fixed; //#include "m_fixed.hpp"
 
 #include "net_client.hpp"
 #include "net_gui.hpp"

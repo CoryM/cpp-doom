@@ -27,7 +27,8 @@ target_sources(doom
         g_game.cpp        
         hu_lib.cpp        
         hu_stuff.cpp      
-        info.cpp                          
+        info.cpp
+        m_bbox.cpp
         m_crispy.cpp      
         m_menu.cpp        
         m_random.cpp      
@@ -71,6 +72,7 @@ target_sources(doom
         st_lib.cpp
         st_stuff.cpp
         wi_stuff.cpp
+        tables.cpp
         
     PRIVATE FILE_SET HEADERS FILES
         am_map.hpp
@@ -94,6 +96,7 @@ target_sources(doom
         hu_stuff.hpp
         info.hpp
         m_background.hpp
+        m_bbox.hpp
         m_crispy.hpp
         m_menu.hpp
         m_random.hpp
@@ -126,8 +129,12 @@ target_sources(doom
         statdump.hpp
         st_lib.hpp
         st_stuff.hpp
+        tables.hpp
         wi_stuff.hpp 
         event_function_decls.hpp
+
+    PUBLIC FILE_SET CXX_MODULES FILES
+         m_fixed.cxx
 )
 
 target_include_directories(doom PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../")

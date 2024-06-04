@@ -1,10 +1,12 @@
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-cmake_minimum_required(VERSION 3.27.7)
-project("Cpp Doom" VERSION 5.7.2 LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 23)
+cmake_minimum_required(VERSION 3.29)
+project("Cpp Doom" VERSION 5.7.3 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
 # Autotools variables
 set(top_srcdir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -21,39 +23,47 @@ string(REGEX REPLACE " Doom$" "" PACKAGE_SHORTNAME "${PACKAGE_NAME}")
 set(PACKAGE_COPYRIGHT "Copyright (C) 1993-2020")
 set(PACKAGE_LICENSE "GNU General Public License, version 2")
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+  set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
+endif()
+
 # Any settings that should apply to all targets in this directory and all
 # subdirectories should go here.  Use judiciously.
 if(MSVC)
     add_definitions("/D_CRT_SECURE_NO_WARNINGS" "/D_CRT_SECURE_NO_DEPRECATE"
                     "/D_CRT_NONSTDC_NO_DEPRECATE")
 else()
-    add_compile_options("-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-fmax-errors=1" 
+    add_compile_options("-Og" "-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-Wfatal-errors"
         "-fsanitize=address" 
-        "-fsanitize=undefined"
-        "-fsanitize=leak" 
-        "-fsanitize=pointer-compare"
-        "-fsanitize=pointer-subtract"
-        "-fno-omit-frame-pointer" 
-        "-fno-optimize-sibling-calls"
-        "-fno-common" 
-        "-fno-omit-frame-pointer")
+        #"-fsanitize=undefined"
+        #"-fsanitize=leak" 
+        #"-fsanitize=pointer-compare"
+        #"-fsanitize=pointer-subtract"
+        #"-fno-omit-frame-pointer" 
+        #"-fno-optimize-sibling-calls"
+        #"-fno-common" 
+        #"-fno-omit-frame-pointer"
+        )
 
     add_link_options(
+        "-fuse-ld=gold"
         "-fsanitize=address"
-        "-fsanitize=undefined"
-        "-fsanitize=leak" 
-        "-fsanitize=pointer-compare"
-        "-fsanitize=pointer-subtract"
-        "-fno-omit-frame-pointer" 
-        "-fno-optimize-sibling-calls"
-        "-fno-common" 
-        "-fno-omit-frame-pointer")
+        #"-fsanitize=undefined"
+        #"-fsanitize=leak" 
+        #"-fsanitize=pointer-compare"
+        #"-fsanitize=pointer-subtract"
+        #"-fno-omit-frame-pointer" 
+        #"-fno-optimize-sibling-calls"
+        #"-fno-common" 
+        #"-fno-omit-frame-pointer"
+        )
 endif()
 add_compile_definitions( -DCRISPY_TRUECOLOR )
 
-find_package(SDL2 2.0.1)
-find_package(SDL2_mixer 2.0.0)
-find_package(SDL2_net 2.0.0)
+find_package(SDL2 2.0.1 REQUIRED)
+find_package(SDL2_mixer REQUIRED)
+find_package(SDL2_net   REQUIRED)
 
 # Check for libsamplerate.
 find_package(samplerate)
@@ -69,11 +79,10 @@ endif()
 
 find_package(m)
 
-include(CheckSymbolExists)
-include(CheckIncludeFile)
-check_symbol_exists(strcasecmp "strings.h" HAVE_DECL_STRCASECMP)
-check_symbol_exists(strncasecmp "strings.h" HAVE_DECL_STRNCASECMP)
-#check_include_file("dirent.h" HAVE_DIRENT_H)
+#include(CheckSymbolExists) # Bugs out on c++ module support
+#include(CheckIncludeFile)
+#check_symbol_exists(strcasecmp "strings.h" HAVE_DECL_STRCASECMP)
+#check_symbol_exists(strncasecmp "strings.h" HAVE_DECL_STRNCASECMP)
 
 set(HAVE_DIRENT_H True)
 

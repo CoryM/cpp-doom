@@ -26,7 +26,8 @@
 
 // Some more or less basic data types
 // we depend on.
-#include "m_fixed.hpp"
+//#include "m_fixed.hpp"
+import m_fixed;
 
 // We rely on the thinker data struct
 // to handle sound origins in sectors.
@@ -390,7 +391,7 @@ typedef struct vissprite_s {
     // [crispy] color translation table for blood colored by monster class
     byte *translation;
 #ifdef CRISPY_TRUECOLOR
-    const pixel_t (*blendfunc)(const pixel_t fg, const pixel_t bg);
+    pixel_t (*blendfunc)(const pixel_t fg, const pixel_t bg);
 #endif
 
 } vissprite_t;

@@ -26,7 +26,7 @@
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "m_argv.hpp"
-#include "m_fixed.hpp"
+import m_fixed; //#include "m_fixed.hpp"
 #include "m_config.hpp"
 #include "m_misc.hpp"
 #include "net_client.hpp"
