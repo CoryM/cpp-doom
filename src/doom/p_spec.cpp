@@ -72,13 +72,13 @@ typedef struct
 //
 // [crispy] change istexture type from int to char and
 // add PACKEDATTR for reading ANIMATED lumps from memory
-typedef PACKED_STRUCT(
+struct [[gnu::packed]] animdef_t
     {
         signed char istexture; // if false, it is a flat
         char        endname[9];
         char        startname[9];
         int         speed;
-    }) animdef_t;
+    };
 
 
 #define MAXANIMS 32

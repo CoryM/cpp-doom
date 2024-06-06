@@ -53,15 +53,14 @@ typedef enum
 } midievent;
 
 // Structure to hold MUS file header
-typedef PACKED_STRUCT(
-    {
-        byte           id[4];
-        unsigned short scorelength;
-        unsigned short scorestart;
-        unsigned short primarychannels;
-        unsigned short secondarychannels;
-        unsigned short instrumentcount;
-    }) musheader;
+struct [[gnu::packed]] musheader {
+    byte           id[4];
+    unsigned short scorelength;
+    unsigned short scorestart;
+    unsigned short primarychannels;
+    unsigned short secondarychannels;
+    unsigned short instrumentcount;
+};
 
 // Standard MIDI type 0 header + track header
 static const byte midiheader[] = {

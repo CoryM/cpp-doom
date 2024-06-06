@@ -899,7 +899,7 @@ void V_RestoreBuffer(void)
 // SCREEN SHOTS
 //
 
-typedef PACKED_STRUCT(
+struct [[gnu::packed]] pcx_t
     {
         char manufacturer;
         char version;
@@ -923,7 +923,7 @@ typedef PACKED_STRUCT(
 
         char          filler[58];
         unsigned char data; // unbounded
-    }) pcx_t;
+    };
 
 
 //

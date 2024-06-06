@@ -48,33 +48,29 @@
 
 #define PERCUSSION_LOG_LEN 16
 
-typedef PACKED_STRUCT(
-    {
-        byte tremolo;
-        byte attack;
-        byte sustain;
-        byte waveform;
-        byte scale;
-        byte level;
-    }) genmidi_op_t;
+struct [[gnu::packed]] genmidi_op_t {
+    byte tremolo;
+    byte attack;
+    byte sustain;
+    byte waveform;
+    byte scale;
+    byte level;
+};
 
-typedef PACKED_STRUCT(
-    {
-        genmidi_op_t modulator;
-        byte         feedback;
-        genmidi_op_t carrier;
-        byte         unused;
-        short        base_note_offset;
-    }) genmidi_voice_t;
+struct [[gnu::packed]] genmidi_voice_t {
+    genmidi_op_t modulator;
+    byte         feedback;
+    genmidi_op_t carrier;
+    byte         unused;
+    short        base_note_offset;
+};
+struct [[gnu::packed]] genmidi_instr_t {
+    unsigned short flags;
+    byte           fine_tuning;
+    byte           fixed_note;
 
-typedef PACKED_STRUCT(
-    {
-        unsigned short flags;
-        byte           fine_tuning;
-        byte           fixed_note;
-
-        genmidi_voice_t voices[2];
-    }) genmidi_instr_t;
+    genmidi_voice_t voices[2];
+};
 
 // Data associated with a channel of a track that is currently playing.
 

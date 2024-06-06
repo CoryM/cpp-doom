@@ -59,14 +59,14 @@
 // into the rectangular texture space using origin
 // and possibly other attributes.
 //
-typedef PACKED_STRUCT(
+struct [[gnu::packed]] mappatch_t
     {
         short originx;
         short originy;
         short patch;
         short stepdir;
         short colormap;
-    }) mappatch_t;
+    };
 
 
 //
@@ -74,7 +74,7 @@ typedef PACKED_STRUCT(
 // A DOOM wall texture is a list of patches
 // which are to be combined in a predefined order.
 //
-typedef PACKED_STRUCT(
+struct [[gnu::packed]] maptexture_t
     {
         char       name[8];
         int        masked;
@@ -83,7 +83,7 @@ typedef PACKED_STRUCT(
         int        obsolete;
         short      patchcount;
         mappatch_t patches[1];
-    }) maptexture_t;
+    };
 
 
 // A single patch from a texture definition,

@@ -31,21 +31,10 @@
 // Outside Windows, we use strings.h for str[n]casecmp.
 
 
-#if !HAVE_DECL_STRCASECMP || !HAVE_DECL_STRNCASECMP
+#include <string_view> // std::string_view
 
-#include <cstring>
-#if !HAVE_DECL_STRCASECMP
-#define strcasecmp stricmp
-#endif
-#if !HAVE_DECL_STRNCASECMP
-#define strncasecmp strnicmp
-#endif
-
-#else
-
-#include <cstring>
-
-#endif
+bool strcasecmp(std::string_view s1, std::string_view s2);
+bool strncasecmp(std::string_view s1, std::string_view s2, size_t n);
 
 
 //
@@ -88,7 +77,7 @@
 #define PACKEDPREFIX
 #endif
 
-#define PACKED_STRUCT(...) PACKEDPREFIX struct __VA_ARGS__ PACKEDATTR
+#define PACKED_STRUCT(...) PACKEDPREFIX struct [[deprecated("Use struct with c++ attrib. [[gnu::packed]] instead")]] __VA_ARGS__ PACKEDATTR
 
 // C99 integer types; with gcc we just use this.  Other compilers
 // should add conditional statements that define the C99 types.
@@ -100,21 +89,9 @@
 
 #include <inttypes.h>
 
-#if defined(__cplusplus) || defined(__bool_true_false_are_defined)
-
 // Use builtin bool type with C++.
 
 typedef bool boolean;
-
-#else
-
-typedef enum
-{
-    false,
-    true
-} boolean;
-
-#endif
 
 typedef uint8_t byte;
 #ifndef CRISPY_TRUECOLOR

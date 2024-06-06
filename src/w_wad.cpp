@@ -35,21 +35,21 @@
 #include "../utils/memory.hpp"
 #include "w_wad.hpp"
 
-typedef PACKED_STRUCT(
+struct [[gnu::packed]] wadinfo_t
     {
         // Should be "IWAD" or "PWAD".
         char identification[4];
         int  numlumps;
         int  infotableofs;
-    }) wadinfo_t;
+    };
 
 
-typedef PACKED_STRUCT(
+struct [[gnu::packed]] filelump_t
     {
         int  filepos;
         int  size;
         char name[8];
-    }) filelump_t;
+    };
 
 //
 // GLOBALS
