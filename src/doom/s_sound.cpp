@@ -18,6 +18,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+import m_fixed;
+
 #include "i_sound.hpp"
 #include "i_system.hpp"
 
@@ -387,7 +389,7 @@ void S_Start(void)
             mus_ddtbl2,
         };
 
-        if ((gameepisode == 2 || gamemission == pack_nerve) && gamemap <= arrlen(nmus))
+        if ((gameepisode == 2 || gamemission == pack_nerve) && gamemap <= static_cast<int>(arrlen(nmus)))
         {
             mnum = nmus[gamemap - 1];
         }
