@@ -37,7 +37,7 @@
 //#include "m_fixed.hpp"
 import m_fixed;
 
-#include "doomtype.hpp"
+#include "../doomtype.hpp"
 
 #define FINEANGLES 8192
 #define FINEMASK   (FINEANGLES - 1)

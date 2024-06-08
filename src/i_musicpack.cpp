@@ -17,10 +17,11 @@
 //
 
 #include <cctype>
-#include <memory>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
+#include <string>
 
 #include "SDL.h"
 #include "SDL_mixer.h"

@@ -405,7 +405,7 @@ void WI_slamBackground(void)
 
 // The ticker is used to detect keys
 //  because of timing issues in netgames.
-boolean WI_Responder(event_t *ev)
+boolean WI_Responder([[maybe_unused]] event_t *ev)
 {
     return false;
 }
@@ -417,7 +417,7 @@ void WI_drawLF(void)
     int y = WI_TITLEY;
 
     // [crispy] prevent crashes with maps without map title graphics lump
-    if (wbs->last >= num_lnames || lnames[wbs->last] == NULL)
+    if (wbs->last >= static_cast<int>(num_lnames) || lnames[wbs->last] == NULL)
     {
         V_DrawPatch((ORIGWIDTH - SHORT(finished->width)) / 2, y, finished);
         return;
@@ -460,7 +460,7 @@ void WI_drawEL(void)
     int y = WI_TITLEY;
 
     // [crispy] prevent crashes with maps without map title graphics lump
-    if (wbs->next >= num_lnames || lnames[wbs->next] == NULL)
+    if (wbs->next >= static_cast<int>(num_lnames) || lnames[wbs->next] == NULL)
     {
         return;
     }
