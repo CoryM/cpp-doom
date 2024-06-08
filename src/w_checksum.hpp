@@ -19,8 +19,8 @@
 #ifndef W_CHECKSUM_H
 #define W_CHECKSUM_H
 
-#include "doomtype.hpp"
+#include "sha1.hpp"
 
-extern void W_Checksum(sha1_digest_t digest);
+void W_Checksum(sha1_digest_t digest);
 
 #endif /* #ifndef W_CHECKSUM_H */

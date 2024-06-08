@@ -16,15 +16,12 @@
 //       Generate a checksum of the WAD directory.
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
-#include "i_system.hpp"
-#include "m_misc.hpp"
-#include "sha1.hpp"
-#include "w_checksum.hpp"
-#include "w_wad.hpp"
+#include "w_checksum.hpp" // sha1_digest_t, sha1_context_t, SHA1_UpdateInt32, SHA1_UpdateString, SHA1_Init, SHA1_Final
+#include "i_system.hpp"  // for I_Realloc
+#include "m_misc.hpp"    // for M_StringCopy
+#include "w_file.hpp"    // for wad_file_t
+#include "w_wad.hpp"     // for lumpinfo, lumpinfo_t, numlumps
+#include <cstdio>        // for NULL
 
 static wad_file_t **open_wadfiles     = NULL;
 static int          num_open_wadfiles = 0;
