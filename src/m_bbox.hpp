@@ -24,8 +24,6 @@ import m_fixed;
 
 #include <limits.h>
 
-//#include "m_fixed.hpp"
-
 
 // Bounding box coordinate storage.
 enum
