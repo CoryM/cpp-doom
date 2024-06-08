@@ -688,7 +688,7 @@ boolean
             if (cht_CheckCheatSP(&cheat_god, ev->data2))
             {
                 // [crispy] dead players are first respawned at the current position
-                mapthing_t mt = { 0 };
+                mapthing_t mt = { };
                 if (plyr->playerstate == PST_DEAD)
                 {
                     signed int  an;
@@ -1673,13 +1673,13 @@ void ST_doPaletteStuff(void)
     }
 }
 
-enum
+enum hudcolor_t
 {
     hudcolor_ammo,
     hudcolor_health,
     hudcolor_frags,
     hudcolor_armor
-} hudcolor_t;
+};
 
 // [crispy] return ammo/health/armor widget color
 static byte *ST_WidgetColor(int i)

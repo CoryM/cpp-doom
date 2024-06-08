@@ -250,11 +250,11 @@ struct [[gnu::packed]] mapnode_zdbsp_t {
 // Thing definition, position, orientation and type,
 // plus skill/visibility flags and attributes.
 struct [[gnu::packed]] mapthing_t {
-    short x;
-    short y;
-    short angle;
-    short type;
-    short options;
+    short x = 0;
+    short y = 0;
+    short angle = 0;
+    short type = 0;
+    short options = 0;
 };
 
 // [crispy] allow loading of Hexen-format maps
