@@ -84,14 +84,14 @@ struct line_s;
 //  moving objects (doppler), because
 //  position is prolly just buffered, not
 //  updated.
-typedef struct
+struct degenmobj_t
 {
     thinker_t thinker; // not used for anything
-    fixed_t   x;
-    fixed_t   y;
-    fixed_t   z;
+    fixed_t   x = 0;
+    fixed_t   y = 0;
+    fixed_t   z = 0;
 
-} degenmobj_t;
+};
 
 //
 // The SECTORS record, at runtime.

@@ -21,10 +21,10 @@
 #include <cstdlib>
 
 
-#include "deh_main.hpp"
+#include "../deh_main.hpp"
 #include "doomdef.hpp"
 
-#include "i_swap.hpp"
+#include "../i_swap.hpp"
 #include "i_system.hpp"
 #include "z_zone.hpp"
 #include "w_wad.hpp"
@@ -46,7 +46,7 @@
 //void R_DrawFuzzColumn (void);
 
 
-typedef struct
+struct maskdraw_t 
 {
     int x1;
     int x2;
@@ -55,10 +55,9 @@ typedef struct
     int topclip;
     int bottomclip;
 
-} maskdraw_t;
+};
 
-
-static degenmobj_t laserspot_m = { { 0 } };
+static degenmobj_t laserspot_m = { { } };
 degenmobj_t *      laserspot   = &laserspot_m;
 
 // [crispy] extendable, but the last char element must be zero,
@@ -455,8 +454,8 @@ void R_DrawMaskedColumn(column_t *column)
 //  mfloorclip and mceilingclip should also be set.
 //
 void R_DrawVisSprite(vissprite_t *vis,
-    int                           x1,
-    int                           x2)
+    [[maybe_unused]] int          x1,
+    [[maybe_unused]] int          x2)
 {
     column_t *column;
     int       texturecolumn;
