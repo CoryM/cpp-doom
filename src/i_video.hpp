@@ -60,8 +60,12 @@ void I_ShutdownGraphics(void);
 void I_SetPalette(byte *palette);
 int  I_GetPaletteIndex(int r, int g, int b);
 #else
-void                 I_SetPalette(int palette);
-extern const pixel_t I_MapRGB(const uint8_t r, const uint8_t g, const uint8_t b);
+pixel_t I_BlendAdd(const pixel_t bg, const pixel_t fg);
+pixel_t I_BlendDark(const pixel_t bg, const int d);
+pixel_t I_BlendOver(const pixel_t bg, const pixel_t fg);
+extern pixel_t (*blendfunc)(const pixel_t fg, const pixel_t bg);
+void I_SetPalette(int palette);
+pixel_t I_MapRGB(const uint8_t r, const uint8_t g, const uint8_t b);
 #endif
 
 void I_UpdateNoBlit(void);
