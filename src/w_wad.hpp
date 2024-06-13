@@ -20,11 +20,11 @@
 #ifndef __W_WAD__
 #define __W_WAD__
 
-#include <cstdio>
-
 #include "doomtype.hpp"
 #include "w_file.hpp"
 
+#include <cstdio>
+#include <string_view>
 
 //
 // TYPES
@@ -67,7 +67,7 @@ void *W_CacheLumpName(const char *name, int tag);
 
 void W_GenerateHashTable(void);
 
-extern unsigned int W_LumpNameHash(const char *s);
+uint32_t W_LumpNameHash(std::string_view s);
 
 void W_ReleaseLumpNum(lumpindex_t lump);
 void W_ReleaseLumpName(const char *name);

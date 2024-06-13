@@ -19,7 +19,7 @@ module;
 // m_fixed.c and n_fixed,c converted to C++ module m_fixed.cxx
 
 #include <cstdlib> // abs
-#include <climits> // INT_MIN, INT_MAX
+#include <limits>  // std::numeric_limits
 #include <cstdint> // int64_t
 
 export module m_fixed;
@@ -50,14 +50,12 @@ export fixed_t FixedDiv(fixed_t a, fixed_t b)
 {
     if ((abs(a) >> 14) >= abs(b))
     {
-        return (a ^ b) < 0 ? INT_MIN : INT_MAX;
+        return (a ^ b) < 0 ? std::numeric_limits<int32_t>::min() : std::numeric_limits<int32_t>::max();
     }
     else
     {
-        int64_t result;
+        int64_t result = (static_cast<int64_t>(a) << FRACBITS) / b;
 
-        result = (static_cast<int64_t>(a) << FRACBITS) / b;
-
-        return (fixed_t)result;
+        return static_cast<fixed_t>(result);
     }
 }

@@ -71,17 +71,16 @@ static char *      reloadname   = NULL;
 static int         reloadlump   = -1;
 
 // Hash function used for lump names.
-unsigned int W_LumpNameHash(const char *s)
+uint32_t W_LumpNameHash(std::string_view s)
 {
     // This is the djb2 string hash function, modded to work on strings
     // that have a maximum length of 8.
 
-    unsigned int result = 5381;
-    unsigned int i;
+    uint32_t result = 5381;
 
-    for (i = 0; i < 8 && s[i] != '\0'; ++i)
+    for (auto i : s)
     {
-        result = ((result << 5) ^ result) ^ toupper(s[i]);
+        result = ((result << 5) xor result) xor toupper(i);
     }
 
     return result;
