@@ -242,7 +242,7 @@ static boolean SC_GetString(void)
 
 static boolean SC_Compare(const char *text)
 {
-    if (strcasecmp(text, sc_String) == 0)
+    if (doomtype::strcasecmp(text, sc_String) == 0)
     {
         return true;
     }

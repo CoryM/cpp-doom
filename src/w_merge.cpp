@@ -23,9 +23,9 @@
 #include <cstring>
 #include <cctype>
 
+import i_swap; 
 #include "../utils/memory.hpp"
 #include "doomtype.hpp"
-#include "i_swap.hpp" // [crispy] LONG()
 #include "i_system.hpp"
 #include "m_misc.hpp"
 #include "w_merge.hpp"
@@ -76,7 +76,7 @@ static int FindInList(searchlist_t *list, const char *name)
 
     for (i = 0; i < list->numlumps; ++i)
     {
-        if (!strncasecmp(list->lumps[i]->name, name, 8))
+        if (!doomtype::strncasecmp(list->lumps[i]->name, name, 8))
             return i;
     }
 
@@ -192,7 +192,7 @@ static sprite_frame_t *FindSpriteFrame(char *name, int frame)
     {
         sprite_frame_t *cur = &sprite_frames[i];
 
-        if (!strncasecmp(cur->sprname, name, 4) && cur->frame == frame)
+        if (!doomtype::strncasecmp(cur->sprname, name, 4) && cur->frame == frame)
         {
             return cur;
         }
@@ -407,11 +407,11 @@ static void DoMerge(void)
         switch (current_section)
         {
         case SECTION_NORMAL:
-            if (!strncasecmp(lump->name, "F_START", 8))
+            if (!doomtype::strncasecmp(lump->name, "F_START", 8))
             {
                 current_section = SECTION_FLATS;
             }
-            else if (!strncasecmp(lump->name, "S_START", 8))
+            else if (!doomtype::strncasecmp(lump->name, "S_START", 8))
             {
                 current_section = SECTION_SPRITES;
             }
@@ -424,7 +424,7 @@ static void DoMerge(void)
 
             // Have we reached the end of the section?
 
-            if (!strncasecmp(lump->name, "F_END", 8))
+            if (!doomtype::strncasecmp(lump->name, "F_END", 8))
             {
                 // Add all new flats from the PWAD to the end
                 // of the section
@@ -460,7 +460,7 @@ static void DoMerge(void)
 
             // Have we reached the end of the section?
 
-            if (!strncasecmp(lump->name, "S_END", 8))
+            if (!doomtype::strncasecmp(lump->name, "S_END", 8))
             {
                 // add all the PWAD sprites
 
@@ -503,13 +503,13 @@ static void DoMerge(void)
         switch (current_section)
         {
         case SECTION_NORMAL:
-            if (!strncasecmp(lump->name, "F_START", 8)
-                || !strncasecmp(lump->name, "FF_START", 8))
+            if (!doomtype::strncasecmp(lump->name, "F_START", 8)
+                || !doomtype::strncasecmp(lump->name, "FF_START", 8))
             {
                 current_section = SECTION_FLATS;
             }
-            else if (!strncasecmp(lump->name, "S_START", 8)
-                     || !strncasecmp(lump->name, "SS_START", 8))
+            else if (!doomtype::strncasecmp(lump->name, "S_START", 8)
+                     || !doomtype::strncasecmp(lump->name, "SS_START", 8))
             {
                 current_section = SECTION_SPRITES;
             }
@@ -525,8 +525,8 @@ static void DoMerge(void)
 
             // PWAD flats are ignored (already merged)
 
-            if (!strncasecmp(lump->name, "FF_END", 8)
-                || !strncasecmp(lump->name, "F_END", 8))
+            if (!doomtype::strncasecmp(lump->name, "FF_END", 8)
+                || !doomtype::strncasecmp(lump->name, "F_END", 8))
             {
                 // end of section
                 current_section = SECTION_NORMAL;
@@ -537,8 +537,8 @@ static void DoMerge(void)
 
             // PWAD sprites are ignored (already merged)
 
-            if (!strncasecmp(lump->name, "SS_END", 8)
-                || !strncasecmp(lump->name, "S_END", 8))
+            if (!doomtype::strncasecmp(lump->name, "SS_END", 8)
+                || !doomtype::strncasecmp(lump->name, "S_END", 8))
             {
                 // end of section
                 current_section = SECTION_NORMAL;
@@ -755,8 +755,8 @@ int W_MergeDump(const char *file)
     fseek(fp, 12, SEEK_SET);
     for (i = 0; i < numlumps; i++)
     {
-        dir[i].pos  = LONG(ftell(fp));
-        dir[i].size = LONG(lumpinfo[i]->size);
+        dir[i].pos  = endian::LONG(ftell(fp));
+        dir[i].size = endian::LONG(lumpinfo[i]->size);
         // [crispy] lump names are zero-byte padded
         memset(dir[i].name, 0, 8);
         strncpy(dir[i].name, lumpinfo[i]->name, 8);
@@ -769,14 +769,14 @@ int W_MergeDump(const char *file)
     free(lump_p);
 
     // [crispy] write directory
-    dir_p = LONG(ftell(fp));
+    dir_p = endian::LONG(ftell(fp));
     fwrite(dir, sizeof(*dir), i, fp);
     free(dir);
 
     // [crispy] write WAD header
     fseek(fp, 0, SEEK_SET);
     fwrite("IWAD", 1, 4, fp);
-    i = LONG(i);
+    i = endian::LONG(i);
     fwrite(&i, 4, 1, fp);
     fwrite(&dir_p, 4, 1, fp);
 

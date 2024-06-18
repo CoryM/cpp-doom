@@ -26,13 +26,14 @@
 #include <cstring>
 #include <math.h>
 
+import i_swap;
+
 #include "i_system.hpp"
 
 #include "doomtype.hpp"
 
 #include "deh_str.hpp"
 #include "i_input.hpp"
-#include "i_swap.hpp"
 #include "i_video.hpp"
 #include "m_bbox.hpp"
 #include "m_misc.hpp"
@@ -230,8 +231,8 @@ void V_DrawPatch(int x, int y, patch_t *patch)
     // [crispy] four different rendering functions
     drawpatchpx_t *const drawpatchpx = drawpatchpx_a[!dp_translucent][!dp_translation];
 
-    y -= SHORT(patch->topoffset);
-    x -= SHORT(patch->leftoffset);
+    y -= endian::SHORT(patch->topoffset);
+    x -= endian::SHORT(patch->leftoffset);
     x += DELTAWIDTH; // [crispy] horizontal widescreen offset
 
     // haleyjd 08/28/10: Strife needs silent error checking here.
@@ -243,20 +244,20 @@ void V_DrawPatch(int x, int y, patch_t *patch)
 
 #ifdef RANGECHECK_NOTHANKS
     if (x < 0
-        || x + SHORT(patch->width) > ORIGWIDTH
+        || x + endian::SHORT(patch->width) > ORIGWIDTH
         || y < 0
-        || y + SHORT(patch->height) > ORIGHEIGHT)
+        || y + endian::SHORT(patch->height) > ORIGHEIGHT)
     {
         I_Error("Bad V_DrawPatch");
     }
 #endif
 
-    V_MarkRect(x, y, SHORT(patch->width), SHORT(patch->height));
+    V_MarkRect(x, y, endian::SHORT(patch->width), endian::SHORT(patch->height));
 
     col     = 0;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
-    w = SHORT(patch->width);
+    w = endian::SHORT(patch->width);
 
     for (; col < w << FRACBITS; x++, col += dxi, desttop++)
     {
@@ -274,7 +275,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
             break;
         }
 
-        column = (column_t *)((byte *)patch + LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
         while (column->topdelta != 0xff)
@@ -323,8 +324,8 @@ void V_DrawPatch(int x, int y, patch_t *patch)
 
 void V_DrawPatchFullScreen(patch_t *patch, boolean flipped)
 {
-    const short width  = SHORT(patch->width);
-    const short height = SHORT(patch->height);
+    const short width  = endian::SHORT(patch->width);
+    const short height = endian::SHORT(patch->height);
 
     dx  = (HIRESWIDTH << FRACBITS) / width;
     dxi = (width << FRACBITS) / HIRESWIDTH;
@@ -371,8 +372,8 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
     byte *    source;
     int       w;
 
-    y -= SHORT(patch->topoffset);
-    x -= SHORT(patch->leftoffset);
+    y -= endian::SHORT(patch->topoffset);
+    x -= endian::SHORT(patch->leftoffset);
     x += DELTAWIDTH; // [crispy] horizontal widescreen offset
 
     // haleyjd 08/28/10: Strife needs silent error checking here.
@@ -392,12 +393,12 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
     }
 #endif
 
-    V_MarkRect(x, y, SHORT(patch->width), SHORT(patch->height));
+    V_MarkRect(x, y, endian::SHORT(patch->width), endian::SHORT(patch->height));
 
     col     = 0;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
-    w = SHORT(patch->width);
+    w = endian::SHORT(patch->width);
 
     for (; col < w << FRACBITS; x++, col += dxi, desttop++)
     {
@@ -415,7 +416,7 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
             break;
         }
 
-        column = (column_t *)((byte *)patch + LONG(patch->columnofs[w - 1 - (col >> FRACBITS)]));
+        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[w - 1 - (col >> FRACBITS)]));
 
         // step through the posts in a column
         while (column->topdelta != 0xff)
@@ -491,13 +492,13 @@ void V_DrawTLPatch(int x, int y, patch_t *patch)
     byte *    source;
     int       w;
 
-    y -= SHORT(patch->topoffset);
-    x -= SHORT(patch->leftoffset);
+    y -= endian::SHORT(patch->topoffset);
+    x -= endian::SHORT(patch->leftoffset);
 
     if (x < 0
-        || x + SHORT(patch->width) > ORIGWIDTH
+        || x + endian::SHORT(patch->width) > ORIGWIDTH
         || y < 0
-        || y + SHORT(patch->height) > ORIGHEIGHT)
+        || y + endian::SHORT(patch->height) > ORIGHEIGHT)
     {
         I_Error("Bad V_DrawTLPatch");
     }
@@ -505,10 +506,10 @@ void V_DrawTLPatch(int x, int y, patch_t *patch)
     col     = 0;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
-    w = SHORT(patch->width);
+    w = endian::SHORT(patch->width);
     for (; col < w << FRACBITS; x++, col += dxi, desttop++)
     {
-        column = (column_t *)((byte *)patch + LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
 
@@ -544,8 +545,8 @@ void V_DrawXlaPatch(int x, int y, patch_t *patch)
     byte *    source;
     int       w;
 
-    y -= SHORT(patch->topoffset);
-    x -= SHORT(patch->leftoffset);
+    y -= endian::SHORT(patch->topoffset);
+    x -= endian::SHORT(patch->leftoffset);
 
     if (patchclip_callback)
     {
@@ -556,10 +557,10 @@ void V_DrawXlaPatch(int x, int y, patch_t *patch)
     col     = 0;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
-    w = SHORT(patch->width);
+    w = endian::SHORT(patch->width);
     for (; col < w << FRACBITS; x++, col += dxi, desttop++)
     {
-        column = (column_t *)((byte *)patch + LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
 
@@ -595,13 +596,13 @@ void V_DrawAltTLPatch(int x, int y, patch_t *patch)
     byte *    source;
     int       w;
 
-    y -= SHORT(patch->topoffset);
-    x -= SHORT(patch->leftoffset);
+    y -= endian::SHORT(patch->topoffset);
+    x -= endian::SHORT(patch->leftoffset);
 
     if (x < 0
-        || x + SHORT(patch->width) > ORIGWIDTH
+        || x + endian::SHORT(patch->width) > ORIGWIDTH
         || y < 0
-        || y + SHORT(patch->height) > ORIGHEIGHT)
+        || y + endian::SHORT(patch->height) > ORIGHEIGHT)
     {
         I_Error("Bad V_DrawAltTLPatch");
     }
@@ -609,10 +610,10 @@ void V_DrawAltTLPatch(int x, int y, patch_t *patch)
     col     = 0;
     desttop = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
 
-    w = SHORT(patch->width);
+    w = endian::SHORT(patch->width);
     for (; col < w << FRACBITS; x++, col += dxi, desttop++)
     {
-        column = (column_t *)((byte *)patch + LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
 
@@ -649,13 +650,13 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
     pixel_t * desttop2, *dest2;
     int       w;
 
-    y -= SHORT(patch->topoffset);
-    x -= SHORT(patch->leftoffset);
+    y -= endian::SHORT(patch->topoffset);
+    x -= endian::SHORT(patch->leftoffset);
 
     if (x < 0
-        || x + SHORT(patch->width) > ORIGWIDTH
+        || x + endian::SHORT(patch->width) > ORIGWIDTH
         || y < 0
-        || y + SHORT(patch->height) > ORIGHEIGHT)
+        || y + endian::SHORT(patch->height) > ORIGHEIGHT)
     {
         I_Error("Bad V_DrawShadowedPatch");
     }
@@ -664,10 +665,10 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
     desttop  = dest_screen + ((y * dy) >> FRACBITS) * SCREENWIDTH + ((x * dx) >> FRACBITS);
     desttop2 = dest_screen + (((y + 2) * dy) >> FRACBITS) * SCREENWIDTH + (((x + 2) * dx) >> FRACBITS);
 
-    w = SHORT(patch->width);
+    w = endian::SHORT(patch->width);
     for (; col < w << FRACBITS; x++, col += dxi, desttop++, desttop2++)
     {
-        column = (column_t *)((byte *)patch + LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
 
@@ -947,15 +948,15 @@ void WritePCXfile(char *filename, pixel_t *data,
     pcx->bits_per_pixel = 8;    // 256 color
     pcx->xmin           = 0;
     pcx->ymin           = 0;
-    pcx->xmax           = SHORT(width - 1);
-    pcx->ymax           = SHORT(height - 1);
-    pcx->hres           = SHORT(1);
-    pcx->vres           = SHORT(1);
+    pcx->xmax           = endian::SHORT(width - 1);
+    pcx->ymax           = endian::SHORT(height - 1);
+    pcx->hres           = endian::SHORT(1);
+    pcx->vres           = endian::SHORT(1);
     memset(pcx->palette, 0, sizeof(pcx->palette));
     pcx->reserved       = 0; // PCX spec: reserved byte must be zero
     pcx->color_planes   = 1; // chunky image
-    pcx->bytes_per_line = SHORT(width);
-    pcx->palette_type   = SHORT(2); // not a grey scale
+    pcx->bytes_per_line = endian::SHORT(width);
+    pcx->palette_type   = endian::SHORT(2); // not a grey scale
     memset(pcx->filler, 0, sizeof(pcx->filler));
 
     // pack the image

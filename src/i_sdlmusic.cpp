@@ -32,11 +32,11 @@
 #include "memio.hpp"
 #include "mus2mid.hpp"
 
+import i_swap; 
 #include "deh_str.hpp"
 #include "gusconf.hpp"
 #include "i_sound.hpp"
 #include "i_system.hpp"
-#include "i_swap.hpp"
 #include "m_argv.hpp"
 #include "m_config.hpp"
 #include "m_misc.hpp"

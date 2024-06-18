@@ -31,10 +31,10 @@
 #include <samplerate.h>
 #endif
 
+import i_swap; 
 #include "deh_str.hpp"
 #include "i_sound.hpp"
 #include "i_system.hpp"
-#include "i_swap.hpp"
 #include "m_argv.hpp"
 #include "m_misc.hpp"
 #include "w_wad.hpp"

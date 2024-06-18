@@ -3886,7 +3886,7 @@ static byte *R_BrightmapForTexName_Doom(const char *texname)
             continue;
         }
 
-        if (!strncasecmp(fullbright->texture, texname, 8))
+        if (!doomtype::strncasecmp(fullbright->texture, texname, 8))
         {
             return fullbright->colormask;
         }
@@ -3910,7 +3910,7 @@ static byte *R_BrightmapForTexName_Chex(const char *texname)
             continue;
         }
 
-        if (!strncasecmp(fullbright->texture, texname, 8))
+        if (!doomtype::strncasecmp(fullbright->texture, texname, 8))
         {
             return fullbright->colormask;
         }
@@ -3927,7 +3927,7 @@ static byte *R_BrightmapForTexName_Hacx(const char *texname)
     {
         const fullbright_t *fullbright = &fullbright_hacx[i];
 
-        if (!strncasecmp(fullbright->texture, texname, 8))
+        if (!doomtype::strncasecmp(fullbright->texture, texname, 8))
         {
             return fullbright->colormask;
         }
@@ -4178,7 +4178,7 @@ void R_InitBrightmaps()
 
         // [crispy] detect Chex Quest 2
         lump = W_CheckNumForName("INTERPIC");
-        if (!strcasecmp(W_WadNameForLump(lumpinfo[lump]), "chex2.wad"))
+        if (!doomtype::strcasecmp(W_WadNameForLump(lumpinfo[lump]), "chex2.wad"))
         {
             chex2 = true;
         }

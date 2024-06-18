@@ -21,7 +21,7 @@
 
 #include <cstdio>
 
-#include "i_swap.hpp" // [crispy] SHORT()
+import i_swap;  // [crispy] SHORT()
 #include "i_system.hpp"
 #include "i_video.hpp"
 #include "z_zone.hpp"
@@ -1836,8 +1836,8 @@ void ST_drawWidgets(boolean refresh)
             patch = cache_lump_num<patch_t *>(lump, PU_CACHE);
 
             // [crispy] (23,179) is the center of the Ammo widget
-            V_DrawPatch(ST_AMMOX - 21 - SHORT(patch->width) / 2 + SHORT(patch->leftoffset),
-                179 - SHORT(patch->height) / 2 + SHORT(patch->topoffset),
+            V_DrawPatch(ST_AMMOX - 21 - endian::SHORT(patch->width) / 2 + endian::SHORT(patch->leftoffset),
+                179 - endian::SHORT(patch->height) / 2 + endian::SHORT(patch->topoffset),
                 patch);
         }
 
@@ -1878,7 +1878,7 @@ void ST_drawWidgets(boolean refresh)
     // [crispy] draw the actual face widget background
     if (st_crispyhud && screenblocks == CRISPY_HUD)
     {
-        V_CopyRect(ST_FX + DELTAWIDTH, 1, st_backing_screen, SHORT(faceback->width), ST_HEIGHT - 1, ST_FX + DELTAWIDTH, ST_Y + 1);
+        V_CopyRect(ST_FX + DELTAWIDTH, 1, st_backing_screen, endian::SHORT(faceback->width), ST_HEIGHT - 1, ST_FX + DELTAWIDTH, ST_Y + 1);
     }
 
     STlib_updateMultIcon(&w_faces, refresh);

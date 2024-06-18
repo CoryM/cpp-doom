@@ -21,8 +21,8 @@
 #include "doomdef.hpp"
 #include "doomkeys.hpp"
 
+import i_swap; 
 #include "v_video.hpp"
-#include "i_swap.hpp"
 
 #include "hu_lib.hpp"
 #include "r_local.hpp"
@@ -117,13 +117,13 @@ void HUlib_drawTextLine(hu_textline_t *l,
             if (c == '\n')
         {
             x = l->x;
-            y += SHORT(l->f[0]->height) + 1;
+            y += endian::SHORT(l->f[0]->height) + 1;
         }
         else if (c != ' '
                  && c >= l->sc
                  && c <= '_')
         {
-            w = SHORT(l->f[c - l->sc]->width);
+            w = endian::SHORT(l->f[c - l->sc]->width);
             if (x + w > ORIGWIDTH + DELTAWIDTH)
                 break;
             V_DrawPatchDirect(x, y, l->f[c - l->sc]);
@@ -139,7 +139,7 @@ void HUlib_drawTextLine(hu_textline_t *l,
 
     // draw the cursor if requested
     if (drawcursor
-        && x + SHORT(l->f['_' - l->sc]->width) <= ORIGWIDTH + DELTAWIDTH)
+        && x + endian::SHORT(l->f['_' - l->sc]->width) <= ORIGWIDTH + DELTAWIDTH)
     {
         V_DrawPatchDirect(x, y, l->f['_' - l->sc]);
     }
@@ -159,7 +159,7 @@ void HUlib_eraseTextLine(hu_textline_t *l)
 
     if (!automapactive && viewwindowx && (l->needsupdate || crispy->cleanscreenshot || crispy->screenshotmsg == 4))
     {
-        lh = (SHORT(l->f[0]->height) + 1) << crispy->hires;
+        lh = (endian::SHORT(l->f[0]->height) + 1) << crispy->hires;
         // [crispy] support line breaks
         yoffset = 1;
         for (y = 0; y < l->len; y++)
@@ -203,7 +203,7 @@ void HUlib_initSText(hu_stext_t *s,
     s->cl     = 0;
     for (i = 0; i < h; i++)
         HUlib_initTextLine(&s->l[i],
-            x, y - i * (SHORT(font[0]->height) + 1),
+            x, y - i * (endian::SHORT(font[0]->height) + 1),
             font, startchar);
 }
 

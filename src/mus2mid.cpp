@@ -18,8 +18,8 @@
 
 #include <cstdio>
 
+import i_swap; 
 #include "doomtype.hpp"
-#include "i_swap.hpp"
 
 #include "memio.hpp"
 #include "mus2mid.hpp"
@@ -421,11 +421,11 @@ static boolean ReadMusHeader(MEMFILE *file, musheader *header)
 
     if (result)
     {
-        header->scorelength       = SHORT(header->scorelength);
-        header->scorestart        = SHORT(header->scorestart);
-        header->primarychannels   = SHORT(header->primarychannels);
-        header->secondarychannels = SHORT(header->secondarychannels);
-        header->instrumentcount   = SHORT(header->instrumentcount);
+        header->scorelength       = endian::SHORT(header->scorelength);
+        header->scorestart        = endian::SHORT(header->scorestart);
+        header->primarychannels   = endian::SHORT(header->primarychannels);
+        header->secondarychannels = endian::SHORT(header->secondarychannels);
+        header->instrumentcount   = endian::SHORT(header->instrumentcount);
     }
 
     return result;

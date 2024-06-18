@@ -711,7 +711,7 @@ void D_DoAdvanceDemo(void)
 
     // The Doom 3: BFG Edition version of doom2.wad does not have a
     // TITLETPIC lump. Use INTERPIC instead as a workaround.
-    if (gamevariant == bfgedition && !strcasecmp(pagename, "TITLEPIC")
+    if (gamevariant == bfgedition && !doomtype::strcasecmp(pagename, "TITLEPIC")
         && W_CheckNumForName("titlepic") < 0)
     {
         // [crispy] use DMENUPIC instead of TITLEPIC, it's awesome
@@ -835,7 +835,7 @@ static void SetMissionForPackName(const char *pack_name)
 
     for (const auto &pack : packs)
     {
-        if (!strcasecmp(pack_name, pack.name))
+        if (!doomtype::strcasecmp(pack_name, pack.name))
         {
             gamemission = pack.mission;
             return;
@@ -870,12 +870,12 @@ void D_IdentifyVersion(void)
 
         for (i = 0; i < numlumps; ++i)
         {
-            if (!strncasecmp(lumpinfo[i]->name, "MAP01", 8))
+            if (!doomtype::strncasecmp(lumpinfo[i]->name, "MAP01", 8))
             {
                 gamemission = doom2;
                 break;
             }
-            else if (!strncasecmp(lumpinfo[i]->name, "E1M1", 8))
+            else if (!doomtype::strncasecmp(lumpinfo[i]->name, "E1M1", 8))
             {
                 gamemission = doom;
                 break;
@@ -1363,7 +1363,7 @@ static void LoadSigilWad(void)
 
     // [crispy] don't load SIGIL.wad if SIGIL_COMPAT.wad is already loaded
     i = W_CheckNumForName("E3M1");
-    if (i != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[i]), "SIGIL_COMPAT", 12))
+    if (i != -1 && !doomtype::strncasecmp(W_WadNameForLump(lumpinfo[i]), "SIGIL_COMPAT", 12))
     {
         return;
     }
@@ -1444,14 +1444,14 @@ static void LoadSigilWad(void)
             int j;
 
             // [crispy] skip non-music lumps
-            if (strncasecmp(sigil_lumps[i].name, "D_", 2))
+            if (doomtype::strncasecmp(sigil_lumps[i].name, "D_", 2))
             {
                 continue;
             }
 
             j = W_CheckNumForName(sigil_lumps[i].name);
 
-            if (j != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL_SHREDS", 12))
+            if (j != -1 && !doomtype::strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL_SHREDS", 12))
             {
                 memcpy(lumpinfo[j]->name, sigil_lumps[i].new_name, 8);
             }
@@ -1464,7 +1464,7 @@ static void LoadSigilWad(void)
 
             j = W_CheckNumForName(sigil_lumps[i].name);
 
-            if (j != -1 && !strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL", 5))
+            if (j != -1 && !doomtype::strncasecmp(W_WadNameForLump(lumpinfo[j]), "SIGIL", 5))
             {
                 memcpy(lumpinfo[j]->name, sigil_lumps[i].new_name, 8);
             }
@@ -1483,7 +1483,7 @@ static void LoadNerveWad(void)
     if (gamemission != doom2)
         return;
 
-    if ((i = W_GetNumForName("map01")) != -1 && (j = W_GetNumForName("map09")) != -1 && !strcasecmp(W_WadNameForLump(lumpinfo[i]), "nerve.wad") && !strcasecmp(W_WadNameForLump(lumpinfo[j]), "nerve.wad"))
+    if ((i = W_GetNumForName("map01")) != -1 && (j = W_GetNumForName("map09")) != -1 && !doomtype::strcasecmp(W_WadNameForLump(lumpinfo[i]), "nerve.wad") && !doomtype::strcasecmp(W_WadNameForLump(lumpinfo[j]), "nerve.wad"))
     {
         gamemission = pack_nerve;
         DEH_AddStringReplacement("TITLEPIC", "INTERPIC");
@@ -1542,7 +1542,7 @@ static void LoadMasterlevelsWad(void)
     if (gamemission != doom2)
         return;
 
-    if ((i = W_GetNumForName("map01")) != -1 && (j = W_GetNumForName("map21")) != -1 && !strcasecmp(W_WadNameForLump(lumpinfo[i]), "masterlevels.wad") && !strcasecmp(W_WadNameForLump(lumpinfo[j]), "masterlevels.wad"))
+    if ((i = W_GetNumForName("map01")) != -1 && (j = W_GetNumForName("map21")) != -1 && !doomtype::strcasecmp(W_WadNameForLump(lumpinfo[i]), "masterlevels.wad") && !doomtype::strcasecmp(W_WadNameForLump(lumpinfo[j]), "masterlevels.wad"))
     {
         gamemission = pack_master;
     }

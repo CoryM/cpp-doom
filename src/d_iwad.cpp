@@ -56,7 +56,7 @@ boolean D_IsIWADName(const char *name)
 
     for (i = 0; i < arrlen(iwads); i++)
     {
-        if (!strcasecmp(name, iwads[i].name))
+        if (!doomtype::strcasecmp(name, iwads[i].name))
         {
             return true;
         }
@@ -461,7 +461,7 @@ static void CheckDOSDefaults(void)
 static boolean DirIsFile(const char *path, const char *filename)
 {
     return strchr(path, DIR_SEPARATOR) != NULL
-           && !strcasecmp(M_BaseName(path), filename);
+           && !doomtype::strcasecmp(M_BaseName(path), filename);
 }
 
 // Check if the specified directory contains the specified IWAD
@@ -555,7 +555,7 @@ static GameMission_t IdentifyIWADByName(const char *name, int mask)
 
         // Check if it ends in this IWAD name.
 
-        if (!strcasecmp(name, iwads[i].name))
+        if (!doomtype::strcasecmp(name, iwads[i].name))
         {
             mission = iwads[i].mission;
             break;

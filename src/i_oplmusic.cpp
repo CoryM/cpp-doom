@@ -24,9 +24,9 @@
 #include "memio.hpp"
 #include "mus2mid.hpp"
 
+import i_swap; 
 #include "deh_main.hpp"
 #include "i_sound.hpp"
-#include "i_swap.hpp"
 #include "m_misc.hpp"
 #include "w_wad.hpp"
 #include "z_zone.hpp"
@@ -1396,9 +1396,9 @@ static unsigned int FrequencyForVoice(opl_voice_t *voice)
 
     gm_voice = &voice->current_instr->voices[voice->current_instr_voice];
 
-    if ((SHORT(voice->current_instr->flags) & GENMIDI_FLAG_FIXED) == 0)
+    if ((endian::SHORT(voice->current_instr->flags) & GENMIDI_FLAG_FIXED) == 0)
     {
-        note += (signed short)SHORT(gm_voice->base_note_offset);
+        note += (signed short)endian::SHORT(gm_voice->base_note_offset);
     }
 
     // Avoid possible overflow due to base note offset:
@@ -1512,7 +1512,7 @@ static void VoiceKeyOn(opl_channel_data_t *channel,
     // Work out the note to use.  This is normally the same as
     // the key, unless it is a fixed pitch instrument.
 
-    if ((SHORT(instrument->flags) & GENMIDI_FLAG_FIXED) != 0)
+    if ((endian::SHORT(instrument->flags) & GENMIDI_FLAG_FIXED) != 0)
     {
         voice->note = instrument->fixed_note;
     }
@@ -1586,7 +1586,7 @@ static void KeyOnEvent(opl_track_data_t *track, midi_event_t *event)
         instrument = channel->instrument;
     }
 
-    double_voice = (SHORT(instrument->flags) & GENMIDI_FLAG_2VOICE) != 0;
+    double_voice = (endian::SHORT(instrument->flags) & GENMIDI_FLAG_2VOICE) != 0;
 
     switch (opl_drv_ver)
     {

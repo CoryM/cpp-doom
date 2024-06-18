@@ -113,14 +113,14 @@ static deh_section_t *GetSectionByName(char *name)
     // we explicitely do not recognize [STRINGS] sections at all
     // if extended strings are not allowed
 
-    if (!deh_allow_extended_strings && !strncasecmp("[STRINGS]", name, 9))
+    if (!deh_allow_extended_strings && !doomtype::strncasecmp("[STRINGS]", name, 9))
     {
         return NULL;
     }
 
     for (i = 0; deh_section_types[i] != NULL; ++i)
     {
-        if (!strcasecmp(deh_section_types[i]->name, name))
+        if (!doomtype::strcasecmp(deh_section_types[i]->name, name))
         {
             return deh_section_types[i];
         }
@@ -314,7 +314,7 @@ static void DEH_ParseContext(deh_context_t *context)
         // Read the next line. We only allow the special extended parsing
         // for the BEX [STRINGS] section.
         extended = current_section != NULL
-                   && !strcasecmp(current_section->name, "[STRINGS]");
+                   && !doomtype::strcasecmp(current_section->name, "[STRINGS]");
         // [crispy] save pointer to start of line, just in case
         DEH_SaveLineStart(context);
         line = DEH_ReadLine(context, extended);

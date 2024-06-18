@@ -28,8 +28,8 @@
 #include <stdint.h>
 
 #include "aes_prng.hpp"
+import i_swap; 
 #include "doomtype.hpp"
-#include "i_swap.hpp"
 
 /*
  * Cryptographic API.
@@ -2184,8 +2184,8 @@ static uint32_t aes_ror32(uint32_t word, unsigned int shift)
     return (word >> shift) | (word << (32 - shift));
 }
 
-#define cpu_to_le32(x) SDL_SwapLE32(x)
-#define le32_to_cpu(x) SDL_SwapLE32(x)
+//#define cpu_to_le32(x) SDL_SwapLE32(x)
+//#define le32_to_cpu(x) SDL_SwapLE32(x)
 
 #define star_x(x) (((x)&0x7f7f7f7f) << 1) ^ ((((x)&0x80808080) >> 7) * 0x1b)
 
@@ -2291,10 +2291,10 @@ static int AES_ExpandKey(aes_context_t *ctx, const uint8_t *in_key,
 
     ctx->key_length = key_len;
 
-    ctx->key_dec[key_len + 24] = ctx->key_enc[0] = le32_to_cpu(key[0]);
-    ctx->key_dec[key_len + 25] = ctx->key_enc[1] = le32_to_cpu(key[1]);
-    ctx->key_dec[key_len + 26] = ctx->key_enc[2] = le32_to_cpu(key[2]);
-    ctx->key_dec[key_len + 27] = ctx->key_enc[3] = le32_to_cpu(key[3]);
+    ctx->key_dec[key_len + 24] = ctx->key_enc[0] = endian::little(key[0]);
+    ctx->key_dec[key_len + 25] = ctx->key_enc[1] = endian::little(key[1]);
+    ctx->key_dec[key_len + 26] = ctx->key_enc[2] = endian::little(key[2]);
+    ctx->key_dec[key_len + 27] = ctx->key_enc[3] = endian::little(key[3]);
 
     switch (key_len)
     {
@@ -2305,17 +2305,17 @@ static int AES_ExpandKey(aes_context_t *ctx, const uint8_t *in_key,
         break;
 
     case AES_KEYSIZE_192:
-        ctx->key_enc[4] = le32_to_cpu(key[4]);
-        t = ctx->key_enc[5] = le32_to_cpu(key[5]);
+        ctx->key_enc[4] = endian::little(key[4]);
+        t = ctx->key_enc[5] = endian::little(key[5]);
         for (i = 0; i < 8; ++i)
             loop6(i);
         break;
 
     case AES_KEYSIZE_256:
-        ctx->key_enc[4] = le32_to_cpu(key[4]);
-        ctx->key_enc[5] = le32_to_cpu(key[5]);
-        ctx->key_enc[6] = le32_to_cpu(key[6]);
-        t = ctx->key_enc[7] = le32_to_cpu(key[7]);
+        ctx->key_enc[4] = endian::little(key[4]);
+        ctx->key_enc[5] = endian::little(key[5]);
+        ctx->key_enc[6] = endian::little(key[6]);
+        t = ctx->key_enc[7] = endian::little(key[7]);
         for (i = 0; i < 6; ++i)
             loop8(i);
         loop8tophalf(i);
@@ -2398,10 +2398,10 @@ static void AES_Encrypt(aes_context_t *ctx, uint8_t *out,
     const uint32_t *kp      = ctx->key_enc + 4;
     const int       key_len = ctx->key_length;
 
-    b0[0] = le32_to_cpu(src[0]) ^ ctx->key_enc[0];
-    b0[1] = le32_to_cpu(src[1]) ^ ctx->key_enc[1];
-    b0[2] = le32_to_cpu(src[2]) ^ ctx->key_enc[2];
-    b0[3] = le32_to_cpu(src[3]) ^ ctx->key_enc[3];
+    b0[0] = endian::little(src[0]) ^ ctx->key_enc[0];
+    b0[1] = endian::little(src[1]) ^ ctx->key_enc[1];
+    b0[2] = endian::little(src[2]) ^ ctx->key_enc[2];
+    b0[3] = endian::little(src[3]) ^ ctx->key_enc[3];
 
     if (key_len > 24)
     {
@@ -2426,10 +2426,10 @@ static void AES_Encrypt(aes_context_t *ctx, uint8_t *out,
     f_nround(b1, b0, kp);
     f_lround(b0, b1, kp);
 
-    dst[0] = cpu_to_le32(b0[0]);
-    dst[1] = cpu_to_le32(b0[1]);
-    dst[2] = cpu_to_le32(b0[2]);
-    dst[3] = cpu_to_le32(b0[3]);
+    dst[0] = endian::little(b0[0]);
+    dst[1] = endian::little(b0[1]);
+    dst[2] = endian::little(b0[2]);
+    dst[3] = endian::little(b0[3]);
 }
 
 static boolean       prng_enabled = false;

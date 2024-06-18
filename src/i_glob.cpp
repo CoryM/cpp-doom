@@ -295,7 +295,7 @@ static void SortFilenames(char **filenames, int len, int flags)
     {
         if ((flags & GLOB_FLAG_NOCASE) != 0)
         {
-            cmp = strcasecmp(filenames[i], pivot);
+            cmp = doomtype::strcasecmp(filenames[i], pivot);
         }
         else
         {

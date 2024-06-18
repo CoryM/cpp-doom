@@ -25,7 +25,7 @@
 
 #include "doomtype.hpp"
 
-#include "i_swap.hpp"
+import i_swap; 
 #include "i_system.hpp"
 #include "i_video.hpp"
 #include "m_misc.hpp"
@@ -78,11 +78,10 @@ uint32_t W_LumpNameHash(std::string_view s)
 
     uint32_t result = 5381;
 
-    for (auto i : s)
+    for (auto i : s.substr(0,8))
     {
         result = ((result << 5) xor result) xor toupper(i);
     }
-
     return result;
 }
 
@@ -139,7 +138,7 @@ wad_file_t *W_AddFile(const char *filename)
         return NULL;
     }
 
-    if (strcasecmp(filename + strlen(filename) - 3, "wad"))
+    if (doomtype::strcasecmp(filename + strlen(filename) - 3, "wad"))
     {
         // single lump file
 
@@ -149,8 +148,8 @@ wad_file_t *W_AddFile(const char *filename)
         // here, as it would appear on disk.
 
         fileinfo          = zmalloc<decltype(fileinfo)>(sizeof(filelump_t), PU_STATIC, 0);
-        fileinfo->filepos = LONG(0);
-        fileinfo->size    = LONG(wad_file->length);
+        fileinfo->filepos = endian::LONG(0);
+        fileinfo->size    = endian::LONG(wad_file->length);
 
         // Name the lump after the base of the filename (without the
         // extension).
@@ -177,7 +176,7 @@ wad_file_t *W_AddFile(const char *filename)
             // ???modifiedgame = true;
         }
 
-        header.numlumps = LONG(header.numlumps);
+        header.numlumps = endian::LONG(header.numlumps);
 
         // Vanilla Doom doesn't like WADs with more than 4046 lumps
         // https://www.doomworld.com/vb/post/1010985
@@ -190,7 +189,7 @@ wad_file_t *W_AddFile(const char *filename)
                 filename, header.numlumps);
         }
 
-        header.infotableofs = LONG(header.infotableofs);
+        header.infotableofs = endian::LONG(header.infotableofs);
         length              = header.numlumps * sizeof(filelump_t);
         fileinfo            = zmalloc<decltype(fileinfo)>(length, PU_STATIC, 0);
 
@@ -215,8 +214,8 @@ wad_file_t *W_AddFile(const char *filename)
     {
         lumpinfo_t *lump_p = &filelumps[i - startlump];
         lump_p->wad_file   = wad_file;
-        lump_p->position   = LONG(filerover->filepos);
-        lump_p->size       = LONG(filerover->size);
+        lump_p->position   = endian::LONG(filerover->filepos);
+        lump_p->size       = endian::LONG(filerover->size);
         lump_p->cache      = NULL;
         strncpy(lump_p->name, filerover->name, 8);
         lumpinfo[i] = lump_p;
@@ -274,7 +273,7 @@ lumpindex_t W_CheckNumForName(const char *name)
 
         for (i = lumphash[hash]; i != -1; i = lumpinfo[i]->next)
         {
-            if (!strncasecmp(lumpinfo[i]->name, name, 8))
+            if (!doomtype::strncasecmp(lumpinfo[i]->name, name, 8))
             {
                 return i;
             }
@@ -288,7 +287,7 @@ lumpindex_t W_CheckNumForName(const char *name)
 
         for (i = numlumps - 1; i >= 0; --i)
         {
-            if (!strncasecmp(lumpinfo[i]->name, name, 8))
+            if (!doomtype::strncasecmp(lumpinfo[i]->name, name, 8))
             {
                 return i;
             }
@@ -307,14 +306,13 @@ lumpindex_t W_CheckNumForName(const char *name)
 //
 lumpindex_t W_GetNumForName(const char *name)
 {
-    lumpindex_t i;
-
-    i = W_CheckNumForName(name);
+    
+    lumpindex_t i = W_CheckNumForName(name);
 
     if (i < 0)
     {
         I_Error("W_GetNumForName: %s not found!", name);
-    }
+    } 
 
     return i;
 }
@@ -325,7 +323,7 @@ lumpindex_t W_CheckNumForNameFromTo(const char *name, int from, int to)
 
     for (i = from; i >= to; i--)
     {
-        if (!strncasecmp(lumpinfo[i]->name, name, 8))
+        if (!doomtype::strncasecmp(lumpinfo[i]->name, name, 8))
         {
             return i;
         }

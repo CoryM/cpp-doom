@@ -37,7 +37,7 @@ static deh_mapping_entry_t *GetMappingEntryByName(deh_context_t *context,
     {
         deh_mapping_entry_t *entry = &mapping->entries[i];
 
-        if (!strcasecmp(entry->name, name))
+        if (!doomtype::strcasecmp(entry->name, name))
         {
             if (entry->location == NULL)
             {

@@ -18,9 +18,9 @@
 // 	format or DeePBSP format and/or LINEDEFS and THINGS lumps in Hexen format
 //
 
+import i_swap; 
 #include "m_bbox.hpp"
 #include "p_local.hpp"
-#include "i_swap.hpp"
 #include "i_system.hpp"
 #include "w_wad.hpp"
 #include "z_zone.hpp"
@@ -47,7 +47,7 @@ mapformat_t P_CheckMapFormat(int lumpnum)
     byte *      nodes  = NULL;
     int         b;
 
-    if ((b = lumpnum + ML_BLOCKMAP + 1) < numlumps && !strncasecmp(lumpinfo[b]->name, "BEHAVIOR", 8))
+    if ((b = lumpnum + ML_BLOCKMAP + 1) < numlumps && !doomtype::strncasecmp(lumpinfo[b]->name, "BEHAVIOR", 8))
     {
         fprintf(stderr, "Hexen (");
         format = static_cast<mapformat_t>(format | MFMT_HEXEN);
@@ -102,13 +102,13 @@ void P_LoadSegs_DeePBSP(int lump)
         li->v1 = &vertexes[ml->v1];
         li->v2 = &vertexes[ml->v2];
 
-        li->angle = (SHORT(ml->angle)) << FRACBITS;
+        li->angle = (endian::SHORT(ml->angle)) << FRACBITS;
 
         //	li->offset = (SHORT(ml->offset))<<FRACBITS; // [crispy] recalculated below
-        linedef     = (unsigned short)SHORT(ml->linedef);
+        linedef     = (unsigned short)endian::SHORT(ml->linedef);
         ldef        = &lines[linedef];
         li->linedef = ldef;
-        side        = SHORT(ml->side);
+        side        = endian::SHORT(ml->side);
 
         // e6y: check for wrong indexes
         if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
@@ -196,10 +196,10 @@ void P_LoadNodes_DeePBSP(int lump)
         const mapnode_deepbsp_t *mn = (const mapnode_deepbsp_t *)data + i;
         int                      j;
 
-        no->x  = SHORT(mn->x) << FRACBITS;
-        no->y  = SHORT(mn->y) << FRACBITS;
-        no->dx = SHORT(mn->dx) << FRACBITS;
-        no->dy = SHORT(mn->dy) << FRACBITS;
+        no->x  = endian::SHORT(mn->x) << FRACBITS;
+        no->y  = endian::SHORT(mn->y) << FRACBITS;
+        no->dx = endian::SHORT(mn->dx) << FRACBITS;
+        no->dy = endian::SHORT(mn->dy) << FRACBITS;
 
         for (j = 0; j < 2; j++)
         {
@@ -207,7 +207,7 @@ void P_LoadNodes_DeePBSP(int lump)
             no->children[j] = (unsigned int)(mn->children[j]);
 
             for (k = 0; k < 4; k++)
-                no->bbox[j][k] = SHORT(mn->bbox[j][k]) << FRACBITS;
+                no->bbox[j][k] = endian::SHORT(mn->bbox[j][k]) << FRACBITS;
         }
     }
 
@@ -386,7 +386,7 @@ void P_LoadNodes_ZDBSP(int lump, boolean compressed)
         li->v1 = &vertexes[ml->v1];
         li->v2 = &vertexes[ml->v2];
 
-        linedef     = (unsigned short)SHORT(ml->linedef);
+        linedef     = (unsigned short)endian::SHORT(ml->linedef);
         ldef        = &lines[linedef];
         li->linedef = ldef;
         side        = ml->side;
@@ -442,17 +442,17 @@ void P_LoadNodes_ZDBSP(int lump, boolean compressed)
         node_t *         no = nodes + i;
         mapnode_zdbsp_t *mn = (mapnode_zdbsp_t *)data + i;
 
-        no->x  = SHORT(mn->x) << FRACBITS;
-        no->y  = SHORT(mn->y) << FRACBITS;
-        no->dx = SHORT(mn->dx) << FRACBITS;
-        no->dy = SHORT(mn->dy) << FRACBITS;
+        no->x  = endian::SHORT(mn->x) << FRACBITS;
+        no->y  = endian::SHORT(mn->y) << FRACBITS;
+        no->dx = endian::SHORT(mn->dx) << FRACBITS;
+        no->dy = endian::SHORT(mn->dy) << FRACBITS;
 
         for (j = 0; j < 2; j++)
         {
             no->children[j] = (unsigned int)(mn->children[j]);
 
             for (k = 0; k < 4; k++)
-                no->bbox[j][k] = SHORT(mn->bbox[j][k]) << FRACBITS;
+                no->bbox[j][k] = endian::SHORT(mn->bbox[j][k]) << FRACBITS;
         }
     }
 
@@ -479,12 +479,12 @@ void P_LoadThings_Hexen(int lump)
     for (int i = 0; i < numthings; i++, mt++)
     {
         //	spawnthing.tid = SHORT(mt->tid);
-        spawnthing.x = SHORT(mt->x);
-        spawnthing.y = SHORT(mt->y);
+        spawnthing.x = endian::SHORT(mt->x);
+        spawnthing.y = endian::SHORT(mt->y);
         //	spawnthing.height = SHORT(mt->height);
-        spawnthing.angle   = SHORT(mt->angle);
-        spawnthing.type    = SHORT(mt->type);
-        spawnthing.options = SHORT(mt->options);
+        spawnthing.angle   = endian::SHORT(mt->angle);
+        spawnthing.type    = endian::SHORT(mt->type);
+        spawnthing.options = endian::SHORT(mt->options);
 
         //	spawnthing.special = mt->special;
         //	spawnthing.arg1 = mt->arg1;
@@ -519,7 +519,7 @@ void P_LoadLineDefs_Hexen(int lump)
     warn = 0; // [crispy] warn about unknown linedef types
     for (i = 0; i < numlines; i++, mld++, ld++)
     {
-        ld->flags = (unsigned short)SHORT(mld->flags);
+        ld->flags = (unsigned short)endian::SHORT(mld->flags);
 
         ld->special = mld->special;
         //	ld->arg1 = mld->arg1;
@@ -535,8 +535,8 @@ void P_LoadLineDefs_Hexen(int lump)
             warn++;
         }
 
-        v1 = ld->v1 = &vertexes[(unsigned short)SHORT(mld->v1)];
-        v2 = ld->v2 = &vertexes[(unsigned short)SHORT(mld->v2)];
+        v1 = ld->v1 = &vertexes[(unsigned short)endian::SHORT(mld->v1)];
+        v2 = ld->v2 = &vertexes[(unsigned short)endian::SHORT(mld->v2)];
 
         ld->dx = v2->x - v1->x;
         ld->dy = v2->y - v1->y;
@@ -577,8 +577,8 @@ void P_LoadLineDefs_Hexen(int lump)
         ld->soundorg.x = ld->bbox[BOXLEFT] / 2 + ld->bbox[BOXRIGHT] / 2;
         ld->soundorg.y = ld->bbox[BOXTOP] / 2 + ld->bbox[BOXBOTTOM] / 2;
 
-        ld->sidenum[0] = SHORT(mld->sidenum[0]);
-        ld->sidenum[1] = SHORT(mld->sidenum[1]);
+        ld->sidenum[0] = endian::SHORT(mld->sidenum[0]);
+        ld->sidenum[1] = endian::SHORT(mld->sidenum[1]);
 
         // [crispy] substitute dummy sidedef for missing right side
         if (ld->sidenum[0] == NO_INDEX)

@@ -33,9 +33,10 @@
 
 #include <string_view> // std::string_view
 
+namespace doomtype {
 bool strcasecmp(std::string_view s1, std::string_view s2);
 bool strncasecmp(std::string_view s1, std::string_view s2, size_t n);
-
+}; // namespace doomtype
 
 //
 // The packed attribute forces structures to be packed into the minimum

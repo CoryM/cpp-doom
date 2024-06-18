@@ -1,3 +1,18 @@
+add_library(cpp_modules STATIC)
+
+target_sources(cpp_modules 
+    PRIVATE FILE_SET HEADERS FILES
+    PUBLIC FILE_SET CXX_MODULES FILES
+        i_swap.cxx
+        #m_fixed.cxx
+)
+
+#target_include_directories(cpp_modules PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+#target_link_libraries(cpp_modules)
+
+
+# -----------
+
 foreach(SUBDIR doom heretic hexen strife setup)
     add_subdirectory("${SUBDIR}")
 endforeach()
@@ -53,7 +68,7 @@ set(GAME_SOURCE_FILES
     i_glob.cpp            i_glob.hpp
     i_input.cpp           i_input.hpp
     i_joystick.cpp        i_joystick.hpp
-                          i_swap.hpp
+    #i_swap.cpp            i_swap.hpp
     i_midipipe.cpp        i_midipipe.hpp
     i_musicpack.cpp
     i_oplmusic.cpp
@@ -141,17 +156,20 @@ endif()
 
 target_sources("${PROGRAM_PREFIX}doom" 
         PRIVATE 
-            ${SOURCE_FILES_WITH_DEH}
+            ${COMMON_SOURCE_FILES}
+            ${GAME_SOURCE_FILES}
+            ${DEHACKED_SOURCE_FILES}
         
         PRIVATE FILE_SET HEADERS
           BASE_DIRS
             ${CMAKE_CURRENT_SOURCE_DIR}
             ${GAME_INCLUDE_DIRS}
-        #PRIVATE FILE_SET CXX_MODULES FILES
+        PRIVATE FILE_SET CXX_MODULES FILES
+        #    i_swap.cxx
         #    m_fixed.cxx
     )
 
-target_link_libraries("${PROGRAM_PREFIX}doom" doom ${EXTRA_LIBS})
+target_link_libraries("${PROGRAM_PREFIX}doom" doom cpp_modules ${EXTRA_LIBS})
 
 # ------------ Heretic ------------
 

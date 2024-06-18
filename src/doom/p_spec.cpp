@@ -26,9 +26,9 @@
 #include "doomdef.hpp"
 #include "doomstat.hpp"
 
+import i_swap;  // [crispy] LONG()
 #include "deh_main.hpp"
 #include "i_system.hpp"
-#include "i_swap.hpp" // [crispy] LONG()
 #include "z_zone.hpp"
 #include "m_argv.hpp"
 #include "m_misc.hpp"
@@ -204,7 +204,7 @@ void P_InitPicAnims(void)
 
         lastanim->istexture = animdefs[i].istexture;
         lastanim->numpics   = lastanim->picnum - lastanim->basepic + 1;
-        lastanim->speed     = from_lump ? LONG(animdefs[i].speed) : animdefs[i].speed;
+        lastanim->speed     = from_lump ? endian::LONG(animdefs[i].speed) : animdefs[i].speed;
 
         // [crispy] add support for SMMU swirling flats
         if (lastanim->speed > 65535 || lastanim->numpics == 1)

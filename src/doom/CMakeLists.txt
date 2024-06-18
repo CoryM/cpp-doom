@@ -134,8 +134,8 @@ target_sources(doom
         event_function_decls.hpp
 
     PUBLIC FILE_SET CXX_MODULES FILES
-         m_fixed.cxx
+        m_fixed.cxx
 )
 
 target_include_directories(doom PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../")
-target_link_libraries(doom SDL2::SDL2 SDL2::mixer SDL2::net)
+target_link_libraries(doom cpp_modules SDL2::SDL2 SDL2::mixer SDL2::net)

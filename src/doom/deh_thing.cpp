@@ -150,13 +150,13 @@ static void DEH_ThingParseLine(deh_context_t *context, char *line, void *tag)
     ivalue = atoi(value);
 
     // [crispy] support BEX bits mnemonics in Things fields
-    if (!ivalue && !strcasecmp(variable_name, "bits"))
+    if (!ivalue && !doomtype::strcasecmp(variable_name, "bits"))
     {
         for (; (value = strtok(value, ",+| \t\f\r")); value = NULL)
         {
             int i;
             for (i = 0; i < arrlen(bex_thingbitstable); i++)
-                if (!strcasecmp(value, bex_thingbitstable[i].flag))
+                if (!doomtype::strcasecmp(value, bex_thingbitstable[i].flag))
                 {
                     ivalue |= bex_thingbitstable[i].bits;
                     break;

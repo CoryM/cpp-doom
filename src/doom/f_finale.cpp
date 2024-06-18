@@ -21,9 +21,9 @@
 #include <cctype>
 
 // Functions.
+import i_swap;
 #include "deh_main.hpp"
 #include "i_system.hpp"
-#include "i_swap.hpp"
 #include "z_zone.hpp"
 #include "v_video.hpp"
 #include "w_wad.hpp"
@@ -337,7 +337,7 @@ void F_TextWrite(void)
             continue;
         }
 
-        w = SHORT(hu_font[c]->width);
+        w = endian::SHORT(hu_font[c]->width);
         if (cx + w > ORIGWIDTH)
         {
             // [crispy] add line breaks for lines exceeding screenwidth
@@ -349,7 +349,7 @@ void F_TextWrite(void)
                 break;
         }
         // [cispy] prevent text from being drawn off-screen vertically
-        if (cy + SHORT(hu_font[c]->height) > ORIGHEIGHT)
+        if (cy + endian::SHORT(hu_font[c]->height) > ORIGHEIGHT)
         {
             break;
         }
@@ -774,7 +774,7 @@ void F_CastPrint(const char *text)
             continue;
         }
 
-        w = SHORT(hu_font[c]->width);
+        w = endian::SHORT(hu_font[c]->width);
         width += w;
     }
 
@@ -793,7 +793,7 @@ void F_CastPrint(const char *text)
             continue;
         }
 
-        w = SHORT(hu_font[c]->width);
+        w = endian::SHORT(hu_font[c]->width);
         V_DrawPatch(cx, 180, hu_font[c]);
         cx += w;
     }
@@ -851,7 +851,7 @@ void F_DrawPatchCol(int x,
     pixel_t * desttop;
     int       count;
 
-    column  = (column_t *)((byte *)patch + LONG(patch->columnofs[col >> FRACBITS]));
+    column  = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
     desttop = I_VideoBuffer + x + (DELTAWIDTH << crispy->hires);
 
     // step through the posts in a column

@@ -23,9 +23,9 @@
 
 #include "z_zone.hpp"
 
+import i_swap;
 #include "deh_main.hpp"
 #include "i_input.hpp"
-#include "i_swap.hpp"
 #include "i_video.hpp"
 
 #include "hu_stuff.hpp"
@@ -62,11 +62,11 @@
 #define HU_TITLE_CHEX  (mapnames_chex[(gameepisode - 1) * 9 + gamemap - 1])
 #define HU_TITLEHEIGHT 1
 #define HU_TITLEX      (0 - DELTAWIDTH)
-#define HU_TITLEY      (167 - SHORT(hu_font[0]->height))
+#define HU_TITLEY      (167 - endian::SHORT(hu_font[0]->height))
 
 #define HU_INPUTTOGGLE 't'
 #define HU_INPUTX      HU_MSGX
-#define HU_INPUTY      (HU_MSGY + HU_MSGHEIGHT * (SHORT(hu_font[0]->height) + 1))
+#define HU_INPUTY      (HU_MSGY + HU_MSGHEIGHT * (endian::SHORT(hu_font[0]->height) + 1))
 #define HU_INPUTWIDTH  64
 #define HU_INPUTHEIGHT 1
 
@@ -474,13 +474,13 @@ void HU_Init(void)
 
             patch = cache_lump_num<patch_t *>(laserpatch[i].l, PU_STATIC);
 
-            laserpatch[i].w -= SHORT(patch->leftoffset);
-            laserpatch[i].h -= SHORT(patch->topoffset);
+            laserpatch[i].w -= endian::SHORT(patch->leftoffset);
+            laserpatch[i].h -= endian::SHORT(patch->topoffset);
 
             // [crispy] special-case the chevron crosshair type
             if (toupper(laserpatch[i].c) == '^')
             {
-                laserpatch[i].h -= SHORT(patch->height) / 2;
+                laserpatch[i].h -= endian::SHORT(patch->height) / 2;
             }
         }
 
@@ -489,8 +489,8 @@ void HU_Init(void)
             patch = cache_lump_num<patch_t *>(laserpatch[i].l, PU_STATIC);
         }
 
-        laserpatch[i].w += SHORT(patch->width) / 2;
-        laserpatch[i].h += SHORT(patch->height) / 2;
+        laserpatch[i].w += endian::SHORT(patch->width) / 2;
+        laserpatch[i].h += endian::SHORT(patch->height) / 2;
     }
 
     if (!M_ParmExists("-nodeh"))
@@ -578,7 +578,7 @@ static void HU_SetSpecialLevelName(const char *wad, const char **name)
     {
         const speciallevel_t speciallevel = speciallevels[i];
 
-        if (logical_gamemission == speciallevel.mission && (!speciallevel.episode || gameepisode == speciallevel.episode) && gamemap == speciallevel.map && (!speciallevel.wad || !strcasecmp(wad, speciallevel.wad)))
+        if (logical_gamemission == speciallevel.mission && (!speciallevel.episode || gameepisode == speciallevel.episode) && gamemap == speciallevel.map && (!speciallevel.wad || !doomtype::strcasecmp(wad, speciallevel.wad)))
         {
             *name = speciallevel.name ? speciallevel.name : maplumpinfo->name;
             break;
@@ -627,7 +627,7 @@ void HU_Start(void)
 
     // [crispy] create the generic map title, kills, items, secrets and level time widgets
     HUlib_initTextLine(&w_map,
-        HU_TITLEX, HU_TITLEY - SHORT(hu_font[0]->height + 1),
+        HU_TITLEX, HU_TITLEY - endian::SHORT(hu_font[0]->height + 1),
         hu_font,
         HU_FONTSTART);
 

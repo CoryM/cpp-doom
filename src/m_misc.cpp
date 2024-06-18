@@ -40,8 +40,8 @@
 
 #include "deh_str.hpp"
 
+import i_swap; 
 #include "../utils/memory.hpp"
-#include "i_swap.hpp"
 #include "i_system.hpp"
 #include "i_video.hpp"
 #include "m_misc.hpp"
@@ -401,7 +401,7 @@ const char *M_StrCaseStr(const char *haystack, const char *needle)
 
     for (i = 0; i <= len; ++i)
     {
-        if (!strncasecmp(haystack + i, needle, needle_len))
+        if (!doomtype::strncasecmp(haystack + i, needle, needle_len))
         {
             return haystack + i;
         }

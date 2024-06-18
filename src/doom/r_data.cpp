@@ -20,8 +20,8 @@
 #include <cstdio>
 #include <cstdlib> // [crispy] calloc()
 
+import i_swap; 
 #include "deh_main.hpp"
-#include "i_swap.hpp"
 #include "i_system.hpp"
 #include "z_zone.hpp"
 
@@ -289,7 +289,7 @@ void R_GenerateComposite(int texnum)
     {
         realpatch = cache_lump_num<patch_t *>(patch->patch, PU_CACHE);
         x1        = patch->originx;
-        x2        = x1 + SHORT(realpatch->width);
+        x2        = x1 + endian::SHORT(realpatch->width);
 
         if (x1 < 0)
             x = 0;
@@ -309,7 +309,7 @@ void R_GenerateComposite(int texnum)
 	    */
 
             patchcol = (column_t *)((byte *)realpatch
-                                    + LONG(realpatch->columnofs[x - x1]));
+                                    + endian::LONG(realpatch->columnofs[x - x1]));
             R_DrawColumnInCache(patchcol,
                 block + colofs[x],
                 // [crispy] single-patched columns are normally not composited
@@ -423,7 +423,7 @@ void R_GenerateLookup(int texnum)
     {
         realpatch = cache_lump_num<patch_t *>(patch->patch, PU_CACHE);
         x1        = patch->originx;
-        x2        = x1 + SHORT(realpatch->width);
+        x2        = x1 + endian::SHORT(realpatch->width);
 
         if (x1 < 0)
             x = 0;
@@ -436,7 +436,7 @@ void R_GenerateLookup(int texnum)
         {
             patchcount[x]++;
             collump[x] = patch->patch;
-            colofs[x] = colofs2[x] = LONG(realpatch->columnofs[x - x1]) + 3; // [crispy] original column offsets
+            colofs[x] = colofs2[x] = endian::LONG(realpatch->columnofs[x - x1]) + 3; // [crispy] original column offsets
         }
     }
 
@@ -461,7 +461,7 @@ void R_GenerateLookup(int texnum)
         {
             int            pat       = patch->patch;
             const patch_t *realpatch = cache_lump_num<const patch_t *>(pat, PU_CACHE);
-            int            x, x1 = patch++->originx, x2 = x1 + SHORT(realpatch->width);
+            int            x, x1 = patch++->originx, x2 = x1 + endian::SHORT(realpatch->width);
             const int *    cofs = realpatch->columnofs - x1;
 
             if (x2 > texture->width)
@@ -473,7 +473,7 @@ void R_GenerateLookup(int texnum)
             {
                 if (patchcount[x] > 1) // Only multipatched columns
                 {
-                    const column_t *col  = (const column_t *)((const byte *)realpatch + LONG(cofs[x]));
+                    const column_t *col  = (const column_t *)((const byte *)realpatch + endian::LONG(cofs[x]));
                     const byte *    base = (const byte *)col;
 
                     // count posts
@@ -698,7 +698,7 @@ void R_InitTextures(void)
     nummappatches = 0;
     for (i = numlumps - 1; i >= 0; i--)
     {
-        if (!strncasecmp(lumpinfo[i]->name, DEH_String("PNAMES"), 6))
+        if (!doomtype::strncasecmp(lumpinfo[i]->name, DEH_String("PNAMES"), 6))
         {
             if (numpnameslumps == maxpnameslumps)
             {
@@ -708,7 +708,7 @@ void R_InitTextures(void)
 
             pnameslumps[numpnameslumps].lumpnum       = i;
             pnameslumps[numpnameslumps].names         = W_CacheLumpNum(pnameslumps[numpnameslumps].lumpnum, PU_STATIC);
-            pnameslumps[numpnameslumps].nummappatches = LONG(*((int *)pnameslumps[numpnameslumps].names));
+            pnameslumps[numpnameslumps].nummappatches = endian::LONG(*((int *)pnameslumps[numpnameslumps].names));
 
             // [crispy] accumulated number of patches in the lookup tables
             // excluding the current one
@@ -719,7 +719,7 @@ void R_InitTextures(void)
             nummappatches += pnameslumps[numpnameslumps].nummappatches;
             numpnameslumps++;
         }
-        else if (!strncasecmp(lumpinfo[i]->name, DEH_String("TEXTURE"), 7))
+        else if (!doomtype::strncasecmp(lumpinfo[i]->name, DEH_String("TEXTURE"), 7))
         {
             // [crispy] support only TEXTURE1/2 lumps, not TEXTURE3 etc.
             if (lumpinfo[i]->name[7] != '1' && lumpinfo[i]->name[7] != '2')
@@ -771,7 +771,7 @@ void R_InitTextures(void)
     {
         texturelumps[i].maptex      = cache_lump_num<int *>(texturelumps[i].lumpnum, PU_STATIC);
         texturelumps[i].maxoff      = W_LumpLength(texturelumps[i].lumpnum);
-        texturelumps[i].numtextures = LONG(*texturelumps[i].maptex);
+        texturelumps[i].numtextures = endian::LONG(*texturelumps[i].maptex);
 
         // [crispy] accumulated number of textures in the texture files
         // including the current one
@@ -856,7 +856,7 @@ void R_InitTextures(void)
             directory = maptex + 1;
         }
 
-        offset = LONG(*directory);
+        offset = endian::LONG(*directory);
 
         if (offset > maxoff)
             I_Error("R_InitTextures: bad texture directory");
@@ -864,12 +864,12 @@ void R_InitTextures(void)
         mtexture = (maptexture_t *)((byte *)maptex + offset);
 
         texture = textures[i] = zmalloc<decltype(texture)>(sizeof(texture_t)
-                                                               + sizeof(texpatch_t) * (SHORT(mtexture->patchcount) - 1),
+                                                               + sizeof(texpatch_t) * (endian::SHORT(mtexture->patchcount) - 1),
             PU_STATIC, 0);
 
-        texture->width      = SHORT(mtexture->width);
-        texture->height     = SHORT(mtexture->height);
-        texture->patchcount = SHORT(mtexture->patchcount);
+        texture->width      = endian::SHORT(mtexture->width);
+        texture->height     = endian::SHORT(mtexture->height);
+        texture->patchcount = endian::SHORT(mtexture->patchcount);
 
         memcpy(texture->name, mtexture->name, sizeof(texture->name));
         mpatch = &mtexture->patches[0];
@@ -881,11 +881,11 @@ void R_InitTextures(void)
         for (j = 0; j < texture->patchcount; j++, mpatch++, patch++)
         {
             short p;
-            patch->originx = SHORT(mpatch->originx);
-            patch->originy = SHORT(mpatch->originy);
+            patch->originx = endian::SHORT(mpatch->originx);
+            patch->originy = endian::SHORT(mpatch->originy);
             // [crispy] apply offset for patches not in the
             // first available patch offset table
-            p = SHORT(mpatch->patch) + texturelump->pnamesoffset;
+            p = endian::SHORT(mpatch->patch) + texturelump->pnamesoffset;
             // [crispy] catch out-of-range patches
             if (p < nummappatches)
                 patch->patch = patchlookup[p];
@@ -982,9 +982,9 @@ void R_InitSpriteLumps(void)
             printf(".");
 
         patch              = cache_lump_num<patch_t *>(firstspritelump + i, PU_CACHE);
-        spritewidth[i]     = SHORT(patch->width) << FRACBITS;
-        spriteoffset[i]    = SHORT(patch->leftoffset) << FRACBITS;
-        spritetopoffset[i] = SHORT(patch->topoffset) << FRACBITS;
+        spritewidth[i]     = endian::SHORT(patch->width) << FRACBITS;
+        spriteoffset[i]    = endian::SHORT(patch->leftoffset) << FRACBITS;
+        spritetopoffset[i] = endian::SHORT(patch->topoffset) << FRACBITS;
     }
 }
 
@@ -1295,7 +1295,7 @@ int R_CheckTextureNumForName(const char *name)
 
     while (texture != NULL)
     {
-        if (!strncasecmp(texture->name, name, 8))
+        if (!doomtype::strncasecmp(texture->name, name, 8))
             return texture->index;
 
         texture = texture->next;

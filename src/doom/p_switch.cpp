@@ -19,11 +19,11 @@
 
 #include <cstdio>
 
+import i_swap; // [crispy] SHORT()
 #include "i_system.hpp"
 #include "deh_main.hpp"
 #include "doomdef.hpp"
 #include "p_local.hpp"
-#include "i_swap.hpp" // [crispy] SHORT()
 #include "w_wad.hpp"  // [crispy] W_CheckNumForName()
 #include "z_zone.hpp" // [crispy] PU_STATIC
 
@@ -144,7 +144,7 @@ void P_InitSwitchList(void)
     for (i = 0; alphSwitchList[i].episode; i++)
     {
         const short alphSwitchList_episode = from_lump ?
-                                                 SHORT(alphSwitchList[i].episode) :
+                                                 endian::SHORT(alphSwitchList[i].episode) :
                                                  alphSwitchList[i].episode;
 
         // [crispy] remove MAXSWITCHES limit

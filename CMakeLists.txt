@@ -35,7 +35,7 @@ if(MSVC)
                     "/D_CRT_NONSTDC_NO_DEPRECATE")
 else()
     add_compile_options("-Og" "-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-Wfatal-errors"
-        "-fsanitize=address" 
+        #"-fsanitize=address" 
         #"-fsanitize=undefined"
         #"-fsanitize=leak" 
         #"-fsanitize=pointer-compare"
@@ -47,8 +47,9 @@ else()
         )
 
     add_link_options(
-        "-fuse-ld=gold"
-        "-fsanitize=address"
+        "-fdiagnostics-color=always"
+        #"-fuse-ld=gold"
+        #"-fsanitize=address"
         #"-fsanitize=undefined"
         #"-fsanitize=leak" 
         #"-fsanitize=pointer-compare"

@@ -34,11 +34,11 @@
 #include "memio.hpp"
 #include "mus2mid.hpp"
 
+import i_swap; 
 #include "deh_str.hpp"
 #include "gusconf.hpp"
 #include "i_sound.hpp"
 #include "i_system.hpp"
-#include "i_swap.hpp"
 #include "m_argv.hpp"
 #include "m_config.hpp"
 #include "m_misc.hpp"
@@ -415,7 +415,7 @@ static void ParseVorbisComments(file_metadata_t *metadata, FILE *fs)
     {
         return;
     }
-    if (fseek(fs, LONG(buf), SEEK_CUR) != 0)
+    if (fseek(fs, endian::LONG(buf), SEEK_CUR) != 0)
     {
         return;
     }
@@ -425,7 +425,7 @@ static void ParseVorbisComments(file_metadata_t *metadata, FILE *fs)
     {
         return;
     }
-    num_comments = LONG(buf);
+    num_comments = endian::LONG(buf);
 
     // Read each individual comment.
     for (i = 0; i < num_comments; ++i)
@@ -436,7 +436,7 @@ static void ParseVorbisComments(file_metadata_t *metadata, FILE *fs)
             return;
         }
 
-        comment_len = LONG(buf);
+        comment_len = endian::LONG(buf);
 
         // Read actual comment data into string buffer.
         auto comment = std::string(comment_len, '\0');

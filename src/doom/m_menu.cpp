@@ -29,8 +29,8 @@
 #include "d_main.hpp"
 #include "deh_main.hpp"
 
+import i_swap;
 #include "i_input.hpp"
-#include "i_swap.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "i_video.hpp"
@@ -1941,7 +1941,7 @@ int M_StringWidth(const char *string)
         if (c < 0 || c >= HU_FONTSIZE)
             w += 4;
         else
-            w += SHORT(hu_font[c]->width);
+            w += endian::SHORT(hu_font[c]->width);
     }
 
     return w;
@@ -1955,7 +1955,7 @@ int M_StringHeight(const char *string)
 {
     size_t i;
     int    h;
-    int    height = SHORT(hu_font[0]->height);
+    int    height = endian::SHORT(hu_font[0]->height);
 
     h = height;
     for (i = 0; i < strlen(string); i++)
@@ -2013,7 +2013,7 @@ void M_WriteText(int x,
             continue;
         }
 
-        w = SHORT(hu_font[c]->width);
+        w = endian::SHORT(hu_font[c]->width);
         if (cx + w > ORIGWIDTH)
             break;
         V_DrawPatchDirect(cx, cy, hu_font[c]);
@@ -2879,7 +2879,7 @@ void M_Drawer(void)
 
             x = ORIGWIDTH / 2 - M_StringWidth(string) / 2;
             M_WriteText(x > 0 ? x : 0, y, string); // [crispy] prevent negative x-coords
-            y += SHORT(hu_font[0]->height);
+            y += endian::SHORT(hu_font[0]->height);
         }
 
         return;
@@ -3059,22 +3059,22 @@ void M_Init(void)
         patchs = cache_lump_name<patch_t *>(DEH_String("M_SAVEG"), PU_CACHE);
         patchm = cache_lump_name<patch_t *>(DEH_String("M_LSLEFT"), PU_CACHE);
 
-        LoadDef_x = (ORIGWIDTH - SHORT(patchl->width)) / 2 + SHORT(patchl->leftoffset);
-        SaveDef_x = (ORIGWIDTH - SHORT(patchs->width)) / 2 + SHORT(patchs->leftoffset);
-        LoadDef.x = SaveDef.x = (ORIGWIDTH - 24 * 8) / 2 + SHORT(patchm->leftoffset); // [crispy] see M_DrawSaveLoadBorder()
+        LoadDef_x = (ORIGWIDTH - endian::SHORT(patchl->width)) / 2 + endian::SHORT(patchl->leftoffset);
+        SaveDef_x = (ORIGWIDTH - endian::SHORT(patchs->width)) / 2 + endian::SHORT(patchs->leftoffset);
+        LoadDef.x = SaveDef.x = (ORIGWIDTH - 24 * 8) / 2 + endian::SHORT(patchm->leftoffset); // [crispy] see M_DrawSaveLoadBorder()
 
-        captionheight = MAX(SHORT(patchl->height), SHORT(patchs->height));
+        captionheight = MAX(endian::SHORT(patchl->height), endian::SHORT(patchs->height));
 
         vstep = ORIGHEIGHT - 32; // [crispy] ST_HEIGHT
         vstep -= captionheight;
-        vstep -= (load_end - 1) * LINEHEIGHT + SHORT(patchm->height);
+        vstep -= (load_end - 1) * LINEHEIGHT + endian::SHORT(patchm->height);
         vstep /= 3;
 
         if (vstep > 0)
         {
-            LoadDef_y = vstep + captionheight - SHORT(patchl->height) + SHORT(patchl->topoffset);
-            SaveDef_y = vstep + captionheight - SHORT(patchs->height) + SHORT(patchs->topoffset);
-            LoadDef.y = SaveDef.y = vstep + captionheight + vstep + SHORT(patchm->topoffset) - 7; // [crispy] see M_DrawSaveLoadBorder()
+            LoadDef_y = vstep + captionheight - endian::SHORT(patchl->height) + endian::SHORT(patchl->topoffset);
+            SaveDef_y = vstep + captionheight - endian::SHORT(patchs->height) + endian::SHORT(patchs->topoffset);
+            LoadDef.y = SaveDef.y = vstep + captionheight + vstep + endian::SHORT(patchm->topoffset) - 7; // [crispy] see M_DrawSaveLoadBorder()
             MouseDef.y            = LoadDef.y;
         }
     }

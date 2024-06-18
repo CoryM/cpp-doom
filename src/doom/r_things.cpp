@@ -24,7 +24,7 @@
 #include "../deh_main.hpp"
 #include "doomdef.hpp"
 
-#include "../i_swap.hpp"
+import i_swap; 
 #include "i_system.hpp"
 #include "z_zone.hpp"
 #include "w_wad.hpp"
@@ -237,7 +237,7 @@ void R_InitSpriteDefs(const char **namelist)
         //  filling in the frames for whatever is found
         for (l = start + 1; l < end; l++)
         {
-            if (!strncasecmp(lumpinfo[l]->name, spritename, 4))
+            if (!doomtype::strncasecmp(lumpinfo[l]->name, spritename, 4))
             {
                 frame    = lumpinfo[l]->name[4] - 'A';
                 rotation = lumpinfo[l]->name[5];
@@ -509,7 +509,7 @@ void R_DrawVisSprite(vissprite_t *vis,
         static boolean error = false;
         texturecolumn        = frac >> FRACBITS;
 #ifdef RANGECHECK
-        if (texturecolumn < 0 || texturecolumn >= SHORT(patch->width))
+        if (texturecolumn < 0 || texturecolumn >= endian::SHORT(patch->width))
         {
             // [crispy] make non-fatal
             if (!error)
@@ -520,7 +520,7 @@ void R_DrawVisSprite(vissprite_t *vis,
             continue;
         }
 #endif
-        column = (column_t *)((byte *)patch + LONG(patch->columnofs[texturecolumn]));
+        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[texturecolumn]));
         R_DrawMaskedColumn(column);
     }
 
@@ -889,9 +889,9 @@ static void R_DrawLSprite(void)
     vis->texturemid = laserspot->z - viewz;
     vis->scale      = xscale << detailshift;
 
-    tx -= SHORT(patch->width / 2) << FRACBITS;
+    tx -= endian::SHORT(patch->width / 2) << FRACBITS;
     vis->x1 = (centerxfrac + FixedMul(tx, xscale)) >> FRACBITS;
-    tx += SHORT(patch->width) << FRACBITS;
+    tx += endian::SHORT(patch->width) << FRACBITS;
     vis->x2 = ((centerxfrac + FixedMul(tx, xscale)) >> FRACBITS) - 1;
 
     if (vis->x1 < 0 || vis->x1 >= viewwidth || vis->x2 < 0 || vis->x2 >= viewwidth)

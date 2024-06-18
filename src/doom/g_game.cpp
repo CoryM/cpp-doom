@@ -28,6 +28,7 @@
 #include "deh_misc.hpp"
 #include "deh_bexpars.hpp" // [crispy] bex_pars[]
 
+import i_swap;
 #include "z_zone.hpp"
 #include "f_finale.hpp"
 #include "m_argv.hpp"
@@ -38,7 +39,6 @@
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "i_input.hpp"
-#include "i_swap.hpp"
 #include "i_video.hpp"
 
 #include "p_setup.hpp"
@@ -1780,7 +1780,7 @@ void G_DoCompleted(void)
             int cpars32;
 
             memcpy(&cpars32, DEH_String(GAMMALVL0), sizeof(int));
-            cpars32 = LONG(cpars32);
+            cpars32 = endian::LONG(cpars32);
 
             wminfo.partime = TICRATE * cpars32;
         }
@@ -1968,7 +1968,7 @@ void G_DoLoadGame(void)
         // [crispy] strings are not equal
         if (!savemaplumpinfo ||
             // [crispy] case-insensitive, so "doom.wad" matches "DOOM.WAD"
-            strcasecmp(savewadfilename, W_WadNameForLump(savemaplumpinfo)))
+            doomtype::strcasecmp(savewadfilename, W_WadNameForLump(savemaplumpinfo)))
         {
             M_ForceLoadGame();
             fclose(save_stream);

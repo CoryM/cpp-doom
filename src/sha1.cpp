@@ -36,7 +36,7 @@
 #include <cstring>
 #include <assert.h>
 
-#include "i_swap.hpp"
+import i_swap; 
 #include "sha1.hpp"
 
 void SHA1_Init(sha1_context_t *hd)
@@ -66,9 +66,11 @@ static void Transform(sha1_context_t *hd, byte *data)
     d = hd->h3;
     e = hd->h4;
 
-#ifdef SYS_BIG_ENDIAN
-    memcpy(x, data, 64);
-#else
+    if constexpr (endian::is_big_endian())
+    {
+        memcpy(x, data, 64);
+    }
+    else
     {
         int   i;
         byte *p2;
@@ -80,7 +82,6 @@ static void Transform(sha1_context_t *hd, byte *data)
             p2[0] = *data++;
         }
     }
-#endif
 
 
 #define K1          0x5A827999L
@@ -243,7 +244,6 @@ void SHA1_Update(sha1_context_t *hd, byte *inbuf, size_t inlen)
 void SHA1_Final(sha1_digest_t digest, sha1_context_t *hd)
 {
     uint32_t t, msb, lsb;
-    byte *   p;
 
     SHA1_Update(hd, NULL, 0); /* flush */
     ;
@@ -290,30 +290,27 @@ void SHA1_Final(sha1_digest_t digest, sha1_context_t *hd)
     hd->buf[63] = lsb;
     Transform(hd, hd->buf);
 
-    p = hd->buf;
-#ifdef SYS_BIG_ENDIAN
-#define X(a)                       \
-    do                             \
-    {                              \
-        *(uint32_t *)p = hd->h##a; \
-        p += 4;                    \
-    } while (0)
-#else /* little endian */
-#define X(a)                   \
-    do                         \
-    {                          \
-        *p++ = hd->h##a >> 24; \
-        *p++ = hd->h##a >> 16; \
-        *p++ = hd->h##a >> 8;  \
-        *p++ = hd->h##a;       \
-    } while (0)
-#endif
-    X(0);
-    X(1);
-    X(2);
-    X(3);
-    X(4);
-#undef X
+    auto X = [hd](uint32_t ha) {
+        byte *   p = hd->buf;
+        if constexpr (endian::is_big_endian())
+        {
+            *(uint32_t *)p = ha;
+            p += 4;
+        }
+        else
+        {
+            /* little endian */
+            *p++ = ha >> 24;
+            *p++ = ha >> 16;
+            *p++ = ha >> 8;
+            *p++ = ha;
+        }
+    };
+    X(hd->h0);
+    X(hd->h1);
+    X(hd->h2);
+    X(hd->h3);
+    X(hd->h4);
 
     memcpy(digest, hd->buf, sizeof(sha1_digest_t));
 }

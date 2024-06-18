@@ -22,8 +22,8 @@
 
 #include "z_zone.hpp"
 
+import i_swap; 
 #include "deh_main.hpp"
-#include "i_swap.hpp"
 #include "m_argv.hpp"
 #include "m_bbox.hpp"
 #include "m_misc.hpp" // [crispy] M_StringJoin()
@@ -155,8 +155,8 @@ void P_LoadVertexes(int lump)
     // internal representation as fixed.
     for (i = 0; i < numvertexes; i++, li++, ml++)
     {
-        li->x = SHORT(ml->x) << FRACBITS;
-        li->y = SHORT(ml->y) << FRACBITS;
+        li->x = endian::SHORT(ml->x) << FRACBITS;
+        li->y = endian::SHORT(ml->y) << FRACBITS;
 
         // [crispy] initialize vertex coordinates *only* used in rendering
         li->r_x   = li->x;
@@ -210,15 +210,15 @@ void P_LoadSegs(int lump)
     li = segs;
     for (i = 0; i < numsegs; i++, li++, ml++)
     {
-        li->v1 = &vertexes[(unsigned short)SHORT(ml->v1)]; // [crispy] extended nodes
-        li->v2 = &vertexes[(unsigned short)SHORT(ml->v2)]; // [crispy] extended nodes
+        li->v1 = &vertexes[(unsigned short)endian::SHORT(ml->v1)]; // [crispy] extended nodes
+        li->v2 = &vertexes[(unsigned short)endian::SHORT(ml->v2)]; // [crispy] extended nodes
 
-        li->angle = (SHORT(ml->angle)) << FRACBITS;
+        li->angle = (endian::SHORT(ml->angle)) << FRACBITS;
         //	li->offset = (SHORT(ml->offset))<<FRACBITS; // [crispy] recalculated below
-        linedef     = (unsigned short)SHORT(ml->linedef); // [crispy] extended nodes
+        linedef     = (unsigned short)endian::SHORT(ml->linedef); // [crispy] extended nodes
         ldef        = &lines[linedef];
         li->linedef = ldef;
-        side        = SHORT(ml->side);
+        side        = endian::SHORT(ml->side);
 
         // e6y: check for wrong indexes
         if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
@@ -331,8 +331,8 @@ void P_LoadSubsectors(int lump)
 
     for (i = 0; i < numsubsectors; i++, ss++, ms++)
     {
-        ss->numlines  = (unsigned short)SHORT(ms->numsegs);  // [crispy] extended nodes
-        ss->firstline = (unsigned short)SHORT(ms->firstseg); // [crispy] extended nodes
+        ss->numlines  = (unsigned short)endian::SHORT(ms->numsegs);  // [crispy] extended nodes
+        ss->firstline = (unsigned short)endian::SHORT(ms->firstseg); // [crispy] extended nodes
     }
 
     W_ReleaseLumpNum(lump);
@@ -366,13 +366,13 @@ void P_LoadSectors(int lump)
     ss = sectors;
     for (i = 0; i < numsectors; i++, ss++, ms++)
     {
-        ss->floorheight   = SHORT(ms->floorheight) << FRACBITS;
-        ss->ceilingheight = SHORT(ms->ceilingheight) << FRACBITS;
+        ss->floorheight   = endian::SHORT(ms->floorheight) << FRACBITS;
+        ss->ceilingheight = endian::SHORT(ms->ceilingheight) << FRACBITS;
         ss->floorpic      = R_FlatNumForName(ms->floorpic);
         ss->ceilingpic    = R_FlatNumForName(ms->ceilingpic);
-        ss->lightlevel    = SHORT(ms->lightlevel);
-        ss->special       = SHORT(ms->special);
-        ss->tag           = SHORT(ms->tag);
+        ss->lightlevel    = endian::SHORT(ms->lightlevel);
+        ss->special       = endian::SHORT(ms->special);
+        ss->tag           = endian::SHORT(ms->tag);
         ss->thinglist     = NULL;
         // [crispy] WiggleFix: [kb] for R_FixWiggle()
         ss->cachedheight = 0;
@@ -421,13 +421,13 @@ void P_LoadNodes(int lump)
 
     for (i = 0; i < numnodes; i++, no++, mn++)
     {
-        no->x  = SHORT(mn->x) << FRACBITS;
-        no->y  = SHORT(mn->y) << FRACBITS;
-        no->dx = SHORT(mn->dx) << FRACBITS;
-        no->dy = SHORT(mn->dy) << FRACBITS;
+        no->x  = endian::SHORT(mn->x) << FRACBITS;
+        no->y  = endian::SHORT(mn->y) << FRACBITS;
+        no->dx = endian::SHORT(mn->dx) << FRACBITS;
+        no->dy = endian::SHORT(mn->dy) << FRACBITS;
         for (j = 0; j < 2; j++)
         {
-            no->children[j] = (unsigned short)SHORT(mn->children[j]); // [crispy] extended nodes
+            no->children[j] = (unsigned short)endian::SHORT(mn->children[j]); // [crispy] extended nodes
 
             // [crispy] add support for extended nodes
             // from prboom-plus/src/p_setup.c:937-957
@@ -444,7 +444,7 @@ void P_LoadNodes(int lump)
             }
 
             for (k = 0; k < 4; k++)
-                no->bbox[j][k] = SHORT(mn->bbox[j][k]) << FRACBITS;
+                no->bbox[j][k] = endian::SHORT(mn->bbox[j][k]) << FRACBITS;
         }
     }
 
@@ -475,7 +475,7 @@ void P_LoadThings(int lump)
         // Do not spawn cool, new monsters if !commercial
         if (gamemode != commercial)
         {
-            switch (SHORT(mt->type))
+            switch (endian::SHORT(mt->type))
             {
             case 68: // Arachnotron
             case 64: // Archvile
@@ -495,11 +495,11 @@ void P_LoadThings(int lump)
             break;
 
         // Do spawn all other stuff.
-        spawnthing.x       = SHORT(mt->x);
-        spawnthing.y       = SHORT(mt->y);
-        spawnthing.angle   = SHORT(mt->angle);
-        spawnthing.type    = SHORT(mt->type);
-        spawnthing.options = SHORT(mt->options);
+        spawnthing.x       = endian::SHORT(mt->x);
+        spawnthing.y       = endian::SHORT(mt->y);
+        spawnthing.angle   = endian::SHORT(mt->angle);
+        spawnthing.type    = endian::SHORT(mt->type);
+        spawnthing.options = endian::SHORT(mt->options);
 
         P_SpawnMapThing(&spawnthing);
     }
@@ -544,15 +544,15 @@ void P_LoadLineDefs(int lump)
     warn = warn2 = 0; // [crispy] warn about invalid linedefs
     for (i = 0; i < numlines; i++, mld++, ld++)
     {
-        ld->flags   = (unsigned short)SHORT(mld->flags); // [crispy] extended nodes
-        ld->special = SHORT(mld->special);
+        ld->flags   = (unsigned short)endian::SHORT(mld->flags); // [crispy] extended nodes
+        ld->special = endian::SHORT(mld->special);
         // [crispy] warn about unknown linedef types
         if ((unsigned short)ld->special > 141)
         {
             fprintf(stderr, "P_LoadLineDefs: Unknown special %d at line %d.\n", ld->special, i);
             warn++;
         }
-        ld->tag = SHORT(mld->tag);
+        ld->tag = endian::SHORT(mld->tag);
         // [crispy] warn about special linedefs without tag
         if (ld->special && !ld->tag)
         {
@@ -583,8 +583,8 @@ void P_LoadLineDefs(int lump)
                 break;
             }
         }
-        v1 = ld->v1 = &vertexes[(unsigned short)SHORT(mld->v1)]; // [crispy] extended nodes
-        v2 = ld->v2 = &vertexes[(unsigned short)SHORT(mld->v2)]; // [crispy] extended nodes
+        v1 = ld->v1 = &vertexes[(unsigned short)endian::SHORT(mld->v1)]; // [crispy] extended nodes
+        v2 = ld->v2 = &vertexes[(unsigned short)endian::SHORT(mld->v2)]; // [crispy] extended nodes
         ld->dx      = v2->x - v1->x;
         ld->dy      = v2->y - v1->y;
 
@@ -626,8 +626,8 @@ void P_LoadLineDefs(int lump)
         ld->soundorg.x = ld->bbox[BOXLEFT] / 2 + ld->bbox[BOXRIGHT] / 2;
         ld->soundorg.y = ld->bbox[BOXTOP] / 2 + ld->bbox[BOXBOTTOM] / 2;
 
-        ld->sidenum[0] = SHORT(mld->sidenum[0]);
-        ld->sidenum[1] = SHORT(mld->sidenum[1]);
+        ld->sidenum[0] = endian::SHORT(mld->sidenum[0]);
+        ld->sidenum[1] = endian::SHORT(mld->sidenum[1]);
 
         // [crispy] substitute dummy sidedef for missing right side
         if (ld->sidenum[0] == NO_INDEX)
@@ -685,12 +685,12 @@ void P_LoadSideDefs(int lump)
     sd  = sides;
     for (i = 0; i < numsides; i++, msd++, sd++)
     {
-        sd->textureoffset = SHORT(msd->textureoffset) << FRACBITS;
-        sd->rowoffset     = SHORT(msd->rowoffset) << FRACBITS;
+        sd->textureoffset = endian::SHORT(msd->textureoffset) << FRACBITS;
+        sd->rowoffset     = endian::SHORT(msd->rowoffset) << FRACBITS;
         sd->toptexture    = R_TextureNumForName(msd->toptexture);
         sd->bottomtexture = R_TextureNumForName(msd->bottomtexture);
         sd->midtexture    = R_TextureNumForName(msd->midtexture);
-        sd->sector        = &sectors[SHORT(msd->sector)];
+        sd->sector        = &sectors[endian::SHORT(msd->sector)];
         // [crispy] smooth texture scrolling
         sd->basetextureoffset = sd->textureoffset;
     }
@@ -722,16 +722,15 @@ boolean P_LoadBlockMap(int lump)
     blockmaplump = zmalloc<decltype(blockmaplump)>(sizeof(*blockmaplump) * count, PU_LEVEL, NULL);
     blockmap     = blockmaplump + 4;
 
-    blockmaplump[0] = SHORT(wadblockmaplump[0]);
-    blockmaplump[1] = SHORT(wadblockmaplump[1]);
-    blockmaplump[2] = (int32_t)(SHORT(wadblockmaplump[2])) & 0xffff;
-    blockmaplump[3] = (int32_t)(SHORT(wadblockmaplump[3])) & 0xffff;
+    blockmaplump[0] = endian::SHORT(wadblockmaplump[0]);
+    blockmaplump[1] = endian::SHORT(wadblockmaplump[1]);
+    blockmaplump[2] = (int32_t)(endian::SHORT(wadblockmaplump[2])) & 0xffff;
+    blockmaplump[3] = (int32_t)(endian::SHORT(wadblockmaplump[3])) & 0xffff;
 
     // Swap all short integers to native byte ordering.
 
-    for (i = 4; i < count; i++)
-    {
-        short t         = SHORT(wadblockmaplump[i]);
+    for (i = 4; i < count; i++) {
+        short t         = endian::SHORT(wadblockmaplump[i]);
         blockmaplump[i] = (t == -1) ? -1l : (int32_t)t & 0xffff;
     }
 

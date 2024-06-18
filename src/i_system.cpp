@@ -411,15 +411,15 @@ boolean I_GetMemoryValue(unsigned int offset, void *value, int size)
 
         if (p > 0)
         {
-            if (!strcasecmp(myargv[p + 1], "dos622"))
+            if (!doomtype::strcasecmp(myargv[p + 1], "dos622"))
             {
                 dos_mem_dump = mem_dump_dos622;
             }
-            if (!strcasecmp(myargv[p + 1], "dos71"))
+            if (!doomtype::strcasecmp(myargv[p + 1], "dos71"))
             {
                 dos_mem_dump = mem_dump_win98;
             }
-            else if (!strcasecmp(myargv[p + 1], "dosbox"))
+            else if (!doomtype::strcasecmp(myargv[p + 1], "dosbox"))
             {
                 dos_mem_dump = mem_dump_dosbox;
             }
