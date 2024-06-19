@@ -134,7 +134,7 @@ target_sources(doom
         event_function_decls.hpp
 
     PUBLIC FILE_SET CXX_MODULES FILES
-        m_fixed.cxx
+        #m_fixed.cxx
 )
 
 target_include_directories(doom PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../")

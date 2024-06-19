@@ -4,7 +4,7 @@ target_sources(cpp_modules
     PRIVATE FILE_SET HEADERS FILES
     PUBLIC FILE_SET CXX_MODULES FILES
         i_swap.cxx
-        #m_fixed.cxx
+        m_fixed.cxx
 )
 
 #target_include_directories(cpp_modules PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
