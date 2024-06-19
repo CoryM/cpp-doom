@@ -38,7 +38,7 @@ import m_fixed; //#include "m_fixed.hpp"
 #include "net_query.hpp"
 #include "net_server.hpp"
 #include "net_structrw.hpp"
-#include "net_petname.hpp"
+import net_petname; //#include "net_petname.hpp"
 #include "w_checksum.hpp"
 #include "w_wad.hpp"
 

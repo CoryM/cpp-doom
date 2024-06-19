@@ -34,30 +34,26 @@ if(MSVC)
     add_definitions("/D_CRT_SECURE_NO_WARNINGS" "/D_CRT_SECURE_NO_DEPRECATE"
                     "/D_CRT_NONSTDC_NO_DEPRECATE")
 else()
-    add_compile_options("-Og" "-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-Wfatal-errors"
-        #"-fsanitize=address" 
-        #"-fsanitize=undefined"
-        #"-fsanitize=leak" 
-        #"-fsanitize=pointer-compare"
-        #"-fsanitize=pointer-subtract"
-        #"-fno-omit-frame-pointer" 
-        #"-fno-optimize-sibling-calls"
-        #"-fno-common" 
-        #"-fno-omit-frame-pointer"
+    add_compile_options("-Og" "-g" "-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-Wfatal-errors"
+        "-fsanitize=address" "-fno-omit-frame-pointer"
+        "-fsanitize=undefined"
+        "-fsanitize=leak" 
+        "-fsanitize=pointer-compare"
+        "-fsanitize=pointer-subtract" 
+        "-fno-optimize-sibling-calls"
+        "-fno-common" 
         )
 
     add_link_options(
         "-fdiagnostics-color=always"
         #"-fuse-ld=gold"
-        #"-fsanitize=address"
-        #"-fsanitize=undefined"
-        #"-fsanitize=leak" 
-        #"-fsanitize=pointer-compare"
-        #"-fsanitize=pointer-subtract"
-        #"-fno-omit-frame-pointer" 
-        #"-fno-optimize-sibling-calls"
-        #"-fno-common" 
-        #"-fno-omit-frame-pointer"
+        "-fsanitize=address" "-fno-omit-frame-pointer"
+        "-fsanitize=undefined"
+        "-fsanitize=leak" 
+        "-fsanitize=pointer-compare"
+        "-fsanitize=pointer-subtract" 
+        "-fno-optimize-sibling-calls"
+        "-fno-common" 
         )
 endif()
 add_compile_definitions( -DCRISPY_TRUECOLOR )

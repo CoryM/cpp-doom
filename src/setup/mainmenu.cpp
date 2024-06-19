@@ -40,6 +40,16 @@
 
 #define WINDOW_HELP_URL "https://www.chocolate-doom.org/setup"
 
+#ifndef CRISPY_TRUECOLOR
+typedef uint8_t pixel_t;
+typedef int16_t dpixel_t;
+#else
+typedef uint32_t pixel_t;
+typedef int64_t  dpixel_t;
+#endif
+typedef pixel_t lighttable_t;
+lighttable_t *colormaps;  // [crispy] Crispy colors for Crispy Setup
+
 static const int cheat_sequence[] =
 {
     KEY_UPARROW, KEY_UPARROW, KEY_DOWNARROW, KEY_DOWNARROW,
@@ -82,7 +92,7 @@ static void SensibleDefaults(void)
     key_multi_msgplayer[7] = 'm';
     mousebprevweapon = 4;           // Scroll wheel = weapon cycle
     mousebnextweapon = 3;
-    snd_musicdevice = 3;
+    snd_musicdevice = SNDDEVICE_SB;
     joybspeed = 29;                 // Always run
     vanilla_savegame_limit = 0;
     vanilla_keyboard_mapping = 0;
@@ -143,7 +153,7 @@ static void QuitConfirm(void *unused1, void *unused2)
     TXT_AddWidgets(window, 
                    label = TXT_NewLabel("Exiting setup.\nSave settings?"),
                    TXT_NewStrut(24, 0),
-                   yes_button = TXT_NewButton2("  Yes  ", DoQuit, DoQuit),
+                   yes_button = TXT_NewButton2("  Yes  ", DoQuit, reinterpret_cast<void *>(&DoQuit)),
                    no_button = TXT_NewButton2("  No   ", DoQuit, NULL),
                    NULL);
 

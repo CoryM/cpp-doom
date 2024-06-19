@@ -5,6 +5,7 @@ target_sources(cpp_modules
     PUBLIC FILE_SET CXX_MODULES FILES
         i_swap.cxx
         m_fixed.cxx
+        net_petname.cxx
 )
 
 #target_include_directories(cpp_modules PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -68,7 +69,6 @@ set(GAME_SOURCE_FILES
     i_glob.cpp            i_glob.hpp
     i_input.cpp           i_input.hpp
     i_joystick.cpp        i_joystick.hpp
-    #i_swap.cpp            i_swap.hpp
     i_midipipe.cpp        i_midipipe.hpp
     i_musicpack.cpp
     i_oplmusic.cpp
@@ -81,7 +81,6 @@ set(GAME_SOURCE_FILES
     i_videohr.cpp         i_videohr.hpp
     midifile.cpp          midifile.hpp
     mus2mid.cpp           mus2mid.hpp
-    #m_bbox.cpp            m_bbox.hpp
     m_cheat.cpp           m_cheat.hpp
     m_config.cpp          m_config.hpp
     m_controls.cpp        m_controls.hpp
@@ -93,7 +92,6 @@ set(GAME_SOURCE_FILES
     net_io.cpp            net_io.hpp
     net_loop.cpp          net_loop.hpp
     net_packet.cpp        net_packet.hpp
-    net_petname.cpp       net_petname.hpp
     net_query.cpp         net_query.hpp
     net_sdl.cpp           net_sdl.hpp
     net_server.cpp        net_server.hpp
@@ -243,6 +241,7 @@ set(SETUP_FILES
     d_event.cpp           d_event.hpp
     d_mode.cpp            d_mode.hpp
     d_iwad.cpp            d_iwad.hpp
+    doomtype.cpp          doomtype.hpp
     gusconf.cpp           gusconf.hpp
     i_glob.cpp            i_glob.hpp
     i_input.cpp           i_input.hpp
@@ -268,7 +267,6 @@ set(SETUP_FILES
     net_loop.cpp          net_loop.hpp
     net_server.cpp        net_server.hpp
     net_packet.cpp        net_packet.hpp
-    net_petname.cpp       net_petname.hpp
     net_sdl.cpp           net_sdl.hpp
     net_query.cpp         net_query.hpp
     net_structrw.cpp      net_structrw.hpp
@@ -289,7 +287,7 @@ endif()
 
 target_include_directories("${PROGRAM_PREFIX}setup"
                            PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
-target_link_libraries("${PROGRAM_PREFIX}setup" SDL2::SDL2 SDL2::mixer SDL2::net PNG::PNG samplerate::samplerate pcsound opl setup textscreen)
+target_link_libraries("${PROGRAM_PREFIX}setup" cpp_modules SDL2::SDL2 SDL2::mixer SDL2::net PNG::PNG samplerate::samplerate pcsound opl setup textscreen)
 
 if(MSVC)
     set_target_properties("${PROGRAM_PREFIX}setup" PROPERTIES
