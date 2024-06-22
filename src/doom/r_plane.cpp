@@ -21,6 +21,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
 
 #include "i_system.hpp"
 #include "z_zone.hpp"
@@ -426,7 +427,9 @@ void R_DrawPlanes(void)
 
         if (pl->minx > pl->maxx)
             continue;
-
+        
+        // fix out of bounds memory access in pl->top[]
+        pl->minx = std::max(pl->minx, 1);
 
         // sky flat
         // [crispy] add support for MBF sky tranfers
