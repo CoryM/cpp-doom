@@ -34,7 +34,12 @@ struct mobj_t;
 struct player_t;
 struct pspdef_t;
 
-typedef void (*actionf_v)();
+// Store state rather then an action to take.
+enum class actionf_v {
+    empty = 0,     // added empty actionf_v to allow for nullptr initialization
+    deleteMe = -1, // the memory for this object should be deleted//removed
+    one = 1        // what does this do?
+};
 typedef void (*actionf_p1)(mobj_t *mo);
 typedef void (*actionf_p2)(player_t *player, pspdef_t *psp);
 typedef void (*actionf_p3)(mobj_t *mo, player_t *player, pspdef_t *psp); // [crispy] let pspr action pointers get called from mobj states
@@ -46,7 +51,7 @@ union actionf_t {
     actionf_p3 acp3; // [crispy] let pspr action pointers get called from mobj states
 
     actionf_t()
-        : acv { nullptr }
+        : acv { actionf_v::empty }
     {
     }
     actionf_t(actionf_v f)
