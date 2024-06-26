@@ -160,7 +160,7 @@ static void FillBuffer(uint8_t *buffer, unsigned int nsamples)
     // This seems like a reasonable assumption.  mix_buffer is
     // 1 second long, which should always be much longer than the
     // SDL mix buffer.
-    assert(nsamples < mixing_freq);
+    assert(static_cast<int>(nsamples) < mixing_freq);
 
     // OPL output is generated into temporary buffer and then mixed
     // (to avoid overflows etc.)
@@ -171,7 +171,7 @@ static void FillBuffer(uint8_t *buffer, unsigned int nsamples)
 
 // Callback function to fill a new sound buffer:
 
-static void OPL_Mix_Callback(void *udata, Uint8 *buffer, int len)
+static void OPL_Mix_Callback([[maybe_unused]]void *udata, Uint8 *buffer, int len)
 {
     unsigned int filled, buffer_samples;
 
@@ -279,7 +279,7 @@ static unsigned int GetSliceSize(void)
     return 1024;
 }
 
-static int OPL_SDL_Init(unsigned int port_base)
+static int OPL_SDL_Init([[maybe_unused]]unsigned int port_base)
 {
     // Check if SDL_mixer has been opened already
     // If not, we must initialize it now
