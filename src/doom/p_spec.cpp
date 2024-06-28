@@ -1329,7 +1329,7 @@ void R_InterpolateTextureOffsets(void)
 #define DONUT_FLOORPIC_DEFAULT    0x16
 
 static void DonutOverrun(fixed_t *s3_floorheight, short *s3_floorpic,
-    line_t *line, sector_t *pillar_sector)
+    [[maybe_unused]] line_t *line, [[maybe_unused]] sector_t *pillar_sector)
 {
     static int first = 1;
     static int tmp_s3_floorheight;

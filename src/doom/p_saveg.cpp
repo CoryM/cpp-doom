@@ -1765,7 +1765,7 @@ void P_RestoreTargets(void)
 //
 // P_ArchiveSpecials
 //
-enum
+enum specials_e
 {
     tc_ceiling,
     tc_door,
@@ -1776,7 +1776,7 @@ enum
     tc_glow,
     tc_endspecials
 
-} specials_e;
+};
 
 
 //

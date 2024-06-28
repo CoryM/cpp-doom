@@ -3975,7 +3975,7 @@ static byte *R_BrightmapForSprite_Doom(const int type)
     return nobrightmap;
 }
 
-static byte *R_BrightmapForSprite_Chex(const int type)
+static byte *R_BrightmapForSprite_Chex([[maybe_unused]] const int type)
 {
     // [crispy] TODO
     /*
@@ -4084,7 +4084,7 @@ static byte *R_BrightmapForFlatNum_Hacx(const int num)
     return nobrightmap;
 }
 
-static byte *R_BrightmapForFlatNum_None(const int num)
+static byte *R_BrightmapForFlatNum_None([[maybe_unused]] const int num)
 {
     return nobrightmap;
 }
@@ -4138,7 +4138,7 @@ static byte *R_BrightmapForState_Hacx(const int state)
     return nobrightmap;
 }
 
-static byte *R_BrightmapForState_None(const int state)
+static byte *R_BrightmapForState_None([[maybe_unused]] const int state)
 {
     return nobrightmap;
 }
