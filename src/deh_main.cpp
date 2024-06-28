@@ -468,7 +468,7 @@ void DEH_AutoLoadPatches(const char *path)
 // Load dehacked file from WAD lump.
 // If allow_long is set, allow long strings and cheats just for this lump.
 
-int DEH_LoadLump(int lumpnum, boolean allow_long, boolean allow_error)
+int DEH_LoadLump(int lumpnum, [[maybe_unused]] boolean allow_long, boolean allow_error)
 {
     deh_context_t *context;
 
@@ -487,7 +487,7 @@ int DEH_LoadLump(int lumpnum, boolean allow_long, boolean allow_error)
 
     context = DEH_OpenLump(lumpnum);
 
-    if (context == NULL)
+    if (context == nullptr)
     {
         fprintf(stderr, "DEH_LoadFile: Unable to open lump %i\n", lumpnum);
         return 0;

@@ -99,7 +99,7 @@ static void *DEH_TextStart(deh_context_t *context, char *line)
     return NULL;
 }
 
-static void DEH_TextParseLine(deh_context_t *context, char *line, void *tag)
+static void DEH_TextParseLine([[maybe_unused]] deh_context_t *context, [[maybe_unused]] char *line, [[maybe_unused]] void *tag)
 {
     // not used
 }

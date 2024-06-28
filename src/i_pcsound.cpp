@@ -285,9 +285,9 @@ static boolean IsDisabledSound(sfxinfo_t *sfxinfo)
 
 static int I_PCS_StartSound(sfxinfo_t *sfxinfo,
     int                                channel,
-    int                                vol,
-    int                                sep,
-    int                                pitch)
+    [[maybe_unused]] int               vol,
+    [[maybe_unused]] int               sep,
+    [[maybe_unused]] int               pitch)
 {
     int result;
 
@@ -418,7 +418,7 @@ static void I_PCS_UpdateSound(void)
     // no-op.
 }
 
-void I_PCS_UpdateSoundParams(int channel, int vol, int sep)
+void I_PCS_UpdateSoundParams([[maybe_unused]] int channel, [[maybe_unused]] int vol, [[maybe_unused]] int sep)
 {
     // no-op.
 }

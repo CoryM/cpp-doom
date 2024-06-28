@@ -50,13 +50,13 @@ static boolean       had_warning;
 // zero, do not autostart.
 static int expected_nodes;
 
-static void EscapePressed(TXT_UNCAST_ARG(widget), void *unused)
+static void EscapePressed([[maybe_unused]] TXT_UNCAST_ARG(widget), [[maybe_unused]] void *unused)
 {
     TXT_Shutdown();
     I_Quit();
 }
 
-static void StartGame(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(unused))
+static void StartGame([[maybe_unused]] TXT_UNCAST_ARG(widget), [[maybe_unused]] TXT_UNCAST_ARG(unused))
 {
     NET_CL_LaunchGame();
 }
@@ -249,7 +249,7 @@ static void PrintSHA1Digest(const char *s, const byte *digest)
     printf("\n");
 }
 
-static void CloseWindow(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(window))
+static void CloseWindow([[maybe_unused]] TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(window))
 {
     TXT_CAST_ARG(txt_window_t, window);
 

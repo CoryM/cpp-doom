@@ -96,7 +96,7 @@ static boolean NET_CL_InitServer(void)
     return false;
 }
 
-static void NET_CL_SendPacket(net_addr_t *addr, net_packet_t *packet)
+static void NET_CL_SendPacket([[maybe_unused]] net_addr_t *addr, net_packet_t *packet)
 {
     QueuePush(&server_queue, NET_PacketDup(packet));
 }
@@ -119,12 +119,12 @@ static boolean NET_CL_RecvPacket(net_addr_t **addr, net_packet_t **packet)
     return false;
 }
 
-static void NET_CL_AddrToString(net_addr_t *addr, char *buffer, int buffer_len)
+static void NET_CL_AddrToString([[maybe_unused]] net_addr_t *addr, char *buffer, int buffer_len)
 {
     M_snprintf(buffer, buffer_len, "local server");
 }
 
-static void NET_CL_FreeAddress(net_addr_t *addr)
+static void NET_CL_FreeAddress([[maybe_unused]] net_addr_t *addr)
 {
 }
 
@@ -171,7 +171,7 @@ static boolean NET_SV_InitServer(void)
     return true;
 }
 
-static void NET_SV_SendPacket(net_addr_t *addr, net_packet_t *packet)
+static void NET_SV_SendPacket([[maybe_unused]] net_addr_t *addr, net_packet_t *packet)
 {
     QueuePush(&client_queue, NET_PacketDup(packet));
 }
@@ -194,12 +194,12 @@ static boolean NET_SV_RecvPacket(net_addr_t **addr, net_packet_t **packet)
     return false;
 }
 
-static void NET_SV_AddrToString(net_addr_t *addr, char *buffer, int buffer_len)
+static void NET_SV_AddrToString([[maybe_unused]] net_addr_t *addr, char *buffer, int buffer_len)
 {
     M_snprintf(buffer, buffer_len, "local client");
 }
 
-static void NET_SV_FreeAddress(net_addr_t *addr)
+static void NET_SV_FreeAddress([[maybe_unused]] net_addr_t *addr)
 {
 }
 
