@@ -29,6 +29,7 @@
 #include "deh_bexpars.hpp" // [crispy] bex_pars[]
 
 import i_swap;
+#include "tables.hpp"
 #include "z_zone.hpp"
 #include "f_finale.hpp"
 #include "m_argv.hpp"

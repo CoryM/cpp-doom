@@ -36,6 +36,8 @@
 
 #include "doomtype.hpp"
 
+#include <array>
+
 import m_fixed; //#include "m_fixed.hpp"
 
 #define FINEANGLES 8192
@@ -53,7 +55,7 @@ extern const fixed_t *finecosine;
 
 
 // Effective size is 4096.
-extern const fixed_t finetangent[FINEANGLES / 2];
+extern const std::array<fixed_t, FINEANGLES / 2> finetangent;
 
 // Gamma correction tables.
 extern const byte gammatable[5][256];

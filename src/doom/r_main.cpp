@@ -601,8 +601,7 @@ void R_InitTextureMapping(void)
     // [crispy] in widescreen mode, make sure the same number of horizontal
     // pixels shows the same part of the game scene as in regular rendering mode
     focalwidth  = crispy->widescreen ? ((HIRESWIDTH >> detailshift) / 2) << FRACBITS : centerxfrac;
-    focallength = FixedDiv(focalwidth,
-        finetangent[FINEANGLES / 4 + FIELDOFVIEW / 2]);
+    focallength = FixedDiv(focalwidth, finetangent[FINEANGLES / 4 + FIELDOFVIEW / 2]);
 
     for (i = 0; i < FINEANGLES / 2; i++)
     {
