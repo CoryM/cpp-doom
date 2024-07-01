@@ -17,8 +17,6 @@
 //
 
 
-#include <cstdio>
-#include <cctype>
 
 // Functions.
 import i_swap;
@@ -40,6 +38,9 @@ import i_swap;
 #include "m_misc.hpp"     // [crispy] M_StringDuplicate()
 #include "m_random.hpp"   // [crispy] Crispy_Random()
 #include "event_function_decls.hpp"
+
+#include <cstdio>
+#include <cctype>
 
 typedef enum
 {

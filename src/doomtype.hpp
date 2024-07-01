@@ -21,6 +21,8 @@
 #ifndef __DOOMTYPE__
 #define __DOOMTYPE__
 
+#include <string_view> // std::string_view
+
 #include "config.h"
 
 #if defined(_MSC_VER) && !defined(__cplusplus)
@@ -29,9 +31,6 @@
 
 // #define macros to provide functions missing in Windows.
 // Outside Windows, we use strings.h for str[n]casecmp.
-
-
-#include <string_view> // std::string_view
 
 namespace doomtype {
 bool strcasecmp(std::string_view s1, std::string_view s2);

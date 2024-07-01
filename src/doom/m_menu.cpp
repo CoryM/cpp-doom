@@ -253,7 +253,7 @@ static void M_DrawCrispness4(void);
 //
 // DOOM MENU
 //
-enum
+enum main_e
 {
     newgame = 0,
     options,
@@ -262,7 +262,7 @@ enum
     readthis,
     quitdoom,
     main_end
-} main_e;
+};
 
 menuitem_t MainMenu[] = {
     { 1, "M_NGAME", M_NewGame, 'n' },
@@ -287,7 +287,7 @@ menu_t MainDef = {
 //
 // EPISODE SELECT
 //
-enum
+enum episodes_e
 {
     ep1,
     ep2,
@@ -295,7 +295,7 @@ enum
     ep4,
     ep5, // [crispy] Sigil
     ep_end
-} episodes_e;
+};
 
 menuitem_t EpisodeMenu[] = {
     { 1, "M_EPI1", M_Episode, 'k' },
@@ -316,12 +316,12 @@ menu_t EpiDef = {
 //
 // EXPANSION SELECT
 //
-enum
+enum expansios_e
 {
     ex1,
     ex2,
     ex_end
-} expansions_e;
+};
 
 static menuitem_t ExpansionMenu[] = {
     { 1, "M_EPI1", M_Expansion, 'h' },
@@ -340,7 +340,7 @@ static menu_t ExpDef = {
 //
 // NEW GAME
 //
-enum
+enum newgame_e
 {
     killthings,
     toorough,
@@ -348,7 +348,7 @@ enum
     violence,
     nightmare,
     newg_end
-} newgame_e;
+};
 
 menuitem_t NewGameMenu[] = {
     { 1, "M_JKILL", M_ChooseSkill, 'i' },
@@ -371,7 +371,7 @@ menu_t NewDef = {
 //
 // OPTIONS MENU
 //
-enum
+enum options_e
 {
     endgame,
     messages,
@@ -382,7 +382,7 @@ enum
     soundvol,
     crispness, // [crispy] Crispness menu
     opt_end
-} options_e;
+};
 
 menuitem_t OptionsMenu[] = {
     { 1, "M_ENDGAM", M_EndGame, 'e', "End Game" },
@@ -405,7 +405,7 @@ menu_t OptionsDef = {
 };
 
 // [crispy] mouse sensitivity menu
-enum
+enum mouse_e
 {
     mouse_horiz,
     mouse_empty1,
@@ -415,7 +415,7 @@ enum
     mouse_empty3,
     mouse_invert,
     mouse_end
-} mouse_e;
+};
 
 static menuitem_t MouseMenu[] = {
     { 2, "", M_ChangeSensitivity, 'h' },
@@ -437,7 +437,7 @@ static menu_t MouseDef = {
 };
 
 // [crispy] Crispness menu
-enum
+enum crispness1_e
 {
     crispness_sep_rendering,
     crispness_hires,
@@ -459,7 +459,7 @@ enum
     crispness1_next,
     crispness1_prev,
     crispness1_end
-} crispness1_e;
+};
 
 static menuitem_t Crispness1Menu[] = {
     { -1, "", 0, '\0' },
@@ -490,7 +490,7 @@ static menu_t Crispness1Def = {
     1
 };
 
-enum
+enum crispness2_e
 {
     crispness_sep_audible,
     crispness_soundfull,
@@ -510,7 +510,7 @@ enum
     crispness2_next,
     crispness2_prev,
     crispness2_end
-} crispness2_e;
+};
 
 static menuitem_t Crispness2Menu[] = {
     { -1, "", 0, '\0' },
@@ -539,7 +539,7 @@ static menu_t Crispness2Def = {
     1
 };
 
-enum
+enum crispness3_e
 {
     crispness_sep_tactical,
     crispness_freelook,
@@ -561,7 +561,7 @@ enum
     crispness3_next,
     crispness3_prev,
     crispness3_end
-} crispness3_e;
+};
 
 static menuitem_t Crispness3Menu[] = {
     { -1, "", 0, '\0' },
@@ -592,7 +592,7 @@ static menu_t Crispness3Def = {
     1
 };
 
-enum
+enum crispness4_e
 {
     crispness_sep_physical,
     crispness_freeaim,
@@ -610,7 +610,7 @@ enum
     crispness4_next,
     crispness4_prev,
     crispness4_end
-} crispness4_e;
+};
 
 
 static menuitem_t Crispness4Menu[] = {
@@ -650,11 +650,11 @@ static int crispness_cur;
 //
 // Read This! MENU 1 & 2
 //
-enum
+enum read_e
 {
     rdthsempty1,
     read1_end
-} read_e;
+};
 
 menuitem_t ReadMenu1[] = {
     { 1, "", M_ReadThis2, 0 }
@@ -669,11 +669,11 @@ menu_t ReadDef1 = {
     0
 };
 
-enum
+enum read_e2
 {
     rdthsempty2,
     read2_end
-} read_e2;
+};
 
 menuitem_t ReadMenu2[] = {
     { 1, "", M_FinishReadThis, 0 }
@@ -691,14 +691,14 @@ menu_t ReadDef2 = {
 //
 // SOUND VOLUME MENU
 //
-enum
+enum sound_e
 {
     sfx_vol,
     sfx_empty1,
     music_vol,
     sfx_empty2,
     sound_end
-} sound_e;
+};
 
 menuitem_t SoundMenu[] = {
     { 2, "M_SFXVOL", M_SfxVol, 's' },
@@ -719,7 +719,7 @@ menu_t SoundDef = {
 //
 // LOAD GAME MENU
 //
-enum
+enum load_e
 {
     load1,
     load2,
@@ -730,7 +730,7 @@ enum
     load7, // [crispy] up to 8 savegames
     load8, // [crispy] up to 8 savegames
     load_end
-} load_e;
+};
 
 menuitem_t LoadMenu[] = {
     { 1, "", M_LoadSelect, '1' },
@@ -875,7 +875,7 @@ void M_LoadSelect(int choice)
 //
 // Selected from DOOM menu
 //
-void M_LoadGame(int choice)
+void M_LoadGame([[maybe_unused]] int choice)
 {
     // [crispy] allow loading game while multiplayer demo playback
     if (netgame && !demoplayback)
@@ -928,7 +928,7 @@ void M_DoSave(int slot)
 // Generate a default save slot name when the user saves to
 // an empty slot via the joypad.
 //
-static void SetDefaultSaveName(int slot)
+static void SetDefaultSaveName([[maybe_unused]] int slot)
 {
     // map from IWAD or PWAD?
     if (W_IsIWADLump(maplumpinfo) && strcmp(savegamedir, ""))
@@ -1010,7 +1010,7 @@ void M_SaveSelect(int choice)
 //
 // Selected from DOOM menu
 //
-void M_SaveGame(int choice)
+void M_SaveGame([[maybe_unused]] int choice)
 {
     if (!usergame)
     {
@@ -1165,7 +1165,7 @@ void M_DrawSound(void)
         16, musicVolume);
 }
 
-void M_Sound(int choice)
+void M_Sound([[maybe_unused]] int choice)
 {
     M_SetupNextMenu(&SoundDef);
 }
@@ -1224,7 +1224,7 @@ void M_DrawNewGame(void)
     V_DrawPatchDirect(54, 38, cache_lump_name<patch_t *>(DEH_String("M_SKILL"), PU_CACHE));
 }
 
-void M_NewGame(int choice)
+void M_NewGame([[maybe_unused]] int choice)
 {
     // [crispy] forbid New Game while recording a demo
     if (demorecording)
@@ -1548,13 +1548,13 @@ static void M_DrawCrispness4(void)
     dp_translation = NULL;
 }
 
-void M_Options(int choice)
+void M_Options([[maybe_unused]] int choice)
 {
     M_SetupNextMenu(&OptionsDef);
 }
 
 // [crispy] correctly handle inverted y-axis
-static void M_Mouse(int choice)
+static void M_Mouse([[maybe_unused]] int choice)
 {
     if (mouseSensitivity_y < 0)
     {
@@ -1571,12 +1571,12 @@ static void M_Mouse(int choice)
     M_SetupNextMenu(&MouseDef);
 }
 
-static void M_CrispnessCur(int choice)
+static void M_CrispnessCur([[maybe_unused]] int choice)
 {
     M_SetupNextMenu(CrispnessMenus[crispness_cur]);
 }
 
-static void M_CrispnessNext(int choice)
+static void M_CrispnessNext([[maybe_unused]] int choice)
 {
     if (++crispness_cur > arrlen(CrispnessMenus) - 1)
     {
@@ -1586,7 +1586,7 @@ static void M_CrispnessNext(int choice)
     M_CrispnessCur(0);
 }
 
-static void M_CrispnessPrev(int choice)
+static void M_CrispnessPrev([[maybe_unused]] int choice)
 {
     if (--crispness_cur < 0)
     {
@@ -1742,7 +1742,7 @@ static const char *M_SelectEndMessage(void)
 }
 
 
-void M_QuitDOOM(int choice)
+void M_QuitDOOM([[maybe_unused]] int choice)
 {
     // [crispy] fast exit if "run" key is held down
     if (speedkeydown())

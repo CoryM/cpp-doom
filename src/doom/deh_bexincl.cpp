@@ -88,16 +88,16 @@ static void *DEH_BEXInclStart(deh_context_t *context, char *line)
     return NULL;
 }
 
-static void DEH_BEXInclParseLine(deh_context_t *context, char *line, void *tag)
+static void DEH_BEXInclParseLine([[maybe_unused]] deh_context_t *context, [[maybe_unused]] char *line, [[maybe_unused]] void *tag)
 {
     // not used
 }
 
 deh_section_t deh_section_bexincl = {
     "INCLUDE",
-    NULL,
+    nullptr,
     DEH_BEXInclStart,
     DEH_BEXInclParseLine,
-    NULL,
-    NULL,
+    nullptr,
+    nullptr
 };

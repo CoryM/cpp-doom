@@ -1063,7 +1063,7 @@ lumpinfo_t *maplumpinfo;
 //
 void P_SetupLevel(int episode,
     int               map,
-    int               playermask,
+    [[maybe_unused]] int               playermask,
     skill_t           skill)
 {
     int         i;

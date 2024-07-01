@@ -61,7 +61,7 @@ void wipe_shittyColMajorXform(dpixel_t *array,
 
 int wipe_initColorXForm(int width,
     int                     height,
-    int                     ticks)
+    [[maybe_unused]] int    ticks)
 {
     memcpy(wipe_scr, wipe_scr_start, width * height * sizeof(*wipe_scr));
     return 0;
@@ -110,9 +110,9 @@ int wipe_doColorXForm(int width,
     return !changed;
 }
 
-int wipe_exitColorXForm(int width,
-    int                     height,
-    int                     ticks)
+int wipe_exitColorXForm([[maybe_unused]] int width,
+    [[maybe_unused]] int                     height,
+    [[maybe_unused]] int                     ticks)
 {
     return 0;
 }
@@ -120,9 +120,9 @@ int wipe_exitColorXForm(int width,
 
 static int *y;
 
-int wipe_initMelt(int width,
-    int               height,
-    int               ticks)
+int wipe_initMelt(int    width,
+    int                  height,
+    [[maybe_unused]] int ticks)
 {
     int i, r;
 
@@ -204,9 +204,9 @@ int wipe_doMelt(int width,
     return done;
 }
 
-int wipe_exitMelt(int width,
-    int               height,
-    int               ticks)
+int wipe_exitMelt([[maybe_unused]] int width,
+    [[maybe_unused]] int               height,
+    [[maybe_unused]] int               ticks)
 {
     Z_Free(y);
     Z_Free(wipe_scr_start);
@@ -214,10 +214,10 @@ int wipe_exitMelt(int width,
     return 0;
 }
 
-int wipe_StartScreen(int x,
-    int                  y,
-    int                  width,
-    int                  height)
+int wipe_StartScreen([[maybe_unused]] int x,
+    [[maybe_unused]] int                  y,
+    [[maybe_unused]] int                  width,
+    [[maybe_unused]] int                  height)
 {
     wipe_scr_start = zmalloc<decltype(wipe_scr_start)>(SCREENWIDTH * SCREENHEIGHT * sizeof(*wipe_scr_start), PU_STATIC, NULL);
     I_ReadScreen(wipe_scr_start);
@@ -235,12 +235,12 @@ int wipe_EndScreen(int x,
     return 0;
 }
 
-int wipe_ScreenWipe(int wipeno,
-    int                 x,
-    int                 y,
-    int                 width,
-    int                 height,
-    int                 ticks)
+int wipe_ScreenWipe([[maybe_unused]] int wipeno,
+    int                  x,
+    [[maybe_unused]] int y,
+    int                  width,
+    int                  height,
+    int                  ticks)
 {
     int rc;
     static int (*wipes[])(int, int, int) = {

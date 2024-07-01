@@ -570,7 +570,7 @@ void P_SpawnDoorCloseIn30(sector_t *sec)
 // Spawn a door that opens after 5 minutes
 //
 void P_SpawnDoorRaiseIn5Mins(sector_t *sec,
-    int                                secnum)
+    [[maybe_unused]] int               secnum)
 {
     vldoor_t *door;
 
