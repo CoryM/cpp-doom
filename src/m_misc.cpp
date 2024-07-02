@@ -575,10 +575,10 @@ char *M_StringJoin(const char *s, ...)
 
     result = static_cast<char *>(malloc(result_len));
 
-    if (result == NULL)
+    if (result == nullptr)
     {
         I_Error("M_StringJoin: Failed to allocate new string.");
-        return NULL;
+        return nullptr;
     }
 
     M_StringCopy(result, s, result_len);

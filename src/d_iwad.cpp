@@ -16,10 +16,13 @@
 //     to the IWAD type.
 //
 
+#include <cstddef> // std::size_t
 #include <cstdio>
 #include <cstdlib>
 #include <cctype>
 #include <cstring>
+#include <string>
+#include <vector>
 
 #include "../utils/memory.hpp"
 #include "d_iwad.hpp"
@@ -31,6 +34,8 @@
 #include "m_misc.hpp"
 #include "w_wad.hpp"
 #include "z_zone.hpp"
+
+using size_t = decltype(sizeof(0));
 
 static const iwad_t iwads[] = {
     { "doom2.wad", doom2, commercial, "Doom II" },
@@ -52,9 +57,8 @@ static const iwad_t iwads[] = {
 
 boolean D_IsIWADName(const char *name)
 {
-    int i;
 
-    for (i = 0; i < arrlen(iwads); i++)
+    for (size_t i = 0; i < arrlen(iwads); i++)
     {
         if (!doomtype::strcasecmp(name, iwads[i].name))
         {
@@ -66,23 +70,15 @@ boolean D_IsIWADName(const char *name)
 }
 
 // Array of locations to search for IWAD files
-//
-// "128 IWAD search directories should be enough for anybody".
+static bool iwad_dirs_built = false;
+std::vector<std::string> iwad_dirs;
 
-#define MAX_IWAD_DIRS 128
-
-static boolean iwad_dirs_built = false;
-static char *  iwad_dirs[MAX_IWAD_DIRS];
-static int     num_iwad_dirs = 0;
-
-static void AddIWADDir(char *dir)
+static void AddIWADDir( std::string_view dir)
 {
-    if (num_iwad_dirs < MAX_IWAD_DIRS)
-    {
-        iwad_dirs[num_iwad_dirs] = dir;
-        ++num_iwad_dirs;
-    }
+    if (!dir.empty())
+        iwad_dirs.emplace_back(dir);
 }
+
 
 // This is Windows-specific code that automatically finds the location
 // of installed IWAD files.  The registry is inspected to find special
@@ -460,7 +456,7 @@ static void CheckDOSDefaults(void)
 
 static boolean DirIsFile(const char *path, const char *filename)
 {
-    return strchr(path, DIR_SEPARATOR) != NULL
+    return strchr(path, DIR_SEPARATOR) != nullptr
            && !doomtype::strcasecmp(M_BaseName(path), filename);
 }
 
@@ -477,7 +473,7 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
     // IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
 
     probe = M_FileCaseExists(dir);
-    if (DirIsFile(dir, iwadname) && probe != NULL)
+    if (DirIsFile(dir, iwadname) && probe != nullptr)
     {
         return probe;
     }
@@ -491,18 +487,18 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
     }
     else
     {
-        filename = M_StringJoin(dir, DIR_SEPARATOR_S, iwadname, NULL);
+        filename = M_StringJoin(dir, DIR_SEPARATOR_S, iwadname, nullptr);
     }
 
     free(probe);
     probe = M_FileCaseExists(filename);
     free(filename);
-    if (probe != NULL)
+    if (probe != nullptr)
     {
         return probe;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // Search a directory to try to find an IWAD
@@ -522,7 +518,7 @@ static char *SearchDirectoryForIWAD(const char *dir, int mask, GameMission_t *mi
 
         filename = CheckDirectoryHasIWAD(dir, DEH_String(iwads[i].name));
 
-        if (filename != NULL)
+        if (filename != nullptr)
         {
             *mission = iwads[i].mission;
 
@@ -530,7 +526,7 @@ static char *SearchDirectoryForIWAD(const char *dir, int mask, GameMission_t *mi
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 // When given an IWAD with the '-iwad' parameter,
@@ -580,13 +576,15 @@ static void AddIWADPath(const char *path, const char *suffix)
     for (;;)
     {
         p = strchr(left, PATH_SEPARATOR);
-        if (p != NULL)
+        if (p != nullptr)
         {
             // Break at the separator and use the left hand side
             // as another iwad dir
             *p = '\0';
+            auto tmp = M_StringJoin(left, suffix, nullptr);
+            AddIWADDir(tmp);
+            free(tmp);
 
-            AddIWADDir(M_StringJoin(left, suffix, NULL));
             left = p + 1;
         }
         else
@@ -595,9 +593,19 @@ static void AddIWADPath(const char *path, const char *suffix)
         }
     }
 
-    AddIWADDir(M_StringJoin(left, suffix, NULL));
+    auto tmp = M_StringJoin(left, suffix, nullptr);
+    AddIWADDir(tmp);
+    free(tmp);
 
     free(dup_path);
+}
+
+auto getenv_as_string(const char *name) -> std::string
+{
+    if (auto env = getenv(name)) {
+        return std::string(env);
+    };
+    return std::string();
 }
 
 #ifndef _WIN32
@@ -608,33 +616,30 @@ static void AddIWADPath(const char *path, const char *suffix)
 // <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>
 static void AddXdgDirs(void)
 {
-    char *env, *tmp_env;
-
     // Quote:
     // > $XDG_DATA_HOME defines the base directory relative to which
     // > user specific data files should be stored. If $XDG_DATA_HOME
     // > is either not set or empty, a default equal to
     // > $HOME/.local/share should be used.
-    env     = getenv("XDG_DATA_HOME");
-    tmp_env = NULL;
+    auto env     = getenv_as_string("XDG_DATA_HOME");
 
-    if (env == NULL)
+    if (env.empty())
     {
-        char *homedir = getenv("HOME");
-        if (homedir == NULL)
+        auto homedir = getenv_as_string("HOME");
+        if (homedir.empty())
         {
             homedir = "/";
         }
 
-        tmp_env = M_StringJoin(homedir, "/.local/share", NULL);
-        env     = tmp_env;
+        env = homedir + "/.local/share";
     }
 
     // We support $XDG_DATA_HOME/games/doom (which will usually be
     // ~/.local/share/games/doom) as a user-writeable extension to
     // the usual /usr/share/games/doom location.
-    AddIWADDir(M_StringJoin(env, "/games/doom", NULL));
-    free(tmp_env);
+    auto tmp = M_StringJoin(env.c_str(), "/games/doom", nullptr);
+    AddIWADDir(tmp);
+    free(tmp);
 
     // Quote:
     // > $XDG_DATA_DIRS defines the preference-ordered set of base
@@ -644,8 +649,8 @@ static void AddXdgDirs(void)
     // >
     // > If $XDG_DATA_DIRS is either not set or empty, a value equal to
     // > /usr/local/share/:/usr/share/ should be used.
-    env = getenv("XDG_DATA_DIRS");
-    if (env == NULL)
+    env = getenv_as_string("XDG_DATA_DIRS");
+    if (env.empty())
     {
         // (Trailing / omitted from paths, as it is added below)
         env = "/usr/local/share:/usr/share";
@@ -654,12 +659,12 @@ static void AddXdgDirs(void)
     // The "standard" location for IWADs on Unix that is supported by most
     // source ports is /usr/share/games/doom - we support this through the
     // XDG_DATA_DIRS mechanism, through which it can be overridden.
-    AddIWADPath(env, "/games/doom");
+    AddIWADPath(env.c_str(), "/games/doom");
 
     // The convention set by RBDOOM-3-BFG is to install Doom 3: BFG
     // Edition into this directory, under which includes the Doom
     // Classic WADs.
-    AddIWADPath(env, "/games/doom3bfg/base/wads");
+    AddIWADPath(env.c_str(), "/games/doom3bfg/base/wads");
 }
 
 #ifndef __MACOSX__
@@ -670,25 +675,22 @@ static void AddXdgDirs(void)
 // about everyone.
 static void AddSteamDirs(void)
 {
-    char *homedir, *steampath;
-
-    homedir = getenv("HOME");
-    if (homedir == NULL)
+    auto homedir = getenv_as_string("HOME");
+    if (homedir.empty())
     {
         homedir = "/";
     }
-    steampath = M_StringJoin(homedir, "/.steam/root/steamapps/common", NULL);
+    auto steampath = homedir + "/.steam/root/steamapps/common";
 
-    AddIWADPath(steampath, "/Doom 2/base");
-    AddIWADPath(steampath, "/Master Levels of Doom/doom2");
-    AddIWADPath(steampath, "/Ultimate Doom/base");
-    AddIWADPath(steampath, "/Final Doom/base");
-    AddIWADPath(steampath, "/DOOM 3 BFG Edition/base/wads");
-    AddIWADPath(steampath, "/Heretic Shadow of the Serpent Riders/base");
-    AddIWADPath(steampath, "/Hexen/base");
-    AddIWADPath(steampath, "/Hexen Deathkings of the Dark Citadel/base");
-    AddIWADPath(steampath, "/Strife");
-    free(steampath);
+    AddIWADPath(steampath.c_str(), "/Doom 2/base");
+    AddIWADPath(steampath.c_str(), "/Master Levels of Doom/doom2");
+    AddIWADPath(steampath.c_str(), "/Ultimate Doom/base");
+    AddIWADPath(steampath.c_str(), "/Final Doom/base");
+    AddIWADPath(steampath.c_str(), "/DOOM 3 BFG Edition/base/wads");
+    AddIWADPath(steampath.c_str(), "/Heretic Shadow of the Serpent Riders/base");
+    AddIWADPath(steampath.c_str(), "/Hexen/base");
+    AddIWADPath(steampath.c_str(), "/Hexen Deathkings of the Dark Citadel/base");
+    AddIWADPath(steampath.c_str(), "/Strife");
 }
 #endif // __MACOSX__
 #endif // !_WIN32
@@ -711,18 +713,20 @@ static void BuildIWADDirList(void)
 
     // Next check the directory where the executable is located. This might
     // be different from the current directory.
-    AddIWADDir(M_DirName(myargv[0]));
+    auto tmpdir = M_DirName(myargv[0]);
+    AddIWADDir(tmpdir);
+    free(tmpdir);
 
     // Add DOOMWADDIR if it is in the environment
     env = getenv("DOOMWADDIR");
-    if (env != NULL)
+    if (env != nullptr)
     {
         AddIWADDir(env);
     }
 
     // Add dirs from DOOMWADPATH:
     env = getenv("DOOMWADPATH");
-    if (env != NULL)
+    if (env != nullptr)
     {
         AddIWADPath(env, "");
     }
@@ -760,12 +764,11 @@ char *D_FindWADByName(const char *name)
 {
     char *path;
     char *probe;
-    int   i;
 
     // Absolute path?
 
     probe = M_FileCaseExists(name);
-    if (probe != NULL)
+    if (probe != nullptr)
     {
         return probe;
     }
@@ -774,14 +777,14 @@ char *D_FindWADByName(const char *name)
 
     // Search through all IWAD paths for a file with the given name.
 
-    for (i = 0; i < num_iwad_dirs; ++i)
+    for (auto dir : iwad_dirs)
     {
         // As a special case, if this is in DOOMWADDIR or DOOMWADPATH,
         // the "directory" may actually refer directly to an IWAD
         // file.
 
-        probe = M_FileCaseExists(iwad_dirs[i]);
-        if (DirIsFile(iwad_dirs[i], name) && probe != NULL)
+        probe = M_FileCaseExists(dir.c_str());
+        if (DirIsFile(dir.c_str(), name) && probe != nullptr)
         {
             return probe;
         }
@@ -789,10 +792,10 @@ char *D_FindWADByName(const char *name)
 
         // Construct a string for the full path
 
-        path = M_StringJoin(iwad_dirs[i], DIR_SEPARATOR_S, name, NULL);
+        path = M_StringJoin(dir.c_str(), DIR_SEPARATOR_S, name, nullptr);
 
         probe = M_FileCaseExists(path);
-        if (probe != NULL)
+        if (probe != nullptr)
         {
             return probe;
         }
@@ -802,7 +805,7 @@ char *D_FindWADByName(const char *name)
 
     // File not found
 
-    return NULL;
+    return nullptr;
 }
 
 //
@@ -818,7 +821,7 @@ char *D_TryFindWADByName(const char *filename)
 
     result = D_FindWADByName(filename);
 
-    if (result != NULL)
+    if (result != nullptr)
     {
         return result;
     }
@@ -840,7 +843,6 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
     char *result;
     char *iwadfile;
     int   iwadparm;
-    int   i;
 
     // Check for the -iwad parameter
 
@@ -860,7 +862,7 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
 
         result = D_FindWADByName(iwadfile);
 
-        if (result == NULL)
+        if (result == nullptr)
         {
             I_Error("IWAD file '%s' not found!", iwadfile);
         }
@@ -871,13 +873,18 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
     {
         // Search through the list and look for an IWAD
 
-        result = NULL;
+        result = nullptr;
 
         BuildIWADDirList();
 
-        for (i = 0; result == NULL && i < num_iwad_dirs; ++i)
+        for (auto dir : iwad_dirs)
         {
-            result = SearchDirectoryForIWAD(iwad_dirs[i], mask, mission);
+            result = SearchDirectoryForIWAD(dir.c_str(), mask, mission);
+
+            if (result != nullptr)
+            {
+                break;
+            }
         }
     }
 
@@ -890,7 +897,6 @@ const iwad_t **D_FindAllIWADs(int mask)
 {
     int   result_len;
     char *filename;
-    int   i;
 
     auto result = create_struct<iwad_t const * [arrlen(iwads) + 1]>();
     //    result = malloc(sizeof(iwad_t *) * (arrlen(iwads) + 1));
@@ -898,7 +904,7 @@ const iwad_t **D_FindAllIWADs(int mask)
 
     // Try to find all IWADs
 
-    for (i = 0; i < arrlen(iwads); ++i)
+    for (size_t i = 0; i < arrlen(iwads); ++i)
     {
         if (((1 << iwads[i].mission) & mask) == 0)
         {
@@ -907,7 +913,7 @@ const iwad_t **D_FindAllIWADs(int mask)
 
         filename = D_FindWADByName(iwads[i].name);
 
-        if (filename != NULL)
+        if (filename != nullptr)
         {
             result[result_len] = &iwads[i];
             ++result_len;
@@ -916,7 +922,7 @@ const iwad_t **D_FindAllIWADs(int mask)
 
     // End of list
 
-    result[result_len] = NULL;
+    result[result_len] = nullptr;
 
     return result;
 }
@@ -951,9 +957,7 @@ const char *D_SaveGameIWADName(GameMission_t gamemission)
 
 const char *D_SuggestIWADName(GameMission_t mission, GameMode_t mode)
 {
-    int i;
-
-    for (i = 0; i < arrlen(iwads); ++i)
+    for (size_t i = 0; i < arrlen(iwads); ++i)
     {
         if (iwads[i].mission == mission && iwads[i].mode == mode)
         {
@@ -966,9 +970,7 @@ const char *D_SuggestIWADName(GameMission_t mission, GameMode_t mode)
 
 const char *D_SuggestGameName(GameMission_t mission, GameMode_t mode)
 {
-    int i;
-
-    for (i = 0; i < arrlen(iwads); ++i)
+    for (size_t i = 0; i < arrlen(iwads); ++i)
     {
         if (iwads[i].mission == mission
             && (mode == indetermined || iwads[i].mode == mode))
