@@ -598,7 +598,8 @@ const std::array<fixed_t, FINEANGLES / 2> finetangent = {
     11392683, 13145455, 15535599, 18988036, 24413316, 34178904, 56965752, 170910304
 };
 
-
+// possible values for finesine[]:
+// sin(1+(x*2)pi/8096)*65535
 const fixed_t finesine[10240] = {
     25, 75, 125, 175, 226, 276, 326, 376,
     427, 477, 527, 578, 628, 678, 728, 779,

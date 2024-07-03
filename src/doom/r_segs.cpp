@@ -486,8 +486,15 @@ fixed_t R_ScaleFromGlobalAngle(angle_t visangle)
 {
     int     anglea = ANG90 + (visangle - viewangle);
     int     angleb = ANG90 + (visangle - rw_normalangle);
-    int     den    = FixedMul(rw_distance, finesine[anglea >> ANGLETOFINESHIFT]);
-    fixed_t num    = FixedMul(projection, finesine[angleb >> ANGLETOFINESHIFT]) << detailshift;
+
+    auto wrapFineSine = [](const auto anglea) {
+        constexpr int finesineMax = 10240;
+        const int angle = (anglea >> ANGLETOFINESHIFT) % finesineMax;
+        return finesine[(angle < 0) ? finesineMax + angle : angle ];
+    };
+
+    int     den    = FixedMul(rw_distance, wrapFineSine(anglea));
+    fixed_t num    = FixedMul(projection, wrapFineSine(angleb)) << detailshift;
     fixed_t scale;
 
     if (den > (num >> 16))
