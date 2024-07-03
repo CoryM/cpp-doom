@@ -203,12 +203,12 @@ void TXT_LayoutWidget(TXT_UNCAST_ARG(widget))
     }
 }
 
-int TXT_AlwaysSelectable(TXT_UNCAST_ARG(widget))
+int TXT_AlwaysSelectable([[maybe_unused]] TXT_UNCAST_ARG(widget))
 {
     return 1;
 }
 
-int TXT_NeverSelectable(TXT_UNCAST_ARG(widget))
+int TXT_NeverSelectable([[maybe_unused]] TXT_UNCAST_ARG(widget))
 {
     return 0;
 }

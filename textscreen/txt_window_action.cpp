@@ -84,7 +84,7 @@ static int TXT_WindowActionKeyPress(TXT_UNCAST_ARG(action), int key)
 }
 
 static void TXT_WindowActionMousePress(TXT_UNCAST_ARG(action), 
-                                       int x, int y, int b)
+                                       [[maybe_unused]] int x, [[maybe_unused]] int y, int b)
 {
     TXT_CAST_ARG(txt_window_action_t, action);
 
@@ -118,14 +118,14 @@ txt_window_action_t *TXT_NewWindowAction(int key, const char *label)
     return action;
 }
 
-static void WindowCloseCallback(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(window))
+static void WindowCloseCallback([[maybe_unused]] TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(window))
 {
     TXT_CAST_ARG(txt_window_t, window);
 
     TXT_CloseWindow(window);
 }
 
-static void WindowSelectCallback(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(window))
+static void WindowSelectCallback([[maybe_unused]] TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(window))
 {
     TXT_CAST_ARG(txt_window_t, window);
 

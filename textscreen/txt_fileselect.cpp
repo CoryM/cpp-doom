@@ -807,7 +807,7 @@ txt_widget_class_t txt_fileselect_class =
 // If the (inner) inputbox widget is changed, emit a change to the
 // outer (fileselect) widget.
 
-static void InputBoxChanged(TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(fileselect))
+static void InputBoxChanged([[maybe_unused]] TXT_UNCAST_ARG(widget), TXT_UNCAST_ARG(fileselect))
 {
     TXT_CAST_ARG(txt_fileselect_t, fileselect);
 

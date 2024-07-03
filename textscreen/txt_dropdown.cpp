@@ -72,7 +72,7 @@ static int SelectorWindowY(txt_dropdown_list_t *list)
 
 // Called when a button in the selector window is pressed
 
-static void ItemSelected(TXT_UNCAST_ARG(button), TXT_UNCAST_ARG(callback_data))
+static void ItemSelected([[maybe_unused]] TXT_UNCAST_ARG(button), TXT_UNCAST_ARG(callback_data))
 {
     TXT_CAST_ARG(callback_data_t, callback_data);
 
@@ -89,7 +89,7 @@ static void ItemSelected(TXT_UNCAST_ARG(button), TXT_UNCAST_ARG(callback_data))
 
 // Free callback data when the window is closed
 
-static void FreeCallbackData(TXT_UNCAST_ARG(list), 
+static void FreeCallbackData([[maybe_unused]] TXT_UNCAST_ARG(list), 
                              TXT_UNCAST_ARG(callback_data))
 {
     TXT_CAST_ARG(callback_data_t, callback_data);
@@ -99,7 +99,7 @@ static void FreeCallbackData(TXT_UNCAST_ARG(list),
 
 // Catch presses of escape and close the window.
 
-static int SelectorWindowListener(txt_window_t *window, int key, void *user_data)
+static int SelectorWindowListener(txt_window_t *window, int key, [[maybe_unused]] void *user_data)
 {
     if (key == KEY_ESCAPE)
     {
@@ -110,8 +110,8 @@ static int SelectorWindowListener(txt_window_t *window, int key, void *user_data
     return 0;
 }
 
-static int SelectorMouseListener(txt_window_t *window, int x, int y, int b,
-                                 void *unused)
+static int SelectorMouseListener(txt_window_t *window, int x, int y, [[maybe_unused]] int b,
+                                 [[maybe_unused]] void *unused)
 {
     txt_widget_t *win;
 
@@ -267,7 +267,7 @@ static int TXT_DropdownListKeyPress(TXT_UNCAST_ARG(list), int key)
 }
 
 static void TXT_DropdownListMousePress(TXT_UNCAST_ARG(list), 
-                                       int x, int y, int b)
+                                       [[maybe_unused]] int x, [[maybe_unused]] int y, int b)
 {
     TXT_CAST_ARG(txt_dropdown_list_t, list);
 

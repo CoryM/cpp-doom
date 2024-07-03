@@ -33,16 +33,16 @@ static void TXT_StrutSizeCalc(TXT_UNCAST_ARG(strut))
     strut->widget.h = strut->height;
 }
 
-static void TXT_StrutDrawer(TXT_UNCAST_ARG(strut))
+static void TXT_StrutDrawer([[maybe_unused]] TXT_UNCAST_ARG(strut))
 {
     // Nothing is drawn for a strut.
 }
 
-static void TXT_StrutDestructor(TXT_UNCAST_ARG(strut))
+static void TXT_StrutDestructor([[maybe_unused]] TXT_UNCAST_ARG(strut))
 {
 }
 
-static int TXT_StrutKeyPress(TXT_UNCAST_ARG(strut), int key)
+static int TXT_StrutKeyPress([[maybe_unused]] TXT_UNCAST_ARG(strut), int key)
 {
     return 0;
 }
