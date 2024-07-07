@@ -15,11 +15,12 @@
 //
 // F_finale.c
 
+import i_swap; // #include "i_swap.hpp"
+
 #include <cctype>
 
 #include "doomdef.hpp"
 #include "deh_str.hpp"
-#include "i_swap.hpp"
 #include "i_video.hpp"
 #include "s_sound.hpp"
 #include "v_video.hpp"
@@ -166,7 +167,7 @@ void F_TextWrite(void)
 //
 // erase the entire screen to a tiled background
 //
-    src = W_CacheLumpName(finaleflat, PU_CACHE);
+    src =  static_cast<byte *>(W_CacheLumpName(finaleflat, PU_CACHE));
     dest = reinterpret_cast<decltype(dest)>(I_VideoBuffer);
     for (y = 0; y < SCREENHEIGHT; y++)
     {
@@ -213,11 +214,11 @@ void F_TextWrite(void)
             continue;
         }
 
-        w = W_CacheLumpNum(FontABaseLump + c - 33, PU_CACHE);
-        if (cx + SHORT(w->width) > SCREENWIDTH)
+        w = (patch_t *)W_CacheLumpNum(FontABaseLump + c - 33, PU_CACHE);
+        if (cx + endian::SHORT(w->width) > SCREENWIDTH)
             break;
         V_DrawPatch(cx, cy, w);
-        cx += SHORT(w->width);
+        cx += endian::SHORT(w->width);
     }
 
 }
@@ -229,7 +230,7 @@ void F_DrawPatchCol(int x, patch_t * patch, int col)
     byte *source, *dest, *desttop;
     int count;
 
-    column = (column_t *) ((byte *) patch + LONG(patch->columnofs[col]));
+    column = (column_t *) ((byte *) patch + endian::LONG(patch->columnofs[col]));
     desttop = reinterpret_cast<decltype(desttop)>(I_VideoBuffer + x);
 
 // step through the posts in a column
@@ -316,7 +317,7 @@ void F_DrawUnderwater(void)
                 underwawa = true;
                 V_DrawFilledBox(0, 0, SCREENWIDTH, SCREENHEIGHT, 0);
                 lumpname = DEH_String("E2PAL");
-                palette = W_CacheLumpName(lumpname, PU_STATIC);
+                palette = static_cast<byte *>(W_CacheLumpName(lumpname, PU_STATIC));
                 I_SetPalette(palette);
                 W_ReleaseLumpName(lumpname);
                 V_DrawRawScreen(cache_lump_name<pixel_t *>(DEH_String("E2END"), PU_CACHE));
@@ -330,7 +331,7 @@ void F_DrawUnderwater(void)
             if (underwawa)
             {
                 lumpname = DEH_String("PLAYPAL");
-                palette = W_CacheLumpName(lumpname, PU_STATIC);
+                palette = static_cast<byte *>(W_CacheLumpName(lumpname, PU_STATIC));
                 I_SetPalette(palette);
                 W_ReleaseLumpName(lumpname);
                 underwawa = false;

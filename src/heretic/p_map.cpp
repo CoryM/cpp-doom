@@ -17,9 +17,10 @@
 
 #include <cstdlib>
 
+import m_bbox; // #include "m_bbox.hpp"
+
 #include "doomdef.hpp"
 #include "i_system.hpp"
-#include "m_bbox.hpp"
 #include "m_random.hpp"
 #include "p_local.hpp"
 #include "s_sound.hpp"
@@ -355,7 +356,7 @@ boolean PIT_CheckThing(mobj_t * thing)
         P_DamageMobj(thing, tmthing, tmthing, damage);
         tmthing->flags &= ~MF_SKULLFLY;
         tmthing->momx = tmthing->momy = tmthing->momz = 0;
-        P_SetMobjState(tmthing, tmthing->info->seestate);
+        P_SetMobjState(tmthing,  static_cast<statenum_t>(tmthing->info->seestate));
         return (false);
     }
     // Check for missile

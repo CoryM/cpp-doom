@@ -28,7 +28,6 @@ target_sources(doom
         hu_lib.cpp        
         hu_stuff.cpp      
         info.cpp
-        m_bbox.cpp
         m_crispy.cpp      
         m_menu.cpp        
         m_random.cpp      
@@ -96,7 +95,6 @@ target_sources(doom
         hu_stuff.hpp
         info.hpp
         m_background.hpp
-        m_bbox.hpp
         m_crispy.hpp
         m_menu.hpp
         m_random.hpp

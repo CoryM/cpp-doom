@@ -15,6 +15,7 @@
 //
 
 // MN_menu.c
+import i_swap; // #include "i_swap.hpp"
 
 #include <cstdlib>
 #include <cctype>
@@ -24,7 +25,6 @@
 #include "doomkeys.hpp"
 #include "i_input.hpp"
 #include "i_system.hpp"
-#include "i_swap.hpp"
 #include "m_controls.hpp"
 #include "m_misc.hpp"
 #include "p_local.hpp"
@@ -370,9 +370,9 @@ void MN_DrTextA(const char *text, int x, int y)
         }
         else
         {
-            p = W_CacheLumpNum(FontABaseLump + c - 33, PU_CACHE);
+            p =  static_cast<patch_t *>(W_CacheLumpNum(FontABaseLump + c - 33, PU_CACHE));
             V_DrawPatch(x, y, p);
-            x += SHORT(p->width) - 1;
+            x += endian::SHORT(p->width) - 1;
         }
     }
 }
@@ -400,8 +400,8 @@ int MN_TextAWidth(const char *text)
         }
         else
         {
-            p = W_CacheLumpNum(FontABaseLump + c - 33, PU_CACHE);
-            width += SHORT(p->width) - 1;
+            p =  static_cast<patch_t *>(W_CacheLumpNum(FontABaseLump + c - 33, PU_CACHE));
+            width += endian::SHORT(p->width) - 1;
         }
     }
     return (width);
@@ -428,9 +428,9 @@ void MN_DrTextB(const char *text, int x, int y)
         }
         else
         {
-            p = W_CacheLumpNum(FontBBaseLump + c - 33, PU_CACHE);
+            p =  static_cast<patch_t *>(W_CacheLumpNum(FontBBaseLump + c - 33, PU_CACHE));
             V_DrawPatch(x, y, p);
-            x += SHORT(p->width) - 1;
+            x += endian::SHORT(p->width) - 1;
         }
     }
 }
@@ -458,8 +458,8 @@ int MN_TextBWidth(const char *text)
         }
         else
         {
-            p = W_CacheLumpNum(FontBBaseLump + c - 33, PU_CACHE);
-            width += SHORT(p->width) - 1;
+            p =  static_cast<patch_t *>(W_CacheLumpNum(FontBBaseLump + c - 33, PU_CACHE));
+            width += endian::SHORT(p->width) - 1;
         }
     }
     return (width);
@@ -577,15 +577,15 @@ void MN_Drawer(void)
         // Blinks a bit faster and shifted right, closer to the text.
         y = CurrentMenu->y + (CurrentItPos * (ITEM_HEIGHT/2)) + SELECTOR_YOFFSET;
         selName = DEH_String(MenuTime & 8 ? "INVGEMR1" : "INVGEMR2");
-        V_DrawPatch(x + (SELECTOR_XOFFSET/2), y,
-                    W_CacheLumpName(selName, PU_CACHE));
+        V_DrawPatch(x + (SELECTOR_XOFFSET/2), y,  static_cast<patch_t *>(
+                    W_CacheLumpName(selName, PU_CACHE)));
         }
         else
         {
         y = CurrentMenu->y + (CurrentItPos * ITEM_HEIGHT) + SELECTOR_YOFFSET;
         selName = DEH_String(MenuTime & 16 ? "M_SLCTR1" : "M_SLCTR2");
-        V_DrawPatch(x + SELECTOR_XOFFSET, y,
-                    W_CacheLumpName(selName, PU_CACHE));
+        V_DrawPatch(x + SELECTOR_XOFFSET, y,  static_cast<patch_t *>(
+                    W_CacheLumpName(selName, PU_CACHE)));
         }
     }
 }
@@ -602,9 +602,8 @@ static void DrawMainMenu(void)
 
     frame = (MenuTime / 3) % 18;
     V_DrawPatch(88, 0, cache_lump_name<patch_t *>(DEH_String("M_HTIC"), PU_CACHE));
-    V_DrawPatch(40, 10, W_CacheLumpNum(SkullBaseLump + (17 - frame),
-                                       PU_CACHE));
-    V_DrawPatch(232, 10, W_CacheLumpNum(SkullBaseLump + frame, PU_CACHE));
+    V_DrawPatch(40, 10,  static_cast<patch_t *>(W_CacheLumpNum(SkullBaseLump + (17 - frame), PU_CACHE)));
+    V_DrawPatch(232, 10,  static_cast<patch_t *>(W_CacheLumpNum(SkullBaseLump + frame, PU_CACHE)));
 }
 
 //---------------------------------------------------------------------------
@@ -972,7 +971,7 @@ static boolean SCEpisode(int option)
 
 static boolean SCSkill(int option)
 {
-    G_DeferedInitNew(option, MenuEpisode, 1);
+    G_DeferedInitNew( static_cast<skill_t>(option), MenuEpisode, 1);
     MN_DeactivateMenu();
     return true;
 }
@@ -1234,10 +1233,9 @@ boolean MN_Responder(event_t * event)
                 case 2:
                     players[consoleplayer].messageTics = 0;
                     //set the msg to be cleared
-                    players[consoleplayer].message = NULL;
+                    players[consoleplayer].message = nullptr;
                     paused = false;
-                    I_SetPalette(W_CacheLumpName
-                                 ("PLAYPAL", PU_CACHE));
+                    I_SetPalette( static_cast<byte *>(W_CacheLumpName("PLAYPAL", PU_CACHE)));
                     D_StartTitle();     // go to intro/demo mode.
                     break;
 
@@ -1689,7 +1687,7 @@ void MN_ActivateMenu(void)
     {
         paused = true;
     }
-    S_StartSound(NULL, sfx_dorcls);
+    S_StartSound(nullptr, sfx_dorcls);
     slottextloaded = false;     //reload the slot text, when needed
 }
 
@@ -1733,8 +1731,7 @@ void MN_DeactivateMenu(void)
 void MN_DrawInfo(void)
 {
     I_SetPalette(cache_lump_name<byte *>("PLAYPAL", PU_CACHE));
-    V_DrawRawScreen(W_CacheLumpNum(W_GetNumForName("TITLE") + InfoType,
-                                   PU_CACHE));
+    V_DrawRawScreen( static_cast<pixel_t *>(W_CacheLumpNum(W_GetNumForName("TITLE") + InfoType, PU_CACHE)));
 //      V_DrawPatch(0, 0, W_CacheLumpNum(W_GetNumForName("TITLE")+InfoType,
 //              PU_CACHE));
 }

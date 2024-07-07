@@ -69,7 +69,9 @@ target_sources(heretic
         r_local.hpp
         sounds.hpp
         s_sound.hpp
+    PUBLIC FILE_SET CXX_MODULES FILES
+        #m_fixed.cxx
 )
 
 target_include_directories(heretic PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../")
-target_link_libraries(heretic textscreen SDL2::SDL2 SDL2::mixer SDL2::net)
+target_link_libraries(heretic cpp_modules textscreen SDL2::SDL2 SDL2::mixer SDL2::net)

@@ -25,7 +25,7 @@
 
 
 #include "i_system.hpp" // [crispy] I_Realloc()
-#include "m_bbox.hpp"
+import m_bbox; // #include "m_bbox.hpp"
 
 #include "doomdef.hpp"
 #include "doomstat.hpp"

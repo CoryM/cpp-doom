@@ -16,10 +16,10 @@
 
 // P_tick.c
 
+import i_swap; // #include "i_swap.hpp"
 #include <cstdlib>
 
 #include "doomdef.hpp"
-#include "i_swap.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
 #include "p_local.hpp"
@@ -45,7 +45,7 @@ char *SV_Filename(int slot)
     size_t filename_len;
 
     filename_len = strlen(savegamedir) + strlen(SAVEGAMENAME) + 8;
-    filename = malloc(filename_len);
+    filename = static_cast<char *>(malloc(filename_len));
     M_snprintf(filename, filename_len,
                "%s" SAVEGAMENAME "%d.hsg", savegamedir, slot);
 
@@ -111,13 +111,13 @@ void SV_WriteByte(byte val)
 
 void SV_WriteWord(unsigned short val)
 {
-    val = SHORT(val);
+    val = endian::SHORT(val);
     SV_Write(&val, sizeof(unsigned short));
 }
 
 void SV_WriteLong(unsigned int val)
 {
-    val = LONG(val);
+    val = endian::LONG(val);
     SV_Write(&val, sizeof(int));
 }
 
@@ -155,14 +155,14 @@ uint16_t SV_ReadWord(void)
 {
     uint16_t result;
     SV_Read(&result, sizeof(unsigned short));
-    return SHORT(result);
+    return endian::SHORT(result);
 }
 
 uint32_t SV_ReadLong(void)
 {
     uint32_t result;
     SV_Read(&result, sizeof(int));
-    return LONG(result);
+    return endian::LONG(result);
 }
 
 //
@@ -352,10 +352,10 @@ static void saveg_read_player_t(player_t *str)
 
     // mobj_t *mo;
     SV_ReadLong();
-    str->mo = NULL;
+    str->mo = nullptr;
 
     // playerstate_t playerstate;
-    str->playerstate = SV_ReadLong();
+    str->playerstate = static_cast<playerstate_t>(SV_ReadLong());
 
     // ticcmd_t cmd;
     saveg_read_ticcmd_t(&str->cmd);
@@ -395,7 +395,7 @@ static void saveg_read_player_t(player_t *str)
     }
 
     // artitype_t readyArtifact;
-    str->readyArtifact = SV_ReadLong();
+    str->readyArtifact = static_cast<artitype_t>(SV_ReadLong());
 
     // int artifactCount;
     str->artifactCount = SV_ReadLong();
@@ -425,10 +425,10 @@ static void saveg_read_player_t(player_t *str)
     }
 
     // weapontype_t readyweapon;
-    str->readyweapon = SV_ReadLong();
+    str->readyweapon = static_cast<weapontype_t>(SV_ReadLong());
 
     // weapontype_t pendingweapon;
-    str->pendingweapon = SV_ReadLong();
+    str->pendingweapon = static_cast<weapontype_t>(SV_ReadLong());
 
     // boolean weaponowned[NUMWEAPONS];
     for (i=0; i<NUMWEAPONS; ++i)
@@ -731,7 +731,7 @@ static void saveg_read_thinker_t(thinker_t *str)
 
     // think_t function;
     SV_ReadLong();
-    str->function.acv = nullptr;
+    str->function = actionf_t();
 }
 
 static void saveg_write_thinker_t(thinker_t *str)
@@ -742,7 +742,7 @@ static void saveg_write_thinker_t(thinker_t *str)
 
     // think_t function;
     // SV_WritePtr(str->function);
-    SV_WritePtr(str->function.acv);
+    SV_WritePtr(str->function.get_void_star());
 }
 
 
@@ -785,28 +785,28 @@ static void saveg_read_mobj_t(mobj_t *str)
 
     // struct mobj_s *snext, *sprev;
     SV_ReadLong();
-    str->snext = NULL;
+    str->snext = nullptr;
     SV_ReadLong();
-    str->sprev = NULL;
+    str->sprev = nullptr;
 
     // angle_t angle;
     str->angle = SV_ReadLong();
 
     // spritenum_t sprite;
-    str->sprite = SV_ReadLong();
+    str->sprite = static_cast<spritenum_t>(SV_ReadLong());
 
     // int frame;
     str->frame = SV_ReadLong();
 
     // struct mobj_s *bnext, *bprev;
     SV_ReadLong();
-    str->bnext = NULL;
+    str->bnext = nullptr;
     SV_ReadLong();
-    str->bprev = NULL;
+    str->bprev = nullptr;
 
     // struct subsector_s *subsector;
     SV_ReadLong();
-    str->subsector = NULL;
+    str->subsector = nullptr;
 
     // fixed_t floorz, ceilingz;
     str->floorz = SV_ReadLong();
@@ -825,7 +825,7 @@ static void saveg_read_mobj_t(mobj_t *str)
     str->validcount = SV_ReadLong();
 
     // mobjtype_t type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<mobjtype_t>(SV_ReadLong());
 
     // An extra thing type was added for v1.0 HHE compatibility.
     // Map from the v1.3 thing type index to the internal one.
@@ -1061,7 +1061,7 @@ static void saveg_read_ceiling_t(ceiling_t *str)
     saveg_read_thinker_t(&str->thinker);
 
     // ceiling_e type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<ceiling_e>(SV_ReadLong());
 
     // sector_t *sector;
     i = SV_ReadLong();
@@ -1131,7 +1131,7 @@ static void saveg_read_vldoor_t(vldoor_t *str)
     saveg_read_thinker_t(&str->thinker);
 
     // vldoor_e type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<vldoor_e>(SV_ReadLong());
 
     // sector_t *sector;
     i = SV_ReadLong();
@@ -1193,7 +1193,7 @@ static void saveg_read_floormove_t(floormove_t *str)
     saveg_read_thinker_t(&str->thinker);
 
     // floor_e type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<floor_e>(SV_ReadLong());
 
     // boolean crush;
     str->crush = SV_ReadLong();
@@ -1280,10 +1280,10 @@ static void saveg_read_plat_t(plat_t *str)
     str->count = SV_ReadLong();
 
     // plat_e status;
-    str->status = SV_ReadLong();
+    str->status = static_cast<plat_e>(SV_ReadLong());
 
     // plat_e oldstatus;
-    str->oldstatus = SV_ReadLong();
+    str->oldstatus = static_cast<plat_e>(SV_ReadLong());
 
     // boolean crush;
     str->crush = SV_ReadLong();
@@ -1292,7 +1292,7 @@ static void saveg_read_plat_t(plat_t *str)
     str->tag = SV_ReadLong();
 
     // plattype_e type;
-    str->type = SV_ReadLong();
+    str->type = static_cast<plattype_e>(SV_ReadLong());
 }
 
 static void saveg_write_plat_t(plat_t *str)
@@ -1663,7 +1663,7 @@ void P_ArchiveThinkers(void)
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
-        if (th->function.acp1 == P_MobjThinker)
+        if (th->function.same_as(P_MobjThinker))
         {
             SV_WriteByte(tc_mobj);
             saveg_write_mobj_t((mobj_t *) th);
@@ -1696,7 +1696,7 @@ void P_UnArchiveThinkers(void)
     while (currentthinker != &thinkercap)
     {
         next = currentthinker->next;
-        if (currentthinker->function.acp1 == P_MobjThinker)
+        if (currentthinker->function.same_as(P_MobjThinker))
             P_RemoveMobj((mobj_t *) currentthinker);
         else
             Z_Free(currentthinker);
@@ -1714,9 +1714,9 @@ void P_UnArchiveThinkers(void)
                 return;         // end of list
 
             case tc_mobj:
-                mobj = Z_Malloc(sizeof(*mobj), PU_LEVEL, NULL);
+                mobj = static_cast<mobj_t *>(Z_Malloc(sizeof(*mobj), PU_LEVEL, nullptr));
                 saveg_read_mobj_t(mobj);
-                mobj->target = NULL;
+                mobj->target = nullptr;
                 P_SetThingPosition(mobj);
                 mobj->info = &mobjinfo[mobj->type];
                 mobj->floorz = mobj->subsector->sector->floorheight;
@@ -1771,37 +1771,37 @@ void P_ArchiveSpecials(void)
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
-        if (th->function.acc1 == T_MoveCeiling)
+        if (th->function.same_as(T_MoveCeiling))
         {
             SV_WriteByte(tc_ceiling);
             saveg_write_ceiling_t((ceiling_t *) th);
         }
-        else if (th->function.acd1 == T_VerticalDoor)
+        else if (th->function.same_as(T_VerticalDoor))
         {
             SV_WriteByte(tc_door);
             saveg_write_vldoor_t((vldoor_t *) th);
         }
-        else if (th->function.acf1 == T_MoveFloor)
+        else if (th->function.same_as(T_MoveFloor))
         {
             SV_WriteByte(tc_floor);
             saveg_write_floormove_t((floormove_t *) th);
         }
-        else if (th->function.acPlat == T_PlatRaise)
+        else if (th->function.same_as(T_PlatRaise))
         {
             SV_WriteByte(tc_plat);
             saveg_write_plat_t((plat_t *) th);
         }
-        else if (th->function.acl1 == T_LightFlash)
+        else if (th->function.same_as(T_LightFlash))
         {
             SV_WriteByte(tc_flash);
             saveg_write_lightflash_t((lightflash_t *) th);
         }
-        else if (th->function.acs1 == T_StrobeFlash)
+        else if (th->function.same_as(T_StrobeFlash))
         {
             SV_WriteByte(tc_strobe);
             saveg_write_strobe_t((strobe_t *) th);
         }
-        else if (th->function.acg1 == T_Glow)
+        else if (th->function.same_as(T_Glow))
         {
             SV_WriteByte(tc_glow);
             saveg_write_glow_t((glow_t *) th);
@@ -1841,16 +1841,16 @@ void P_UnArchiveSpecials(void)
                 return;         // end of list
 
             case tc_ceiling:
-                ceiling = Z_Malloc(sizeof(*ceiling), PU_LEVEL, NULL);
+                ceiling = static_cast<ceiling_t *>(Z_Malloc(sizeof(*ceiling), PU_LEVEL, nullptr));
                 saveg_read_ceiling_t(ceiling);
-                ceiling->sector->specialdata = T_MoveCeiling;  // ???
+                ceiling->sector->specialdata = reinterpret_cast<void *>(T_MoveCeiling);  // ???
                 ceiling->thinker.function = T_MoveCeiling;
                 P_AddThinker(&ceiling->thinker);
                 P_AddActiveCeiling(ceiling);
                 break;
 
             case tc_door:
-                door = Z_Malloc(sizeof(*door), PU_LEVEL, NULL);
+                door = static_cast<vldoor_t *>(Z_Malloc(sizeof(*door), PU_LEVEL, nullptr));
                 saveg_read_vldoor_t(door);
                 door->sector->specialdata = door;
                 door->thinker.function = T_VerticalDoor;
@@ -1858,17 +1858,17 @@ void P_UnArchiveSpecials(void)
                 break;
 
             case tc_floor:
-                floor = Z_Malloc(sizeof(*floor), PU_LEVEL, NULL);
+                floor = static_cast<floormove_t *>(Z_Malloc(sizeof(*floor), PU_LEVEL, nullptr));
                 saveg_read_floormove_t(floor);
-                floor->sector->specialdata = T_MoveFloor;
+                floor->sector->specialdata = reinterpret_cast<void *>(T_MoveFloor);
                 floor->thinker.function = T_MoveFloor;
                 P_AddThinker(&floor->thinker);
                 break;
 
             case tc_plat:
-                plat = Z_Malloc(sizeof(*plat), PU_LEVEL, NULL);
+                plat = static_cast<plat_t *>(Z_Malloc(sizeof(*plat), PU_LEVEL, nullptr));
                 saveg_read_plat_t(plat);
-                plat->sector->specialdata = T_PlatRaise;
+                plat->sector->specialdata = reinterpret_cast<void *>(T_PlatRaise);
                 // In the original Heretic code this was a conditional "fix"
                 // of the thinker function, but the save code (above) decides
                 // whether to save a T_PlatRaise based on thinker function
@@ -1881,21 +1881,21 @@ void P_UnArchiveSpecials(void)
                 break;
 
             case tc_flash:
-                flash = Z_Malloc(sizeof(*flash), PU_LEVEL, NULL);
+                flash = static_cast<lightflash_t *>(Z_Malloc(sizeof(*flash), PU_LEVEL, nullptr));
                 saveg_read_lightflash_t(flash);
                 flash->thinker.function = T_LightFlash;
                 P_AddThinker(&flash->thinker);
                 break;
 
             case tc_strobe:
-                strobe = Z_Malloc(sizeof(*strobe), PU_LEVEL, NULL);
+                strobe = static_cast<strobe_t *>(Z_Malloc(sizeof(*strobe), PU_LEVEL, nullptr));
                 saveg_read_strobe_t(strobe);
                 strobe->thinker.function = T_StrobeFlash;
                 P_AddThinker(&strobe->thinker);
                 break;
 
             case tc_glow:
-                glow = Z_Malloc(sizeof(*glow), PU_LEVEL, NULL);
+                glow = static_cast<glow_t *>(Z_Malloc(sizeof(*glow), PU_LEVEL, nullptr));
                 saveg_read_glow_t(glow);
                 glow->thinker.function = T_Glow;
                 P_AddThinker(&glow->thinker);

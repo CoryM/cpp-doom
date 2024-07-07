@@ -15,9 +15,9 @@
 //
 // R_bsp.c
 
+import m_bbox; // #include "m_bbox.hpp"
 #include "doomdef.hpp"
 #include "i_system.hpp"
-#include "m_bbox.hpp"
 #include "i_system.hpp"
 #include "r_local.hpp"
 

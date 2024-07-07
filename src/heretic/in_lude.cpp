@@ -20,12 +20,12 @@
 =
 ========================
 */
+import i_swap; // #include "i_swap.hpp"
 
 #include "doomdef.hpp"
 #include "deh_str.hpp"
 #include "p_local.hpp"
 #include "s_sound.hpp"
-#include "i_swap.hpp"
 #include "i_system.hpp"
 #include "i_video.hpp"
 #include "v_video.hpp"
@@ -353,7 +353,7 @@ static void LoadLumpCallback(const char *lumpname, int lumpnum, patch_t **ptr)
 
     // Cache the lump
 
-    *ptr = W_CacheLumpNum(lumpnum, PU_STATIC);
+    *ptr = (patch_t *)W_CacheLumpNum(lumpnum, PU_STATIC);
 }
 
 void IN_LoadPics(void)
@@ -803,8 +803,8 @@ void IN_DrawCoopStats(void)
         if (playeringame[i])
         {
             V_DrawShadowedPatch(25, ypos,
-                                W_CacheLumpNum(patchFaceOkayBase + i,
-                                               PU_CACHE));
+                                static_cast<patch_t *>(W_CacheLumpNum(patchFaceOkayBase + i,
+                                               PU_CACHE)));
             if (intertime < 40)
             {
                 sounds = 0;
@@ -861,12 +861,11 @@ void IN_DrawDMStats(void)
                 V_DrawShadowedPatch(40,
                                     ((ypos << FRACBITS) +
                                      dSlideY[i] * intertime) >> FRACBITS,
-                                    W_CacheLumpNum(patchFaceOkayBase + i,
-                                                   PU_CACHE));
+                                    static_cast<patch_t *>(W_CacheLumpNum(patchFaceOkayBase + i, PU_CACHE)));
                 V_DrawShadowedPatch(((xpos << FRACBITS) +
                                      dSlideX[i] * intertime) >> FRACBITS, 18,
-                                    W_CacheLumpNum(patchFaceDeadBase + i,
-                                                   PU_CACHE));
+                                    static_cast<patch_t *>(W_CacheLumpNum(patchFaceDeadBase + i,
+                                                   PU_CACHE)));
             }
         }
         sounds = 0;
@@ -888,21 +887,17 @@ void IN_DrawDMStats(void)
         {
             if (intertime < 100 || i == consoleplayer)
             {
-                V_DrawShadowedPatch(40, ypos,
-                                    W_CacheLumpNum(patchFaceOkayBase + i,
-                                                   PU_CACHE));
-                V_DrawShadowedPatch(xpos, 18,
-                                    W_CacheLumpNum(patchFaceDeadBase + i,
-                                                   PU_CACHE));
+                V_DrawShadowedPatch(40, ypos, static_cast<patch_t *>(
+                    W_CacheLumpNum(patchFaceOkayBase + i, PU_CACHE)));
+                V_DrawShadowedPatch(xpos, 18, static_cast<patch_t *>(
+                    W_CacheLumpNum(patchFaceDeadBase + i, PU_CACHE)));
             }
             else
             {
-                V_DrawTLPatch(40, ypos,
-                              W_CacheLumpNum(patchFaceOkayBase + i,
-                                             PU_CACHE));
-                V_DrawTLPatch(xpos, 18,
-                              W_CacheLumpNum(patchFaceDeadBase + i,
-                                             PU_CACHE));
+                V_DrawTLPatch(40, ypos, static_cast<patch_t *>(
+                    W_CacheLumpNum(patchFaceOkayBase + i, PU_CACHE)));
+                V_DrawTLPatch(xpos, 18, static_cast<patch_t *>(
+                    W_CacheLumpNum(patchFaceDeadBase + i, PU_CACHE)));
             }
             kpos = 86;
             for (j = 0; j < MAXPLAYERS; j++)
@@ -1014,14 +1009,14 @@ void IN_DrawNumber(int val, int x, int y, int digits)
     if (digits == 4)
     {
         patch = FontBNumbers[val / 1000];
-        V_DrawShadowedPatch(xpos + 6 - SHORT(patch->width) / 2 - 12, y, patch);
+        V_DrawShadowedPatch(xpos + 6 - endian::SHORT(patch->width) / 2 - 12, y, patch);
     }
     if (digits > 2)
     {
         if (realdigits > 2)
         {
             patch = FontBNumbers[val / 100];
-            V_DrawShadowedPatch(xpos + 6 - SHORT(patch->width) / 2, y, patch);
+            V_DrawShadowedPatch(xpos + 6 - endian::SHORT(patch->width) / 2, y, patch);
         }
         xpos += 12;
     }
@@ -1031,7 +1026,7 @@ void IN_DrawNumber(int val, int x, int y, int digits)
         if (val > 9)
         {
             patch = FontBNumbers[val / 10];
-            V_DrawShadowedPatch(xpos + 6 - SHORT(patch->width) / 2, y, patch);
+            V_DrawShadowedPatch(xpos + 6 - endian::SHORT(patch->width) / 2, y, patch);
         }
         else if (digits == 2 || oldval > 99)
         {
@@ -1041,12 +1036,11 @@ void IN_DrawNumber(int val, int x, int y, int digits)
     }
     val = val % 10;
     patch = FontBNumbers[val];
-    V_DrawShadowedPatch(xpos + 6 - SHORT(patch->width) / 2, y, patch);
+    V_DrawShadowedPatch(xpos + 6 - endian::SHORT(patch->width) / 2, y, patch);
     if (neg)
     {
         patch = FontBNegative;
-        V_DrawShadowedPatch(xpos + 6 - SHORT(patch->width) / 2 - 12 * (realdigits),
-                            y, patch);
+        V_DrawShadowedPatch(xpos + 6 - endian::SHORT(patch->width) / 2 - 12 * (realdigits), y, patch);
     }
 }
 
@@ -1069,9 +1063,9 @@ void IN_DrTextB(const char *text, int x, int y)
         }
         else
         {
-            p = W_CacheLumpNum(FontBLump + c - 33, PU_CACHE);
+            p =  static_cast<patch_t *>(W_CacheLumpNum(FontBLump + c - 33, PU_CACHE));
             V_DrawShadowedPatch(x, y, p);
-            x += SHORT(p->width) - 1;
+            x += endian::SHORT(p->width) - 1;
         }
     }
 }

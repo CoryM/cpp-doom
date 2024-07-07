@@ -27,7 +27,8 @@
 #include "doomstat.hpp" // [AM] leveltime, paused, menuactive
 #include "d_loop.hpp"
 
-#include "m_bbox.hpp"
+import m_bbox; // #include "m_bbox.hpp"
+
 #include "m_menu.hpp"
 
 #include "i_system.hpp" // [crispy] I_Realloc()

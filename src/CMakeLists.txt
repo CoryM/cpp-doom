@@ -6,6 +6,8 @@ target_sources(cpp_modules
         i_swap.cxx
         m_fixed.cxx
         net_petname.cxx
+
+        m_bbox.cxx # Imports m_fixed
 )
 
 #target_include_directories(cpp_modules PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -187,10 +189,10 @@ target_sources("${PROGRAM_PREFIX}heretic"
           BASE_DIRS
             ${CMAKE_CURRENT_SOURCE_DIR}
             ${GAME_INCLUDE_DIRS}
-        #PRIVATE FILE_SET CXX_MODULES
+        PRIVATE FILE_SET CXX_MODULES FILES
     )
 
-target_link_libraries("${PROGRAM_PREFIX}heretic" heretic ${EXTRA_LIBS})
+target_link_libraries("${PROGRAM_PREFIX}heretic" heretic cpp_modules ${EXTRA_LIBS})
 
 # ------------ Hexen ------------
 
@@ -213,7 +215,7 @@ target_sources("${PROGRAM_PREFIX}hexen"
         #PRIVATE FILE_SET CXX_MODULES
     )
 
-target_link_libraries("${PROGRAM_PREFIX}hexen" hexen ${EXTRA_LIBS})
+target_link_libraries("${PROGRAM_PREFIX}hexen" hexen cpp_modules ${EXTRA_LIBS})
 
 # ------------ Strife ------------
 
@@ -224,7 +226,7 @@ else()
 endif()
 
 target_include_directories("${PROGRAM_PREFIX}strife" PRIVATE ${GAME_INCLUDE_DIRS})
-target_link_libraries("${PROGRAM_PREFIX}strife" strife ${EXTRA_LIBS})
+target_link_libraries("${PROGRAM_PREFIX}strife" strife cpp_modules ${EXTRA_LIBS})
 
 if(MSVC)
     set_target_properties("${PROGRAM_PREFIX}strife" PROPERTIES
@@ -254,7 +256,6 @@ set(SETUP_FILES
     i_sound.cpp           i_sound.hpp
     i_timer.cpp           i_timer.hpp
     i_video.cpp           i_video.hpp
-    m_bbox.cpp            m_bbox.hpp
     m_config.cpp          m_config.hpp
     m_controls.cpp        m_controls.hpp
     midifile.cpp          midifile.hpp

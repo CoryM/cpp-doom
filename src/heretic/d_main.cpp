@@ -16,6 +16,9 @@
 
 // D_main.c
 
+import i_swap; // #include "i_swap.hpp" // [crispy] SHORT()
+
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 
@@ -33,7 +36,6 @@
 #include "i_input.hpp"
 #include "i_joystick.hpp"
 #include "i_sound.hpp"
-#include "i_swap.hpp" // [crispy] SHORT()
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "i_video.hpp"
@@ -149,10 +151,10 @@ static void CrispyDrawStats (void)
     if (!height || !coord_x)
     {
 	const int FontABaseLump = W_GetNumForName(DEH_String("FONTA_S")) + 1;
-	const patch_t *const p = W_CacheLumpNum(FontABaseLump + 'A' - 33, PU_CACHE);
+	const patch_t *const p = (patch_t *)W_CacheLumpNum(FontABaseLump + 'A' - 33, PU_CACHE);
 
-	height = SHORT(p->height) + 1;
-	coord_x = ORIGWIDTH - 7 * SHORT(p->width);
+	height = endian::SHORT(p->height) + 1;
+	coord_x = ORIGWIDTH - 7 * endian::SHORT(p->width);
     }
 
     if (crispy->automapstats == WIDGETS_ALWAYS || (automapactive && crispy->automapstats == WIDGETS_AUTOMAP))
@@ -353,7 +355,7 @@ void D_PageTicker(void)
 
 void D_PageDrawer(void)
 {
-    V_DrawRawScreen(W_CacheLumpName(pagename, PU_CACHE));
+    V_DrawRawScreen(static_cast<pixel_t *>(W_CacheLumpName(pagename, PU_CACHE)));
     if (demosequence == 1)
     {
         V_DrawPatch(4, 160, cache_lump_name<patch_t *>(DEH_String("ADVISOR"), PU_CACHE));
@@ -863,7 +865,9 @@ void D_DoomMain(void)
     p = M_CheckParmWithArgs("-skill", 1);
     if (p)
     {
-        startskill = myargv[p + 1][0] - '1';
+        auto skill = static_cast<int>(myargv[p + 1][0] - '1');
+        skill = std::clamp(skill, static_cast<int>(sk_noitems),  static_cast<int>(sk_nightmare)); //Limit to valid range
+        startskill = static_cast<skill_t>(skill);
         autostart = true;
     }
 

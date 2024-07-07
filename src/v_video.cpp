@@ -27,6 +27,8 @@
 #include <math.h>
 
 import i_swap;
+import m_fixed; // #include "m_fixed.hpp"
+import m_bbox; // #include "m_bbox.hpp"
 
 #include "i_system.hpp"
 
@@ -35,7 +37,6 @@ import i_swap;
 #include "deh_str.hpp"
 #include "i_input.hpp"
 #include "i_video.hpp"
-#include "m_bbox.hpp"
 #include "m_misc.hpp"
 #ifdef CRISPY_TRUECOLOR
 #include "v_trans.hpp"

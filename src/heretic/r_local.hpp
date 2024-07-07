@@ -22,7 +22,7 @@
 #include "i_video.hpp"
 #include "v_patch.hpp"
 
-#include "../m_fixed.hpp"
+import m_fixed;
 
 #define	ANGLETOSKYSHIFT		22      // sky map is 256*128*4 maps
 

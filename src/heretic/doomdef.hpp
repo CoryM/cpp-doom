@@ -43,7 +43,7 @@
 #include "w_wad.hpp"
 
 // fixed_t
-#include "m_fixed.hpp"
+import m_fixed; //#include "m_fixed.hpp"
 
 // angle_t 
 #include "tables.hpp"
@@ -195,11 +195,11 @@ struct mobj_t
 };
 
 // each sector has a degenmobj_t in it's center for sound origin purposes
-typedef struct
+struct degenmobj_t
 {
     thinker_t thinker;          // not used for anything
     fixed_t x, y, z;
-} degenmobj_t;
+};
 
 //
 // frame flags

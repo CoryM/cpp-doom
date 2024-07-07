@@ -15,10 +15,12 @@
 //
 // R_main.c
 
+import m_bbox; // #include "m_bbox.hpp"
+
 #include <cstdlib>
 #include <math.h>
+
 #include "doomdef.hpp"
-#include "m_bbox.hpp"
 #include "r_local.hpp"
 #include "tables.hpp"
 

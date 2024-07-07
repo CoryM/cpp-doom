@@ -19,7 +19,8 @@
 //
 
 import i_swap; 
-#include "m_bbox.hpp"
+import m_bbox; // #include "m_bbox.hpp"
+
 #include "p_local.hpp"
 #include "i_system.hpp"
 #include "w_wad.hpp"

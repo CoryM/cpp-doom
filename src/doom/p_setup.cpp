@@ -23,9 +23,10 @@
 #include "z_zone.hpp"
 
 import i_swap; 
+import m_bbox; // #include "m_bbox.hpp"
+
 #include "deh_main.hpp"
 #include "m_argv.hpp"
-#include "m_bbox.hpp"
 #include "m_misc.hpp" // [crispy] M_StringJoin()
 
 #include "g_game.hpp"

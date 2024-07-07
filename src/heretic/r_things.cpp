@@ -14,11 +14,12 @@
 // GNU General Public License for more details.
 //
 // R_things.c
+import i_swap; // #include "i_swap.hpp"
+
 #include <cstdio>
 #include <cstdlib>
 #include "doomdef.hpp"
 #include "deh_str.hpp"
-#include "i_swap.hpp"
 #include "i_system.hpp"
 #include "r_local.hpp"
 
@@ -75,8 +76,7 @@ const char *spritename;
 =================
 */
 
-void R_InstallSpriteLump(int lump, unsigned frame, unsigned rotation,
-                         boolean flipped)
+void R_InstallSpriteLump(int lump, unsigned frame, unsigned rotation, bool flipped)
 {
     int r;
 
@@ -89,13 +89,11 @@ void R_InstallSpriteLump(int lump, unsigned frame, unsigned rotation,
     if (rotation == 0)
     {
 // the lump should be used for all rotations
-        if (sprtemp[frame].rotate == false)
-            I_Error("R_InitSprites: Sprite %s frame %c has multip rot=0 lump",
-                    spritename, 'A' + frame);
-        if (sprtemp[frame].rotate == true)
-            I_Error
-                ("R_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump",
-                 spritename, 'A' + frame);
+        // if (sprtemp[frame].rotate == false)
+        //     I_Error("R_InitSprites: Sprite %s frame %c has multip rot=0 lump", spritename, 'A' + frame);
+        //     
+        // if (sprtemp[frame].rotate == true)
+        //     I_Error("R_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump", spritename, 'A' + frame);
 
         sprtemp[frame].rotate = false;
         for (r = 0; r < 8; r++)
@@ -108,17 +106,13 @@ void R_InstallSpriteLump(int lump, unsigned frame, unsigned rotation,
 
 // the lump is only used for one rotation
     if (sprtemp[frame].rotate == false)
-        I_Error
-            ("R_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump",
-             spritename, 'A' + frame);
+        I_Error("R_InitSprites: Sprite %s frame %c has rotations and a rot=0 lump", spritename, 'A' + frame);
 
     sprtemp[frame].rotate = true;
 
     rotation--;                 // make 0 based
     if (sprtemp[frame].lump[rotation] != -1)
-        I_Error
-            ("R_InitSprites: Sprite %s : %c : %c has two lumps mapped to it",
-             spritename, 'A' + frame, '1' + rotation);
+        I_Error("R_InitSprites: Sprite %s : %c : %c has two lumps mapped to it", spritename, 'A' + frame, '1' + rotation);
 
     sprtemp[frame].lump[rotation] = lump - firstspritelump;
     sprtemp[frame].flip[rotation] = (byte) flipped;
@@ -149,14 +143,14 @@ void R_InitSpriteDefs(const char **namelist)
 
 // count the number of sprite names
     check = namelist;
-    while (*check != NULL)
+    while (*check != nullptr)
         check++;
     numsprites = check - namelist;
 
     if (!numsprites)
         return;
 
-    sprites = Z_Malloc(numsprites * sizeof(*sprites), PU_STATIC, NULL);
+    sprites = static_cast<spritedef_t *>(Z_Malloc(numsprites * sizeof(*sprites), PU_STATIC, nullptr));
 
     start = firstspritelump - 1;
     end = lastspritelump + 1;
@@ -200,8 +194,7 @@ void R_InitSpriteDefs(const char **namelist)
             sprites[i].numframes = 0;
             if (gamemode == shareware)
                 continue;
-            I_Error("R_InitSprites: No lumps found for sprite %s",
-                    spritename);
+            I_Error("R_InitSprites: No lumps found for sprite %s", spritename);
         }
 
         maxframe++;
@@ -218,9 +211,7 @@ void R_InitSpriteDefs(const char **namelist)
                 case 1:        // must have all 8 frames
                     for (rotation = 0; rotation < 8; rotation++)
                         if (sprtemp[frame].lump[rotation] == -1)
-                            I_Error
-                                ("R_InitSprites: Sprite %s frame %c is missing rotations",
-                                 spritename, frame + 'A');
+                            I_Error("R_InitSprites: Sprite %s frame %c is missing rotations", spritename, frame + 'A');
             }
         }
 
@@ -228,10 +219,9 @@ void R_InitSpriteDefs(const char **namelist)
         // allocate space for the frames present and copy sprtemp to it
         //
         sprites[i].numframes = maxframe;
-        sprites[i].spriteframes =
-            Z_Malloc(maxframe * sizeof(spriteframe_t), PU_STATIC, NULL);
-        memcpy(sprites[i].spriteframes, sprtemp,
-               maxframe * sizeof(spriteframe_t));
+        sprites[i].spriteframes = static_cast<spriteframe_t *>(
+            Z_Malloc(maxframe * sizeof(spriteframe_t), PU_STATIC, nullptr));
+        memcpy(sprites[i].spriteframes, sprtemp, maxframe * sizeof(spriteframe_t));
     }
 
 }
@@ -316,7 +306,7 @@ vissprite_t *R_NewVisSprite(void)
         return &overflowsprite;
 
 	numvissprites = numvissprites ? 2 * numvissprites : MAXVISSPRITES;
-	vissprites = I_Realloc(vissprites, numvissprites * sizeof(*vissprites));
+	vissprites = static_cast<vissprite_t *>(I_Realloc(vissprites, numvissprites * sizeof(*vissprites)));
 	memset(vissprites + numvissprites_old, 0, (numvissprites - numvissprites_old) * sizeof(*vissprites));
 
 	vissprite_p = vissprites + numvissprites_old;
@@ -400,7 +390,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
     fixed_t baseclip;
 
 
-    patch = W_CacheLumpNum(vis->patch + firstspritelump, PU_CACHE);
+    patch = static_cast<patch_t *>(W_CacheLumpNum(vis->patch + firstspritelump, PU_CACHE));
 
     dc_colormap = vis->colormap;
 
@@ -445,7 +435,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
 
     if (vis->footclip && !vis->psprite)
     {
-        sprbotscreen = sprtopscreen + FixedMul(SHORT(patch->height) << FRACBITS,
+        sprbotscreen = sprtopscreen + FixedMul(endian::SHORT(patch->height) << FRACBITS,
                                                spryscale);
         baseclip = (sprbotscreen - FixedMul(vis->footclip << FRACBITS,
                                             spryscale)) >> FRACBITS;
@@ -463,7 +453,7 @@ void R_DrawVisSprite(vissprite_t * vis, int x1, int x2)
             I_Error("R_DrawSpriteRange: bad texturecolumn");
 #endif
         column = (column_t *) ((byte *) patch +
-                               LONG(patch->columnofs[texturecolumn]));
+                               endian::LONG(patch->columnofs[texturecolumn]));
         R_DrawMaskedColumn(column, baseclip);
     }
 

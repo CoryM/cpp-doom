@@ -19,7 +19,7 @@
 
 #include "doomdef.hpp"
 
-#include "m_bbox.hpp"
+import m_bbox; // #include "m_bbox.hpp"
 
 #include "i_system.hpp"
 

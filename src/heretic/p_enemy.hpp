@@ -5,8 +5,9 @@
 struct mobj_t;
 struct sector_t;
 
-#include "../m_fixed.hpp"
 #include "../tables.hpp"
+
+import m_fixed;
 
 // Declare any functions or classes here
 void P_InitMonsters(void);

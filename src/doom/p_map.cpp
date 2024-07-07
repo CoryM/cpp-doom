@@ -22,7 +22,7 @@
 
 #include "deh_misc.hpp"
 
-#include "m_bbox.hpp"
+import m_bbox; // #include "m_bbox.hpp"
 #include "m_random.hpp"
 #include "i_system.hpp"
 

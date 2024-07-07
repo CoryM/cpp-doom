@@ -15,9 +15,11 @@
 // Parses "Frame" sections in dehacked files
 //
 
-#include <functional>
+
 #include <cstdio>
 #include <cstdlib>
+#include <functional>
+#include <optional>
 
 #include "doomtype.hpp"
 #include "info.hpp"
@@ -34,7 +36,7 @@
 struct hhe_action_pointer_t
 {
     int offsets[deh_hhe_num_versions];
-    void (*func)();
+    actionf_t func;
 };
 
 // Offsets of action pointers within the Heretic executables.
@@ -218,7 +220,7 @@ static void *DEH_FrameStart(deh_context_t *context, char *line)
     return state;
 }
 
-static boolean GetActionPointerForOffset(int offset, void **result)
+static std::optional<actionf_t> GetActionPointerForOffset(int offset)
 {
     int i;
 
@@ -226,20 +228,18 @@ static boolean GetActionPointerForOffset(int offset, void **result)
 
     if (offset == 0)
     {
-        *result = NULL;
-        return true;
+        return std::nullopt;
     }
 
     for (i=0; i<arrlen(action_pointers); ++i)
     {
         if (action_pointers[i].offsets[deh_hhe_version] == offset)
         {
-            *result = action_pointers[i].func;
-            return true;
+            return action_pointers[i].func;
         }
     }
 
-    return false;
+    return std::nullopt;
 }
 
 // If an invalid action pointer is specified, the patch may be for a
@@ -256,7 +256,7 @@ static void SuggestOtherVersions(unsigned int offset)
         {
             if (action_pointers[i].offsets[v] == offset)
             {
-                DEH_SuggestHereticVersion(v);
+                DEH_SuggestHereticVersion(static_cast<deh_hhe_version_t>(v));
             }
         }
     }
@@ -268,7 +268,7 @@ static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
     char *variable_name, *value;
     int ivalue;
 
-    if (tag == NULL)
+    if (tag == nullptr)
        return;
 
     state = (state_t *) tag;
@@ -291,18 +291,15 @@ static void DEH_FrameParseLine(deh_context_t *context, char *line, void *tag)
 
     if (!strcasecmp(variable_name, "Action pointer"))
     {
-        void *func;
-
-        if (!GetActionPointerForOffset(ivalue, &func))
+        auto func = GetActionPointerForOffset(ivalue);
+        if (!func)
         {
             SuggestOtherVersions(ivalue);
             DEH_Error(context, "Unknown action pointer: %i", ivalue);
             return;
         }
 
-        //state->action = func;
-        state->action = (actionf_p1) func;
-        
+        state->action = func.value();
     }
     else
     {
@@ -333,7 +330,7 @@ deh_section_t deh_section_frame =
     DEH_FrameInit,
     DEH_FrameStart,
     DEH_FrameParseLine,
-    NULL,
+    nullptr,
     DEH_FrameSHA1Sum,
 };
 

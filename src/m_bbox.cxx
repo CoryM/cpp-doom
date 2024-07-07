@@ -1,3 +1,5 @@
+module;
+
 //
 // Copyright(C) 1993-1996 Id Software, Inc.
 // Copyright(C) 2005-2014 Simon Howard
@@ -13,20 +15,20 @@
 // GNU General Public License for more details.
 //
 // DESCRIPTION:
-//    Nil.
+//	Main loop menu stuff.
+//	Random number LUT.
+//	Default Config File.
+//	PCX Screenshots.
 //
-
-
-#ifndef __M_BBOX__
-#define __M_BBOX__
 
 import m_fixed;
 
 #include <limits.h>
 
+export module m_bbox;
 
 // Bounding box coordinate storage.
-enum
+export enum
 {
     BOXTOP,
     BOXBOTTOM,
@@ -34,12 +36,22 @@ enum
     BOXRIGHT
 }; // bbox coordinates
 
-// Bounding box functions.
-void M_ClearBox(fixed_t *box);
+export void M_ClearBox(fixed_t *box)
+{
+    box[BOXTOP] = box[BOXRIGHT] = INT_MIN;
+    box[BOXBOTTOM] = box[BOXLEFT] = INT_MAX;
+}
 
-void M_AddToBox(fixed_t *box,
+export void M_AddToBox(fixed_t *box,
     fixed_t              x,
-    fixed_t              y);
-
-
-#endif
+    fixed_t              y)
+{
+    if (x < box[BOXLEFT])
+        box[BOXLEFT] = x;
+    else if (x > box[BOXRIGHT])
+        box[BOXRIGHT] = x;
+    if (y < box[BOXBOTTOM])
+        box[BOXBOTTOM] = y;
+    else if (y > box[BOXTOP])
+        box[BOXTOP] = y;
+}

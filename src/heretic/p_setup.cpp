@@ -16,14 +16,15 @@
 
 // P_main.c
 
+import i_swap; // #include "i_swap.hpp"
+import m_bbox; // #include "m_bbox.hpp"
+
 #include <math.h>
 #include <cstdlib>
 
 #include "doomdef.hpp"
-#include "i_swap.hpp"
 #include "i_system.hpp"
 #include "m_argv.hpp"
-#include "m_bbox.hpp"
 #include "p_local.hpp"
 #include "s_sound.hpp"
 
@@ -78,15 +79,15 @@ void P_LoadVertexes(int lump)
     vertex_t *li;
 
     numvertexes = W_LumpLength(lump) / sizeof(mapvertex_t);
-    vertexes = Z_Malloc(numvertexes * sizeof(vertex_t), PU_LEVEL, 0);
-    data = W_CacheLumpNum(lump, PU_STATIC);
+    vertexes = static_cast<vertex_t *>( Z_Malloc(numvertexes * sizeof(vertex_t), PU_LEVEL, 0));
+    data = static_cast<byte *>(W_CacheLumpNum(lump, PU_STATIC));
 
     ml = (mapvertex_t *) data;
     li = vertexes;
     for (i = 0; i < numvertexes; i++, li++, ml++)
     {
-        li->x = SHORT(ml->x) << FRACBITS;
-        li->y = SHORT(ml->y) << FRACBITS;
+        li->x = endian::SHORT(ml->x) << FRACBITS;
+        li->y = endian::SHORT(ml->y) << FRACBITS;
 
         // [crispy] initialize pseudovertexes with actual vertex coordinates
         li->r_x = li->x;
@@ -108,31 +109,24 @@ void P_LoadVertexes(int lump)
 
 void P_LoadSegs(int lump)
 {
-    byte *data;
-    int i;
-    mapseg_t *ml;
-    seg_t *li;
-    line_t *ldef;
-    int linedef, side;
-
     numsegs = W_LumpLength(lump) / sizeof(mapseg_t);
-    segs = Z_Malloc(numsegs * sizeof(seg_t), PU_LEVEL, 0);
+    segs = static_cast<seg_t *>(Z_Malloc(numsegs * sizeof(seg_t), PU_LEVEL, nullptr));
     memset(segs, 0, numsegs * sizeof(seg_t));
-    data = W_CacheLumpNum(lump, PU_STATIC);
+    byte *data = static_cast<byte *>(W_CacheLumpNum(lump, PU_STATIC));
 
-    ml = (mapseg_t *) data;
-    li = segs;
-    for (i = 0; i < numsegs; i++, li++, ml++)
+    mapseg_t *ml = (mapseg_t *) data;
+    seg_t *li = segs;
+    for (int i = 0; i < numsegs; i++, li++, ml++)
     {
-        li->v1 = &vertexes[SHORT(ml->v1)];
-        li->v2 = &vertexes[SHORT(ml->v2)];
+        li->v1 = &vertexes[endian::SHORT(ml->v1)];
+        li->v2 = &vertexes[endian::SHORT(ml->v2)];
 
-        li->angle = (SHORT(ml->angle)) << 16;
-        li->offset = (SHORT(ml->offset)) << 16;
-        linedef = SHORT(ml->linedef);
-        ldef = &lines[linedef];
+        li->angle = (endian::SHORT(ml->angle)) << 16;
+        li->offset = (endian::SHORT(ml->offset)) << 16;
+        int linedef = endian::SHORT(ml->linedef);
+        line_t *ldef = &lines[linedef];
         li->linedef = ldef;
-        side = SHORT(ml->side);
+        int side = endian::SHORT(ml->side);
         li->sidedef = &sides[ldef->sidenum[side]];
         li->frontsector = sides[ldef->sidenum[side]].sector;
         if (ldef->flags & ML_TWOSIDED)
@@ -161,16 +155,16 @@ void P_LoadSubsectors(int lump)
     subsector_t *ss;
 
     numsubsectors = W_LumpLength(lump) / sizeof(mapsubsector_t);
-    subsectors = Z_Malloc(numsubsectors * sizeof(subsector_t), PU_LEVEL, 0);
-    data = W_CacheLumpNum(lump, PU_STATIC);
+    subsectors = static_cast<subsector_t *>(Z_Malloc(numsubsectors * sizeof(subsector_t), PU_LEVEL, nullptr));
+    data = static_cast<byte *>(W_CacheLumpNum(lump, PU_STATIC));
 
     ms = (mapsubsector_t *) data;
     memset(subsectors, 0, numsubsectors * sizeof(subsector_t));
     ss = subsectors;
     for (i = 0; i < numsubsectors; i++, ss++, ms++)
     {
-        ss->numlines = SHORT(ms->numsegs);
-        ss->firstline = SHORT(ms->firstseg);
+        ss->numlines = endian::SHORT(ms->numsegs);
+        ss->firstline = endian::SHORT(ms->firstseg);
     }
 
     W_ReleaseLumpNum(lump);
@@ -193,22 +187,22 @@ void P_LoadSectors(int lump)
     sector_t *ss;
 
     numsectors = W_LumpLength(lump) / sizeof(mapsector_t);
-    sectors = Z_Malloc(numsectors * sizeof(sector_t), PU_LEVEL, 0);
+    sectors = static_cast<sector_t *>(Z_Malloc(numsectors * sizeof(sector_t), PU_LEVEL, nullptr));
     memset(sectors, 0, numsectors * sizeof(sector_t));
-    data = W_CacheLumpNum(lump, PU_STATIC);
+    data = static_cast<byte *>(W_CacheLumpNum(lump, PU_STATIC));
 
     ms = (mapsector_t *) data;
     ss = sectors;
     for (i = 0; i < numsectors; i++, ss++, ms++)
     {
-        ss->floorheight = SHORT(ms->floorheight) << FRACBITS;
-        ss->ceilingheight = SHORT(ms->ceilingheight) << FRACBITS;
+        ss->floorheight = endian::SHORT(ms->floorheight) << FRACBITS;
+        ss->ceilingheight = endian::SHORT(ms->ceilingheight) << FRACBITS;
         ss->floorpic = R_FlatNumForName(ms->floorpic);
         ss->ceilingpic = R_FlatNumForName(ms->ceilingpic);
-        ss->lightlevel = SHORT(ms->lightlevel);
-        ss->special = SHORT(ms->special);
-        ss->tag = SHORT(ms->tag);
-        ss->thinglist = NULL;
+        ss->lightlevel = endian::SHORT(ms->lightlevel);
+        ss->special = endian::SHORT(ms->special);
+        ss->tag = endian::SHORT(ms->tag);
+        ss->thinglist = nullptr;
     }
 
     W_ReleaseLumpNum(lump);
@@ -231,22 +225,22 @@ void P_LoadNodes(int lump)
     node_t *no;
 
     numnodes = W_LumpLength(lump) / sizeof(mapnode_t);
-    nodes = Z_Malloc(numnodes * sizeof(node_t), PU_LEVEL, 0);
-    data = W_CacheLumpNum(lump, PU_STATIC);
+    nodes = static_cast<node_t *>(Z_Malloc(numnodes * sizeof(node_t), PU_LEVEL, nullptr));
+    data = static_cast<byte *>(W_CacheLumpNum(lump, PU_STATIC));
 
     mn = (mapnode_t *) data;
     no = nodes;
     for (i = 0; i < numnodes; i++, no++, mn++)
     {
-        no->x = SHORT(mn->x) << FRACBITS;
-        no->y = SHORT(mn->y) << FRACBITS;
-        no->dx = SHORT(mn->dx) << FRACBITS;
-        no->dy = SHORT(mn->dy) << FRACBITS;
+        no->x = endian::SHORT(mn->x) << FRACBITS;
+        no->y = endian::SHORT(mn->y) << FRACBITS;
+        no->dx = endian::SHORT(mn->dx) << FRACBITS;
+        no->dy = endian::SHORT(mn->dy) << FRACBITS;
         for (j = 0; j < 2; j++)
         {
-            no->children[j] = SHORT(mn->children[j]);
+            no->children[j] = endian::SHORT(mn->children[j]);
             for (k = 0; k < 4; k++)
-                no->bbox[j][k] = SHORT(mn->bbox[j][k]) << FRACBITS;
+                no->bbox[j][k] = endian::SHORT(mn->bbox[j][k]) << FRACBITS;
         }
     }
 
@@ -271,17 +265,17 @@ void P_LoadThings(int lump)
     mapthing_t *mt;
     int numthings;
 
-    data = W_CacheLumpNum(lump, PU_STATIC);
+    data = static_cast<byte *>(W_CacheLumpNum(lump, PU_STATIC));
     numthings = W_LumpLength(lump) / sizeof(mapthing_t);
 
     mt = (mapthing_t *) data;
     for (i = 0; i < numthings; i++, mt++)
     {
-        spawnthing.x = SHORT(mt->x);
-        spawnthing.y = SHORT(mt->y);
-        spawnthing.angle = SHORT(mt->angle);
-        spawnthing.type = SHORT(mt->type);
-        spawnthing.options = SHORT(mt->options);
+        spawnthing.x = endian::SHORT(mt->x);
+        spawnthing.y = endian::SHORT(mt->y);
+        spawnthing.angle = endian::SHORT(mt->angle);
+        spawnthing.type = endian::SHORT(mt->type);
+        spawnthing.options = endian::SHORT(mt->options);
         P_SpawnMapThing(&spawnthing);
     }
 
@@ -320,19 +314,19 @@ void P_LoadLineDefs(int lump)
     vertex_t *v1, *v2;
 
     numlines = W_LumpLength(lump) / sizeof(maplinedef_t);
-    lines = Z_Malloc(numlines * sizeof(line_t), PU_LEVEL, 0);
+    lines = static_cast<line_t *>(Z_Malloc(numlines * sizeof(line_t), PU_LEVEL, nullptr));
     memset(lines, 0, numlines * sizeof(line_t));
-    data = W_CacheLumpNum(lump, PU_STATIC);
+    data = static_cast<byte *>(W_CacheLumpNum(lump, PU_STATIC));
 
     mld = (maplinedef_t *) data;
     ld = lines;
     for (i = 0; i < numlines; i++, mld++, ld++)
     {
-        ld->flags = SHORT(mld->flags);
-        ld->special = SHORT(mld->special);
-        ld->tag = SHORT(mld->tag);
-        v1 = ld->v1 = &vertexes[SHORT(mld->v1)];
-        v2 = ld->v2 = &vertexes[SHORT(mld->v2)];
+        ld->flags = endian::SHORT(mld->flags);
+        ld->special = endian::SHORT(mld->special);
+        ld->tag = endian::SHORT(mld->tag);
+        v1 = ld->v1 = &vertexes[endian::SHORT(mld->v1)];
+        v2 = ld->v2 = &vertexes[endian::SHORT(mld->v2)];
         ld->dx = v2->x - v1->x;
         ld->dy = v2->y - v1->y;
         if (!ld->dx)
@@ -367,8 +361,8 @@ void P_LoadLineDefs(int lump)
             ld->bbox[BOXBOTTOM] = v2->y;
             ld->bbox[BOXTOP] = v1->y;
         }
-        ld->sidenum[0] = SHORT(mld->sidenum[0]);
-        ld->sidenum[1] = SHORT(mld->sidenum[1]);
+        ld->sidenum[0] = endian::SHORT(mld->sidenum[0]);
+        ld->sidenum[1] = endian::SHORT(mld->sidenum[1]);
         if (ld->sidenum[0] != -1)
             ld->frontsector = sides[ld->sidenum[0]].sector;
         else
@@ -399,20 +393,20 @@ void P_LoadSideDefs(int lump)
     side_t *sd;
 
     numsides = W_LumpLength(lump) / sizeof(mapsidedef_t);
-    sides = Z_Malloc(numsides * sizeof(side_t), PU_LEVEL, 0);
+    sides = static_cast<side_t *>(Z_Malloc(numsides * sizeof(side_t), PU_LEVEL, nullptr));
     memset(sides, 0, numsides * sizeof(side_t));
-    data = W_CacheLumpNum(lump, PU_STATIC);
+    data = static_cast<byte *>(W_CacheLumpNum(lump, PU_STATIC));
 
     msd = (mapsidedef_t *) data;
     sd = sides;
     for (i = 0; i < numsides; i++, msd++, sd++)
     {
-        sd->textureoffset = SHORT(msd->textureoffset) << FRACBITS;
-        sd->rowoffset = SHORT(msd->rowoffset) << FRACBITS;
+        sd->textureoffset = endian::SHORT(msd->textureoffset) << FRACBITS;
+        sd->rowoffset = endian::SHORT(msd->rowoffset) << FRACBITS;
         sd->toptexture = R_TextureNumForName(msd->toptexture);
         sd->bottomtexture = R_TextureNumForName(msd->bottomtexture);
         sd->midtexture = R_TextureNumForName(msd->midtexture);
-        sd->sector = &sectors[SHORT(msd->sector)];
+        sd->sector = &sectors[endian::SHORT(msd->sector)];
     }
 
     W_ReleaseLumpNum(lump);
@@ -439,22 +433,22 @@ void P_LoadBlockMap(int lump)
     count = lumplen / 2; // [crispy] remove BLOCKMAP limit
 
     // [crispy] remove BLOCKMAP limit
-    wadblockmaplump = Z_Malloc(lumplen, PU_LEVEL, NULL);
+    wadblockmaplump = static_cast<short *>(Z_Malloc(lumplen, PU_LEVEL, nullptr));
     W_ReadLump(lump, wadblockmaplump);
-    blockmaplump = Z_Malloc(sizeof(*blockmaplump) * count, PU_LEVEL, NULL);
+    blockmaplump = static_cast<int32_t *>(Z_Malloc(sizeof(*blockmaplump) * count, PU_LEVEL, nullptr));
     blockmap = blockmaplump + 4;
 
-    blockmaplump[0] = SHORT(wadblockmaplump[0]);
-    blockmaplump[1] = SHORT(wadblockmaplump[1]);
-    blockmaplump[2] = (int32_t)(SHORT(wadblockmaplump[2])) & 0xffff;
-    blockmaplump[3] = (int32_t)(SHORT(wadblockmaplump[3])) & 0xffff;
+    blockmaplump[0] = endian::SHORT(wadblockmaplump[0]);
+    blockmaplump[1] = endian::SHORT(wadblockmaplump[1]);
+    blockmaplump[2] = (int32_t)(endian::SHORT(wadblockmaplump[2])) & 0xffff;
+    blockmaplump[3] = (int32_t)(endian::SHORT(wadblockmaplump[3])) & 0xffff;
 
     // Swap all short integers to native byte ordering:
 	
     // count = lumplen / 2; // [crispy] moved up
     for (i=4; i<count; i++)
     {
-        short t = SHORT(wadblockmaplump[i]);
+        short t = endian::SHORT(wadblockmaplump[i]);
         blockmaplump[i] = (t == -1) ? -1l : (int32_t) t & 0xffff;
     }
 
@@ -467,7 +461,7 @@ void P_LoadBlockMap(int lump)
 
 // clear out mobj chains
     count = sizeof(*blocklinks) * bmapwidth * bmapheight;
-    blocklinks = Z_Malloc(count, PU_LEVEL, 0);
+    blocklinks = static_cast<mobj_t **>(Z_Malloc(count, PU_LEVEL, nullptr));
     memset(blocklinks, 0, count);
 }
 
@@ -518,7 +512,7 @@ void P_GroupLines(void)
     }
 
 // build line tables for each sector    
-    linebuffer = Z_Malloc(total * sizeof(line_t *), PU_LEVEL, 0);
+    linebuffer = static_cast<line_t **>(Z_Malloc(total * sizeof(line_t *), PU_LEVEL, nullptr));
     sector = sectors;
     for (i = 0; i < numsectors; i++, sector++)
     {
@@ -669,7 +663,7 @@ void P_SetupLevel(int episode, int map, int playermask, skill_t skill)
     P_LoadNodes(lumpnum + ML_NODES);
     P_LoadSegs(lumpnum + ML_SEGS);
 
-    rejectmatrix = W_CacheLumpNum(lumpnum + ML_REJECT, PU_LEVEL);
+    rejectmatrix = static_cast<byte *>(W_CacheLumpNum(lumpnum + ML_REJECT, PU_LEVEL));
     P_GroupLines();
 
     // [crispy] remove slime trails
