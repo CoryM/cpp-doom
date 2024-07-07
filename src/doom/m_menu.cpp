@@ -28,6 +28,7 @@
 
 #include "d_main.hpp"
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 
 import i_swap;
 #include "i_input.hpp"

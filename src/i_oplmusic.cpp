@@ -26,6 +26,7 @@
 
 import i_swap; 
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 #include "i_sound.hpp"
 #include "m_misc.hpp"
 #include "w_wad.hpp"

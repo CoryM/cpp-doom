@@ -31,6 +31,7 @@ import i_swap; // #include "i_swap.hpp" // [crispy] SHORT()
 #include "ct_chat.hpp"
 #include "doomdef.hpp"
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 #include "d_iwad.hpp"
 #include "i_endoom.hpp"
 #include "i_input.hpp"

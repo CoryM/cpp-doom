@@ -25,6 +25,7 @@
 
 import i_swap;
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 #include "i_input.hpp"
 #include "i_video.hpp"
 

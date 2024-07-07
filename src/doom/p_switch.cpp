@@ -22,6 +22,7 @@
 import i_swap; // [crispy] SHORT()
 #include "i_system.hpp"
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 #include "doomdef.hpp"
 #include "p_local.hpp"
 #include "w_wad.hpp"  // [crispy] W_CheckNumForName()

@@ -26,6 +26,7 @@ import i_swap;
 import m_bbox; // #include "m_bbox.hpp"
 
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 #include "m_argv.hpp"
 #include "m_misc.hpp" // [crispy] M_StringJoin()
 

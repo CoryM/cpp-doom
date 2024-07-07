@@ -27,6 +27,7 @@
 import i_swap; 
 #include "deh_main.hpp"
 #include "deh_bexpars.hpp" // [crispy] bex_pars[]
+#include "deh_str.hpp"
 #include "i_system.hpp"
 
 #include "w_wad.hpp"

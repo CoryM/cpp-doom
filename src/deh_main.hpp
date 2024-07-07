@@ -19,7 +19,6 @@
 #define DEH_MAIN_H
 
 #include "doomtype.hpp"
-#include "deh_str.hpp"
 #include "sha1.hpp"
 
 // These are the limits that dehacked uses (from dheinit.h in the dehacked

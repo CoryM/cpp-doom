@@ -24,6 +24,7 @@
 
 #include "deh_main.hpp"
 #include "deh_misc.hpp"
+#include "deh_str.hpp"
 #include "doomstat.hpp"
 
 #include "m_random.hpp"

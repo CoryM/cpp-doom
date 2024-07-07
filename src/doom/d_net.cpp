@@ -20,7 +20,7 @@
 #include "d_net.hpp"
 
 #include <cstdlib>
-
+#include "deh_str.hpp"
 #include "d_main.hpp"
 #include "m_argv.hpp"
 #include "m_menu.hpp"

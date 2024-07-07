@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 #include "doomdef.hpp"
 #include "doomstat.hpp"
 

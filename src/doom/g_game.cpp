@@ -26,7 +26,8 @@
 
 #include "deh_main.hpp"
 #include "deh_misc.hpp"
-#include "deh_bexpars.hpp" // [crispy] bex_pars[]
+#include "deh_bexpars.hpp" // bex_pars[]
+#include "deh_str.hpp"     // DEH_String()
 
 import i_swap;
 #include "tables.hpp"

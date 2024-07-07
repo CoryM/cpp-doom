@@ -15,21 +15,23 @@
 // Main dehacked code
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
-
-#include "doomtype.hpp"
-#include "i_glob.hpp"
-#include "i_system.hpp"
-#include "d_iwad.hpp"
-#include "m_argv.hpp"
-#include "w_wad.hpp"
-
-#include "deh_defs.hpp"
-#include "deh_io.hpp"
 #include "deh_main.hpp"
+
+#include <cctype>        // for isspace
+#include <cstdio>        // for NULL, fprintf, printf, stderr, sscanf, size_t
+#include <cstdlib>       // for free
+#include <cstring>       // for strstr, strlen, strchr, strcmp
+#include <string_view>   // for basic_string_view
+
+#include "d_iwad.hpp"    // for D_TryFindWADByName
+#include "deh_defs.hpp"  // for deh_context_t, deh_section_t
+#include "deh_io.hpp"    // for DEH_HadError, DEH_CloseFile, DEH_ReadLine
+#include "doomtype.hpp"  // for boolean, strcasecmp, strncasecmp
+#include "i_glob.hpp"    // for I_EndGlob, I_NextGlob, I_StartMultiGlob, GLO...
+#include "i_system.hpp"  // for I_Error
+#include "m_argv.hpp"    // for M_CheckParm, myargv, myargc
+#include "w_wad.hpp"     // for W_CheckNumForName
+
 
 extern deh_section_t *deh_section_types[];
 extern const char *   deh_signatures[];

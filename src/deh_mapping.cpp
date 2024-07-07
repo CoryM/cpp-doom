@@ -19,7 +19,6 @@
 
 #include "deh_mapping.hpp"
 #include <stdint.h>      // for uint8_t, uint16_t, uint32_t
-#include <cstdio>        // for NULL
 #include <string_view>   // for basic_string_view
 #include "deh_io.hpp"    // for DEH_Error, DEH_Warning
 #include "doomtype.hpp"  // for boolean, strcasecmp

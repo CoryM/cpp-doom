@@ -28,6 +28,7 @@
 
 import i_swap;  // [crispy] LONG()
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 #include "i_system.hpp"
 #include "z_zone.hpp"
 #include "m_argv.hpp"

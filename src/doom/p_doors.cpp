@@ -19,6 +19,7 @@
 #include "z_zone.hpp"
 #include "doomdef.hpp"
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 #include "p_local.hpp"
 #include "i_system.hpp"
 

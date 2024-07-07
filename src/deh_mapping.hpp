@@ -20,7 +20,6 @@
 #ifndef DEH_MAPPING_H
 #define DEH_MAPPING_H
 
-#include <stddef.h>      // for NULL
 #include "deh_defs.hpp"  // for deh_context_t
 #include "doomtype.hpp"  // for boolean
 #include "sha1.hpp"      // for sha1_context_t

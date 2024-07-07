@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 #include "doomdef.hpp"
 
 #include "z_zone.hpp"

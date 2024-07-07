@@ -22,6 +22,7 @@
 
 
 #include "../deh_main.hpp"
+#include "deh_str.hpp"
 #include "doomdef.hpp"
 
 import i_swap; 

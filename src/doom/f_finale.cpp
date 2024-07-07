@@ -26,7 +26,7 @@ import i_swap;
 #include "v_video.hpp"
 #include "w_wad.hpp"
 #include "s_sound.hpp"
-
+#include "deh_str.hpp"
 // Data.
 #include "d_main.hpp"
 #include "dstrings.hpp"

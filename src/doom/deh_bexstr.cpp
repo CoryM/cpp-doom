@@ -22,6 +22,7 @@
 #include "deh_defs.hpp"
 #include "deh_io.hpp"
 #include "deh_main.hpp"
+#include "deh_str.hpp"
 
 #include "dstrings.hpp"
 
