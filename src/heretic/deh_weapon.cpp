@@ -25,6 +25,7 @@
 #include "doomdef.hpp"
 
 #include "deh_defs.hpp"
+#include "deh_io.hpp"
 #include "deh_main.hpp"
 #include "deh_mapping.hpp"
 #include "deh_htic.hpp"

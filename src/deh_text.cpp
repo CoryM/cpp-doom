@@ -15,21 +15,17 @@
 // Parses Text substitution sections in dehacked files
 //
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <string>
+#include <__fwd/string.h>  // for string
+#include <cstdio>          // for NULL, sscanf
+#include <string>          // for basic_string
+#include "deh_defs.hpp"    // for deh_context_t, deh_section_t
+#include "deh_io.hpp"      // for DEH_GetChar, DEH_Error, DEH_Warning
+#include "deh_main.hpp"    // for deh_allow_long_strings
+#include "deh_str.hpp"     // for DEH_AddStringReplacement
 
-#include "doomtype.hpp"
-
-#include "z_zone.hpp"
-
-#include "deh_defs.hpp"
-#include "deh_io.hpp"
-#include "deh_main.hpp"
 
 // [crispy] support INCLUDE NOTEXT directive in BEX files
-boolean bex_notext = false;
+bool bex_notext = false;
 
 // Given a string length, find the maximum length of a
 // string that can replace it.
@@ -59,7 +55,7 @@ static void *DEH_TextStart(deh_context_t *context, char *line)
     if (sscanf(line, "Text %i %i", &fromlen, &tolen) != 2)
     {
         DEH_Warning(context, "Parse error on section start");
-        return NULL;
+        return nullptr;
     }
 
     // Only allow string replacements that are possible in Vanilla Doom.
@@ -69,7 +65,7 @@ static void *DEH_TextStart(deh_context_t *context, char *line)
     {
         DEH_Error(context, "Replacement string is longer than the maximum "
                            "possible in doom.exe");
-        return NULL;
+        return nullptr;
     }
 
     std::string from_text(fromlen + 1, '\0');
@@ -96,7 +92,7 @@ static void *DEH_TextStart(deh_context_t *context, char *line)
         DEH_AddStringReplacement(from_text.c_str(), to_text.c_str());
     }
 
-    return NULL;
+    return nullptr;
 }
 
 static void DEH_TextParseLine([[maybe_unused]] deh_context_t *context, [[maybe_unused]] char *line, [[maybe_unused]] void *tag)
@@ -106,9 +102,9 @@ static void DEH_TextParseLine([[maybe_unused]] deh_context_t *context, [[maybe_u
 
 deh_section_t deh_section_text = {
     "Text",
-    NULL,
+    nullptr,
     DEH_TextStart,
     DEH_TextParseLine,
-    NULL,
-    NULL,
+    nullptr,
+    nullptr,
 };

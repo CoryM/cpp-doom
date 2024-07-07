@@ -24,6 +24,7 @@
 #include "d_items.hpp"
 
 #include "deh_defs.hpp"
+#include "deh_io.hpp"
 #include "deh_main.hpp"
 #include "deh_mapping.hpp"
 

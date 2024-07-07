@@ -20,9 +20,11 @@
 #ifndef DEH_MAPPING_H
 #define DEH_MAPPING_H
 
-#include "doomtype.hpp"
-#include "deh_io.hpp"
-#include "sha1.hpp"
+#include <stddef.h>      // for NULL
+#include "deh_defs.hpp"  // for deh_context_t
+#include "doomtype.hpp"  // for boolean
+#include "sha1.hpp"      // for sha1_context_t
+
 
 #define DEH_BEGIN_MAPPING(mapping_name, structname) \
     static structname    deh_mapping_base;          \
@@ -41,11 +43,11 @@
         true },
 
 #define DEH_UNSUPPORTED_MAPPING(deh_name) \
-    { deh_name, NULL, -1, false },
+    { deh_name, nullptr, -1, false },
 
 #define DEH_END_MAPPING \
     {                   \
-        NULL, NULL, -1  \
+      nullptr, nullptr, -1  \
     }                   \
     }                   \
     }                   \
@@ -73,7 +75,7 @@ struct deh_mapping_entry_s {
 
     // if true, this is a string value.
 
-    boolean is_string;
+    bool is_string;
 };
 
 struct deh_mapping_s {
