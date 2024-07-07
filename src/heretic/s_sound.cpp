@@ -82,7 +82,7 @@ void S_StartSong(int song, boolean loop)
         return;
     }
 
-    if (rs != NULL)
+    if (rs != nullptr)
     {
         I_StopSong();
         I_UnRegisterSong(rs);
@@ -102,28 +102,26 @@ void S_StartSong(int song, boolean loop)
 
 static mobj_t *GetSoundListener(void)
 {
-    static degenmobj_t dummy_listener;
+    static mobj_t dummy_listener;
 
     // If we are at the title screen, the console player doesn't have an
     // object yet, so return a pointer to a static dummy listener instead.
 
-    if (players[consoleplayer].mo != NULL)
+    if (players[consoleplayer].mo != nullptr)
     {
         return players[consoleplayer].mo;
     }
-    else
-    {
-        dummy_listener.x = 0;
-        dummy_listener.y = 0;
-        dummy_listener.z = 0;
+    
+    dummy_listener.x = 0;
+    dummy_listener.y = 0;
+    dummy_listener.z = 0;
 
-        return (mobj_t *) &dummy_listener;
-    }
+    return &dummy_listener;
 }
 
 void S_StartSound(void *_origin, int sound_id)
 {
-    mobj_t *origin = _origin;
+    mobj_t *origin = static_cast<mobj_t *>(_origin);
     mobj_t *listener;
     int dist, vol;
     int i;
@@ -140,7 +138,7 @@ void S_StartSound(void *_origin, int sound_id)
 
     if (sound_id == 0 || snd_MaxVolume == 0)
         return;
-    if (origin == NULL)
+    if (origin == nullptr)
     {
         origin = listener;
     }
@@ -290,7 +288,7 @@ void S_StartSound(void *_origin, int sound_id)
 
 void S_StartSoundAtVolume(void *_origin, int sound_id, int volume)
 {
-    mobj_t *origin = _origin;
+    mobj_t *origin = static_cast<mobj_t *>(_origin);
     mobj_t *listener;
     int i;
 
@@ -298,7 +296,7 @@ void S_StartSoundAtVolume(void *_origin, int sound_id, int volume)
 
     if (sound_id == 0 || snd_MaxVolume == 0)
         return;
-    if (origin == NULL)
+    if (origin == nullptr)
     {
         origin = listener;
     }
@@ -383,14 +381,14 @@ boolean S_StopSoundID(int sound_id, int priority)
         {
             S_sfx[channel[i].sound_id].usefulness--;
         }
-        channel[lp].mo = NULL;
+        channel[lp].mo = nullptr;
     }
     return (true);
 }
 
 void S_StopSound(void *_origin)
 {
-    mobj_t *origin = _origin;
+    mobj_t *origin = static_cast<mobj_t *>(_origin);
     int i;
 
     for (i = 0; i < snd_Channels; i++)
@@ -515,7 +513,7 @@ void S_UpdateSounds(mobj_t * listener)
 void S_Init(void)
 {
     I_SetOPLDriverVer(opl_doom2_1_666);
-    soundCurve = Z_Malloc(MAX_SND_DIST, PU_STATIC, NULL);
+    soundCurve = static_cast<byte *>(Z_Malloc(MAX_SND_DIST, PU_STATIC, nullptr));
     if (snd_Channels > 8)
     {
         snd_Channels = 8;
