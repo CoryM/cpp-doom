@@ -18,8 +18,9 @@
 
 #include <cstdlib>
 
+import m_bbox; // #include "m_bbox.hpp"
+
 #include "doomdef.hpp"
-#include "m_bbox.hpp"
 #include "p_local.hpp"
 
 

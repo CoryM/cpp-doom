@@ -17,6 +17,8 @@
 #ifndef HERETIC_INFO_H
 #define HERETIC_INFO_H
 
+#include <variant>
+
 typedef enum
 {
     SPR_IMPX,
@@ -1393,94 +1395,187 @@ typedef void (*actionf_plat)(plat_t * plat);
 typedef void (*actionf_p2)(player_t *player, pspdef_t *psp);
 typedef void (*actionf_p3)(mobj_t *mo, player_t *player, pspdef_t *psp); // [crispy] let pspr action pointers get called from mobj states
 
-union actionf_t {
-    actionf_v  acv;
-    actionf_p1 acp1;
-    actionf_c1 acc1;
-    actionf_d1 acd1;
-    actionf_f1 acf1;
-    actionf_g1 acg1;
-    actionf_l1 acl1;
-    actionf_s1 acs1;
-    actionf_plat acPlat;
-    actionf_p2 acp2;
-    actionf_p3 acp3; // [crispy] let pspr action pointers get called from mobj states
+class actionf_t {
+private:
+    template<class U>
+     auto get_void_impl(void * ptr) const
+     {
+        if(std::holds_alternative<U>(func)){
+            ptr = reinterpret_cast<void *>( std::get<U>(func));
+        };
+        return ptr;
+     };
 
-    actionf_t()
-        : acv { nullptr }
-    {
-    }
-    actionf_t(actionf_v f)
-        : acv { f }
-    {
-    }
-    actionf_t(actionf_p1 f)
-        : acp1 { f }
-    {
-        
-    }
-    actionf_t(actionf_c1 f)
-        : acc1 { f }
-    {
-        
-    }
-    actionf_t(actionf_d1 f) 
-        : acd1 { f }
-    {
-        
-    }
-    actionf_t(actionf_f1 f) 
-        : acf1 { f }
-    {
-
-    }
-    actionf_t(actionf_g1 f) 
-        : acg1 { f }
-    {
-        
-    }
-    actionf_t(actionf_l1 f) 
-        : acl1 { f }
-    {
-        
-    }
-    actionf_t(actionf_s1 f) 
-        : acs1 { f }
-    {
-        
-    }
-    actionf_t(actionf_plat f)
-        : acPlat { f }
-    {
-        
-    }
-    actionf_t(actionf_p2 f)
-        : acp2 { f }
-    {
-    }
-    actionf_t(actionf_p3 f)
-        : acp3 { f }
+public:
+    std::variant<std::monostate, actionf_v, actionf_p1, actionf_c1, actionf_d1, actionf_f1, actionf_g1, actionf_l1, actionf_s1, actionf_plat, actionf_p2, actionf_p3> func;
+    
+    actionf_t() : func(std::monostate{})
     {
     }
 
-    operator bool()
+    template<class T>
+    actionf_t(T f) : func(f)
     {
-        return acv != nullptr;
     };
 
+    bool empty() const
+    {
+        return std::holds_alternative<std::monostate>(func);
+    };
+
+    bool full() const
+    {
+        return !empty();
+    };
+
+    void * get_void_star() const
+    {
+        void *ptr = nullptr;
+        
+        // This is a bit ugly, but it's the only way to get the pointer to the function
+        ptr = get_void_impl<actionf_v>(ptr);
+        ptr = get_void_impl<actionf_p1>(ptr);
+        ptr = get_void_impl<actionf_c1>(ptr);
+        ptr = get_void_impl<actionf_d1>(ptr);
+        ptr = get_void_impl<actionf_f1>(ptr);
+        ptr = get_void_impl<actionf_g1>(ptr);
+        ptr = get_void_impl<actionf_l1>(ptr);
+        ptr = get_void_impl<actionf_s1>(ptr);
+        ptr = get_void_impl<actionf_plat>(ptr);
+        ptr = get_void_impl<actionf_p2>(ptr);
+        ptr = get_void_impl<actionf_p3>(ptr);
+        
+        return ptr;
+    };
+
+    bool is_v() const
+    {
+        return std::holds_alternative<actionf_v>(func);
+    };
+
+    void operator()() const
+    {
+        std::get<actionf_v>(func)();
+    };
+
+    bool is_p1() const
+    {
+        return std::holds_alternative<actionf_p1>(func);
+    };
+
+    void operator()(mobj_t *mo) const
+    {
+        std::get<actionf_p1>(func)(mo);
+    };
+
+    bool is_c1() const
+    {
+        return std::holds_alternative<actionf_c1>(func);
+    };
+
+    void operator()(ceiling_t * ceiling) const
+    {
+        std::get<actionf_c1>(func)(ceiling);
+    };
+
+    bool is_d1() const
+    {
+        return std::holds_alternative<actionf_d1>(func);
+    };
+
+    void operator()(vldoor_t * door) const
+    {
+        std::get<actionf_d1>(func)(door);
+    };
+
+    bool is_f1() const
+    {
+        return std::holds_alternative<actionf_f1>(func);
+    };
+
+    void operator()(floormove_t * floor) const
+    {
+        std::get<actionf_f1>(func)(floor);
+    };
+
+    bool is_g1() const
+    {
+        return std::holds_alternative<actionf_g1>(func);
+    };
+
+    void operator()(glow_t * glow) const
+    {
+        std::get<actionf_g1>(func)(glow);
+    };
+
+    bool is_l1() const
+    {
+        return std::holds_alternative<actionf_l1>(func);
+    };
+
+    void operator()(lightflash_t * flash) const
+    {
+        std::get<actionf_l1>(func)(flash);
+    };
+
+    bool is_s1() const
+    {
+        return std::holds_alternative<actionf_s1>(func);
+    };
+
+    void operator()(strobe_t * flash) const
+    {
+        std::get<actionf_s1>(func)(flash);
+    };
+
+    bool is_plat() const
+    {
+        return std::holds_alternative<actionf_plat>(func);
+    };
+
+    void operator()(plat_t * plat) const
+    {
+        std::get<actionf_plat>(func)(plat);
+    };
+
+    bool is_p2() const
+    {
+        return std::holds_alternative<actionf_p2>(func);
+    };
+
+    void operator()(player_t *player, pspdef_t *psp) const
+    {
+        std::get<actionf_p2>(func)(player, psp);
+    };
+
+    bool is_p3() const
+    {
+        return std::holds_alternative<actionf_p3>(func);
+    };
+
+    void operator()(mobj_t *mo, player_t *player, pspdef_t *psp) const
+    {
+        std::get<actionf_p3>(func)(mo, player, psp);
+    };
+
+    template<class T>
+    bool same_as(T f) const
+    {
+        return std::holds_alternative<T>(func) && std::get<T>(func) == f;
+    };
+    
 };
 
 
-typedef struct
+struct state_t
 {
     spritenum_t sprite;
     int frame;
     int tics;
-    //void (*action) ();
     actionf_t  action;
     statenum_t nextstate;
     int misc1, misc2;
-} state_t;
+};
 
 extern state_t states[NUMSTATES];
 extern const char *sprnames[];
@@ -1650,7 +1745,8 @@ enum mobjtype_t
     MT_AMBLSRHEFTY,
     MT_SOUNDWIND,
     MT_SOUNDWATERFALL,
-    NUMMOBJTYPES
+    NUMMOBJTYPES,
+    MT_NULL = -1
 };
 
 // prefix and postfx  increment and decrement

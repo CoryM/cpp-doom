@@ -51,9 +51,7 @@ static struct
 
 boolean D_ValidGameMode(int mission, int mode)
 {
-    int i;
-
-    for (i = 0; i < arrlen(valid_modes); ++i)
+    for (std::size_t i = 0; i < arrlen(valid_modes); ++i)
     {
         if (valid_modes[i].mode == mode && valid_modes[i].mission == mission)
         {
@@ -67,7 +65,6 @@ boolean D_ValidGameMode(int mission, int mode)
 boolean D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode,
     int episode, int map)
 {
-    int i;
 
     // Hacks for Heretic secret episodes
 
@@ -85,7 +82,7 @@ boolean D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode,
 
     // Find the table entry for this mission/mode combination.
 
-    for (i = 0; i < arrlen(valid_modes); ++i)
+    for (std::size_t i = 0; i < arrlen(valid_modes); ++i)
     {
         if (mission == valid_modes[i].mission
             && mode == valid_modes[i].mode)
@@ -140,8 +137,6 @@ static struct {
 
 boolean D_ValidGameVersion(GameMission_t mission, GameVersion_t version)
 {
-    int i;
-
     // All Doom variants can use the Doom versions.
 
     if (mission == doom2 || mission == pack_plut || mission == pack_tnt
@@ -151,7 +146,7 @@ boolean D_ValidGameVersion(GameMission_t mission, GameVersion_t version)
         mission = doom;
     }
 
-    for (i = 0; i < arrlen(valid_versions); ++i)
+    for (std::size_t i = 0; i < arrlen(valid_versions); ++i)
     {
         if (valid_versions[i].mission == mission
             && valid_versions[i].version == version)

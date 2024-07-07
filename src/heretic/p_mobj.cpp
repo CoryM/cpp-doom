@@ -71,9 +71,12 @@ boolean P_SetMobjState(mobj_t * mobj, statenum_t state)
     mobj->tics = st->tics;
     mobj->sprite = st->sprite;
     mobj->frame = st->frame;
-    if (st->action)
+    if (st->action.is_p1())
     {                           // Call action function
-        st->action.acp3(mobj, NULL, NULL); // [crispy] let pspr action pointers get called from mobj states
+        st->action(mobj); // [crispy] let pspr action pointers get called from mobj states
+    } else if (st->action.is_g1())
+    {
+        st->action(reinterpret_cast<glow_t *>(mobj));
     }
     return (true);
 }
@@ -120,7 +123,7 @@ void P_ExplodeMissile(mobj_t * mo)
         }
     }
     mo->momx = mo->momy = mo->momz = 0;
-    P_SetMobjState(mo, mobjinfo[mo->type].deathstate);
+    P_SetMobjState(mo, static_cast<statenum_t>(mobjinfo[mo->type].deathstate));
     //mo->tics -= P_Random()&3;
     mo->flags &= ~MF_MISSILE;
     if (mo->info->deathsound)
@@ -138,7 +141,7 @@ void P_ExplodeMissile(mobj_t * mo)
 void P_FloorBounceMissile(mobj_t * mo)
 {
     mo->momz = -mo->momz;
-    P_SetMobjState(mo, mobjinfo[mo->type].deathstate);
+    P_SetMobjState(mo,  static_cast<statenum_t>(mobjinfo[mo->type].deathstate));
 }
 
 //----------------------------------------------------------------------------
@@ -288,7 +291,7 @@ void P_XYMovement(mobj_t * mo)
         {                       // A flying mobj slammed into something
             mo->flags &= ~MF_SKULLFLY;
             mo->momx = mo->momy = mo->momz = 0;
-            P_SetMobjState(mo, mo->info->seestate);
+            P_SetMobjState(mo,  static_cast<statenum_t>(mo->info->seestate));
         }
         return;
     }
@@ -556,7 +559,7 @@ void P_ZMovement(mobj_t * mo)
         }
         if (mo->info->crashstate && (mo->flags & MF_CORPSE))
         {
-            P_SetMobjState(mo, mo->info->crashstate);
+            P_SetMobjState(mo,  static_cast<statenum_t>(mo->info->crashstate));
             return;
         }
     }
@@ -747,7 +750,7 @@ void P_MobjThinker(mobj_t * mobj)
     if (mobj->momx || mobj->momy || (mobj->flags & MF_SKULLFLY))
     {
         P_XYMovement(mobj);
-        if (mobj->thinker.function)
+        if (mobj->thinker.function.full())
         {                       // mobj was removed
             return;
         }
@@ -794,7 +797,7 @@ void P_MobjThinker(mobj_t * mobj)
         {
             P_ZMovement(mobj);
         }
-        if (mobj->thinker.function)
+        if (mobj->thinker.function.full())
         {                       // mobj was removed
             return;
         }
@@ -857,7 +860,7 @@ mobj_t *P_SpawnMobj(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type)
     mobjinfo_t *info;
     fixed_t space;
 
-    mobj = Z_Malloc(sizeof(*mobj), PU_LEVEL, NULL);
+    mobj =  static_cast<mobj_t *>(Z_Malloc(sizeof(*mobj), PU_LEVEL, nullptr));
     memset(mobj, 0, sizeof(*mobj));
     info = &mobjinfo[type];
     mobj->type = type;
@@ -1148,7 +1151,7 @@ void P_SpawnMapThing(mapthing_t * mthing)
     {
         z = ONFLOORZ;
     }
-    mobj = P_SpawnMobj(x, y, z, i);
+    mobj = P_SpawnMobj(x, y, z, static_cast<mobjtype_t>(i));
     if (mobj->flags2 & MF2_FLOATBOB)
     {                           // Seed random starting index for bobbing motion
         mobj->health = P_Random();

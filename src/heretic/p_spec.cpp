@@ -233,7 +233,7 @@ void P_InitTerrainTypes(void)
     int size;
 
     size = (numflats + 1) * sizeof(int);
-    TerrainTypes = Z_Malloc(size, PU_STATIC, 0);
+    TerrainTypes = static_cast<int *>(Z_Malloc(size, PU_STATIC, nullptr));
     memset(TerrainTypes, 0, size);
     for (i = 0; TerrainTypeDefs[i].type != -1; i++)
     {
@@ -1076,7 +1076,7 @@ int EV_DoDonut(line_t * line)
             //
             //      Spawn rising slime
             //
-            floor = Z_Malloc(sizeof(*floor), PU_LEVSPEC, 0);
+            floor = static_cast<floormove_t *>(Z_Malloc(sizeof(*floor), PU_LEVSPEC, nullptr));
             P_AddThinker(&floor->thinker);
             s2->specialdata = floor;
             floor->thinker.function = T_MoveFloor;
@@ -1092,7 +1092,7 @@ int EV_DoDonut(line_t * line)
             //
             //      Spawn lowering donut-hole
             //
-            floor = Z_Malloc(sizeof(*floor), PU_LEVSPEC, 0);
+            floor = static_cast<floormove_t *>(Z_Malloc(sizeof(*floor), PU_LEVSPEC, nullptr));
             P_AddThinker(&floor->thinker);
             s1->specialdata = floor;
             floor->thinker.function = T_MoveFloor;
@@ -1259,7 +1259,7 @@ void P_AmbientSound(void)
     done = false;
     do
     {
-        cmd = *AmbSfxPtr++;
+        cmd = static_cast<afxcmd_t>(*AmbSfxPtr++);
         switch (cmd)
         {
             case afxcmd_play:

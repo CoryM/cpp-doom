@@ -377,7 +377,7 @@ void AM_initVariables(void)
         for (think = thinkercap.next; think != &thinkercap;
              think = think->next)
         {
-            if (think->function.acp1 != (actionf_p1)P_MobjThinker)
+            if (think->function.same_as(P_MobjThinker))
             {                   //not a mobj
                 continue;
             }

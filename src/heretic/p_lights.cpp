@@ -62,11 +62,9 @@ void T_LightFlash(lightflash_t * flash)
 //==================================================================
 void P_SpawnLightFlash(sector_t * sector)
 {
-    lightflash_t *flash;
-
     sector->special = 0;        // nothing special about it during gameplay
 
-    flash = Z_Malloc(sizeof(*flash), PU_LEVSPEC, 0);
+    lightflash_t *flash = static_cast<lightflash_t *>(Z_Malloc(sizeof(*flash), PU_LEVSPEC, 0));
     P_AddThinker(&flash->thinker);
     flash->thinker.function = T_LightFlash;
     flash->sector = sector;
@@ -118,14 +116,12 @@ void T_StrobeFlash(strobe_t * flash)
 //==================================================================
 void P_SpawnStrobeFlash(sector_t * sector, int fastOrSlow, int inSync)
 {
-    strobe_t *flash;
-
-    flash = Z_Malloc(sizeof(*flash), PU_LEVSPEC, 0);
+    strobe_t *flash =  static_cast<strobe_t *>(Z_Malloc(sizeof(*flash), PU_LEVSPEC, 0));
     P_AddThinker(&flash->thinker);
     flash->sector = sector;
     flash->darktime = fastOrSlow;
     flash->brighttime = STROBEBRIGHT;
-    flash->thinker.function.acs1 = T_StrobeFlash;
+    flash->thinker.function = T_StrobeFlash;
     flash->maxlight = sector->lightlevel;
     flash->minlight = P_FindMinSurroundingLight(sector, sector->lightlevel);
 
@@ -260,14 +256,12 @@ void T_Glow(glow_t * g)
 
 void P_SpawnGlowingLight(sector_t * sector)
 {
-    glow_t *g;
-
-    g = Z_Malloc(sizeof(*g), PU_LEVSPEC, 0);
+    glow_t *g =  static_cast<glow_t *>(Z_Malloc(sizeof(*g), PU_LEVSPEC, 0));
     P_AddThinker(&g->thinker);
     g->sector = sector;
     g->minlight = P_FindMinSurroundingLight(sector, sector->lightlevel);
     g->maxlight = sector->lightlevel;
-    g->thinker.function.acg1 = T_Glow;
+    g->thinker.function = T_Glow;
     g->direction = -1;
 
     sector->special = 0;

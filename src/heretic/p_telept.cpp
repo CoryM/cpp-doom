@@ -143,7 +143,7 @@ boolean EV_Teleport(line_t * line, int side, mobj_t * thing)
             for (thinker = thinkercap.next; thinker != &thinkercap;
                  thinker = thinker->next)
             {
-                if (thinker->function.acp1 != P_MobjThinker)
+                if (!thinker->function.same_as(P_MobjThinker))
                 {               // Not a mobj
                     continue;
                 }

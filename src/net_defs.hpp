@@ -184,7 +184,7 @@ typedef struct
 // Game settings sent by client to server when initiating game start,
 // and received from the server by clients when the game starts.
 
-typedef struct
+struct net_gamesettings_t
 {
     int ticdup;
     int extratics;
@@ -212,7 +212,7 @@ typedef struct
 
     int player_classes[NET_MAXPLAYERS];
 
-} net_gamesettings_t;
+};
 
 #define NET_TICDIFF_FORWARD     (1 << 0)
 #define NET_TICDIFF_SIDE        (1 << 1)

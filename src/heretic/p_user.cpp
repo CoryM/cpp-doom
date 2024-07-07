@@ -482,7 +482,7 @@ boolean P_UndoPlayerChicken(player_t * player)
     y = pmo->y;
     z = pmo->z;
     angle = pmo->angle;
-    weapon = pmo->special1.i;
+    weapon = static_cast<weapontype_t>(pmo->special1.i);
     oldFlags = pmo->flags;
     oldFlags2 = pmo->flags2;
     P_SetMobjState(pmo, S_FREETARGMOBJ);
@@ -593,7 +593,7 @@ void P_PlayerThink(player_t * player)
         }
         else
         {
-            P_PlayerUseArtifact(player, cmd->arti);
+            P_PlayerUseArtifact(player, static_cast<artitype_t>(cmd->arti));
         }
     }
     // Check for weapon change
@@ -606,7 +606,7 @@ void P_PlayerThink(player_t * player)
         // The actual changing of the weapon is done when the weapon
         // psprite can do it (A_WeaponReady), so it doesn't happen in
         // the middle of an attack.
-        newweapon = (cmd->buttons & BT_WEAPONMASK) >> BT_WEAPONSHIFT;
+        newweapon = static_cast<weapontype_t>((cmd->buttons & BT_WEAPONMASK) >> BT_WEAPONSHIFT);
         if (newweapon == wp_staff && player->weaponowned[wp_gauntlets]
             && !(player->readyweapon == wp_gauntlets))
         {
@@ -827,7 +827,7 @@ void P_PlayerNextArtifact(player_t * player)
                 curpos = 6;
             }
         }
-        player->readyArtifact = player->inventory[inv_ptr].type;
+        player->readyArtifact = static_cast<artitype_t>(player->inventory[inv_ptr].type);
     }
 }
 
@@ -869,7 +869,7 @@ void P_PlayerRemoveArtifact(player_t * player, int slot)
             {
                 inv_ptr = 0;
             }
-            player->readyArtifact = player->inventory[inv_ptr].type;
+            player->readyArtifact = static_cast<artitype_t>(player->inventory[inv_ptr].type);
         }
     }
 }

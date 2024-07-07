@@ -82,7 +82,7 @@ void P_AddThinker(thinker_t * thinker)
 
 void P_RemoveThinker(thinker_t * thinker)
 {
-    thinker->function.acv = nullptr;
+    thinker->function = actionf_t();
 }
 
 /*
@@ -115,7 +115,7 @@ void P_RunThinkers(void)
     currentthinker = thinkercap.next;
     while (currentthinker != &thinkercap)
     {
-        if (!currentthinker->function)
+        if (currentthinker->function.empty())
         {                       // time to remove it
             nextthinker = currentthinker->next;
             currentthinker->next->prev = currentthinker->prev;
@@ -124,9 +124,14 @@ void P_RunThinkers(void)
         }
         else
         {
-            if (currentthinker->function.acp1)
-                currentthinker->function.acp1(
-                    reinterpret_cast<mobj_t *>(currentthinker));
+            if (currentthinker->function.is_p1()) {
+                 currentthinker->function(reinterpret_cast<mobj_t *>(currentthinker));
+            } else if (currentthinker->function.is_g1()) {
+                currentthinker->function(reinterpret_cast<glow_t *>(currentthinker));
+            } else {
+                // This should not be called and should throw an error.
+                currentthinker->function(reinterpret_cast<mobj_t *>(currentthinker));
+            }
             nextthinker = currentthinker->next;
         }
         currentthinker = nextthinker;

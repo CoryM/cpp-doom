@@ -88,7 +88,7 @@ enum GameVariant_t
 
 // Skill level.
 
-enum skill_t
+enum skill_t : int
 {
     sk_noitems = -1, // the "-skill 0" hack
     sk_baby    = 0,

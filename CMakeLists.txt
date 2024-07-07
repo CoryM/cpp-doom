@@ -8,6 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
+set(CRISPY_TRUECOLOR OFF CACHE BOOL "Enable truecolor support")
+
 # Autotools variables
 set(top_srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(top_builddir ${CMAKE_CURRENT_BINARY_DIR})
@@ -34,29 +36,32 @@ if(MSVC)
     add_definitions("/D_CRT_SECURE_NO_WARNINGS" "/D_CRT_SECURE_NO_DEPRECATE"
                     "/D_CRT_NONSTDC_NO_DEPRECATE")
 else()
-    add_compile_options("-Og" "-g" "-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" "-Wfatal-errors"
+    add_compile_options("-Og" "-g" "-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" 
+        #"-Wfatal-errors"
+        #"-Wnrvo" # Warn on non-return value optimization
         "-fsanitize=address" "-fno-omit-frame-pointer"
         "-fsanitize=undefined"
         "-fsanitize=leak" 
-        "-fsanitize=pointer-compare"
-        "-fsanitize=pointer-subtract" 
-        "-fno-optimize-sibling-calls"
-        "-fno-common" 
+        #"-fsanitize=pointer-compare"
+        #"-fsanitize=pointer-subtract" 
+        #"-fno-optimize-sibling-calls"
+        #"-fno-common" 
         )
 
     add_link_options(
         "-fdiagnostics-color=always"
         #"-fuse-ld=gold"
+        #"-fuse-ld=ld"
         "-fsanitize=address" "-fno-omit-frame-pointer"
         "-fsanitize=undefined"
         "-fsanitize=leak" 
-        "-fsanitize=pointer-compare"
-        "-fsanitize=pointer-subtract" 
-        "-fno-optimize-sibling-calls"
-        "-fno-common" 
+        #"-fsanitize=pointer-compare"
+        #"-fsanitize=pointer-subtract" 
+        #"-fno-optimize-sibling-calls"
+        #"-fno-common" 
         )
 endif()
-add_compile_definitions( -DCRISPY_TRUECOLOR )
+#add_compile_definitions( -DCRISPY_TRUECOLOR )
 
 find_package(SDL2 2.0.1 REQUIRED)
 find_package(SDL2_mixer REQUIRED)

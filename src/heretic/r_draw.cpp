@@ -263,7 +263,7 @@ void R_InitTranslationTables(void)
     V_LoadTintTable();
 
     // Allocate translation tables
-    translationtables = Z_Malloc(256 * 3, PU_STATIC, 0);
+    translationtables = static_cast<byte *>(Z_Malloc(256 * 3, PU_STATIC, nullptr));
 
     // Fill out the translation tables
     for (i = 0; i < 256; i++)
