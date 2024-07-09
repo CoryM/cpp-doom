@@ -126,8 +126,16 @@ void P_RunThinkers(void)
         {
             if (currentthinker->function.is_p1()) {
                  currentthinker->function(reinterpret_cast<mobj_t *>(currentthinker));
+
             } else if (currentthinker->function.is_g1()) {
                 currentthinker->function(reinterpret_cast<glow_t *>(currentthinker));
+
+            } else if (currentthinker->function.is_l1()) {
+                currentthinker->function(reinterpret_cast<lightflash_t *>(currentthinker));
+            
+            } else if (currentthinker->function.is_s1()) {
+                currentthinker->function(reinterpret_cast<strobe_t *>(currentthinker));
+
             } else {
                 // This should not be called and should throw an error.
                 currentthinker->function(reinterpret_cast<mobj_t *>(currentthinker));
