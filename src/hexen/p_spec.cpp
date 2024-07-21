@@ -18,10 +18,14 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "h2def.hpp"
+#include "g_game.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
 #include "p_local.hpp"
 #include "s_sound.hpp"
+#include "g_game.hpp" // players[]
+
+#include "../w_wad.hpp"
 
 // MACROS ------------------------------------------------------------------
 

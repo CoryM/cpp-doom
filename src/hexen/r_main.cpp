@@ -13,13 +13,18 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-
+#include "r_main.hpp"
 
 #include <math.h>
+
+#include "a_action.hpp"
 #include "m_random.hpp"
 #include "h2def.hpp"
+#include "h2_main.hpp" // Updatestate
 #include "m_bbox.hpp"
 #include "r_local.hpp"
+#include "r_draw.hpp"
+#include "g_game.hpp" // players[]
 
 int viewangleoffset;
 

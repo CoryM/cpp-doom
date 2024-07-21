@@ -18,6 +18,8 @@
 #ifndef __AMMAP_H__
 #define __AMMAP_H__
 
+#include "r_local.hpp" // vertex_t
+
 // For use if I do walls with outsides/insides
 #define REDS		12*8
 #define REDRANGE	1       //16
@@ -107,10 +109,10 @@ typedef struct
 
 typedef vertex_t mpoint_t;
 
-typedef struct
+struct mline_t
 {
     mpoint_t a, b;
-} mline_t;
+};
 
 typedef struct
 {

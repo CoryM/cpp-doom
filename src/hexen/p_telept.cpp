@@ -22,6 +22,7 @@
 #include "i_system.hpp"
 #include "p_local.hpp"
 #include "s_sound.hpp"
+#include "sounds.hpp"
 
 // MACROS ------------------------------------------------------------------
 

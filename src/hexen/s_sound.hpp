@@ -18,6 +18,7 @@
 #ifndef __S_SOUND__
 #define __S_SOUND__
 
+#include "mobj.hpp" // mobj_t
 /*
 typedef struct
 {

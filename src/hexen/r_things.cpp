@@ -21,6 +21,7 @@
 #include "i_system.hpp"
 #include "i_swap.hpp"
 #include "r_local.hpp"
+#include "g_game.hpp" // players[]
 
 //void R_DrawTranslatedAltTLColumn(void);
 

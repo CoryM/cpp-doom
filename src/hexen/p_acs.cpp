@@ -18,13 +18,22 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "../../utils/memory.hpp"
+#include "../../utils/lump.hpp"
+
+#include "../z_zone.hpp"
+
+#include "g_game.hpp" // players[]
 #include "h2def.hpp"
 #include "i_swap.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
 #include "m_random.hpp"
 #include "p_local.hpp"
+#include "player.hpp"
+#include "r_data.hpp"
 #include "s_sound.hpp"
+#include "sn_sonix.hpp"
+#include "sounds.hpp"
 
 // MACROS ------------------------------------------------------------------
 

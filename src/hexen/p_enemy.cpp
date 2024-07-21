@@ -17,10 +17,14 @@
 
 #include "h2def.hpp"
 #include "m_random.hpp"
+#include "mobj.hpp"
+#include "g_game.hpp" // players[]
 #include "i_system.hpp"
 #include "i_swap.hpp"
 #include "p_local.hpp"
+#include "player.hpp"
 #include "s_sound.hpp"
+#include "sounds.hpp"
 
 // Macros
 // Types
@@ -1522,7 +1526,7 @@ void A_Scream(mobj_t * actor)
             }
             else if (actor->health > -50)
             {                   // Normal death sound
-                switch (actor->player->class)
+                switch (actor->player->pclass)
                 {
                     case PCLASS_FIGHTER:
                         sound = SFX_PLAYER_FIGHTER_NORMAL_DEATH;
@@ -1540,7 +1544,7 @@ void A_Scream(mobj_t * actor)
             }
             else if (actor->health > -100)
             {                   // Crazy death sound
-                switch (actor->player->class)
+                switch (actor->player->pclass)
                 {
                     case PCLASS_FIGHTER:
                         sound = SFX_PLAYER_FIGHTER_CRAZY_DEATH;
@@ -1558,7 +1562,7 @@ void A_Scream(mobj_t * actor)
             }
             else
             {                   // Extreme death sound
-                switch (actor->player->class)
+                switch (actor->player->pclass)
                 {
                     case PCLASS_FIGHTER:
                         sound = SFX_PLAYER_FIGHTER_EXTREME1_DEATH;
@@ -1783,7 +1787,7 @@ void A_SkullPop(mobj_t * actor)
     // Attach player mobj to bloody skull
     player = actor->player;
     actor->player = NULL;
-    actor->special1.i = player->class;
+    actor->special1.i = player->pclass;
     mo->player = player;
     mo->health = actor->health;
     mo->angle = actor->angle;
@@ -2877,9 +2881,8 @@ static void DragonSeek(mobj_t * actor, angle_t thresh, angle_t turnMax)
     {                           // attack the destination mobj if it's attackable
         mobj_t *oldTarget;
 
-        if (abs(actor->angle - R_PointToAngle2(actor->x, actor->y,
-                                               target->x,
-                                               target->y)) < ANG45 / 2)
+        if (abs(static_cast<int>(actor->angle - 
+              R_PointToAngle2(actor->x, actor->y, target->x, target->y))) < (ANG45 / 2))
         {
             oldTarget = actor->target;
             actor->target = target;
@@ -2915,9 +2918,9 @@ static void DragonSeek(mobj_t * actor, angle_t thresh, angle_t turnMax)
                 mo = P_FindMobjFromTID(target->args[i], &search);
                 angleToSpot = R_PointToAngle2(actor->x, actor->y,
                                               mo->x, mo->y);
-                if (abs(angleToSpot - angleToTarget) < bestAngle)
+                if (abs(static_cast<int>(angleToSpot - angleToTarget)) < bestAngle)
                 {
-                    bestAngle = abs(angleToSpot - angleToTarget);
+                    bestAngle = abs(static_cast<int>(angleToSpot - angleToTarget));
                     bestArg = i;
                 }
             }
@@ -2986,13 +2989,13 @@ void A_DragonFlight(mobj_t * actor)
         }
         angle = R_PointToAngle2(actor->x, actor->y, actor->target->x,
                                 actor->target->y);
-        if (abs(actor->angle - angle) < ANG45 / 2
+        if (abs(static_cast<int>(actor->angle - angle)) < ANG45 / 2
             && P_CheckMeleeRange(actor))
         {
             P_DamageMobj(actor->target, actor, actor, HITDICE(8));
             S_StartSound(actor, SFX_DRAGON_ATTACK);
         }
-        else if (abs(actor->angle - angle) <= ANG1 * 20)
+        else if (abs(static_cast<int>(actor->angle - angle)) <= ANG1 * 20)
         {
             P_SetMobjState(actor, actor->info->missilestate);
             S_StartSound(actor, SFX_DRAGON_ATTACK);
@@ -4032,8 +4035,8 @@ void A_SorcBallOrbit(mobj_t * actor)
         case SORC_STOPPING:    // Balls stopping
             if ((parent->special2.i == actor->type) &&
                 (parent->args[1] > SORCBALL_SPEED_ROTATIONS) &&
-                (abs(angle - (parent->angle >> ANGLETOFINESHIFT)) <
-                 (30 << 5)))
+                (abs(static_cast<int>(angle - (parent->angle >>
+                  ANGLETOFINESHIFT))) < (30 << 5)))
             {
                 // Can stop now
                 actor->target->args[3] = SORC_FIRESPELL;

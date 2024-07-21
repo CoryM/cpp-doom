@@ -15,18 +15,29 @@
 //
 
 #include <cstdio>
+import i_swap; //#include "i_swap.hpp"
 
-#include "h2def.hpp"
+#include "am_data.hpp"
+#include "am_map.hpp"
 #include "doomkeys.hpp"
-#include "i_video.hpp"
-#include "i_swap.hpp"
+#include "g_game.hpp" // players[]
+#include "h2def.hpp"
+#include "h2_main.hpp" // Updatestate
 #include "i_timer.hpp"
+#include "i_video.hpp"
 #include "m_controls.hpp"
 #include "m_misc.hpp"
+#include "mn_menu.hpp"
+#include "player.hpp"
 #include "p_local.hpp"
-#include "am_map.hpp"
-#include "am_data.hpp"
+#include "p_setup.hpp"
+#include "r_draw.hpp"
+#include "textdefs.hpp"  // AMSTR_FOLLOWON, AMSTR_FOLLOWOFF
 #include "v_video.hpp"
+
+#include "../z_zone.hpp"
+
+#include "../../utils/lump.hpp"
 
 #define NUMALIAS 3              // Number of antialiased lines.
 
@@ -278,7 +289,7 @@ void AM_initVariables(void)
     //static event_t st_notify = { ev_keyup, AM_MSGENTERED };
 
     automapactive = true;
-    fb = I_VideoBuffer;
+    fb = reinterpret_cast<byte *>(I_VideoBuffer);
 
     f_oldloc.x = INT_MAX;
     amclock = 0;
@@ -330,7 +341,7 @@ void AM_initVariables(void)
 
 void AM_loadPics(void)
 {
-    maplump = cache_lump_name<patch_t *>("AUTOPAGE", PU_STATIC);
+    maplump = cache_lump_name<byte *>("AUTOPAGE", PU_STATIC);
 }
 
 

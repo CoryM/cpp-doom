@@ -22,6 +22,8 @@
 #include "r_local.hpp"
 #include "p_local.hpp"
 
+#include "../w_wad.hpp"
+
 typedef struct
 {
     int originx;                // block origin (allways UL), which has allready

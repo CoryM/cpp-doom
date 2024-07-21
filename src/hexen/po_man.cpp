@@ -16,6 +16,7 @@
 
 
 // HEADER FILES ------------------------------------------------------------
+#include "../z_zone.hpp"
 
 #include "h2def.hpp"
 #include "i_system.hpp"
@@ -23,6 +24,9 @@
 #include "i_swap.hpp"
 #include "p_local.hpp"
 #include "r_local.hpp"
+#include "sn_sonix.hpp"
+
+#include "../z_zone.hpp"
 
 // MACROS ------------------------------------------------------------------
 

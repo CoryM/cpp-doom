@@ -13,17 +13,30 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
+#include "in_lude.hpp"
 
 #include <cctype>
 
+#include "g_game.hpp" // players[]
 #include "h2def.hpp"
+#include "h2_main.hpp" // Updatestate
 #include "s_sound.hpp"
 #include "i_system.hpp"
 #include "i_video.hpp"
 #include "m_misc.hpp"
+#include "mn_menu.hpp"
 #include "p_local.hpp"
+#include "p_setup.hpp"
+#include "r_draw.hpp"  // BorderNeedRefresh
+#include "sn_sonix.hpp"
+#include "sounds.hpp"
 #include "v_video.hpp"
+#include "w_wad.hpp"
 #include "i_swap.hpp"
+
+#include "../z_zone.hpp"
+
+#include "../../utils/lump.hpp"
 
 // MACROS ------------------------------------------------------------------
 
@@ -403,7 +416,7 @@ void IN_Drawer(void)
         return;
     }
     UpdateState |= I_FULLSCRN;
-    V_CopyScaledBuffer(I_VideoBuffer, (byte *) patchINTERPIC, ORIGWIDTH * ORIGHEIGHT);
+    V_CopyScaledBuffer(I_VideoBuffer, (pixel_t *) patchINTERPIC, ORIGWIDTH * ORIGHEIGHT);
 
     if (gametype == SINGLE)
     {

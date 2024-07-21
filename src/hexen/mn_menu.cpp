@@ -14,22 +14,37 @@
 // GNU General Public License for more details.
 //
 
-
 // HEADER FILES ------------------------------------------------------------
+#include "mn_menu.hpp"
 
 #include <cctype>
+import i_swap; //#include "i_swap.hpp"
+
+#include "ct_chat.hpp"
+#include "h2_main.hpp" // UpdateState
 #include "h2def.hpp"
 #include "doomkeys.hpp"
+#include "g_game.hpp" // players[#]  G_SaveGame(...)
 #include "i_input.hpp"
 #include "i_system.hpp"
-#include "i_swap.hpp"
 #include "i_video.hpp"
 #include "m_controls.hpp"
 #include "m_misc.hpp"
 #include "p_local.hpp"
+#include "player.hpp"
+#include "r_draw.hpp"
 #include "r_local.hpp"
+#include "r_main.hpp"
 #include "s_sound.hpp"
+#include "sb_bar.hpp"
+#include "sounds.hpp"
+#include "sv_save.hpp"
+#include "textdefs.hpp"
 #include "v_video.hpp"
+#include "w_wad.hpp"
+#include "z_zone.hpp"
+
+#include "../../utils/lump.hpp"
 
 // MACROS ------------------------------------------------------------------
 
@@ -600,7 +615,7 @@ static void DrawMainMenu(void)
 
 static void DrawClassMenu(void)
 {
-    pclass_t class;
+    pclass_t pclass;
     static const char *boxLumpName[3] = {
         "m_fbox",
         "m_cbox",
@@ -613,10 +628,10 @@ static void DrawClassMenu(void)
     };
 
     MN_DrTextB("CHOOSE CLASS:", 34, 24);
-    class = (pclass_t) CurrentMenu->items[CurrentItPos].option;
-    V_DrawPatch(174, 8, W_CacheLumpName(boxLumpName[class], PU_CACHE));
+    pclass = (pclass_t) CurrentMenu->items[CurrentItPos].option;
+    V_DrawPatch(174, 8, W_CacheLumpName(boxLumpName[pclass], PU_CACHE));
     V_DrawPatch(174 + 24, 8 + 12,
-                W_CacheLumpNum(W_GetNumForName(walkLumpName[class])
+                W_CacheLumpNum(W_GetNumForName(walkLumpName[pclass])
                                + ((MenuTime >> 3) & 3), PU_CACHE));
 }
 
@@ -1781,7 +1796,7 @@ void MN_DrawInfo(void)
 {
     I_SetPalette(cache_lump_name<patch_t *>("PLAYPAL", PU_CACHE));
     V_CopyScaledBuffer(I_VideoBuffer,
-           (byte *) W_CacheLumpNum(W_GetNumForName("TITLE") + InfoType,
+           (pixel_t *) W_CacheLumpNum(W_GetNumForName("TITLE") + InfoType,
                                    PU_CACHE), ORIGWIDTH * ORIGHEIGHT);
 //      V_DrawPatch(0, 0, W_CacheLumpNum(W_GetNumForName("TITLE")+InfoType,
 //              PU_CACHE));

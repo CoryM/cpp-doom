@@ -13,22 +13,42 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-
+#include "g_game.hpp"
 
 #include <cstring>
-#include "m_random.hpp"
-#include "h2def.hpp"
-#include "s_sound.hpp"
+#include <cmath>
+
+#include "a_action.hpp"
+#include "ct_chat.hpp"
 #include "doomkeys.hpp"
+#include "f_finale.hpp"
+#include "h2def.hpp"
 #include "i_input.hpp"
 #include "i_video.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"
+#include "in_lude.hpp"
 #include "m_argv.hpp"
 #include "m_controls.hpp"
 #include "m_misc.hpp"
+#include "m_random.hpp"
 #include "p_local.hpp"
+#include "p_setup.hpp"
+#include "p_tick.hpp"
+#include "player.hpp"
+#include "r_draw.hpp"
+#include "s_sound.hpp"
+#include "sb_bar.hpp" // inv_ptr
+#include "sn_sonix.hpp"
+#include "sv_save.hpp"
+#include "sounds.hpp"
+#include "textdefs.hpp"
 #include "v_video.hpp"
+#include "w_wad.hpp"
+
+#include "../d_loop.hpp"
+#include "../z_zone.hpp" // Z_CheckHeap() found in z_native.cpp and z_zone.cpp
+#include "../net_defs.hpp"
 
 #define AM_STARTKEY	9
 
@@ -209,7 +229,7 @@ void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
 
     // haleyjd: removed externdriver crap
 
-    pClass = players[consoleplayer].class;
+    pClass = players[consoleplayer].pclass;
     memset(cmd, 0, sizeof(*cmd));
 
 //      cmd->consistancy =
@@ -695,7 +715,7 @@ void G_DoLoadLevel(void)
     P_SetupLevel(gameepisode, gamemap, 0, gameskill);
     displayplayer = consoleplayer;      // view the guy you are playing   
     gameaction = ga_nothing;
-    Z_CheckHeap();
+    Z_CheckHeap(); // Z_CheckHeap() found in z_native.cpp amd z_zone.cpp
 
 //
 // clear cmd building stuff
@@ -1226,7 +1246,7 @@ void G_PlayerReborn(int player)
     players[player].itemcount = itemcount;
     players[player].secretcount = secretcount;
     players[player].worldTimer = worldTimer;
-    players[player].class = PlayerClass[player];
+    players[player].pclass = PlayerClass[player];
 
     p->usedown = p->attackdown = true;  // don't do anything immediately
     p->playerstate = PST_LIVE;
@@ -1950,8 +1970,7 @@ void G_WriteDemoTiccmd(ticcmd_t * cmd)
 ===================
 */
 
-void G_RecordDemo(skill_t skill, int numplayers, int episode, int map,
-                  char *name)
+void G_RecordDemo(skill_t skill, int numplayers, int episode, int map, char *name)
 {
     int i;
     int maxsize;

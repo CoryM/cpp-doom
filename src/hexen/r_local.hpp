@@ -18,34 +18,34 @@
 #ifndef __R_LOCAL__
 #define __R_LOCAL__
 
+#include "h2def.hpp"
 #include "i_video.hpp"
+#include "mobj.hpp"
+#include "../m_fixed.hpp"
+#include "../tables.hpp"
 
-#define ANGLETOSKYSHIFT         22      // sky map is 256*128*4 maps
+#define ANGLETOSKYSHIFT 22 // sky map is 256*128*4 maps
+#define BASEYCENTER     100
 
-#define BASEYCENTER                     100
+// #define MAXWIDTH                        1120
+// #define MAXHEIGHT                       832
 
-//#define MAXWIDTH                        1120
-//#define MAXHEIGHT                       832
-
-#define PI                                      3.141592657
-
-#define CENTERY                         (SCREENHEIGHT/2)
-
-#define MINZ                    (FRACUNIT*4)
-
-#define FIELDOFVIEW             2048    // fineangles in the SCREENWIDTH wide window
+#define PI          3.141592657
+#define CENTERY     (SCREENHEIGHT / 2)
+#define MINZ        (FRACUNIT * 4)
+#define FIELDOFVIEW 2048 // fineangles in the SCREENWIDTH wide window
 
 //
 // lighting constants
 //
-#define LIGHTLEVELS                     16
-#define LIGHTSEGSHIFT           4
-#define MAXLIGHTSCALE           48
-#define LIGHTSCALESHIFT         12
-#define MAXLIGHTZ                       128
-#define LIGHTZSHIFT                     20
-#define NUMCOLORMAPS            32      // number of diminishing
-#define INVERSECOLORMAP         32
+#define LIGHTLEVELS     16
+#define LIGHTSEGSHIFT   4
+#define MAXLIGHTSCALE   48
+#define LIGHTSCALESHIFT 12
+#define MAXLIGHTZ       128
+#define LIGHTZSHIFT     20
+#define NUMCOLORMAPS    32 // number of diminishing
+#define INVERSECOLORMAP 32
 
 /*
 ==============================================================================
@@ -57,14 +57,16 @@
 
 //================ used by play and refresh
 
-typedef struct
+struct vertex_t
 {
     fixed_t x, y;
-} vertex_t;
+};
 
 struct line_s;
+//struct mobj_t;
+enum   seqtype_t : int;
 
-typedef struct
+struct sector_t
 {
     fixed_t floorheight, ceilingheight;
     short floorpic, ceilingpic;
@@ -82,23 +84,23 @@ typedef struct
     void *specialdata;          // thinker_t for reversable actions
     int linecount;
     struct line_s **lines;      // [linecount] size
-} sector_t;
+};
 
-typedef struct
+struct side_t
 {
     fixed_t textureoffset;      // add this to the calculated texture col
     fixed_t rowoffset;          // add this to the calculated texture top
     short toptexture, bottomtexture, midtexture;
     sector_t *sector;
-} side_t;
+};
 
-typedef enum
+enum slopetype_t
 {
     ST_HORIZONTAL,
     ST_VERTICAL,
     ST_POSITIVE,
     ST_NEGATIVE
-} slopetype_t;
+};
 
 /*
 typedef struct line_s
@@ -138,7 +140,7 @@ typedef struct line_s
     void *specialdata;
 } line_t;
 
-typedef struct
+struct seg_t
 {
     vertex_t *v1, *v2;
     fixed_t offset;
@@ -147,10 +149,10 @@ typedef struct
     line_t *linedef;
     sector_t *frontsector;
     sector_t *backsector;       // NULL for one sided lines
-} seg_t;
+};
 
 // ===== Polyobj data =====
-typedef struct
+struct polyobj_t
 {
     int numsegs;
     seg_t **segs;
@@ -165,22 +167,22 @@ typedef struct
     int seqType;
     fixed_t size;               // polyobj size (area of POLY_AREAUNIT == size of FRACUNIT)
     void *specialdata;          // pointer a thinker, if the poly is moving
-} polyobj_t;
+};
 
-typedef struct polyblock_s
+struct polyblock_t
 {
     polyobj_t *polyobj;
-    struct polyblock_s *prev;
-    struct polyblock_s *next;
-} polyblock_t;
+    struct polyblock_t *prev;
+    struct polyblock_t *next;
+};
 
-typedef struct subsector_s
+struct subsector_t
 {
     sector_t *sector;
     short numlines;
     short firstline;
     polyobj_t *poly;
-} subsector_t;
+};
 
 typedef struct
 {
@@ -252,9 +254,9 @@ typedef struct vissprite_s
     fixed_t texturemid;
     int patch;
     lighttable_t *colormap;
-    int mobjflags;              // for color translation and shadow draw
+    int     mobjflags;              // for color translation and shadow draw
     boolean psprite;            // true if psprite
-    int class;                  // player class (used in translation)
+    int     pclass;                  // player class (used in translation)
     fixed_t floorclip;
 } vissprite_t;
 

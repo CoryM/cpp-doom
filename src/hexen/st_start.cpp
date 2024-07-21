@@ -28,6 +28,7 @@
 #include "i_videohr.hpp"
 #include "s_sound.hpp"
 #include "st_start.hpp"
+#include "w_wad.hpp"
 
 
 // MACROS ------------------------------------------------------------------

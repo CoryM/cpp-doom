@@ -19,6 +19,8 @@
 #include "m_random.hpp"
 #include "p_local.hpp"
 
+#include "../z_zone.hpp"
+
 //============================================================================
 //
 //      T_Light

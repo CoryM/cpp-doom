@@ -16,7 +16,9 @@
 
 
 // HEADER FILES ------------------------------------------------------------
+#include "p_tick.hpp"
 
+#include "g_game.hpp" // players[]
 #include "h2def.hpp"
 #include "p_local.hpp"
 

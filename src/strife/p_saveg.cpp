@@ -274,10 +274,10 @@ static void saveg_write_actionf_t(actionf_t *str)
 
 static void saveg_read_thinker_t(thinker_t *str)
 {
-    // struct thinker_s* prev;
+    // struct thinker_t* prev;
     str->prev = saveg_readp();
 
-    // struct thinker_s* next;
+    // struct thinker_t* next;
     str->next = saveg_readp();
 
     // think_t function;
@@ -286,10 +286,10 @@ static void saveg_read_thinker_t(thinker_t *str)
 
 static void saveg_write_thinker_t(thinker_t *str)
 {
-    // struct thinker_s* prev;
+    // struct thinker_t* prev;
     saveg_writep(str->prev);
 
-    // struct thinker_s* next;
+    // struct thinker_t* next;
     saveg_writep(str->next);
 
     // think_t function;

@@ -28,19 +28,42 @@
 #include "ct_chat.hpp"
 #include "d_iwad.hpp"
 #include "d_mode.hpp"
+#include "f_finale.hpp"
 #include "m_misc.hpp"
 #include "s_sound.hpp"
+#include "g_game.hpp" // players[]
 #include "i_input.hpp"
 #include "i_joystick.hpp"
+#include "i_sound.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"
+#include "in_lude.hpp"
 #include "m_argv.hpp"
 #include "m_config.hpp"
 #include "m_controls.hpp"
+#include "mn_menu.hpp"
 #include "net_client.hpp"
 #include "p_local.hpp"
+#include "p_setup.hpp"
+#include "r_draw.hpp"
+#include "r_main.hpp"
+#include "sb_bar.hpp"
+#include "sc_man.hpp"
+#include "sn_sonix.hpp"
+#include "st_start.hpp"
+#include "sv_save.hpp"
 #include "v_video.hpp"
 #include "w_main.hpp"
+
+// src/*
+#include "../d_event.hpp"
+#include "../d_mode.hpp"
+#include "../d_loop.hpp"
+#include "../w_wad.hpp"
+#include "../z_zone.hpp"
+
+// utils/*
+#include "../../utils/lump.hpp"
 
 // MACROS ------------------------------------------------------------------
 
@@ -121,6 +144,10 @@ static int demosequence;
 static int pagetic;
 static const char *pagename;
 static char *SavePathConfig;
+
+// FORWARDED FUNCTIONS -----------------------------------------------------
+
+void H2_GameLoop(void);
 
 // CODE --------------------------------------------------------------------
 
@@ -793,6 +820,12 @@ static void WarpCheck(void)
 //==========================================================================
 //
 // H2_GameLoop
+//
+// not a globally visible function, just included for source reference
+// called by H2_Main, never exits
+// manages timing and IO
+// calls all ?_Responder, ?_Ticker, and ?_Drawer functions
+// calls I_GetTime, I_StartFrame, and I_StartTic
 //
 //==========================================================================
 

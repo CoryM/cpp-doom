@@ -21,6 +21,8 @@
 #include "m_random.hpp"
 #include "p_local.hpp"
 #include "s_sound.hpp"
+#include "w_wad.hpp"
+#include "g_game.hpp" // players[]
 
 // MACROS ------------------------------------------------------------------
 
@@ -245,7 +247,7 @@ void P_SetPsprite(player_t * player, int position, statenum_t stnum)
         }
         if (state->action)
         {                       // Call action routine.
-            state->action(player, psp);
+            state->action.af_pp(player, psp);
             if (!psp->state)
             {
                 break;

@@ -16,11 +16,21 @@
 
 
 // HEADER FILES ------------------------------------------------------------
+#include "a_action.hpp"
 
+#include <cmath>
+
+#include "g_game.hpp" // players[]
 #include "h2def.hpp"
 #include "m_random.hpp"
+#include "mobj.hpp"
 #include "p_local.hpp"
+#include "player.hpp"
+#include "r_local.hpp"
 #include "s_sound.hpp"
+#include "sounds.hpp"
+
+
 
 // MACROS ------------------------------------------------------------------
 

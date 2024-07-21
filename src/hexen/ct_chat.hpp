@@ -20,6 +20,9 @@
 #ifndef HEXEN_CT_CHAT_H
 #define HEXEN_CT_CHAT_H
 
+#include "doomtype.hpp"
+#include "d_event.hpp"
+
 #define CT_PLR_GREEN	1
 #define CT_PLR_YELLOW	2
 #define CT_PLR_RED		3
@@ -32,7 +35,16 @@
 #define CT_KEY_BLUE		'b'
 #define CT_KEY_ALL		't'
 
+void CT_Init(void);
+void CT_Drawer(void);
+boolean CT_Responder(event_t * ev);
+void CT_Ticker(void);
+char CT_dequeueChatChar(void);
+
+extern boolean chatmodeon;
 extern char *chat_macros[10];
+
+char CT_dequeueChatChar(void);
 
 #endif
 

@@ -20,6 +20,7 @@
 #include "i_video.hpp"
 #include "r_local.hpp"
 #include "v_video.hpp"
+#include "w_wad.hpp"
 
 /*
 

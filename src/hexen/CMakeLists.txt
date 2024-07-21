@@ -8,10 +8,12 @@ target_sources(hexen
         d_net.cpp
         f_finale.cpp
         g_game.cpp
+        h2def.cpp
         h2_main.cpp
         info.cpp              
         in_lude.cpp
         mn_menu.cpp
+        mobj.cpp
         m_random.cpp          
         p_acs.cpp
         p_anim.cpp
@@ -21,10 +23,10 @@ target_sources(hexen
         p_floor.cpp
         p_inter.cpp
         p_lights.cpp
+        p_local.cpp
         p_map.cpp
         p_maputl.cpp
         p_mobj.cpp
-        po_man.cpp
         p_plats.cpp
         p_pspr.cpp
         p_setup.cpp
@@ -35,31 +37,48 @@ target_sources(hexen
         p_things.cpp
         p_tick.cpp
         p_user.cpp
+        po_man.cpp
+        player.cpp
         r_bsp.cpp
         r_data.cpp
-        r_draw.cpp          
+        r_draw.cpp
         r_main.cpp
         r_plane.cpp
         r_segs.cpp
         r_things.cpp
+        s_sound.cpp
         sb_bar.cpp
         sc_man.cpp
-        sn_sonix.cpp
-        sounds.cpp            
-        s_sound.cpp
+        sn_sonix.cpp            
+        sounds.cpp
         st_start.cpp          
         sv_save.cpp
-    PRIVATE FILE_SET HEADERS FILES                                
+
+    PRIVATE FILE_SET HEADERS FILES
+        a_action.hpp
         am_data.hpp
         am_map.hpp
         ct_chat.hpp
+        d_net.hpp
+        g_game.hpp
+        h2_main.hpp
         h2def.hpp
         info.hpp
         m_random.hpp
+        mn_menu.hpp
+        mobj.hpp
         p_local.hpp
+        p_setup.hpp
         p_spec.hpp
+        p_tick.hpp
+        player.hpp
+        r_data.hpp
+        r_draw.hpp
         r_local.hpp
+        r_main.hpp
         s_sound.hpp
+        sb_bar.hpp
+        sc_man.hpp
         sounds.hpp
         st_start.hpp
         textdefs.hpp

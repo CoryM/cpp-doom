@@ -131,7 +131,7 @@ typedef PACKED_STRUCT (
     unsigned short children[2]; // if NF_SUBSECTOR its a subsector
 }) mapnode_t;
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] mapthing_t
 {
     short tid;
     short x;
@@ -146,7 +146,7 @@ typedef PACKED_STRUCT (
     byte arg3;
     byte arg4;
     byte arg5;
-}) mapthing_t;
+};
 
 #define MTF_EASY		1
 #define MTF_NORMAL		2

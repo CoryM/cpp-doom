@@ -22,7 +22,7 @@
 
 // Basic data types.
 // Needs fixed point, and BAM angles.
-#include "m_fixed.hpp"
+import m_fixed; //#include "m_fixed.hpp"
 #include "tables.hpp"
 
 

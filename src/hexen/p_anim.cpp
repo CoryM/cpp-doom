@@ -16,12 +16,18 @@
 
 
 // HEADER FILES ------------------------------------------------------------
+#include "../z_zone.hpp"
 
 #include "h2def.hpp"
 #include "m_random.hpp"
 #include "i_system.hpp"
 #include "p_local.hpp"
+#include "p_setup.hpp"
+#include "r_data.hpp"
 #include "s_sound.hpp"
+#include "sc_man.hpp"
+#include "sounds.hpp"
+#include "../w_wad.hpp"
 
 // MACROS ------------------------------------------------------------------
 

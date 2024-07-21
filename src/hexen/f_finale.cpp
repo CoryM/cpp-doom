@@ -16,15 +16,24 @@
 
 
 // HEADER FILES ------------------------------------------------------------
+#include "f_finale.hpp"
 
+#include <cctype>
+
+#include "g_game.hpp" // players[]
 #include "h2def.hpp"
+#include "h2_main.hpp" // Updatestate
 #include "i_system.hpp"
+#include "i_swap.hpp"
 #include "i_video.hpp"
 #include "p_local.hpp"
+#include "player.hpp"
 #include "s_sound.hpp"
-#include <cctype>
 #include "v_video.hpp"
-#include "i_swap.hpp"
+#include "w_wad.hpp"
+
+#include "../z_zone.hpp"
+#include "../../utils/lump.hpp"
 
 // MACROS ------------------------------------------------------------------
 
@@ -34,6 +43,8 @@
 // TYPES -------------------------------------------------------------------
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
+
+extern char ClusterMessage[MAX_INTRMSN_MESSAGE_SIZE]; // in in_lude.cpp
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 

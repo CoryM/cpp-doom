@@ -16,17 +16,23 @@
 
 
 // HEADER FILES ------------------------------------------------------------
+#include "sb_bar.hpp"
 
+#include "g_game.hpp" // players[]
 #include "h2def.hpp"
+#include "h2_main.hpp" // Updatestate
 #include "i_cdmus.hpp"
 #include "i_video.hpp"
 #include "m_bbox.hpp"
 #include "m_cheat.hpp"
 #include "m_misc.hpp"
 #include "p_local.hpp"
+#include "r_draw.hpp"
 #include "s_sound.hpp"
 #include "v_video.hpp"
 #include "i_swap.hpp"
+
+#include "../w_wad.hpp"
 
 // TYPES -------------------------------------------------------------------
 

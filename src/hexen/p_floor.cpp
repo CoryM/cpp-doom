@@ -18,6 +18,9 @@
 #include "h2def.hpp"
 #include "i_system.hpp"
 #include "p_local.hpp"
+#include "sn_sonix.hpp"
+
+#include "../z_zone.hpp"
 
 extern fixed_t FloatBobOffsets[64];
 

@@ -18,9 +18,10 @@
 #ifndef __P_LOCAL__
 #define __P_LOCAL__
 
-#ifndef __R_LOCAL__
+#include "d_event.hpp"
+#include "player.hpp"
 #include "r_local.hpp"
-#endif
+#include "info.hpp"
 
 #define STARTREDPALS    1
 #define STARTBONUSPALS  9
@@ -61,7 +62,7 @@
 #define MELEERANGE (64*FRACUNIT)
 #define MISSILERANGE (32*64*FRACUNIT)
 
-typedef enum
+enum dirtype_t
 {
     DI_EAST,
     DI_NORTHEAST,
@@ -73,7 +74,12 @@ typedef enum
     DI_SOUTHEAST,
     DI_NODIR,
     NUMDIRS
-} dirtype_t;
+};
+
+dirtype_t operator++(dirtype_t & dir, int);
+dirtype_t operator--(dirtype_t & dir, int);
+dirtype_t operator++(dirtype_t & dir);
+dirtype_t operator--(dirtype_t & dir);
 
 #define BASETHRESHOLD 100       // follow a player exlusively for 3 seconds
 

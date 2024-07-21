@@ -19,9 +19,11 @@
 
 #include <cstring>
 #include <cstdlib>
+
 #include "h2def.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
+#include "w_wad.hpp"
 
 // MACROS ------------------------------------------------------------------
 

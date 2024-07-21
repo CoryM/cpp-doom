@@ -17,9 +17,13 @@
 
 #include "h2def.hpp"
 #include "m_random.hpp"
+#include "g_game.hpp" // players[]
 #include "i_system.hpp"
 #include "p_local.hpp"
+#include "r_draw.hpp"
 #include "s_sound.hpp"
+#include "sounds.hpp"
+#include "sb_bar.hpp" // inv_ptr
 
 void P_PlayerNextArtifact(player_t * player);
 

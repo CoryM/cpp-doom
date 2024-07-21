@@ -19,6 +19,9 @@
 #include "m_random.hpp"
 #include "i_system.hpp"
 #include "p_local.hpp"
+#include "sn_sonix.hpp"
+
+#include "../z_zone.hpp"
 
 plat_t *activeplats[MAXPLATS];
 

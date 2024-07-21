@@ -17,6 +17,8 @@
 #ifndef __AMDATA_H__
 #define __AMDATA_H__
 
+#include "am_map.hpp" // mline_t
+#include "p_local.hpp" // PLAYERRADIUS
 // a line drawing of the player pointing right, starting from the middle.
 
 #define R ((8*PLAYERRADIUS)/7)

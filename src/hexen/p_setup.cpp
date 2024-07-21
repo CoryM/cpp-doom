@@ -16,17 +16,25 @@
 
 
 // HEADER FILES ------------------------------------------------------------
+#include "../z_zone.hpp"
+#include "p_setup.hpp"
 
 #include <math.h>
 #include <cstdlib>
+
 #include "h2def.hpp"
 #include "i_system.hpp"
 #include "m_argv.hpp"
 #include "m_bbox.hpp"
 #include "m_misc.hpp"
+#include "g_game.hpp" // players[]
 #include "i_swap.hpp"
+#include "r_data.hpp"
 #include "s_sound.hpp"
+#include "sc_man.hpp"
+#include "sn_sonix.hpp"
 #include "p_local.hpp"
+#include "w_wad.hpp"
 
 // MACROS ------------------------------------------------------------------
 
@@ -51,6 +59,7 @@
 #define DEFAULT_SKY_NAME "SKY1"
 #define DEFAULT_SONG_LUMP "DEFSONG"
 #define DEFAULT_FADE_TABLE "COLORMAP"
+
 
 // TYPES -------------------------------------------------------------------
 

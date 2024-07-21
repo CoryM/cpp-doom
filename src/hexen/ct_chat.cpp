@@ -17,14 +17,26 @@
 
 #include <cstring>
 #include <cctype>
+
+#include "g_game.hpp" // players[]
 #include "h2def.hpp"
+#include "h2_main.hpp" // UpdateState
 #include "i_input.hpp"
+#include "r_draw.hpp"
 #include "s_sound.hpp"
 #include "doomkeys.hpp"
 #include "m_controls.hpp"
 #include "m_misc.hpp"
 #include "p_local.hpp"
+#include "player.hpp"
+#include "sounds.hpp"
+#include "textdefs.hpp"
 #include "v_video.hpp"
+#include "w_wad.hpp"
+
+#include "../z_zone.hpp"
+
+#include "../../utils/lump.hpp"
 
 #define NUMKEYS 256
 

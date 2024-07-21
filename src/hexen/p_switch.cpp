@@ -18,6 +18,7 @@
 #include "h2def.hpp"
 #include "i_system.hpp"
 #include "p_local.hpp"
+#include "r_data.hpp"
 #include "s_sound.hpp"
 
 //==================================================================

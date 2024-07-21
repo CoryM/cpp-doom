@@ -19,7 +19,9 @@
 
 #include "h2def.hpp"
 #include "i_system.hpp"
+#include "p_setup.hpp"
 #include "r_local.hpp"
+#include "r_data.hpp"
 
 // MACROS ------------------------------------------------------------------
 

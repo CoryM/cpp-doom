@@ -16,13 +16,16 @@
 
 
 // HEADER FILES ------------------------------------------------------------
+#include "sn_sonix.hpp"
 
 #include <cstring>
-#include "m_random.hpp"
+
 #include "h2def.hpp"
 #include "i_system.hpp"
 #include "i_sound.hpp"
+#include "m_random.hpp"
 #include "s_sound.hpp"
+#include "sc_man.hpp"
 
 // MACROS ------------------------------------------------------------------
 

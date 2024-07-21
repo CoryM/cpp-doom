@@ -16,12 +16,20 @@
 
 
 // HEADER FILES ------------------------------------------------------------
+#include "sv_save.hpp"
 
+#include "a_action.hpp"
+#include "g_game.hpp"
 #include "h2def.hpp"
 #include "i_system.hpp"
 #include "m_misc.hpp"
-#include "i_swap.hpp"
 #include "p_local.hpp"
+#include "player.hpp"
+#include "g_game.hpp" // players[]
+#include "sb_bar.hpp" // inv_ptr
+
+#include "../i_swap.hpp"
+#include "../z_zone.hpp"
 
 // MACROS ------------------------------------------------------------------
 
@@ -681,7 +689,7 @@ static void StreamOut_player_t(player_t *str)
 
 static void StreamIn_thinker_t(thinker_t *str)
 {
-    // struct thinker_s *prev, *next;
+    // struct thinker_t *prev, *next;
     // Pointers are discarded:
     str->prev = SV_ReadPtr();
     str->prev = NULL;
@@ -696,7 +704,7 @@ static void StreamIn_thinker_t(thinker_t *str)
 
 static void StreamOut_thinker_t(thinker_t *str)
 {
-    // struct thinker_s *prev, *next;
+    // struct thinker_t *prev, *next;
     SV_WritePtr(str->prev);
     SV_WritePtr(str->next);
 
@@ -762,7 +770,7 @@ static void StreamIn_mobj_t(mobj_t *str)
     str->y = SV_ReadLong();
     str->z = SV_ReadLong();
 
-    // struct mobj_s *snext, *sprev;
+    // struct mobj_t *snext, *sprev;
     // Pointer values are discarded:
     str->snext = SV_ReadPtr();
     str->snext = NULL;
@@ -778,7 +786,7 @@ static void StreamIn_mobj_t(mobj_t *str)
     // int frame;
     str->frame = SV_ReadLong();
 
-    // struct mobj_s *bnext, *bprev;
+    // struct mobj_t *bnext, *bprev;
     // Values are read but discarded; this will be restored when the thing's
     // position is set.
     str->bnext = SV_ReadPtr();
@@ -850,7 +858,7 @@ static void StreamIn_mobj_t(mobj_t *str)
     // int movecount;
     str->movecount = SV_ReadLong();
 
-    // struct mobj_s *target;
+    // struct mobj_t *target;
     i = SV_ReadLong();
     SetMobjPtr(&str->target, i);
 
@@ -860,7 +868,7 @@ static void StreamIn_mobj_t(mobj_t *str)
     // int threshold;
     str->threshold = SV_ReadLong();
 
-    // struct player_s *player;
+    // struct player_t *player;
     // Saved as player number.
     i = SV_ReadLong();
     if (i == 0)
@@ -980,7 +988,7 @@ static void StreamOut_mobj_t(mobj_t *str)
     SV_WriteLong(str->y);
     SV_WriteLong(str->z);
 
-    // struct mobj_s *snext, *sprev;
+    // struct mobj_t *snext, *sprev;
     SV_WritePtr(str->snext);
     SV_WritePtr(str->sprev);
 
@@ -993,7 +1001,7 @@ static void StreamOut_mobj_t(mobj_t *str)
     // int frame;
     SV_WriteLong(str->frame);
 
-    // struct mobj_s *bnext, *bprev;
+    // struct mobj_t *bnext, *bprev;
     SV_WritePtr(str->bnext);
     SV_WritePtr(str->bprev);
 
@@ -1055,7 +1063,7 @@ static void StreamOut_mobj_t(mobj_t *str)
     // int movecount;
     SV_WriteLong(str->movecount);
 
-    // struct mobj_s *target;
+    // struct mobj_t *target;
     if ((str->flags & MF_CORPSE) != 0)
     {
         SV_WriteLong(MOBJ_NULL);
@@ -1071,7 +1079,7 @@ static void StreamOut_mobj_t(mobj_t *str)
     // int threshold;
     SV_WriteLong(str->threshold);
 
-    // struct player_s *player;
+    // struct player_t *player;
     // Stored as index into players[] array, if there is a player pointer.
     if (str->player != NULL)
     {

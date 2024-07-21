@@ -16,18 +16,24 @@
 //	DOOM Network game communication and protocol,
 //	all OS independend parts.
 //
+#include "d_net.hpp"
 
 #include <cstdlib>
 
-#include "m_argv.hpp"
+#include "g_game.hpp" // players[]
 #include "i_system.hpp"
 #include "i_timer.hpp"
 #include "i_video.hpp"
 #include "i_videohr.hpp"
+#include "g_game.hpp"
 #include "h2def.hpp"
+#include "m_argv.hpp"
 #include "m_misc.hpp"
+#include "mn_menu.hpp"
 #include "p_local.hpp"
 #include "s_sound.hpp"
+#include "sounds.hpp"
+#include "st_start.hpp"
 #include "w_checksum.hpp"
 
 #include "deh_main.hpp"
