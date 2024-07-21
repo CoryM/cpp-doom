@@ -18,7 +18,9 @@
 #ifndef DEH_IO_H
 #define DEH_IO_H
 
-#include "deh_defs.hpp"
+#include "deh_defs.hpp"  // for deh_context_t
+#include "doomtype.hpp"  // for PRINTF_ATTR, boolean
+
 
 deh_context_t *DEH_OpenFile(const char *filename);
 deh_context_t *DEH_OpenLump(int lumpnum);

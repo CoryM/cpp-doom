@@ -1338,7 +1338,7 @@ typedef struct
 extern state_t     states[NUMSTATES];
 extern const char *sprnames[];
 
-typedef enum
+enum mobjtype_t
 {
     MT_PLAYER,
     MT_POSSESSED,
@@ -1589,8 +1589,7 @@ typedef enum
     MT_EXTRA98,
     MT_EXTRA99,
     NUMMOBJTYPES
-
-} mobjtype_t;
+};
 
 struct mobjinfo_t
 {

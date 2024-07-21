@@ -16,17 +16,17 @@
 //     Common code to parse command line, identifying WAD files to load.
 //
 
-#include <cstdlib>
-
-#include "config.h"
-#include "d_iwad.hpp"
-#include "i_glob.hpp"
-#include "i_system.hpp"
-#include "m_argv.hpp"
 #include "w_main.hpp"
-#include "w_merge.hpp"
-#include "w_wad.hpp"
-#include "z_zone.hpp"
+#include <stdio.h>       // for printf
+#include <cstdlib>       // for free, NULL
+#include "config.h"      // for PROGRAM_PREFIX
+#include "d_iwad.hpp"    // for D_TryFindWADByName, D_SuggestGameName
+#include "i_glob.hpp"    // for I_EndGlob, I_NextGlob, I_StartMultiGlob, GLO...
+#include "i_system.hpp"  // for I_Error
+#include "m_argv.hpp"    // for M_CheckParmWithArgs, myargv, myargc
+#include "w_merge.hpp"   // for W_MergeFile, W_NWTMergeFile, W_NWTDashMerge
+#include "w_wad.hpp"     // for W_CheckNumForName, lumpindex_t
+
 
 // Parse the command line, merging WAD files that are sppecified.
 // Returns true if at least one file was added.
@@ -240,10 +240,9 @@ static const struct
 
 void W_CheckCorrectIWAD(GameMission_t mission)
 {
-    int         i;
     lumpindex_t lumpnum;
 
-    for (i = 0; i < arrlen(unique_lumps); ++i)
+    for (size_t i = 0; i < arrlen(unique_lumps); ++i)
     {
         if (mission != unique_lumps[i].mission)
         {

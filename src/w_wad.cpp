@@ -101,7 +101,6 @@ uint32_t W_LumpNameHash(std::string_view s)
 wad_file_t *W_AddFile(const char *filename)
 {
     wadinfo_t   header;
-    lumpindex_t i;
     wad_file_t *wad_file;
     int         length;
     int         startlump;
@@ -114,7 +113,7 @@ wad_file_t *W_AddFile(const char *filename)
     // reload hack.
     if (filename[0] == '~')
     {
-        if (reloadname != NULL)
+        if (reloadname != nullptr)
         {
             I_Error("Prefixing a WAD filename with '~' indicates that the "
                     "WAD should be reloaded\n"
@@ -210,7 +209,7 @@ wad_file_t *W_AddFile(const char *filename)
     lumpinfo  = static_cast<decltype(lumpinfo)>(I_Realloc(lumpinfo, numlumps * sizeof(lumpinfo_t *)));
     filerover = fileinfo;
 
-    for (i = startlump; i < numlumps; ++i)
+    for (size_t i = startlump; i < numlumps; ++i)
     {
         lumpinfo_t *lump_p = &filelumps[i - startlump];
         lump_p->wad_file   = wad_file;
@@ -338,7 +337,7 @@ lumpindex_t W_CheckNumForNameFromTo(const char *name, int from, int to)
 //
 int W_LumpLength(lumpindex_t lump)
 {
-    if (lump >= numlumps)
+    if (lump >= static_cast<int>(numlumps))
     {
         I_Error("W_LumpLength: %i >= numlumps", lump);
     }
@@ -357,7 +356,7 @@ void W_ReadLump(lumpindex_t lump, void *dest)
     int         c;
     lumpinfo_t *l;
 
-    if (lump >= numlumps)
+    if (lump >= static_cast<int>(numlumps))
     {
         I_Error("W_ReadLump: %i >= numlumps", lump);
     }
@@ -545,10 +544,8 @@ void W_Profile (void)
 
 void W_GenerateHashTable(void)
 {
-    lumpindex_t i;
-
     // Free the old hash table, if there is one:
-    if (lumphash != NULL)
+    if (lumphash != nullptr)
     {
         Z_Free(lumphash);
     }
@@ -556,14 +553,14 @@ void W_GenerateHashTable(void)
     // Generate hash table
     if (numlumps > 0)
     {
-        lumphash = zmalloc<decltype(lumphash)>(sizeof(lumpindex_t) * numlumps, PU_STATIC, NULL);
+        lumphash = zmalloc<decltype(lumphash)>(sizeof(lumpindex_t) * numlumps, PU_STATIC, nullptr);
 
-        for (i = 0; i < numlumps; ++i)
+        for (lumpindex_t i = 0; i < static_cast<int>(numlumps); ++i)
         {
             lumphash[i] = -1;
         }
 
-        for (i = 0; i < numlumps; ++i)
+        for (lumpindex_t i = 0; i < static_cast<int>(numlumps); ++i)
         {
             unsigned int hash;
 
@@ -587,18 +584,15 @@ void W_GenerateHashTable(void)
 // But: the reload feature is a fragile hack...
 void W_Reload(void)
 {
-    char *      filename;
-    lumpindex_t i;
-
-    if (reloadname == NULL)
+    if (reloadname == nullptr)
     {
         return;
     }
 
     // We must free any lumps being cached from the PWAD we're about to reload:
-    for (i = reloadlump; i < numlumps; ++i)
+    for (lumpindex_t i = reloadlump; i < static_cast<int>(numlumps); ++i)
     {
-        if (lumpinfo[i]->cache != NULL)
+        if (lumpinfo[i]->cache != nullptr)
         {
             Z_Free(lumpinfo[i]->cache);
         }
@@ -608,14 +602,14 @@ void W_Reload(void)
     numlumps = reloadlump;
 
     // Now reload the WAD file.
-    filename = reloadname;
+    char *filename = reloadname;
 
     W_CloseFile(reloadhandle);
     free(reloadlumps);
 
-    reloadname   = NULL;
+    reloadname   = nullptr;
     reloadlump   = -1;
-    reloadhandle = NULL;
+    reloadhandle = nullptr;
     W_AddFile(filename);
     free(filename);
 

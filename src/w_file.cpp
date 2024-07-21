@@ -16,14 +16,10 @@
 //	WAD I/O functions.
 //
 
-#include <cstdio>
-
-#include "config.h"
-
-#include "doomtype.hpp"
-#include "m_argv.hpp"
-
 #include "w_file.hpp"
+#include <cstdio>        // for NULL, size_t
+#include "doomtype.hpp"  // for arrlen
+#include "m_argv.hpp"    // for M_CheckParm
 
 extern wad_file_class_t stdc_wad_file;
 
@@ -48,7 +44,6 @@ static wad_file_class_t *wad_file_classes[] = {
 wad_file_t *W_OpenFile(const char *path)
 {
     wad_file_t *result;
-    int         i;
 
     //!
     // @category obscure
@@ -64,13 +59,13 @@ wad_file_t *W_OpenFile(const char *path)
 
     // Try all classes in order until we find one that works
 
-    result = NULL;
+    result = nullptr;
 
-    for (i = 0; i < arrlen(wad_file_classes); ++i)
+    for (size_t i = 0; i < arrlen(wad_file_classes); ++i)
     {
         result = wad_file_classes[i]->OpenFile(path);
 
-        if (result != NULL)
+        if (result != nullptr)
         {
             break;
         }

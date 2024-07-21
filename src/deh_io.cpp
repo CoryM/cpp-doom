@@ -15,20 +15,18 @@
 // Dehacked I/O code (does all reads from dehacked files)
 //
 
-#include <stdarg.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cctype>
-
-#include "m_misc.hpp"
-#include "w_wad.hpp"
-#include "z_zone.hpp"
-
-#include "../utils/lump.hpp"
-#include "../utils/memory.hpp"
-#include "deh_defs.hpp"
 #include "deh_io.hpp"
+#include <__stdarg_va_arg.h>    // for va_end, va_start
+#include <cctype>               // for isspace
+#include <cstdio>               // for fprintf, NULL, stderr, vfprintf, FILE
+#include <cstdlib>              // for free, malloc
+#include <cstring>              // for memcpy
+#include "../utils/lump.hpp"    // for cache_lump_num
+#include "../utils/memory.hpp"  // for zmalloc
+#include "deh_defs.hpp"         // for deh_context_t
+#include "m_misc.hpp"           // for M_StringCopy, M_StringDuplicate
+#include "w_wad.hpp"            // for W_LumpLength, W_ReleaseLumpNum, lumpinfo
+#include "z_zone.hpp"           // for Z_Free, PU_STATIC
 
 typedef enum
 {

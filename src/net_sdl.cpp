@@ -15,20 +15,21 @@
 //     Networking module which uses SDL_net
 //
 
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-
-#include "../utils/memory.hpp"
-#include "doomtype.hpp"
-#include "i_system.hpp"
-#include "m_argv.hpp"
-#include "m_misc.hpp"
-#include "net_defs.hpp"
-#include "net_io.hpp"
-#include "net_packet.hpp"
 #include "net_sdl.hpp"
-#include "z_zone.hpp"
+#include <SDL_net.h>            // for IPaddress, SDLNet_AllocPacket, SDLNet...
+#include <stdint.h>             // for uint16_t, uint32_t
+#include <cstdlib>              // for atoi, free
+#include <cstring>              // for NULL, memcpy, memset, strchr
+#include "../utils/memory.hpp"  // for zmalloc
+#include "doomtype.hpp"         // for boolean
+#include "i_system.hpp"         // for I_Error
+#include "m_argv.hpp"           // for M_CheckParmWithArgs, myargv
+#include "m_misc.hpp"           // for M_snprintf, M_StringConcat, M_StringD...
+#include "net_defs.hpp"         // for net_addr_t, net_packet_t, net_module_t
+#include "net_io.hpp"           // for net_broadcast_addr
+#include "net_packet.hpp"       // for NET_NewPacket
+#include "z_zone.hpp"           // for Z_Free, PU_STATIC
+
 
 //
 // NETWORKING

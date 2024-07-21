@@ -16,10 +16,12 @@
 // Color translation tables
 //
 
-#include <math.h>
-
-#include "doomtype.hpp"
 #include "v_trans.hpp"
+#include <__math/rounding_functions.h>  // for floor
+#include <limits.h>                     // for INT_MAX
+#include <math.h>                       // for floor
+#include "doomtype.hpp"                 // for byte, boolean
+
 
 // [crispy] here used to be static color translation tables based on
 // the ones found in Boom and MBF. Nowadays these are recalculated
