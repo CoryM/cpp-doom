@@ -17,14 +17,7 @@
 #ifndef HERETIC_INFO_H
 #define HERETIC_INFO_H
 
-#include <array>
-#include <format>
-#include <string>
-#include <string_view>
-#include <source_location>
 #include <variant>
-
-#include "i_system.hpp"
 
 typedef enum
 {
@@ -1404,8 +1397,6 @@ typedef void (*actionf_p3)(mobj_t *mo, player_t *player, pspdef_t *psp); // [cri
 
 class actionf_t {
 private:
-    std::variant<std::monostate, actionf_v, actionf_p1, actionf_c1, actionf_d1, actionf_f1, actionf_g1, actionf_l1, actionf_s1, actionf_plat, actionf_p2, actionf_p3> func;
-
     template<class U>
      auto get_void_impl(void * ptr) const
      {
@@ -1415,43 +1406,9 @@ private:
         return ptr;
      };
 
-     static constexpr std::array<std::string_view, 12> names = {
-        "std::monostate",
-        "actionf_v",
-        "actionf_p1",
-        "actionf_c1",
-        "actionf_d1",
-        "actionf_f1",
-        "actionf_g1",
-        "actionf_l1",
-        "actionf_s1",
-        "actionf_plat",
-        "actionf_p2",
-        "actionf_p3"
-     };
-
-     std::string_view get_name() const
-     {
-         return names.at(func.index());
-     };
-
-     void throw_error(const bool is_good, const std::string_view msg) const
-     {
-        if (!is_good) {
-            auto new_msg = std::format("{} called on {} function\n", msg, get_name());
-            I_Error("%s", new_msg.c_str());
-        }
-     };
-
-     void throw_error(const bool is_good, const std::string_view msg, const std::source_location a) const
-     {
-        if (!is_good) {
-            auto new_msg = std::format("{} called on {} function at {}:{}:{}", msg, get_name(), a.file_name(), a.line(), a.column());
-            I_Error("%s\n", new_msg.c_str());
-        }
-     };
-
-public:    
+public:
+    std::variant<std::monostate, actionf_v, actionf_p1, actionf_c1, actionf_d1, actionf_f1, actionf_g1, actionf_l1, actionf_s1, actionf_plat, actionf_p2, actionf_p3> func;
+    
     actionf_t() : func(std::monostate{})
     {
     }
@@ -1498,8 +1455,6 @@ public:
 
     void operator()() const
     {
-        
-        throw_error(is_v(), "actionf_t::operator()");
         std::get<actionf_v>(func)();
     };
 
@@ -1508,9 +1463,8 @@ public:
         return std::holds_alternative<actionf_p1>(func);
     };
 
-    void operator()(mobj_t *mo, const std::source_location a = std::source_location::current()) const
+    void operator()(mobj_t *mo) const
     {
-        throw_error(is_p1(), "actionf_t::operator(mobj_t *)", a);
         std::get<actionf_p1>(func)(mo);
     };
 
@@ -1521,7 +1475,6 @@ public:
 
     void operator()(ceiling_t * ceiling) const
     {
-        throw_error(is_c1(), "actionf_t::operator(ceiling_t *)");
         std::get<actionf_c1>(func)(ceiling);
     };
 
@@ -1532,7 +1485,6 @@ public:
 
     void operator()(vldoor_t * door) const
     {
-        throw_error(is_d1(), "actionf_t::operator(vldoor_t *)");
         std::get<actionf_d1>(func)(door);
     };
 
@@ -1543,7 +1495,6 @@ public:
 
     void operator()(floormove_t * floor) const
     {
-        throw_error(is_f1(), "actionf_t::operator(floormove_t *)");
         std::get<actionf_f1>(func)(floor);
     };
 
@@ -1554,7 +1505,6 @@ public:
 
     void operator()(glow_t * glow) const
     {
-        throw_error(is_g1(), "actionf_t::operator(glow_t *)");
         std::get<actionf_g1>(func)(glow);
     };
 
@@ -1565,7 +1515,6 @@ public:
 
     void operator()(lightflash_t * flash) const
     {
-        throw_error(is_l1(), "actionf_t::operator(lightflash_t *)");
         std::get<actionf_l1>(func)(flash);
     };
 
@@ -1576,7 +1525,6 @@ public:
 
     void operator()(strobe_t * flash) const
     {
-        throw_error(is_s1(), "actionf_t::operator(strobe_t *)");
         std::get<actionf_s1>(func)(flash);
     };
 
@@ -1587,7 +1535,6 @@ public:
 
     void operator()(plat_t * plat) const
     {
-        throw_error(is_plat(), "actionf_t::operator(plat_t *)");
         std::get<actionf_plat>(func)(plat);
     };
 
@@ -1598,7 +1545,6 @@ public:
 
     void operator()(player_t *player, pspdef_t *psp) const
     {
-        throw_error(is_p2(), "actionf_t::operator(player_t *, pspdef_t *)");
         std::get<actionf_p2>(func)(player, psp);
     };
 
@@ -1609,7 +1555,6 @@ public:
 
     void operator()(mobj_t *mo, player_t *player, pspdef_t *psp) const
     {
-        throw_error(is_p3(), "actionf_t::operator(mobj_t *, player_t *, pspdef_t *)");
         std::get<actionf_p3>(func)(mo, player, psp);
     };
 

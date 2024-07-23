@@ -723,7 +723,7 @@ static void saveg_write_mapthing_t(mapthing_t *str)
 
 static void saveg_read_thinker_t(thinker_t *str)
 {
-    // struct thinker_t *prev, *next;
+    // struct thinker_s *prev, *next;
     SV_ReadLong();
     str->prev = nullptr;
     SV_ReadLong();
@@ -736,7 +736,7 @@ static void saveg_read_thinker_t(thinker_t *str)
 
 static void saveg_write_thinker_t(thinker_t *str)
 {
-    // struct thinker_t *prev, *next;
+    // struct thinker_s *prev, *next;
     SV_WritePtr(str->prev);
     SV_WritePtr(str->next);
 

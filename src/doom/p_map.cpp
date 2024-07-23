@@ -126,7 +126,8 @@ boolean PIT_StompThing(mobj_t *thing)
 //
 // P_TeleportMove
 //
-bool P_TeleportMove(mobj_t *thing,
+boolean
+    P_TeleportMove(mobj_t *thing,
         fixed_t            x,
         fixed_t            y)
 {
@@ -138,8 +139,6 @@ bool P_TeleportMove(mobj_t *thing,
     int by;
 
     subsector_t *newsubsec;
-
-    std::puts("P_TeleportMove\n");
 
     // kill anything occupying the position
     tmthing = thing;
@@ -154,7 +153,7 @@ bool P_TeleportMove(mobj_t *thing,
     tmbbox[BOXLEFT]   = x - tmthing->radius;
 
     newsubsec   = R_PointInSubsector(x, y);
-    ceilingline = nullptr;
+    ceilingline = NULL;
 
     // The base floor/ceiling is from the subsector
     // that contains the point.
@@ -1128,7 +1127,7 @@ boolean PTR_ShootTraverse(intercept_t *in)
         // [crispy] update laser spot position and return
         if (la_damage == INT_MIN)
         {
-            laserspot->thinker.function     = actionf_v::one;
+            laserspot->thinker.function.acv = actionf_v::one;
             laserspot->x                    = x;
             laserspot->y                    = y;
             laserspot->z                    = z;
@@ -1182,7 +1181,7 @@ boolean PTR_ShootTraverse(intercept_t *in)
         if (th->flags & MF_SHADOW)
             return true;
 
-        laserspot->thinker.function     = actionf_v::one;
+        laserspot->thinker.function.acv = actionf_v::one;
         laserspot->x                    = th->x;
         laserspot->y                    = th->y;
         laserspot->z                    = z;
@@ -1287,7 +1286,7 @@ void P_LineLaser(mobj_t *t1,
 {
     fixed_t lslope;
 
-    laserspot->thinker.function = actionf_v::empty;
+    laserspot->thinker.function.acv = actionf_v::empty;
 
     // [crispy] intercepts overflow guard
     crispy->crosshair |= CROSSHAIR_INTERCEPT;

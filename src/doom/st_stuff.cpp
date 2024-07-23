@@ -507,7 +507,7 @@ static int ST_cheat_massacre()
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
-        if (th->function == actionf_t(P_MobjThinker))
+        if (th->function.acp1 == (actionf_p1)P_MobjThinker)
         {
             mobj_t *mo = (mobj_t *)th;
 
@@ -515,7 +515,7 @@ static int ST_cheat_massacre()
             {
                 if (mo->health > 0)
                 {
-                    P_DamageMobj(mo, nullptr, nullptr, 10000);
+                    P_DamageMobj(mo, NULL, NULL, 10000);
                     killcount++;
                 }
                 if (mo->type == MT_PAIN)
@@ -946,18 +946,18 @@ boolean
                     // [crispy] let mobjs forget their target and tracer
                     for (th = thinkercap.next; th != &thinkercap; th = th->next)
                     {
-                        if (th->function == actionf_t(P_MobjThinker))
+                        if (th->function.acp1 == (actionf_p1)P_MobjThinker)
                         {
                             mobj_t *const mo = (mobj_t *)th;
 
                             if (mo->target && mo->target->player)
                             {
-                                mo->target = nullptr;
+                                mo->target = NULL;
                             }
 
                             if (mo->tracer && mo->tracer->player)
                             {
-                                mo->tracer = nullptr;
+                                mo->tracer = NULL;
                             }
                         }
                     }

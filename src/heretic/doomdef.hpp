@@ -133,12 +133,12 @@ typedef enum
 typedef actionf_t think_t;
 
 // Doubly linked list of actors.
-struct thinker_t {
-    struct thinker_t *prev;
-    struct thinker_t *next;
+typedef struct thinker_s {
+    struct thinker_s *prev;
+    struct thinker_s *next;
     think_t           function;
 
-};
+} thinker_t;
 
 
 typedef union
