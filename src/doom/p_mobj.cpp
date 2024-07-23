@@ -75,8 +75,8 @@ boolean
 
         // Modified handling.
         // Call action functions when the state is set
-        if (st->action.acp3)
-            st->action.acp3(mobj, NULL, NULL); // [crispy] let pspr action pointers get called from mobj states
+        if (st->action.is_set())
+            st->action.yolo(mobj); // [crispy] let pspr action pointers get called from mobj states
 
         state = st->nextstate;
 
@@ -108,7 +108,7 @@ static statenum_t P_LatestSafeState(statenum_t state)
             safestate = state;
         }
 
-        if (states[state].action.acp1)
+        if (states[state].action.is_set())
         {
             safestate = S_NULL;
         }
@@ -536,7 +536,7 @@ void P_MobjThinker(mobj_t *mobj)
     }
     else
         // [AM] Handle interpolation unless we're an active player.
-        if (!(mobj->player != NULL && mobj == mobj->player->mo))
+        if (!(mobj->player != nullptr && mobj == mobj->player->mo))
     {
         // Assume we can interpolate at the beginning
         // of the tic.
@@ -557,7 +557,7 @@ void P_MobjThinker(mobj_t *mobj)
         P_XYMovement(mobj);
 
         // FIXME: decent NOP/NULL/Nil function pointer please.
-        if (mobj->thinker.function.acv == actionf_v::deleteMe)
+        if (mobj->thinker.function.get_v() == actionf_v::deleteMe)
             return; // mobj was removed
     }
     if ((mobj->z != mobj->floorz)
@@ -566,7 +566,7 @@ void P_MobjThinker(mobj_t *mobj)
         P_ZMovement(mobj);
 
         // FIXME: decent NOP/NULL/Nil function pointer please.
-        if (mobj->thinker.function.acv == actionf_v::deleteMe)
+        if (mobj->thinker.function.get_v() == actionf_v::deleteMe)
             return; // mobj was removed
     }
 
@@ -677,7 +677,7 @@ static mobj_t *
     mobj->oldz     = mobj->z;
     mobj->oldangle = mobj->angle;
 
-    mobj->thinker.function.acp1 = (actionf_p1)P_MobjThinker;
+    mobj->thinker.function = actionf_t(P_MobjThinker);
 
     P_AddThinker(&mobj->thinker);
 

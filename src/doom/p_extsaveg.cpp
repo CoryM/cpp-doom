@@ -123,7 +123,7 @@ static void P_WriteFireFlicker(const char *key)
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
-        if (th->function.acp1 == (actionf_p1)T_FireFlicker)
+        if (th->function == actionf_t(T_FireFlicker))
         {
             fireflicker_t *flick = (fireflicker_t *)th;
 
@@ -153,14 +153,14 @@ static void P_ReadFireFlicker(const char *key)
     {
         fireflicker_t *flick;
 
-        flick = zmalloc<decltype(flick)>(sizeof(*flick), PU_LEVEL, NULL);
+        flick = zmalloc<decltype(flick)>(sizeof(*flick), PU_LEVEL, nullptr);
 
         flick->sector   = &sectors[sector];
         flick->count    = count;
         flick->maxlight = maxlight;
         flick->minlight = minlight;
 
-        flick->thinker.function.acp1 = (actionf_p1)T_FireFlicker;
+        flick->thinker.function = actionf_t(T_FireFlicker);
 
         P_AddThinker(&flick->thinker);
     }
@@ -288,7 +288,7 @@ static void P_WriteBrainTarget(const char *key)
 
     for (th = thinkercap.next; th != &thinkercap; th = th->next)
     {
-        if (th->function.acp1 == (actionf_p1)P_MobjThinker)
+        if (th->function == actionf_t(P_MobjThinker))
         {
             mobj_t *mo = (mobj_t *)th;
 

@@ -70,7 +70,7 @@ void P_AddThinker(thinker_t *thinker)
 void P_RemoveThinker(thinker_t *thinker)
 {
     // FIXME: NOP.
-    thinker->function.acv = actionf_v::deleteMe;
+    thinker->function = actionf_t(actionf_v::deleteMe);
 }
 
 
@@ -93,7 +93,7 @@ void P_RunThinkers(void)
     currentthinker = thinkercap.next;
     while (currentthinker != &thinkercap)
     {
-        if (currentthinker->function.acv == actionf_v::deleteMe)
+        if (currentthinker->function == actionf_v::deleteMe)
         {
             // time to remove it
             nextthinker                = currentthinker->next;
@@ -103,9 +103,8 @@ void P_RunThinkers(void)
         }
         else
         {
-            if (currentthinker->function.acp1)
-                currentthinker->function.acp1(
-                    reinterpret_cast<mobj_t *>(currentthinker));
+            if (currentthinker->function.is_set())
+                currentthinker->function.yolo(reinterpret_cast<mobj_t *>(currentthinker));
             nextthinker = currentthinker->next;
         }
         currentthinker = nextthinker;
