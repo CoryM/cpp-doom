@@ -1,7 +1,11 @@
 # default.nix
 with import <nixpkgs> {};
 
-gcc13Stdenv.mkDerivation {
+let
+  unstable = import <nixos-unstable> {};
+in 
+#gcc14Stdenv.mkDerivation {
+llvmPackages_18.libcxxStdenv.mkDerivation {
     name = "cpp-doom"; # Probably put a more meaningful name here
 
     buildInputs = [ 
@@ -9,34 +13,43 @@ gcc13Stdenv.mkDerivation {
         gdb
         
         # Build utils
-        cmake
-        extra-cmake-modules
-        ninja
+        unstable.cmake
+        unstable.extra-cmake-modules
+        unstable.ninja
         pkg-config
         
         # Compilers
-        #llvmPackages_17.clang-unwrapped
+        #gcc14
+        llvmPackages_18.libcxxClang
+        llvmPackages_18.clangUseLLVM
         
         # Libraries
         SDL2.dev
         SDL2_mixer.dev
         SDL2_net.dev
-        #fmt.dev
-        #gtest.dev
         libsamplerate.dev
         zlib.dev
-        #pngpp
         libpng.dev
-        
-        # Editors 
-	      vscode-fhs # Included here so it can find the Standard Libraries
+        glib.dev
+        pcre2.dev
+        libsndfile.dev
+        pulseaudio.dev
+        alsa-lib.dev
+        jack2.dev
+
+        # Editors and utilities
+        unstable.vscode-fhs # Included here so it can find the Standard Libraries
+
+        include-what-you-use
+        clang-tools_18
     ];
 
     shellHook = ''
-      export CXX="${gcc13}/bin/g++"
-      export CC="${gcc13}/bin/gcc"
-      # ${gcc13} give the wrapper not the nix store path with the includes
-      #export CPLUS_INCLUDE_PATH="${gcc13}"
+      #export CXX="${gcc14}/bin/g++"
+      #export CC="${gcc14}/bin/gcc"
+      export CXX="${llvmPackages_18.libcxxClang}/bin/clang++"
+      export CC="${llvmPackages_18.libcxxClang}/bin/clang"
+      export ASAN_SYMBOLIZER_PATH="${llvmPackages_18.libcxxClang}/bin/addr2line"
+      #export CPLUS_INCLUDE_PATH="${llvmPackages_18.libcxxStdenv}"
     '';
-}
-
+  }
