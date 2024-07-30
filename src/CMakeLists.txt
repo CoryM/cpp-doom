@@ -308,3 +308,28 @@ add_executable(mus2mid mus2mid.cpp memio.cpp z_native.cpp i_system.cpp m_argv.cp
 target_compile_definitions(mus2mid PRIVATE "-DSTANDALONE")
 target_include_directories(mus2mid PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../")
 target_link_libraries(mus2mid SDL2::SDL2)
+
+# ----------------
+#  googletest
+# ----------------
+enable_testing()
+include(GoogleTest)
+
+add_executable(gt)
+
+target_sources(gt 
+        PRIVATE 
+          gt_fixed.cpp
+        
+        PRIVATE FILE_SET HEADERS
+          BASE_DIRS
+            ${CMAKE_CURRENT_SOURCE_DIR}
+            ${GAME_INCLUDE_DIRS}
+
+        PRIVATE FILE_SET CXX_MODULES FILES
+        #    i_swap.cxx
+        #    m_fixed.cxx
+    )
+target_link_libraries(gt GTest::gtest_main cpp_modules)
+
+gtest_discover_tests(gt)
