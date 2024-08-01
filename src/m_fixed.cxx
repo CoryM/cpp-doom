@@ -31,14 +31,29 @@ export module m_fixed;
 export typedef int    fixed_t;
 export constexpr auto FRACBITS = 16;
 export constexpr auto FRACUNIT = (1 << FRACBITS);
+export constexpr bool SafeFixed = true;
 export constexpr auto FIXED2DOUBLE(fixed_t x) -> double
 {
     return x / static_cast<double>(FRACUNIT);
 };
 
-export fixed_t FixedMul(fixed_t a, fixed_t b)
+export constexpr fixed_t FixedMul(const fixed_t a, const fixed_t b)
 {
-    return (static_cast<int64_t>(a) * static_cast<int64_t>(b)) >> FRACBITS;
+    if constexpr (SafeFixed)
+    {
+        const int64_t val = (static_cast<int64_t>(a) * static_cast<int64_t>(b)) >> FRACBITS;
+        if (val > std::numeric_limits<int32_t>::max())
+        {
+            return std::numeric_limits<int32_t>::max();
+        }
+        else if (val < std::numeric_limits<int32_t>::min())
+        {
+            return std::numeric_limits<int32_t>::min();
+        }
+        return val;
+    } else {
+        return (static_cast<int64_t>(a) * static_cast<int64_t>(b)) >> FRACBITS;
+    };
 }
 
 
@@ -46,7 +61,7 @@ export fixed_t FixedMul(fixed_t a, fixed_t b)
 // FixedDiv, C version.
 //
 
-export fixed_t FixedDiv(fixed_t a, fixed_t b)
+export constexpr fixed_t FixedDiv(const fixed_t a, const fixed_t b)
 {
     if ((abs(a) >> 14) >= abs(b))
     {
