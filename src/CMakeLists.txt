@@ -320,6 +320,7 @@ add_executable(gt)
 target_sources(gt 
         PRIVATE 
           gt_fixed.cpp
+          gt_swap.cpp
         
         PRIVATE FILE_SET HEADERS
           BASE_DIRS
