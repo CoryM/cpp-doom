@@ -32,15 +32,6 @@ auto init_crispy_s = [](){
     return crispy_s;
 };
 static auto crispy_s = init_crispy_s();
-//static crispy_t crispy_s = {
-//    0,
-//    .extautomap    = 1,
-//    .extsaveg      = 1,
-//    .hires         = 1,
-//    .smoothscaling = 1,
-//    .soundfix      = 1,
-//    .vsync         = 1,
-//};
 
 crispy_t *const crispy = &crispy_s;
 

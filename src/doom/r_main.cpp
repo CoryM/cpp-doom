@@ -18,7 +18,7 @@
 //	See tables.c, too.
 //
 
-
+#include <algorithm> // std::min, std::max, std::clamp
 #include <cstdlib>
 #include <math.h>
 
@@ -808,7 +808,7 @@ void R_ExecuteSetViewSize(void)
     centerx     = viewwidth / 2;
     centerxfrac = centerx << FRACBITS;
     centeryfrac = centery << FRACBITS;
-    projection  = MIN(centerxfrac, ((HIRESWIDTH >> detailshift) / 2) << FRACBITS);
+    projection  = std::min(centerxfrac, ((HIRESWIDTH >> detailshift) / 2) << FRACBITS);
 
     if (!detailshift)
     {
@@ -832,8 +832,8 @@ void R_ExecuteSetViewSize(void)
     R_InitTextureMapping();
 
     // psprite scales
-    pspritescale  = FRACUNIT * MIN(viewwidth, HIRESWIDTH >> detailshift) / ORIGWIDTH;
-    pspriteiscale = FRACUNIT * ORIGWIDTH / MIN(viewwidth, HIRESWIDTH >> detailshift);
+    pspritescale  = FRACUNIT * std::min(viewwidth, HIRESWIDTH >> detailshift) / ORIGWIDTH;
+    pspriteiscale = FRACUNIT * ORIGWIDTH / std::min(viewwidth, HIRESWIDTH >> detailshift);
 
     // thing clipping
     for (i = 0; i < viewwidth; i++)
@@ -844,7 +844,7 @@ void R_ExecuteSetViewSize(void)
     {
         // [crispy] re-generate lookup-table for yslope[] (free look)
         // whenever "detailshift" or "screenblocks" change
-        const fixed_t num = MIN(viewwidth << detailshift, HIRESWIDTH) / 2 * FRACUNIT;
+        const fixed_t num = std::min(viewwidth << detailshift, HIRESWIDTH) / 2 * FRACUNIT;
         for (j = 0; j < LOOKDIRS; j++)
         {
             dy            = ((i - (viewheight / 2 + ((j - LOOKDIRMIN) * (1 << crispy->hires)) * (screenblocks < 11 ? screenblocks : 11) / 10)) << FRACBITS) + FRACUNIT / 2;
@@ -869,7 +869,7 @@ void R_ExecuteSetViewSize(void)
         startmap = ((LIGHTLEVELS - LIGHTBRIGHT - i) * 2) * NUMCOLORMAPS / LIGHTLEVELS;
         for (j = 0; j < MAXLIGHTSCALE; j++)
         {
-            level = startmap - j * HIRESWIDTH / MIN(viewwidth << detailshift, HIRESWIDTH) / DISTMAP;
+            level = startmap - j * HIRESWIDTH / std::min(viewwidth << detailshift, HIRESWIDTH) / DISTMAP;
 
             if (level < 0)
                 level = 0;

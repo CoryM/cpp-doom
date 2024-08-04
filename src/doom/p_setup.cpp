@@ -17,7 +17,7 @@
 //	set up initial state and misc. LUTs.
 //
 
-
+#include <algorithm> // std::min, std::max, std::clamp
 #include <math.h>
 
 #include "z_zone.hpp"
@@ -1175,7 +1175,7 @@ void P_SetupLevel(int episode,
 
         fprintf(stderr, "P_SetupLevel: %s (%s) %s%s %d:%02d:%02d/%d:%02d:%02d ",
             maplumpinfo->name, W_WadNameForLump(maplumpinfo),
-            skilltable[BETWEEN(0, 5, (int)skill + 1)], rfn_str,
+            skilltable[std::clamp<int>(static_cast<int>(skill) + 1, 0, 5)], rfn_str,
             ltime / 3600, (ltime % 3600) / 60, ltime % 60,
             ttime / 3600, (ttime % 3600) / 60, ttime % 60);
 

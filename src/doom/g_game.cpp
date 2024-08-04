@@ -16,9 +16,11 @@
 //
 
 
+#include <algorithm> // std::min, std::max, std::clamp
 #include <cstring>
 #include <cstdlib>
 #include <math.h>
+
 
 #include "doomdef.hpp"
 #include "doomkeys.hpp"
@@ -2092,7 +2094,7 @@ void G_DoSaveGame(void)
         extern const char *skilltable[];
 
         fprintf(stderr, "G_DoSaveGame: Episode %d, Map %d, %s, Time %d:%02d:%02d, Total %d:%02d:%02d.\n",
-            gameepisode, gamemap, skilltable[BETWEEN(0, 5, (int)gameskill + 1)],
+            gameepisode, gamemap, skilltable[std::clamp((int)gameskill + 1, 0, 5)],
             ltime / 3600, (ltime % 3600) / 60, ltime % 60,
             ttime / 3600, (ttime % 3600) / 60, ttime % 60);
     }

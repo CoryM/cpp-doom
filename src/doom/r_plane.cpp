@@ -18,10 +18,9 @@
 //	Moreover, the sky areas have to be determined.
 //
 
-
+#include <algorithm> // std::min, std::max, std::clamp
 #include <cstdio>
 #include <cstdlib>
-#include <algorithm>
 
 #include "i_system.hpp"
 #include "z_zone.hpp"

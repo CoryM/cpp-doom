@@ -16,6 +16,7 @@
 //	DOOM graphics stuff for SDL.
 //
 
+#include <algorithm> // std::min, std::max, std::clamp
 
 #include "SDL.h"
 #include "SDL_opengl.h"
@@ -1561,7 +1562,7 @@ void I_GetScreenDimensions(void)
         // [crispy] make sure SCREENWIDTH is an integer multiple of 4 ...
         SCREENWIDTH = (SCREENWIDTH + 3) & (int)~3;
         // [crispy] ... but never exceeds MAXWIDTH (array size!)
-        SCREENWIDTH = MIN(SCREENWIDTH, MAXWIDTH);
+        SCREENWIDTH = std::min(SCREENWIDTH, MAXWIDTH);
     }
 
     DELTAWIDTH = ((SCREENWIDTH - HIRESWIDTH) >> crispy->hires) / 2;
@@ -1822,7 +1823,7 @@ void I_RenderReadPixels(byte **data, int *w, int *h, int *p)
             int temp1, temp2, scale;
             temp1 = rect.w;
             temp2 = rect.h;
-            scale = MIN(rect.w / SCREENWIDTH, rect.h / actualheight);
+            scale = std::min(rect.w / SCREENWIDTH, rect.h / actualheight);
 
             rect.w = SCREENWIDTH * scale;
             rect.h = actualheight * scale;

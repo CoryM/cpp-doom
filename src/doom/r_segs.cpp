@@ -16,7 +16,7 @@
 //	All the clipping: columns, horizontal spans, sky columns.
 //
 
-
+#include <algorithm> // std::min, std::max, std::clamp
 #include <cstdio>
 #include <cstdlib>
 
@@ -569,7 +569,7 @@ void R_StoreWallRange(int start,
     dx1         = ((int64_t)viewx - curline->v1->r_x) >> 1;
     dy1         = ((int64_t)viewy - curline->v1->r_y) >> 1;
     dist        = ((dy * dx1 - dx * dy1) / len) << 1;
-    rw_distance = (fixed_t)BETWEEN(INT_MIN, INT_MAX, dist);
+    rw_distance = std::clamp<fixed_t>(dist, INT_MIN, INT_MAX);
 
 
     ds_p->x1 = rw_x = start;

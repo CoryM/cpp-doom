@@ -20,6 +20,7 @@
 
 
 #include <cstdio>
+#include <algorithm> // std::min, std::max, std::clamp
 
 import i_swap;  // [crispy] SHORT()
 #include "i_system.hpp"
@@ -1132,7 +1133,7 @@ boolean
             extern const char *skilltable[];
 
             M_snprintf(msg, sizeof(msg), "Skill: %s",
-                skilltable[BETWEEN(0, 5, (int)gameskill + 1)]);
+                skilltable[std::clamp<int>(static_cast<int>(gameskill + 1), 0, 5)]);
             plyr->message = msg;
         }
 

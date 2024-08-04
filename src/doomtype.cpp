@@ -2,7 +2,7 @@
 
 #include <string_view> // std::string_view
 #include <locale>      // std::tolower
-#include <algorithm>   // std::lexicographical_compare
+#include <algorithm>   // std::lexicographical_compare, std::min
 
 #include <iostream>
 

@@ -18,7 +18,7 @@
 //	Pending weapon.
 //
 
-
+#include <algorithm> // std::min, std::max, std::clamp
 #include <cstdlib> // [crispy] abs()
 #include "doomdef.hpp"
 #include "d_event.hpp"
@@ -192,9 +192,8 @@ void P_MovePlayer(player_t *player)
     }
     if (!menuactive && !demoplayback)
     {
-        player->lookdir = BETWEEN(-LOOKDIRMIN * MLOOKUNIT,
-            LOOKDIRMAX * MLOOKUNIT,
-            player->lookdir + cmd->lookdir);
+        player->lookdir = std::clamp(player->lookdir + cmd->lookdir, 
+            -LOOKDIRMIN * MLOOKUNIT, LOOKDIRMAX * MLOOKUNIT);
     }
 }
 

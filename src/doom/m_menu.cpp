@@ -17,7 +17,7 @@
 //	Sliders and icons. Kinda widget stuff.
 //
 
-
+#include <algorithm> // std::min, std::max, std::clamp
 #include <cstdlib>
 #include <cctype>
 
@@ -3064,7 +3064,7 @@ void M_Init(void)
         SaveDef_x = (ORIGWIDTH - endian::SHORT(patchs->width)) / 2 + endian::SHORT(patchs->leftoffset);
         LoadDef.x = SaveDef.x = (ORIGWIDTH - 24 * 8) / 2 + endian::SHORT(patchm->leftoffset); // [crispy] see M_DrawSaveLoadBorder()
 
-        captionheight = MAX(endian::SHORT(patchl->height), endian::SHORT(patchs->height));
+        captionheight = std::max(endian::SHORT(patchl->height), endian::SHORT(patchs->height));
 
         vstep = ORIGHEIGHT - 32; // [crispy] ST_HEIGHT
         vstep -= captionheight;
