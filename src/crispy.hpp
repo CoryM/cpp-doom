@@ -23,14 +23,69 @@
 
 #include "doomtype.hpp"
 
+#include <cstddef> // std::size_t
+
+namespace details {
+// By defualt Nothing is int_convertable_impl
+template<class T>
+struct int_convertable_impl : std::false_type {};
+
+// make int_convertable_impl a concept
+template<typename T>
+concept int_convertable = int_convertable_impl<T>::value;
+
+}
+
+// Convert to int from approved types
+[[nodiscard]] constexpr int to_int(const details::int_convertable auto b) {
+    return static_cast<int>(b);
+};
+
+// Convert to int* from approved types
+[[nodiscard]] int* to_ptr(details::int_convertable auto &b) {
+    return reinterpret_cast<int*>(&b);
+};
+
+// Convert to int_convertable type from int
+template<details::int_convertable T>
+[[nodiscard]] constexpr T from_int(const int i) {
+    return static_cast<T>(i);
+};
+
+
+// [crispy] "crispness" config variables
+// Amount of Head/Weapon bobbing
+enum class eBobFactor : int
+{
+    Full,
+    Mid,
+    Off,
+    NUM,
+};
+// eBobFactor is int_convertable_impl
+template<>
+struct details::int_convertable_impl<eBobFactor> : std::true_type {};
+
+enum class eBrightmaps : int
+{
+    Off,
+    Textures,
+    Sprites,
+    Both,
+    NUM,
+};
+// eBrightmaps is int_convertable_impl
+template<>
+struct details::int_convertable_impl<eBrightmaps> : std::true_type {};
+
 struct crispy_t
 {
     // [crispy] "crispness" config variables
     int automapoverlay;
     int automaprotate;
     int automapstats;
-    int bobfactor;
-    int brightmaps;
+    eBobFactor bobfactor;
+    eBrightmaps brightmaps;
     int centerweapon;
     int coloredblood;
     int coloredhud;
@@ -103,23 +158,6 @@ enum
     REINIT_RENDERER     = 2,
     REINIT_TEXTURES     = 4,
     REINIT_ASPECTRATIO  = 8,
-};
-
-enum
-{
-    BOBFACTOR_FULL,
-    BOBFACTOR_75,
-    BOBFACTOR_OFF,
-    NUM_BOBFACTORS,
-};
-
-enum
-{
-    BRIGHTMAPS_OFF,
-    BRIGHTMAPS_TEXTURES,
-    BRIGHTMAPS_SPRITES,
-    BRIGHTMAPS_BOTH,
-    NUM_BRIGHTMAPS,
 };
 
 enum

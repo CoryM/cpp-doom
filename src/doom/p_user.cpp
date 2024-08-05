@@ -85,7 +85,7 @@ void P_CalcHeight(player_t *player)
         player->bob = MAXBOB;
 
     // [crispy] variable player view bob
-    player->bob2 = crispy_bobfactor[crispy->bobfactor] * player->bob / 4;
+    player->bob2 = crispy_bobfactor[to_int(crispy->bobfactor)] * player->bob / 4;
 
     if ((player->cheats & CF_NOMOMENTUM) || !onground)
     {

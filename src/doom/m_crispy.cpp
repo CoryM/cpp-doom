@@ -25,17 +25,17 @@
 
 #include "m_crispy.hpp"
 
-multiitem_t multiitem_bobfactor[NUM_BOBFACTORS] = {
-    { BOBFACTOR_FULL, "full" },
-    { BOBFACTOR_75, "75%" },
-    { BOBFACTOR_OFF, "off" },
+multiitem_t multiitem_bobfactor[to_int(eBobFactor::NUM)] = {
+    { to_int(eBobFactor::Full), "full" },
+    { to_int(eBobFactor::Mid), "75%" },
+    { to_int(eBobFactor::Off), "off" },
 };
 
-multiitem_t multiitem_brightmaps[NUM_BRIGHTMAPS] = {
-    { BRIGHTMAPS_OFF, "none" },
-    { BRIGHTMAPS_TEXTURES, "walls" },
-    { BRIGHTMAPS_SPRITES, "items" },
-    { BRIGHTMAPS_BOTH, "both" },
+multiitem_t multiitem_brightmaps[to_int(eBrightmaps::NUM)] = {
+    { to_int(eBrightmaps::Off), "none" },
+    { to_int(eBrightmaps::Textures), "walls" },
+    { to_int(eBrightmaps::Sprites), "items" },
+    { to_int(eBrightmaps::Both), "both" },
 };
 
 multiitem_t multiitem_centerweapon[NUM_CENTERWEAPON] = {
@@ -146,13 +146,13 @@ void M_CrispyToggleAutomapstats(int choice)
 void M_CrispyToggleBobfactor(int choice)
 {
     choice            = 0;
-    crispy->bobfactor = (crispy->bobfactor + 1) % NUM_BOBFACTORS;
+    crispy->bobfactor = from_int<eBobFactor>((to_int(crispy->bobfactor) + 1) % to_int(eBobFactor::NUM));
 }
 
 void M_CrispyToggleBrightmaps(int choice)
 {
     choice             = 0;
-    crispy->brightmaps = (crispy->brightmaps + 1) % NUM_BRIGHTMAPS;
+    crispy->brightmaps = from_int<eBrightmaps>((to_int(crispy->brightmaps) + 1) % to_int(eBrightmaps::NUM));
 }
 
 void M_CrispyToggleCenterweapon(int choice)

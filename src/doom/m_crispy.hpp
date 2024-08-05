@@ -26,8 +26,8 @@ typedef struct
     char *name;
 } multiitem_t;
 
-extern multiitem_t multiitem_bobfactor[NUM_BOBFACTORS];
-extern multiitem_t multiitem_brightmaps[NUM_BRIGHTMAPS];
+extern multiitem_t multiitem_bobfactor[to_int(eBobFactor::NUM)];
+extern multiitem_t multiitem_brightmaps[to_int(eBrightmaps::NUM)];
 extern multiitem_t multiitem_centerweapon[NUM_CENTERWEAPON];
 extern multiitem_t multiitem_coloredhud[NUM_COLOREDHUD];
 extern multiitem_t multiitem_crosshair[NUM_CROSSHAIRS];

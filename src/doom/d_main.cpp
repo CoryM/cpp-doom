@@ -411,8 +411,8 @@ void D_BindVariables(void)
     M_BindIntVariable("crispy_automapoverlay", &crispy->automapoverlay);
     M_BindIntVariable("crispy_automaprotate", &crispy->automaprotate);
     M_BindIntVariable("crispy_automapstats", &crispy->automapstats);
-    M_BindIntVariable("crispy_bobfactor", &crispy->bobfactor);
-    M_BindIntVariable("crispy_brightmaps", &crispy->brightmaps);
+    M_BindIntVariable("crispy_bobfactor", to_ptr(crispy->bobfactor));
+    M_BindIntVariable("crispy_brightmaps", to_ptr(crispy->brightmaps));
     M_BindIntVariable("crispy_centerweapon", &crispy->centerweapon);
     M_BindIntVariable("crispy_coloredblood", &crispy->coloredblood);
     M_BindIntVariable("crispy_coloredhud", &crispy->coloredhud);

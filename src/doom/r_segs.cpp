@@ -375,7 +375,7 @@ void R_RenderSegLoop(void)
 
             // [crispy] optional brightmaps
             dc_colormap[0] = walllights[index];
-            dc_colormap[1] = (!fixedcolormap && (crispy->brightmaps & BRIGHTMAPS_TEXTURES)) ? scalelight[LIGHTLEVELS - 1][MAXLIGHTSCALE - 1] : dc_colormap[0];
+            dc_colormap[1] = (!fixedcolormap && (to_int(crispy->brightmaps) & to_int(eBrightmaps::Textures))) ? scalelight[LIGHTLEVELS - 1][MAXLIGHTSCALE - 1] : dc_colormap[0];
             dc_x           = rw_x;
             dc_iscale      = 0xffffffffu / (unsigned)rw_scale;
         }

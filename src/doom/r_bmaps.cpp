@@ -3941,7 +3941,7 @@ static byte *R_BrightmapForTexName_Hacx(const char *texname)
 // [crispy] adapted from russian-doom/src/doom/r_things.c:617-639
 static byte *R_BrightmapForSprite_Doom(const int type)
 {
-    if (crispy->brightmaps & BRIGHTMAPS_SPRITES)
+    if (to_int(crispy->brightmaps) & to_int(eBrightmaps::Sprites))
     {
         switch (type)
         {
@@ -4007,7 +4007,7 @@ static byte *R_BrightmapForSprite_Chex([[maybe_unused]] const int type)
 
 static byte *R_BrightmapForSprite_Hacx(const int type)
 {
-    if (crispy->brightmaps & BRIGHTMAPS_SPRITES)
+    if (to_int(crispy->brightmaps) & to_int(eBrightmaps::Sprites))
     {
         switch (type)
         {
@@ -4055,7 +4055,7 @@ static int bmapflatnum[12];
 
 static byte *R_BrightmapForFlatNum_Doom(const int num)
 {
-    if (crispy->brightmaps & BRIGHTMAPS_TEXTURES)
+    if (to_int(crispy->brightmaps) & to_int(eBrightmaps::Textures))
     {
         if (num == bmapflatnum[0] || num == bmapflatnum[1] || num == bmapflatnum[2])
         {
@@ -4068,7 +4068,7 @@ static byte *R_BrightmapForFlatNum_Doom(const int num)
 
 static byte *R_BrightmapForFlatNum_Hacx(const int num)
 {
-    if (crispy->brightmaps & BRIGHTMAPS_TEXTURES)
+    if (to_int(crispy->brightmaps) & to_int(eBrightmaps::Textures))
     {
         if (num == bmapflatnum[0] || num == bmapflatnum[1] || num == bmapflatnum[2] || num == bmapflatnum[3] || num == bmapflatnum[4] || num == bmapflatnum[5] || num == bmapflatnum[9] || num == bmapflatnum[10] || num == bmapflatnum[11])
         {
@@ -4093,7 +4093,7 @@ static byte *R_BrightmapForFlatNum_None([[maybe_unused]] const int num)
 
 static byte *R_BrightmapForState_Doom(const int state)
 {
-    if (crispy->brightmaps & BRIGHTMAPS_SPRITES)
+    if (to_int(crispy->brightmaps) & to_int(eBrightmaps::Sprites))
     {
         switch (state)
         {
@@ -4112,7 +4112,7 @@ static byte *R_BrightmapForState_Doom(const int state)
 
 static byte *R_BrightmapForState_Hacx(const int state)
 {
-    if (crispy->brightmaps & BRIGHTMAPS_SPRITES)
+    if (to_int(crispy->brightmaps) & to_int(eBrightmaps::Sprites))
     {
         switch (state)
         {
