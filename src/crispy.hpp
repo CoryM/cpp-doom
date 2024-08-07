@@ -25,58 +25,7 @@
 
 #include <cstddef> // std::size_t
 
-namespace details {
-// By defualt Nothing is int_convertable_impl
-template<class T>
-struct int_convertable_impl : std::false_type {};
-
-// make int_convertable_impl a concept
-template<typename T>
-concept int_convertable = int_convertable_impl<T>::value;
-
-}
-
-// Convert to int from approved types
-[[nodiscard]] constexpr int to_int(const details::int_convertable auto b) {
-    return static_cast<int>(b);
-};
-
-// Convert to int* from approved types
-[[nodiscard]] int* to_ptr(details::int_convertable auto &b) {
-    return reinterpret_cast<int*>(&b);
-};
-
-// Convert to int_convertable type from int
-template<details::int_convertable T>
-[[nodiscard]] constexpr T from_int(const int i) {
-    return static_cast<T>(i);
-};
-
-
-// [crispy] "crispness" config variables
-// Amount of Head/Weapon bobbing
-enum class eBobFactor : int
-{
-    Full,
-    Mid,
-    Off,
-    NUM,
-};
-// eBobFactor is int_convertable_impl
-template<>
-struct details::int_convertable_impl<eBobFactor> : std::true_type {};
-
-enum class eBrightmaps : int
-{
-    Off,
-    Textures,
-    Sprites,
-    Both,
-    NUM,
-};
-// eBrightmaps is int_convertable_impl
-template<>
-struct details::int_convertable_impl<eBrightmaps> : std::true_type {};
+import crispy;
 
 struct crispy_t
 {
@@ -86,10 +35,10 @@ struct crispy_t
     int automapstats;
     eBobFactor bobfactor;
     eBrightmaps brightmaps;
-    int centerweapon;
+    eCenterWeapon centerweapon;
     int coloredblood;
-    int coloredhud;
-    int crosshair;
+    eColoredHud coloredhud;
+    eCrosshair crosshair;
     int crosshairhealth;
     int crosshairtarget;
     int crosshairtype;
@@ -160,31 +109,6 @@ enum
     REINIT_ASPECTRATIO  = 8,
 };
 
-enum
-{
-    CENTERWEAPON_OFF,
-    CENTERWEAPON_CENTER,
-    CENTERWEAPON_BOB,
-    NUM_CENTERWEAPON,
-};
-
-enum
-{
-    COLOREDHUD_OFF,
-    COLOREDHUD_BAR,
-    COLOREDHUD_TEXT,
-    COLOREDHUD_BOTH,
-    NUM_COLOREDHUD
-};
-
-enum
-{
-    CROSSHAIR_OFF,
-    CROSSHAIR_STATIC,
-    CROSSHAIR_PROJECTED,
-    NUM_CROSSHAIRS,
-    CROSSHAIR_INTERCEPT = 0x10
-};
 
 enum
 {

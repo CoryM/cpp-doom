@@ -1290,7 +1290,7 @@ void P_LineLaser(mobj_t *t1,
     laserspot->thinker.function.acv = actionf_v::empty;
 
     // [crispy] intercepts overflow guard
-    crispy->crosshair |= CROSSHAIR_INTERCEPT;
+    crispy->crosshair = bit_OR(crispy->crosshair, eCrosshair::intercept);
 
     // [crispy] set the linetarget pointer
     lslope = P_AimLineAttack(t1, angle, distance);
@@ -1322,7 +1322,7 @@ void P_LineLaser(mobj_t *t1,
         }
     }
 
-    if ((crispy->crosshair & ~CROSSHAIR_INTERCEPT) == CROSSHAIR_PROJECTED)
+    if ((to_int(crispy->crosshair) & ~to_int(eCrosshair::intercept)) == to_int(eCrosshair::Projected))
     {
         // [crispy] don't aim at Spectres
         if (linetarget && !(linetarget->flags & MF_SHADOW) && (crispy->freeaim != FREEAIM_DIRECT))
@@ -1333,7 +1333,7 @@ void P_LineLaser(mobj_t *t1,
     }
 
     // [crispy] intercepts overflow guard
-    crispy->crosshair &= ~CROSSHAIR_INTERCEPT;
+    crispy->crosshair = from_int<eCrosshair>(to_int(crispy->crosshair) & ~to_int(eCrosshair::intercept));
 }
 
 

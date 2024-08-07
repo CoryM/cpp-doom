@@ -605,7 +605,7 @@ boolean
     // [crispy] intercepts overflow guard
     if (intercept_p - intercepts == MAXINTERCEPTS_ORIGINAL + 1)
     {
-        if (crispy->crosshair & CROSSHAIR_INTERCEPT)
+        if (bit_AND(crispy->crosshair, eCrosshair::intercept))
             return false;
         else
             // [crispy] print a warning
@@ -680,7 +680,7 @@ boolean PIT_AddThingIntercepts(mobj_t *thing)
     // [crispy] intercepts overflow guard
     if (intercept_p - intercepts == MAXINTERCEPTS_ORIGINAL + 1)
     {
-        if (crispy->crosshair & CROSSHAIR_INTERCEPT)
+        if (bit_AND(crispy->crosshair, eCrosshair::intercept))
             return false;
         else
             // [crispy] print a warning

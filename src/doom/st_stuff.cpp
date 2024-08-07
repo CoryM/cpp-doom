@@ -1686,15 +1686,15 @@ enum hudcolor_t
 // [crispy] return ammo/health/armor widget color
 static byte *ST_WidgetColor(int i)
 {
-    if (!(crispy->coloredhud & COLOREDHUD_BAR))
-        return NULL;
+    if (!(bit_AND(crispy->coloredhud, eColoredHud::Bar)))
+        return nullptr;
 
     switch (i)
     {
     case hudcolor_ammo: {
         if (weaponinfo[plyr->readyweapon].ammo == am_noammo)
         {
-            return NULL;
+            return nullptr;
         }
         else
         {

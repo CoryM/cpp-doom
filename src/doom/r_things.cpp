@@ -805,7 +805,7 @@ byte *R_LaserspotColor(void)
     if (crispy->crosshairtarget)
     {
         // [crispy] the projected crosshair code calls P_LineLaser() itself
-        if (crispy->crosshair == CROSSHAIR_STATIC)
+        if (crispy->crosshair == eCrosshair::Static)
         {
             P_LineLaser(viewplayer->mo, viewangle,
                 16 * 64 * FRACUNIT, PLAYER_SLOPE(viewplayer));
@@ -1082,7 +1082,7 @@ void R_DrawPlayerSprites(void)
     mfloorclip   = screenheightarray;
     mceilingclip = negonearray;
 
-    if (crispy->crosshair == CROSSHAIR_PROJECTED)
+    if (crispy->crosshair == eCrosshair::Projected)
         R_DrawLSprite();
 
     // add all active psprites

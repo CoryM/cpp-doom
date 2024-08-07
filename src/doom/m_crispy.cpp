@@ -38,23 +38,23 @@ multiitem_t multiitem_brightmaps[to_int(eBrightmaps::NUM)] = {
     { to_int(eBrightmaps::Both), "both" },
 };
 
-multiitem_t multiitem_centerweapon[NUM_CENTERWEAPON] = {
-    { CENTERWEAPON_OFF, "off" },
-    { CENTERWEAPON_CENTER, "centered" },
-    { CENTERWEAPON_BOB, "bobbing" },
+multiitem_t multiitem_centerweapon[to_int(eCenterWeapon::NUM)] = {
+    { to_int(eCenterWeapon::Off), "off" },
+    { to_int(eCenterWeapon::Center), "centered" },
+    { to_int(eCenterWeapon::Bob), "bobbing" },
 };
 
-multiitem_t multiitem_coloredhud[NUM_COLOREDHUD] = {
-    { COLOREDHUD_OFF, "off" },
-    { COLOREDHUD_BAR, "status bar" },
-    { COLOREDHUD_TEXT, "hud texts" },
-    { COLOREDHUD_BOTH, "both" },
+multiitem_t multiitem_coloredhud[to_int(eColoredHud::NUM)] = {
+    { to_int(eColoredHud::Off), "off" },
+    { to_int(eColoredHud::Bar), "status bar" },
+    { to_int(eColoredHud::Text), "hud texts" },
+    { to_int(eColoredHud::Both), "both" },
 };
 
-multiitem_t multiitem_crosshair[NUM_CROSSHAIRS] = {
-    { CROSSHAIR_OFF, "off" },
-    { CROSSHAIR_STATIC, "static" },
-    { CROSSHAIR_PROJECTED, "projected" },
+multiitem_t multiitem_crosshair[get_max<eCrosshair>()] = {
+    { to_int(eCrosshair::Off), "off" },
+    { to_int(eCrosshair::Static), "static" },
+    { to_int(eCrosshair::Projected), "projected" },
 };
 
 multiitem_t multiitem_crosshairtype[] = {
@@ -146,19 +146,19 @@ void M_CrispyToggleAutomapstats(int choice)
 void M_CrispyToggleBobfactor(int choice)
 {
     choice            = 0;
-    crispy->bobfactor = from_int<eBobFactor>((to_int(crispy->bobfactor) + 1) % to_int(eBobFactor::NUM));
+    crispy->bobfactor = wrap_next(crispy->bobfactor);
 }
 
 void M_CrispyToggleBrightmaps(int choice)
 {
     choice             = 0;
-    crispy->brightmaps = from_int<eBrightmaps>((to_int(crispy->brightmaps) + 1) % to_int(eBrightmaps::NUM));
+    crispy->brightmaps = wrap_next(crispy->brightmaps);
 }
 
 void M_CrispyToggleCenterweapon(int choice)
 {
     choice               = 0;
-    crispy->centerweapon = (crispy->centerweapon + 1) % NUM_CENTERWEAPON;
+    crispy->centerweapon = wrap_next(crispy->centerweapon);
 }
 
 void M_CrispyToggleColoredblood(int choice)
@@ -198,13 +198,13 @@ void M_CrispyToggleColoredblood(int choice)
 void M_CrispyToggleColoredhud(int choice)
 {
     choice             = 0;
-    crispy->coloredhud = (crispy->coloredhud + 1) % NUM_COLOREDHUD;
+    crispy->coloredhud = wrap_next(crispy->coloredhud);
 }
 
 void M_CrispyToggleCrosshair(int choice)
 {
     choice            = 0;
-    crispy->crosshair = (crispy->crosshair + 1) % NUM_CROSSHAIRS;
+    crispy->crosshair = wrap_next(crispy->crosshair);
 }
 
 void M_CrispyToggleCrosshairHealth(int choice)
@@ -221,7 +221,7 @@ void M_CrispyToggleCrosshairTarget(int choice)
 
 void M_CrispyToggleCrosshairtype(int choice)
 {
-    if (!crispy->crosshair)
+    if (!to_int(crispy->crosshair))
     {
         return;
     }

@@ -26,11 +26,11 @@ typedef struct
     char *name;
 } multiitem_t;
 
-extern multiitem_t multiitem_bobfactor[to_int(eBobFactor::NUM)];
-extern multiitem_t multiitem_brightmaps[to_int(eBrightmaps::NUM)];
-extern multiitem_t multiitem_centerweapon[NUM_CENTERWEAPON];
-extern multiitem_t multiitem_coloredhud[NUM_COLOREDHUD];
-extern multiitem_t multiitem_crosshair[NUM_CROSSHAIRS];
+extern multiitem_t multiitem_bobfactor[get_max<eBobFactor>()];
+extern multiitem_t multiitem_brightmaps[get_max<eBrightmaps>()];
+extern multiitem_t multiitem_centerweapon[get_max<eCenterWeapon>()];
+extern multiitem_t multiitem_coloredhud[get_max<eColoredHud>()];
+extern multiitem_t multiitem_crosshair[get_max<eCrosshair>()];
 extern multiitem_t multiitem_crosshairtype[];
 extern multiitem_t multiitem_freeaim[NUM_FREEAIMS];
 extern multiitem_t multiitem_demotimer[NUM_DEMOTIMERS];

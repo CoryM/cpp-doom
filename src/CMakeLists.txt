@@ -3,6 +3,7 @@ add_library(cpp_modules STATIC)
 target_sources(cpp_modules 
     PRIVATE FILE_SET HEADERS FILES
     PUBLIC FILE_SET CXX_MODULES FILES
+        crispy.cxx
         i_swap.cxx
         m_fixed.cxx
         net_petname.cxx

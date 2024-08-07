@@ -109,7 +109,7 @@ void HUlib_drawTextLine(hu_textline_t *l,
             if (l->l[i + 1] >= '0' && l->l[i + 1] <= '0' + CRMAX - 1)
             {
                 i++;
-                dp_translation = (crispy->coloredhud & COLOREDHUD_TEXT) ? cr[(int)(l->l[i] - '0')] : NULL;
+                dp_translation = (bit_AND(crispy->coloredhud, eColoredHud::Text)) ? cr[(int)(l->l[i] - '0')] : nullptr;
             }
         }
         else

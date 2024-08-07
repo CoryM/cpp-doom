@@ -826,14 +826,14 @@ void HU_Drawer(void)
         HUlib_drawSText(&w_secret);
     }
 
-    dp_translation = NULL;
+    dp_translation = nullptr;
     if (crispy->screenshotmsg == 4)
         HUlib_eraseSText(&w_message);
     else
         HUlib_drawSText(&w_message);
     HUlib_drawIText(&w_chat);
 
-    if (crispy->coloredhud & COLOREDHUD_TEXT)
+    if (bit_AND(crispy->coloredhud, eColoredHud::Text))
         dp_translation = cr[CR_GOLD];
 
     if (automapactive)
@@ -869,10 +869,10 @@ void HU_Drawer(void)
         HUlib_drawTextLine(&w_fps, false);
     }
 
-    if (crispy->crosshair == CROSSHAIR_STATIC)
+    if (crispy->crosshair == eCrosshair::Static)
         HU_DrawCrosshair();
 
-    dp_translation = NULL;
+    dp_translation = nullptr;
 
     if (dp_translucent)
         dp_translucent = false;

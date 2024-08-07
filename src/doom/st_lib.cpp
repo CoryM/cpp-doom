@@ -170,7 +170,7 @@ void STlib_initPercent(st_percent_t *p,
     p->p = percent;
 
     // [crispy] remember previous colorization
-    p->oldtranslation = NULL;
+    p->oldtranslation = nullptr;
 }
 
 
@@ -186,13 +186,13 @@ void STlib_updatePercent(st_percent_t *per,
 
     STlib_updateNum(&per->n, refresh); // [crispy] moved here
 
-    if (crispy->coloredhud & COLOREDHUD_BAR)
+    if (bit_AND(crispy->coloredhud, eColoredHud::Bar))
         dp_translation = cr[CR_GRAY];
 
     if (refresh && *per->n.on)
         V_DrawPatch(per->n.x, per->n.y, per->p);
 
-    dp_translation = NULL;
+    dp_translation = nullptr;
 }
 
 

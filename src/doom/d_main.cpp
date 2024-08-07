@@ -413,10 +413,10 @@ void D_BindVariables(void)
     M_BindIntVariable("crispy_automapstats", &crispy->automapstats);
     M_BindIntVariable("crispy_bobfactor", to_ptr(crispy->bobfactor));
     M_BindIntVariable("crispy_brightmaps", to_ptr(crispy->brightmaps));
-    M_BindIntVariable("crispy_centerweapon", &crispy->centerweapon);
+    M_BindIntVariable("crispy_centerweapon", to_ptr(crispy->centerweapon));
     M_BindIntVariable("crispy_coloredblood", &crispy->coloredblood);
-    M_BindIntVariable("crispy_coloredhud", &crispy->coloredhud);
-    M_BindIntVariable("crispy_crosshair", &crispy->crosshair);
+    M_BindIntVariable("crispy_coloredhud", to_ptr(crispy->coloredhud));
+    M_BindIntVariable("crispy_crosshair", to_ptr(crispy->crosshair));
     M_BindIntVariable("crispy_crosshairhealth", &crispy->crosshairhealth);
     M_BindIntVariable("crispy_crosshairtarget", &crispy->crosshairtarget);
     M_BindIntVariable("crispy_crosshairtype", &crispy->crosshairtype);
