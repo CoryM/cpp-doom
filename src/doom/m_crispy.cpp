@@ -16,6 +16,7 @@
 // DESCRIPTION:
 //	[crispy] Crispness menu
 //
+#include <bitset>       // std::bitset
 
 #include "doomstat.hpp"
 #include "p_local.hpp" // [crispy] thinkercap
@@ -64,17 +65,17 @@ multiitem_t multiitem_crosshairtype[] = {
     { 2, "dot" },
 };
 
-multiitem_t multiitem_freeaim[NUM_FREEAIMS] = {
-    { FREEAIM_AUTO, "autoaim" },
-    { FREEAIM_DIRECT, "direct" },
-    { FREEAIM_BOTH, "both" },
+multiitem_t multiitem_freeaim[get_max<eFreeaim>()] = {
+    { to_int(eFreeaim::Auto), "autoaim" },
+    { to_int(eFreeaim::Direct), "direct" },
+    { to_int(eFreeaim::Both), "both" },
 };
 
-multiitem_t multiitem_demotimer[NUM_DEMOTIMERS] = {
-    { DEMOTIMER_OFF, "off" },
-    { DEMOTIMER_RECORD, "recording" },
-    { DEMOTIMER_PLAYBACK, "playback" },
-    { DEMOTIMER_BOTH, "both" },
+multiitem_t multiitem_demotimer[get_max<eDemoTimer>()] = {
+    { to_int(eDemoTimer::Off), "off" },
+    { to_int(eDemoTimer::Record), "recording" },
+    { to_int(eDemoTimer::Playback), "playback" },
+    { to_int(eDemoTimer::Both), "both" },
 };
 
 multiitem_t multiitem_demotimerdir[] = {
@@ -83,29 +84,29 @@ multiitem_t multiitem_demotimerdir[] = {
     { 2, "backward" },
 };
 
-multiitem_t multiitem_freelook[NUM_FREELOOKS] = {
-    { FREELOOK_OFF, "off" },
-    { FREELOOK_SPRING, "spring" },
-    { FREELOOK_LOCK, "lock" },
+multiitem_t multiitem_freelook[get_max<eFreelook>()] = {
+    { to_int(eFreelook::Off), "off" },
+    { to_int(eFreelook::Spring), "spring" },
+    { to_int(eFreelook::Lock), "lock" },
 };
 
-multiitem_t multiitem_jump[NUM_JUMPS] = {
-    { JUMP_OFF, "off" },
-    { JUMP_LOW, "low" },
-    { JUMP_HIGH, "high" },
+multiitem_t multiitem_jump[get_max<eJump>()] = {
+    { to_int(eJump::Off), "off" },
+    { to_int(eJump::Low), "low" },
+    { to_int(eJump::High), "high" },
 };
 
-multiitem_t multiitem_secretmessage[NUM_SECRETMESSAGE] = {
-    { SECRETMESSAGE_OFF, "off" },
-    { SECRETMESSAGE_ON, "on" },
-    { SECRETMESSAGE_COUNT, "count" },
+multiitem_t multiitem_secretmessage[get_max<eSecretMessage>()] = {
+    { to_int(eSecretMessage::Off), "off" },
+    { to_int(eSecretMessage::On), "on" },
+    { to_int(eSecretMessage::Count), "count" },
 };
 
-multiitem_t multiitem_translucency[NUM_TRANSLUCENCY] = {
-    { TRANSLUCENCY_OFF, "off" },
-    { TRANSLUCENCY_MISSILE, "projectiles" },
-    { TRANSLUCENCY_ITEM, "items" },
-    { TRANSLUCENCY_BOTH, "both" },
+multiitem_t multiitem_translucency[get_max<eTranslucency>()] = {
+    { to_int(eTranslucency::Off), "off" },
+    { to_int(eTranslucency::Missile), "projectiles" },
+    { to_int(eTranslucency::Item), "items" },
+    { to_int(eTranslucency::Both), "both" },
 };
 
 multiitem_t multiitem_sndchannels[4] = {
@@ -114,16 +115,16 @@ multiitem_t multiitem_sndchannels[4] = {
     { 32, "32" },
 };
 
-multiitem_t multiitem_widescreen[NUM_WIDESCREEN] = {
-    { WIDESCREEN_OFF, "off" },
-    { WIDESCREEN_WIDE, "on, wide HUD" },
-    { WIDESCREEN_COMPACT, "on, compact HUD" },
+multiitem_t multiitem_widescreen[get_max<eWidescreen>()] = {
+    { to_int(eWidescreen::Off), "off" },
+    { to_int(eWidescreen::Wide), "on, wide HUD" },
+    { to_int(eWidescreen::Compact), "on, compact HUD" },
 };
 
-multiitem_t multiitem_widgets[NUM_WIDGETS] = {
-    { WIDGETS_OFF, "never" },
-    { WIDGETS_AUTOMAP, "in Automap" },
-    { WIDGETS_ALWAYS, "always" },
+multiitem_t multiitem_widgets[get_max<eWidgets>()] = {
+    { to_int(eWidgets::Off), "never" },
+    { to_int(eWidgets::Automap), "in Automap" },
+    { to_int(eWidgets::Always), "always" },
 };
 
 extern void AM_ReInit(void);
@@ -131,37 +132,33 @@ extern void EnableLoadingDisk(void);
 extern void P_SegLengths(boolean contrast_only);
 extern void R_ExecuteSetViewSize(void);
 extern void R_InitLightTables(void);
-extern void I_ReInitGraphics(int reinit);
+extern void I_ReInitGraphics(bReinit reinit);
 extern void ST_createWidgets(void);
 extern void HU_Start(void);
 extern void M_SizeDisplay(int choice);
 
 
-void M_CrispyToggleAutomapstats(int choice)
+void M_CrispyToggleAutomapstats([[maybe_unused]] int choice)
 {
-    choice               = 0;
-    crispy->automapstats = (crispy->automapstats + 1) % NUM_WIDGETS;
+    crispy->automapstats = wrap_next(crispy->automapstats);
 }
 
-void M_CrispyToggleBobfactor(int choice)
+void M_CrispyToggleBobfactor([[maybe_unused]] int choice)
 {
-    choice            = 0;
     crispy->bobfactor = wrap_next(crispy->bobfactor);
 }
 
-void M_CrispyToggleBrightmaps(int choice)
+void M_CrispyToggleBrightmaps([[maybe_unused]] int choice)
 {
-    choice             = 0;
     crispy->brightmaps = wrap_next(crispy->brightmaps);
 }
 
-void M_CrispyToggleCenterweapon(int choice)
+void M_CrispyToggleCenterweapon([[maybe_unused]] int choice)
 {
-    choice               = 0;
     crispy->centerweapon = wrap_next(crispy->centerweapon);
 }
 
-void M_CrispyToggleColoredblood(int choice)
+void M_CrispyToggleColoredblood([[maybe_unused]] int choice)
 {
     thinker_t *th;
 
@@ -170,7 +167,6 @@ void M_CrispyToggleColoredblood(int choice)
         return;
     }
 
-    choice               = 0;
     crispy->coloredblood = !crispy->coloredblood;
 
     // [crispy] switch NOBLOOD flag for Lost Souls
@@ -195,38 +191,33 @@ void M_CrispyToggleColoredblood(int choice)
     }
 }
 
-void M_CrispyToggleColoredhud(int choice)
+void M_CrispyToggleColoredhud([[maybe_unused]] int choice)
 {
-    choice             = 0;
     crispy->coloredhud = wrap_next(crispy->coloredhud);
 }
 
-void M_CrispyToggleCrosshair(int choice)
+void M_CrispyToggleCrosshair([[maybe_unused]] int choice)
 {
-    choice            = 0;
     crispy->crosshair = wrap_next(crispy->crosshair);
 }
 
-void M_CrispyToggleCrosshairHealth(int choice)
+void M_CrispyToggleCrosshairHealth([[maybe_unused]] int choice)
 {
-    choice                  = 0;
     crispy->crosshairhealth = !crispy->crosshairhealth;
 }
 
-void M_CrispyToggleCrosshairTarget(int choice)
+void M_CrispyToggleCrosshairTarget([[maybe_unused]] int choice)
 {
-    choice                  = 0;
     crispy->crosshairtarget = !crispy->crosshairtarget;
 }
 
-void M_CrispyToggleCrosshairtype(int choice)
+void M_CrispyToggleCrosshairtype([[maybe_unused]] int choice)
 {
     if (!to_int(crispy->crosshair))
     {
         return;
     }
 
-    choice                = 0;
     crispy->crosshairtype = crispy->crosshairtype + 1;
 
     if (!laserpatch[crispy->crosshairtype].c)
@@ -235,61 +226,54 @@ void M_CrispyToggleCrosshairtype(int choice)
     }
 }
 
-void M_CrispyToggleDemoBar(int choice)
+void M_CrispyToggleDemoBar([[maybe_unused]] int choice)
 {
-    choice          = 0;
     crispy->demobar = !crispy->demobar;
 }
 
-void M_CrispyToggleDemoTimer(int choice)
+void M_CrispyToggleDemoTimer([[maybe_unused]] int choice)
 {
-    choice            = 0;
-    crispy->demotimer = (crispy->demotimer + 1) % NUM_DEMOTIMERS;
+    crispy->demotimer = wrap_next(crispy->demotimer);
 }
 
-void M_CrispyToggleDemoTimerDir(int choice)
+void M_CrispyToggleDemoTimerDir([[maybe_unused]] int choice)
 {
-    if (!(crispy->demotimer & DEMOTIMER_PLAYBACK))
+    if (!bit_AND(crispy->demotimer, eDemoTimer::Playback))
     {
         return;
     }
 
-    choice               = 0;
     crispy->demotimerdir = !crispy->demotimerdir;
 }
 
-void M_CrispyToggleExtAutomap(int choice)
+void M_CrispyToggleExtAutomap([[maybe_unused]] int choice)
 {
-    choice             = 0;
     crispy->extautomap = !crispy->extautomap;
 }
 
-void M_CrispyToggleExtsaveg(int choice)
+void M_CrispyToggleExtsaveg([[maybe_unused]] int choice)
 {
-    choice           = 0;
     crispy->extsaveg = !crispy->extsaveg;
 }
 
-void M_CrispyToggleFlipcorpses(int choice)
+void M_CrispyToggleFlipcorpses([[maybe_unused]] int choice)
 {
     if (gameversion == exe_chex)
     {
         return;
     }
 
-    choice              = 0;
     crispy->flipcorpses = !crispy->flipcorpses;
 }
 
-void M_CrispyToggleFreeaim(int choice)
+void M_CrispyToggleFreeaim([[maybe_unused]] int choice)
 {
     if (!crispy->singleplayer)
     {
         return;
     }
 
-    choice          = 0;
-    crispy->freeaim = (crispy->freeaim + 1) % NUM_FREEAIMS;
+    crispy->freeaim = wrap_next(crispy->freeaim);
 
     // [crispy] update the "critical" struct
     CheckCrispySingleplayer(!demorecording && !demoplayback && !netgame);
@@ -301,19 +285,17 @@ static void M_CrispyToggleSkyHook(void)
     R_InitSkyMap();
 }
 
-void M_CrispyToggleFreelook(int choice)
+void M_CrispyToggleFreelook([[maybe_unused]] int choice)
 {
-    choice           = 0;
-    crispy->freelook = (crispy->freelook + 1) % NUM_FREELOOKS;
+    crispy->freelook = wrap_next(crispy->freelook);
 
     crispy->post_rendering_hook = M_CrispyToggleSkyHook;
 }
 
-void M_CrispyToggleFullsounds(int choice)
+void M_CrispyToggleFullsounds([[maybe_unused]] int choice)
 {
     int i;
 
-    choice            = 0;
     crispy->soundfull = !crispy->soundfull;
 
     // [crispy] weapon sound sources
@@ -331,7 +313,7 @@ static void M_CrispyToggleHiresHook(void)
     crispy->hires = !crispy->hires;
 
     // [crispy] re-initialize framebuffers, textures and renderer
-    I_ReInitGraphics(REINIT_FRAMEBUFFERS | REINIT_TEXTURES | REINIT_ASPECTRATIO);
+    I_ReInitGraphics(bReinit::FrameBuffers | bReinit::Textures | bReinit::AspectRatio);
     // [crispy] re-calculate framebuffer coordinates
     R_ExecuteSetViewSize();
     // [crispy] re-draw bezel
@@ -342,98 +324,86 @@ static void M_CrispyToggleHiresHook(void)
     AM_ReInit();
 }
 
-void M_CrispyToggleHires(int choice)
+void M_CrispyToggleHires([[maybe_unused]] int choice)
 {
-    choice = 0;
-
     crispy->post_rendering_hook = M_CrispyToggleHiresHook;
 }
 
-void M_CrispyToggleJumping(int choice)
+void M_CrispyToggleJumping([[maybe_unused]] int choice)
 {
     if (!crispy->singleplayer)
     {
         return;
     }
 
-    choice       = 0;
-    crispy->jump = (crispy->jump + 1) % NUM_JUMPS;
+    crispy->jump = wrap_next(crispy->jump);
 
     // [crispy] update the "critical" struct
     CheckCrispySingleplayer(!demorecording && !demoplayback && !netgame);
 }
 
-void M_CrispyToggleLeveltime(int choice)
+void M_CrispyToggleLeveltime([[maybe_unused]] int choice)
 {
-    choice            = 0;
-    crispy->leveltime = (crispy->leveltime + 1) % NUM_WIDGETS;
+    crispy->leveltime = wrap_next(crispy->leveltime);
 }
 
-void M_CrispyToggleMouseLook(int choice)
+void M_CrispyToggleMouseLook([[maybe_unused]] int choice)
 {
-    choice            = 0;
     crispy->mouselook = !crispy->mouselook;
 
     crispy->post_rendering_hook = M_CrispyToggleSkyHook;
 }
 
-void M_CrispyToggleNeghealth(int choice)
+void M_CrispyToggleNeghealth([[maybe_unused]] int choice)
 {
-    choice            = 0;
     crispy->neghealth = !crispy->neghealth;
 }
 
-void M_CrispyToggleOverunder(int choice)
+void M_CrispyToggleOverunder([[maybe_unused]] int choice)
 {
     if (!crispy->singleplayer)
     {
         return;
     }
 
-    choice            = 0;
     crispy->overunder = !crispy->overunder;
 
     // [crispy] update the "critical" struct
     CheckCrispySingleplayer(!demorecording && !demoplayback && !netgame);
 }
 
-void M_CrispyTogglePitch(int choice)
+void M_CrispyTogglePitch([[maybe_unused]] int choice)
 {
-    choice        = 0;
     crispy->pitch = !crispy->pitch;
 
     crispy->post_rendering_hook = M_CrispyToggleSkyHook;
 }
 
-void M_CrispyTogglePlayerCoords(int choice)
+void M_CrispyTogglePlayerCoords([[maybe_unused]] int choice)
 {
-    choice               = 0;
-    crispy->playercoords = (crispy->playercoords + 1) % (NUM_WIDGETS - 1); // [crispy] disable "always" setting
+    crispy->playercoords = wrap_next(crispy->playercoords);
 }
 
-void M_CrispyToggleRecoil(int choice)
+void M_CrispyToggleRecoil([[maybe_unused]] int choice)
 {
     if (!crispy->singleplayer)
     {
         return;
     }
 
-    choice         = 0;
     crispy->recoil = !crispy->recoil;
 
     // [crispy] update the "critical" struct
     CheckCrispySingleplayer(!demorecording && !demoplayback && !netgame);
 }
 
-void M_CrispyToggleSecretmessage(int choice)
+void M_CrispyToggleSecretmessage([[maybe_unused]] int choice)
 {
-    choice                = 0;
-    crispy->secretmessage = (crispy->secretmessage + 1) % NUM_SECRETMESSAGE;
+    crispy->secretmessage = wrap_next(crispy->secretmessage);
 }
 
-void M_CrispyToggleSmoothScaling(int choice)
+void M_CrispyToggleSmoothScaling([[maybe_unused]] int choice)
 {
-    choice                = 0;
     crispy->smoothscaling = !crispy->smoothscaling;
 }
 
@@ -449,44 +419,35 @@ static void M_CrispyToggleSmoothLightingHook(void)
     P_SegLengths(true);
 }
 
-void M_CrispyToggleSmoothLighting(int choice)
+void M_CrispyToggleSmoothLighting([[maybe_unused]] int choice)
 {
-    choice = 0;
-
     crispy->post_rendering_hook = M_CrispyToggleSmoothLightingHook;
 }
 
-void M_CrispyToggleSndChannels(int choice)
+void M_CrispyToggleSndChannels([[maybe_unused]] int choice)
 {
-    choice = 0;
-
     S_UpdateSndChannels();
 }
 
-void M_CrispyToggleSoundfixes(int choice)
+void M_CrispyToggleSoundfixes([[maybe_unused]] int choice)
 {
-    choice           = 0;
     crispy->soundfix = !crispy->soundfix;
 }
 
-void M_CrispyToggleSoundMono(int choice)
+void M_CrispyToggleSoundMono([[maybe_unused]] int choice)
 {
-    choice            = 0;
     crispy->soundmono = !crispy->soundmono;
 
     S_UpdateStereoSeparation();
 }
 
-void M_CrispyToggleTranslucency(int choice)
+void M_CrispyToggleTranslucency([[maybe_unused]] int choice)
 {
-    choice               = 0;
-    crispy->translucency = (crispy->translucency + 1) % NUM_TRANSLUCENCY;
+    crispy->translucency = wrap_next(crispy->translucency);
 }
 
-void M_CrispyToggleUncapped(int choice)
+void M_CrispyToggleUncapped([[maybe_unused]] int choice)
 {
-    choice = 0;
-
     crispy->uncapped = !crispy->uncapped;
 }
 
@@ -494,13 +455,11 @@ void M_CrispyToggleVsyncHook(void)
 {
     crispy->vsync = !crispy->vsync;
 
-    I_ReInitGraphics(REINIT_RENDERER | REINIT_TEXTURES | REINIT_ASPECTRATIO);
+    I_ReInitGraphics(bReinit::Renderer | bReinit::Textures | bReinit::AspectRatio);
 }
 
-void M_CrispyToggleVsync(int choice)
+void M_CrispyToggleVsync([[maybe_unused]] int choice)
 {
-    choice = 0;
-
     if (force_software_renderer)
     {
         return;
@@ -509,9 +468,8 @@ void M_CrispyToggleVsync(int choice)
     crispy->post_rendering_hook = M_CrispyToggleVsyncHook;
 }
 
-void M_CrispyToggleWeaponSquat(int choice)
+void M_CrispyToggleWeaponSquat([[maybe_unused]] int choice)
 {
-    choice              = 0;
     crispy->weaponsquat = !crispy->weaponsquat;
 }
 
@@ -528,15 +486,15 @@ void M_CrispyReinitHUDWidgets(void)
 
 static void M_CrispyToggleWidescreenHook(void)
 {
-    crispy->widescreen = (crispy->widescreen + 1) % NUM_WIDESCREEN;
+    crispy->widescreen = wrap_next(crispy->widescreen);
 
     // [crispy] no need to re-init when switching from wide to compact
-    if (crispy->widescreen == 1 || crispy->widescreen == 0)
+    if (to_int(crispy->widescreen) == 1 || crispy->widescreen == eWidescreen::Off)
     {
         // [crispy] re-initialize screenSize_min
         M_SizeDisplay(-1);
         // [crispy] re-initialize framebuffers, textures and renderer
-        I_ReInitGraphics(REINIT_FRAMEBUFFERS | REINIT_TEXTURES | REINIT_ASPECTRATIO);
+        I_ReInitGraphics(bReinit::FrameBuffers | bReinit::Textures | bReinit::AspectRatio);
         // [crispy] re-calculate framebuffer coordinates
         R_ExecuteSetViewSize();
         // [crispy] re-draw bezel
@@ -550,9 +508,7 @@ static void M_CrispyToggleWidescreenHook(void)
     M_CrispyReinitHUDWidgets();
 }
 
-void M_CrispyToggleWidescreen(int choice)
+void M_CrispyToggleWidescreen([[maybe_unused]] int choice)
 {
-    choice = 0;
-
     crispy->post_rendering_hook = M_CrispyToggleWidescreenHook;
 }

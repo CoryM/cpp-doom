@@ -380,7 +380,7 @@ static void P_ReadPlayersLookdir(const char *key)
 {
     int i, value;
 
-    if (sscanf(line, "%s %d %d", string, &i, &value) == 3 && !strncmp(string, key, MAX_STRING_LEN) && i < MAXPLAYERS && (crispy->freelook || crispy->mouselook))
+    if (sscanf(line, "%s %d %d", string, &i, &value) == 3 && !strncmp(string, key, MAX_STRING_LEN) && i < MAXPLAYERS && (to_bool(crispy->freelook) || crispy->mouselook))
     {
         players[i].lookdir = value;
     }

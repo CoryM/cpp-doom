@@ -158,7 +158,7 @@ static void CrispyDrawStats (void)
 	coord_x = ORIGWIDTH - 7 * endian::SHORT(p->width);
     }
 
-    if (crispy->automapstats == WIDGETS_ALWAYS || (automapactive && crispy->automapstats == WIDGETS_AUTOMAP))
+    if (crispy->automapstats == eWidgets::Always || (automapactive && crispy->automapstats == eWidgets::Automap))
     {
 	M_snprintf(str, sizeof(str), "K %d/%d", player->killcount, totalkills);
 	MN_DrTextA(str, 0, 1*height);
@@ -170,7 +170,7 @@ static void CrispyDrawStats (void)
 	MN_DrTextA(str, 0, 3*height);
     }
 
-    if (crispy->leveltime == WIDGETS_ALWAYS || (automapactive && crispy->leveltime == WIDGETS_AUTOMAP))
+    if (crispy->leveltime == eWidgets::Always || (automapactive && crispy->leveltime == eWidgets::Automap))
     {
 	const int time = leveltime / TICRATE;
 
@@ -178,7 +178,7 @@ static void CrispyDrawStats (void)
 	MN_DrTextA(str, 0, 4*height);
     }
 
-    if (crispy->playercoords == WIDGETS_ALWAYS || (automapactive && crispy->playercoords == WIDGETS_AUTOMAP))
+    if (automapactive && crispy->playercoords == eWidgets::Automap)
     {
 	M_snprintf(str, sizeof(str), "X %-5d", player->mo->x>>FRACBITS);
 	MN_DrTextA(str, coord_x, 1*height);
@@ -757,7 +757,7 @@ void D_BindVariables(void)
     M_BindIntVariable("crispy_smoothscaling",   &crispy->smoothscaling);
     M_BindIntVariable("crispy_automapstats",    &crispy->automapstats);
     M_BindIntVariable("crispy_leveltime",       &crispy->leveltime);
-    M_BindIntVariable("crispy_playercoords",    &crispy->playercoords);
+    M_BindIntVariable("crispy_playercoords",    to_ptr(crispy->playercoords));
 }
 
 // 

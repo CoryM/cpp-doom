@@ -148,7 +148,7 @@ extern boolean speedkeydown(void);
 //
 // MENU TYPEDEFS
 //
-typedef struct
+struct menuitem_t
 {
     // 0 = no cursor here, 1 = ok, 2 = arrows ok
     short status;
@@ -162,8 +162,8 @@ typedef struct
 
     // hotkey in menu
     char  alphaKey;
-    char *alttext; // [crispy] alternative text for the Options menu
-} menuitem_t;
+    char *alttext = nullptr; // [crispy] alternative text for the Options menu
+};
 
 
 typedef struct menu_s {
@@ -1403,21 +1403,21 @@ static void M_DrawCrispnessBackground(void)
 
 static char crispy_menu_text[48];
 
-static void M_DrawCrispnessHeader(char *item)
+static void M_DrawCrispnessHeader(const char *item)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
         "%s%s", crstr[CR_GOLD], item);
     M_WriteText(ORIGWIDTH / 2 - M_StringWidth(item) / 2, 12, crispy_menu_text);
 }
 
-static void M_DrawCrispnessSeparator(int y, char *item)
+static void M_DrawCrispnessSeparator(int y, const char *item)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
         "%s%s", crstr[CR_GOLD], item);
     M_WriteText(currentMenu->x - 8, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
-static void M_DrawCrispnessItem(int y, char *item, int feat, boolean cond)
+static void M_DrawCrispnessItem(int y, const char *item, int feat, boolean cond)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
         "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item,
@@ -1426,7 +1426,7 @@ static void M_DrawCrispnessItem(int y, char *item, int feat, boolean cond)
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
-static void M_DrawCrispnessMultiItem(int y, char *item, multiitem_t *multiitem, int feat, boolean cond)
+static void M_DrawCrispnessMultiItem(int y, const char *item, multiitem_t *multiitem, int feat, boolean cond)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
         "%s%s: %s%s", cond ? crstr[CR_NONE] : crstr[CR_DARK], item,
@@ -1435,10 +1435,9 @@ static void M_DrawCrispnessMultiItem(int y, char *item, multiitem_t *multiitem, 
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
-static void M_DrawCrispnessGoto(int y, char *item)
+static void M_DrawCrispnessGoto(int y, const char *item)
 {
-    M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
-        "%s%s", crstr[CR_GOLD], item);
+    M_snprintf(crispy_menu_text, sizeof(crispy_menu_text), "%s%s", crstr[CR_GOLD], item);
     M_WriteText(currentMenu->x, currentMenu->y + CRISPY_LINEHEIGHT * y, crispy_menu_text);
 }
 
@@ -1450,14 +1449,14 @@ static void M_DrawCrispness1(void)
 
     M_DrawCrispnessSeparator(crispness_sep_rendering, "Rendering");
     M_DrawCrispnessItem(crispness_hires, "High Resolution Rendering", crispy->hires, true);
-    M_DrawCrispnessMultiItem(crispness_widescreen, "Widescreen Rendering", multiitem_widescreen, crispy->widescreen, aspect_ratio_correct);
+    M_DrawCrispnessMultiItem(crispness_widescreen, "Widescreen Rendering", multiitem_widescreen, to_int(crispy->widescreen), aspect_ratio_correct);
     M_DrawCrispnessItem(crispness_uncapped, "Uncapped Framerate", crispy->uncapped, true);
     M_DrawCrispnessItem(crispness_vsync, "Enable VSync", crispy->vsync, !force_software_renderer);
     M_DrawCrispnessItem(crispness_smoothscaling, "Smooth Pixel Scaling", crispy->smoothscaling, true);
 
     M_DrawCrispnessSeparator(crispness_sep_visual, "Visual");
     M_DrawCrispnessMultiItem(crispness_coloredhud, "Colorize HUD Elements", multiitem_coloredhud, to_int(crispy->coloredhud), true);
-    M_DrawCrispnessMultiItem(crispness_translucency, "Enable Translucency", multiitem_translucency, crispy->translucency, true);
+    M_DrawCrispnessMultiItem(crispness_translucency, "Enable Translucency", multiitem_translucency, to_int(crispy->translucency), true);
     M_DrawCrispnessItem(crispness_smoothlight, "Smooth Diminishing Lighting", crispy->smoothlight, true);
     M_DrawCrispnessMultiItem(crispness_brightmaps, "Apply Brightmaps to", multiitem_brightmaps, to_int(crispy->brightmaps), true);
     M_DrawCrispnessItem(crispness_coloredblood, "Colored Blood and Corpses", crispy->coloredblood, gameversion != exe_chex);
@@ -1466,7 +1465,7 @@ static void M_DrawCrispness1(void)
     M_DrawCrispnessGoto(crispness1_next, "Next Page >");
     M_DrawCrispnessGoto(crispness1_prev, "< Last Page");
 
-    dp_translation = NULL;
+    dp_translation = nullptr;
 }
 
 static void M_DrawCrispness2(void)
@@ -1483,15 +1482,15 @@ static void M_DrawCrispness2(void)
 
     M_DrawCrispnessSeparator(crispness_sep_navigational, "Navigational");
     M_DrawCrispnessItem(crispness_extautomap, "Extended Automap colors", crispy->extautomap, true);
-    M_DrawCrispnessMultiItem(crispness_automapstats, "Show Level Stats", multiitem_widgets, crispy->automapstats, true);
-    M_DrawCrispnessMultiItem(crispness_leveltime, "Show Level Time", multiitem_widgets, crispy->leveltime, true);
-    M_DrawCrispnessMultiItem(crispness_playercoords, "Show Player Coords", multiitem_widgets, crispy->playercoords, true);
-    M_DrawCrispnessMultiItem(crispness_secretmessage, "Report Revealed Secrets", multiitem_secretmessage, crispy->secretmessage, true);
+    M_DrawCrispnessMultiItem(crispness_automapstats, "Show Level Stats", multiitem_widgets, to_int(crispy->automapstats), true);
+    M_DrawCrispnessMultiItem(crispness_leveltime, "Show Level Time", multiitem_widgets, to_int(crispy->leveltime), true);
+    M_DrawCrispnessMultiItem(crispness_playercoords, "Show Player Coords", multiitem_widgets, to_int(crispy->playercoords), true);
+    M_DrawCrispnessMultiItem(crispness_secretmessage, "Report Revealed Secrets", multiitem_secretmessage, to_int(crispy->secretmessage), true);
 
     M_DrawCrispnessGoto(crispness2_next, "Next Page >");
     M_DrawCrispnessGoto(crispness2_prev, "< Prev Page");
 
-    dp_translation = NULL;
+    dp_translation = nullptr;
 }
 
 static void M_DrawCrispness3(void)
@@ -1502,7 +1501,7 @@ static void M_DrawCrispness3(void)
 
     M_DrawCrispnessSeparator(crispness_sep_tactical, "Tactical");
 
-    M_DrawCrispnessMultiItem(crispness_freelook, "Allow Free Look", multiitem_freelook, crispy->freelook, true);
+    M_DrawCrispnessMultiItem(crispness_freelook, "Allow Free Look", multiitem_freelook, to_int(crispy->freelook), true);
     M_DrawCrispnessItem(crispness_mouselook, "Permanent Mouse Look", crispy->mouselook, true);
     M_DrawCrispnessMultiItem(crispness_bobfactor, "Player View/Weapon Bobbing", multiitem_bobfactor, to_int(crispy->bobfactor), true);
     M_DrawCrispnessMultiItem(crispness_centerweapon, "Weapon Attack Alignment", multiitem_centerweapon, to_int(crispy->centerweapon), crispy->bobfactor != eBobFactor::Off);
@@ -1532,21 +1531,21 @@ static void M_DrawCrispness4(void)
 
     M_DrawCrispnessSeparator(crispness_sep_physical, "Physical");
 
-    M_DrawCrispnessMultiItem(crispness_freeaim, "Vertical Aiming", multiitem_freeaim, crispy->freeaim, crispy->singleplayer);
-    M_DrawCrispnessMultiItem(crispness_jumping, "Allow Jumping", multiitem_jump, crispy->jump, crispy->singleplayer);
+    M_DrawCrispnessMultiItem(crispness_freeaim, "Vertical Aiming", multiitem_freeaim, to_int(crispy->freeaim), crispy->singleplayer);
+    M_DrawCrispnessMultiItem(crispness_jumping, "Allow Jumping", multiitem_jump, to_int(crispy->jump), crispy->singleplayer);
     M_DrawCrispnessItem(crispness_overunder, "Walk over/under Monsters", crispy->overunder, crispy->singleplayer);
     M_DrawCrispnessItem(crispness_recoil, "Weapon Recoil Thrust", crispy->recoil, crispy->singleplayer);
 
     M_DrawCrispnessSeparator(crispness_sep_demos, "Demos");
 
-    M_DrawCrispnessMultiItem(crispness_demotimer, "Show Demo Timer", multiitem_demotimer, crispy->demotimer, true);
-    M_DrawCrispnessMultiItem(crispness_demotimerdir, "Playback Timer Direction", multiitem_demotimerdir, crispy->demotimerdir + 1, crispy->demotimer & DEMOTIMER_PLAYBACK);
+    M_DrawCrispnessMultiItem(crispness_demotimer, "Show Demo Timer", multiitem_demotimer, to_int(crispy->demotimer), true);
+    M_DrawCrispnessMultiItem(crispness_demotimerdir, "Playback Timer Direction", multiitem_demotimerdir, crispy->demotimerdir + 1, bit_AND(crispy->demotimer, eDemoTimer::Playback));
     M_DrawCrispnessItem(crispness_demobar, "Show Demo Progress Bar", crispy->demobar, true);
 
     M_DrawCrispnessGoto(crispness4_next, "First Page >");
     M_DrawCrispnessGoto(crispness4_prev, "< Prev Page");
 
-    dp_translation = NULL;
+    dp_translation = nullptr;
 }
 
 void M_Options([[maybe_unused]] int choice)
@@ -1601,10 +1600,8 @@ static void M_CrispnessPrev([[maybe_unused]] int choice)
 //
 //      Toggle messages on/off
 //
-void M_ChangeMessages(int choice)
+void M_ChangeMessages([[maybe_unused]] int choice)
 {
-    // warning: unused parameter `int choice'
-    choice       = 0;
     showMessages = 1 - showMessages;
 
     if (!showMessages)
@@ -1635,9 +1632,8 @@ void M_EndGameResponse(int key)
     D_StartTitle();
 }
 
-void M_EndGame(int choice)
+void M_EndGame([[maybe_unused]] int choice)
 {
-    choice = 0;
     if (!usergame)
     {
         S_StartSound(NULL, sfx_oof);
@@ -1657,21 +1653,18 @@ void M_EndGame(int choice)
 //
 // M_ReadThis
 //
-void M_ReadThis(int choice)
+void M_ReadThis([[maybe_unused]] int choice)
 {
-    choice = 0;
     M_SetupNextMenu(&ReadDef1);
 }
 
-void M_ReadThis2(int choice)
+void M_ReadThis2([[maybe_unused]] int choice)
 {
-    choice = 0;
     M_SetupNextMenu(&ReadDef2);
 }
 
-void M_FinishReadThis(int choice)
+void M_FinishReadThis([[maybe_unused]] int choice)
 {
-    choice = 0;
     M_SetupNextMenu(&MainDef);
 }
 
@@ -1801,16 +1794,14 @@ static void M_ChangeSensitivity_y(int choice)
     }
 }
 
-static void M_MouseInvert(int choice)
+static void M_MouseInvert([[maybe_unused]] int choice)
 {
-    choice         = 0;
     mouse_y_invert = !mouse_y_invert;
 }
 
 
-void M_ChangeDetail(int choice)
+void M_ChangeDetail([[maybe_unused]] int choice)
 {
-    choice      = 0;
     detailLevel = 1 - detailLevel;
 
     R_SetViewSize(screenblocks, detailLevel);
@@ -1825,7 +1816,7 @@ void M_ChangeDetail(int choice)
 void M_SizeDisplay(int choice)
 {
     // [crispy] initialize screenSize_min
-    screenSize_min = crispy->widescreen ? 8 : 0;
+    screenSize_min = to_bool(crispy->widescreen) ? 8 : 0;
 
     switch (choice)
     {
@@ -3090,7 +3081,7 @@ void M_Init(void)
         string = doom1_endmsg[3];
         if (!DEH_HasStringReplacement(string))
         {
-            replace = M_StringReplace(string, "dos", crispy->platform);
+            replace = M_StringReplace(string, "dos", crispy->platform.c_str());
             DEH_AddStringReplacement(string, replace);
             free(replace);
         }
@@ -3099,7 +3090,7 @@ void M_Init(void)
         string = doom1_endmsg[4];
         if (!DEH_HasStringReplacement(string))
         {
-            replace = M_StringReplace(string, "dos", crispy->platform);
+            replace = M_StringReplace(string, "dos", crispy->platform.c_str());
             DEH_AddStringReplacement(string, replace);
             free(replace);
         }

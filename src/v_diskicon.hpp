@@ -19,7 +19,9 @@
 #ifndef __V_DISKICON__
 #define __V_DISKICON__
 
-#include "crispy.hpp"
+#include "doomtype.hpp"
+import crispy;
+
 
 // Dimensions of the flashing "loading" disk icon
 

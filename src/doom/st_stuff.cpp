@@ -140,7 +140,7 @@ extern boolean inhelpscreens; // [crispy] prevent palette changes
 //       into a buffer,
 //       or into the frame buffer?
 
-#define HORIZDELTA (crispy->widescreen == 1 ? DELTAWIDTH : 0)
+#define HORIZDELTA (to_int(crispy->widescreen) == 1 ? DELTAWIDTH : 0)
 
 // AMMO number pos.
 #define ST_AMMOWIDTH 3
@@ -1122,7 +1122,7 @@ boolean
                 PACKAGE_STRING,
                 BUILD_DATE,
                 (long)sizeof(void *) * CHAR_BIT,
-                crispy->sdlversion);
+                crispy->sdlversion.c_str());
 #undef BUILD_DATE
             plyr->message = msg;
             fprintf(stderr, "%s\n", msg);
@@ -1915,13 +1915,13 @@ void ST_diffDraw(void)
 void ST_Drawer(boolean fullscreen, boolean refresh)
 {
 
-    st_statusbaron = (!fullscreen) || (automapactive && !crispy->automapoverlay && !crispy->widescreen);
+    st_statusbaron = (!fullscreen) || (automapactive && !crispy->automapoverlay && !to_bool(crispy->widescreen));
     // [crispy] immediately redraw status bar after help screens have been shown
     st_firsttime = st_firsttime || refresh || inhelpscreens;
 
     // [crispy] distinguish classic status bar with background and player face from Crispy HUD
     st_crispyhud        = screenblocks >= CRISPY_HUD && (!automapactive || crispy->automapoverlay);
-    st_classicstatusbar = st_statusbaron && !st_crispyhud && !crispy->widescreen;
+    st_classicstatusbar = st_statusbaron && !st_crispyhud && !to_bool(crispy->widescreen);
     st_statusbarface    = st_classicstatusbar || (st_crispyhud && screenblocks == CRISPY_HUD);
 
     if (crispy->cleanscreenshot == 2)

@@ -841,10 +841,10 @@ void HU_Drawer(void)
         HUlib_drawTextLine(&w_title, false);
     }
 
-    if (crispy->automapstats == WIDGETS_ALWAYS || (automapactive && crispy->automapstats == WIDGETS_AUTOMAP))
+    if (crispy->automapstats == eWidgets::Always || (automapactive && crispy->automapstats == eWidgets::Automap))
     {
         // [crispy] move obtrusive line out of player view
-        if (automapactive && (!crispy->automapoverlay || screenblocks < CRISPY_HUD - 1) && !crispy->widescreen)
+        if (automapactive && (!crispy->automapoverlay || screenblocks < CRISPY_HUD - 1) && !to_bool(crispy->widescreen))
             HUlib_drawTextLine(&w_map, false);
 
         HUlib_drawTextLine(&w_kills, false);
@@ -852,12 +852,12 @@ void HU_Drawer(void)
         HUlib_drawTextLine(&w_scrts, false);
     }
 
-    if (crispy->leveltime == WIDGETS_ALWAYS || (automapactive && crispy->leveltime == WIDGETS_AUTOMAP))
+    if (crispy->leveltime == eWidgets::Always || (automapactive && crispy->leveltime == eWidgets::Automap))
     {
         HUlib_drawTextLine(&w_ltime, false);
     }
 
-    if (crispy->playercoords == WIDGETS_ALWAYS || (automapactive && crispy->playercoords == WIDGETS_AUTOMAP))
+    if (automapactive && crispy->playercoords == eWidget::Automap)
     {
         HUlib_drawTextLine(&w_coordx, false);
         HUlib_drawTextLine(&w_coordy, false);
@@ -878,11 +878,11 @@ void HU_Drawer(void)
         dp_translucent = false;
 
     // [crispy] demo timer widget
-    if (demoplayback && (crispy->demotimer & DEMOTIMER_PLAYBACK))
+    if (demoplayback && bit_AND(crispy->demotimer, eDemoTimer::Playback))
     {
         ST_DrawDemoTimer(crispy->demotimerdir ? (deftotaldemotics - defdemotics) : defdemotics);
     }
-    else if (demorecording && (crispy->demotimer & DEMOTIMER_RECORD))
+    else if (demorecording && bit_AND(crispy->demotimer, eDemoTimer::Record))
     {
         ST_DrawDemoTimer(leveltime);
     }
@@ -923,7 +923,7 @@ void HU_Ticker(void)
     {
         message_on                = false;
         message_nottobefuckedwith = false;
-        crispy->screenshotmsg >>= 1;
+        crispy->screenshotmsg = crispy->screenshotmsg;
     }
 
     if (secret_counter && !--secret_counter)
@@ -956,7 +956,7 @@ void HU_Ticker(void)
             message_counter           = HU_MSGTIMEOUT;
             message_nottobefuckedwith = message_dontfuckwithme;
             message_dontfuckwithme    = 0;
-            crispy->screenshotmsg >>= 1;
+            crispy->screenshotmsg = crispy->screenshotmsg;
         }
 
     } // else message_on = false;
@@ -1005,13 +1005,13 @@ void HU_Ticker(void)
     if (automapactive)
     {
         // [crispy] move map title to the bottom
-        if ((crispy->automapoverlay && screenblocks >= CRISPY_HUD - 1) || crispy->widescreen)
+        if ((crispy->automapoverlay && screenblocks >= CRISPY_HUD - 1) || to_bool(crispy->widescreen))
             w_title.y = HU_TITLEY + ST_HEIGHT;
         else
             w_title.y = HU_TITLEY;
     }
 
-    if (crispy->automapstats == WIDGETS_ALWAYS || (automapactive && crispy->automapstats == WIDGETS_AUTOMAP))
+    if (crispy->automapstats == eWidgets::Always || (automapactive && crispy->automapstats == eWidgets::Automap))
     {
         // [crispy] count spawned monsters
         if (extrakills)
@@ -1040,7 +1040,7 @@ void HU_Ticker(void)
             HUlib_addCharToTextLine(&w_scrts, *(s++));
     }
 
-    if (crispy->leveltime == WIDGETS_ALWAYS || (automapactive && crispy->leveltime == WIDGETS_AUTOMAP))
+    if (crispy->leveltime == eWidgets::Always || (automapactive && crispy->leveltime == eWidgets::Automap))
     {
         const int time = leveltime / TICRATE;
 
@@ -1056,7 +1056,7 @@ void HU_Ticker(void)
             HUlib_addCharToTextLine(&w_ltime, *(s++));
     }
 
-    if (crispy->playercoords == WIDGETS_ALWAYS || (automapactive && crispy->playercoords == WIDGETS_AUTOMAP))
+    if (automapactive && crispy->playercoords == eWidget::Automap)
     {
         M_snprintf(str, sizeof(str), "%sX %s%-5d", cr_stat2, crstr[CR_GRAY],
             (plr->mo->x) >> FRACBITS);

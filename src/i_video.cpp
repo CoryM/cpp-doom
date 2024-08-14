@@ -17,6 +17,7 @@
 //
 
 #include <algorithm> // std::min, std::max, std::clamp
+#include <bitset>    // std::bitset
 
 #include "SDL.h"
 #include "SDL_opengl.h"
@@ -30,7 +31,7 @@
 
 #include "icon.cpp"
 
-#include "crispy.hpp"
+import crispy;
 
 #include "../utils/lump.hpp"
 #include "config.h"
@@ -1556,7 +1557,7 @@ void I_GetScreenDimensions(void)
     }
 
     // [crispy] widescreen rendering makes no sense without aspect ratio correction
-    if (crispy->widescreen && aspect_ratio_correct)
+    if (to_bool(crispy->widescreen) && aspect_ratio_correct)
     {
         SCREENWIDTH = w * ah / h;
         // [crispy] make sure SCREENWIDTH is an integer multiple of 4 ...
@@ -1688,10 +1689,10 @@ void I_InitGraphics(void)
 
 // [crispy] re-initialize only the parts of the rendering stack that are really necessary
 
-void I_ReInitGraphics(int reinit)
+void I_ReInitGraphics(bReinit reinit)
 {
     // [crispy] re-set rendering resolution and re-create framebuffers
-    if (reinit & REINIT_FRAMEBUFFERS)
+    if (reinit.is_set(bReinit::FrameBuffers))
     {
         unsigned int rmask, gmask, bmask, amask;
         int          unused_bpp;
@@ -1732,7 +1733,7 @@ void I_ReInitGraphics(int reinit)
     }
 
     // [crispy] re-create renderer
-    if (reinit & REINIT_RENDERER)
+    if (reinit.is_set(bReinit::Renderer))
     {
         SDL_RendererInfo info = { 0 };
         int              flags;
@@ -1758,7 +1759,7 @@ void I_ReInitGraphics(int reinit)
     }
 
     // [crispy] re-create textures
-    if (reinit & REINIT_TEXTURES)
+    if (reinit.is_set(bReinit::Textures))
     {
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
@@ -1772,7 +1773,7 @@ void I_ReInitGraphics(int reinit)
     }
 
     // [crispy] re-set logical rendering resolution
-    if (reinit & REINIT_ASPECTRATIO)
+    if (reinit.is_set(bReinit::AspectRatio))
     {
         if (aspect_ratio_correct == 1)
         {

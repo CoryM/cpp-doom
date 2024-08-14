@@ -16,7 +16,9 @@
 
 #include <cstdlib>
 
-#include "crispy.hpp"
+#include "doomtype.hpp"
+import crispy;
+
 #include "m_config.hpp"
 #include "textscreen.hpp"
 #include "mode.hpp"
@@ -84,7 +86,7 @@ void BindCompatibilityVariables(void)
         M_BindIntVariable("crispy_neghealth",       &crispy->neghealth);
         M_BindIntVariable("crispy_overunder",       &crispy->overunder);
         M_BindIntVariable("crispy_pitch",           &crispy->pitch);
-        M_BindIntVariable("crispy_playercoords",    &crispy->playercoords);
+        M_BindIntVariable("crispy_playercoords",    to_ptr(crispy->playercoords));
         M_BindIntVariable("crispy_recoil",          &crispy->recoil);
         M_BindIntVariable("crispy_secretmessage",   &crispy->secretmessage);
         M_BindIntVariable("crispy_smoothlight",     &crispy->smoothlight);

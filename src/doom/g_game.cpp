@@ -535,7 +535,7 @@ void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
     }
 
     // [crispy] look up/down/center keys
-    if (crispy->freelook)
+    if (to_bool(crispy->freelook))
     {
         static unsigned int kbdlookctrl = 0;
 
@@ -551,7 +551,7 @@ void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
         }
         else
             // [crispy] keyboard lookspring
-            if (gamekeydown[key_lookcenter] || (crispy->freelook == FREELOOK_SPRING && kbdlookctrl))
+            if (gamekeydown[key_lookcenter] || (crispy->freelook == eFreelook::Spring && kbdlookctrl))
         {
             look        = TOCENTER;
             kbdlookctrl = 0;
@@ -559,7 +559,7 @@ void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
     }
 
     // [crispy] jump keys
-    if (critical->jump)
+    if (to_bool(critical->jump))
     {
         if (gamekeydown[key_jump] || mousebuttons[mousebjump]
             || joybuttons[joybjump])
@@ -678,7 +678,7 @@ void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
     }
 
     // [crispy] mouse look
-    if ((crispy->freelook && mousebuttons[mousebmouselook]) || crispy->mouselook)
+    if ((to_bool(crispy->freelook) && mousebuttons[mousebmouselook]) || crispy->mouselook)
     {
         cmd->lookdir = mouse_y_invert ? -mousey : mousey;
     }
@@ -688,7 +688,7 @@ void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
     }
 
     // [crispy] single click on mouse look button centers view
-    if (crispy->freelook)
+    if (to_bool(crispy->freelook))
     {
         static unsigned int mbmlookctrl = 0;
 
@@ -701,7 +701,7 @@ void G_BuildTiccmd(ticcmd_t *cmd, int maketic)
             // [crispy] released
             if (mbmlookctrl)
         {
-            if (crispy->freelook == FREELOOK_SPRING || mbmlookctrl < SLOWTURNTICS) // [crispy] short click
+            if (crispy->freelook == eFreelook::Spring || mbmlookctrl < SLOWTURNTICS) // [crispy] short click
             {
                 look = TOCENTER;
             }

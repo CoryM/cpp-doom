@@ -671,7 +671,7 @@ void P_BulletSlope(mobj_t *mo)
 {
     angle_t an;
 
-    if (critical->freeaim == FREEAIM_DIRECT)
+    if (critical->freeaim == eFreeaim::Direct)
     {
         bulletslope = PLAYER_SLOPE(mo->player);
     }
@@ -689,7 +689,7 @@ void P_BulletSlope(mobj_t *mo)
             {
                 an -= 2 << 26;
                 bulletslope = P_AimLineAttack(mo, an, 16 * 64 * FRACUNIT);
-                if (!linetarget && critical->freeaim == FREEAIM_BOTH)
+                if (!linetarget && critical->freeaim == eFreeaim::Both)
                 {
                     bulletslope = PLAYER_SLOPE(mo->player);
                 }

@@ -14,7 +14,8 @@
 
 #include <cstdlib>
 
-#include "crispy.hpp"
+import crispy;
+
 #include "textscreen.hpp"
 #include "doomtype.hpp"
 #include "m_config.hpp"

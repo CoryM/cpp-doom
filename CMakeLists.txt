@@ -44,6 +44,7 @@ if(MSVC)
                     "/D_CRT_NONSTDC_NO_DEPRECATE")
 else()
     add_compile_options("-Og" "-g" "-Wall" "-Wextra" "-fdiagnostics-color=always" "-fpermissive" 
+        "-march=native" "-mtune=native"
         #"-Wfatal-errors"
         #"-Wnrvo" # Warn on non-return value optimization
         "-fsanitize=address" "-fno-omit-frame-pointer"

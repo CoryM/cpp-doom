@@ -1582,7 +1582,7 @@ void WI_drawStats(void)
     }
 
     // [crispy] demo timer widget
-    if ((demoplayback && (crispy->demotimer & DEMOTIMER_PLAYBACK)) || (demorecording && (crispy->demotimer & DEMOTIMER_RECORD)))
+    if ((demoplayback && bit_AND(crispy->demotimer,  eDemoTimer::Playback)) || (demorecording && bit_AND(crispy->demotimer, eDemoTimer::Record)))
     {
         ST_DrawDemoTimer(leveltime);
     }

@@ -38,7 +38,8 @@ import m_fixed; //#include "m_fixed.hpp"
 #include "net_sdl.hpp"
 #include "net_loop.hpp"
 
-#include "crispy.hpp"
+#include "doomtype.hpp"
+import crispy;
 
 // The complete set of data for a particular tic.
 
@@ -682,7 +683,7 @@ void TryRunTics(void)
     // [AM] If we've uncapped the framerate and there are no tics
     //      to run, return early instead of waiting around.
     //extern int leveltime;
-#define return_early (crispy->uncapped && counts == 0 && crispy->leveltime > oldleveltime && screenvisible)
+#define return_early (crispy->uncapped && counts == 0 && to_int(crispy->leveltime) > oldleveltime && screenvisible)
 
     // get real tics
     entertic     = I_GetTime() / ticdup;

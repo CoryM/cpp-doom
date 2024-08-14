@@ -1216,7 +1216,7 @@ void P_SpawnPlayerMissile(mobj_t *source,
 
     // see which target is to be aimed at
     an = source->angle;
-    if (critical->freeaim == FREEAIM_DIRECT)
+    if (critical->freeaim == eFreeaim::Direct)
     {
         slope = PLAYER_SLOPE(source->player);
     }
@@ -1238,7 +1238,7 @@ void P_SpawnPlayerMissile(mobj_t *source,
             if (!linetarget)
             {
                 an = source->angle;
-                if (critical->freeaim == FREEAIM_BOTH)
+                if (critical->freeaim == eFreeaim::Both)
                     slope = PLAYER_SLOPE(source->player);
                 else
                     slope = 0;

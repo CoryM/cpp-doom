@@ -222,7 +222,7 @@ void A_FireOldBFG([[maybe_unused]] mobj_t *mobj, player_t *player, [[maybe_unuse
             // killough 8/2/98: make autoaiming prefer enemies
             int     mask = 0; //MF_FRIEND;
             fixed_t slope;
-            if (critical->freeaim == FREEAIM_DIRECT)
+            if (critical->freeaim == eFreeaim::Direct)
                 slope = PLAYER_SLOPE(player);
             else
                 do
@@ -233,7 +233,7 @@ void A_FireOldBFG([[maybe_unused]] mobj_t *mobj, player_t *player, [[maybe_unuse
                     if (!linetarget)
                         slope = P_AimLineAttack(mo, an -= 2 << 26, 16 * 64 * FRACUNIT); //, mask);
                     if (!linetarget)
-                        slope = (critical->freeaim == FREEAIM_BOTH) ? PLAYER_SLOPE(player) : 0, an = mo->angle;
+                        slope = (critical->freeaim == eFreeaim::Both) ? PLAYER_SLOPE(player) : 0, an = mo->angle;
                 } while (mask && (mask = 0, !linetarget)); // killough 8/2/98
             an1 += an - mo->angle;
             // [crispy] consider negative slope

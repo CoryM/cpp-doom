@@ -38,7 +38,9 @@
 
 #include "net_defs.hpp"
 
-#include "crispy.hpp"
+#include "doomtype.hpp"
+import crispy;
+
 
 
 // ------------------------

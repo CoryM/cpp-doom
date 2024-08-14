@@ -29,6 +29,8 @@
 import i_swap;
 import m_fixed; // #include "m_fixed.hpp"
 import m_bbox; // #include "m_bbox.hpp"
+import crispy;
+
 
 #include "i_system.hpp"
 
@@ -44,7 +46,6 @@ import m_bbox; // #include "m_bbox.hpp"
 #include "v_video.hpp"
 #include "w_wad.hpp"
 #include "z_zone.hpp"
-#include "crispy.hpp"
 
 #include "../utils/lump.hpp"
 #include "../utils/memory.hpp"

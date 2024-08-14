@@ -488,9 +488,9 @@ void R_DrawVisSprite(vissprite_t *vis,
         dc_translation = vis->translation;
     }
     // [crispy] translucent sprites
-    else if (crispy->translucency && vis->mobjflags & MF_TRANSLUCENT)
+    else if (to_int(crispy->translucency) && vis->mobjflags & MF_TRANSLUCENT)
     {
-        if (!(vis->mobjflags & (MF_NOGRAVITY | MF_COUNTITEM)) || (vis->mobjflags & MF_NOGRAVITY && crispy->translucency & TRANSLUCENCY_MISSILE) || (vis->mobjflags & MF_COUNTITEM && crispy->translucency & TRANSLUCENCY_ITEM))
+        if (!(vis->mobjflags & (MF_NOGRAVITY | MF_COUNTITEM)) || (vis->mobjflags & MF_NOGRAVITY && bit_AND(crispy->translucency, eTranslucency::Missile)) || (vis->mobjflags & MF_COUNTITEM && bit_AND(crispy->translucency, eTranslucency::Item)))
         {
             colfunc = tlcolfunc;
         }

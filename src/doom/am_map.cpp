@@ -582,7 +582,7 @@ void AM_LevelInit(void)
     f_w       = SCREENWIDTH;
     f_h       = SCREENHEIGHT;
     // [crispy] automap without status bar in widescreen mode
-    if (!crispy->widescreen)
+    if (!to_bool(crispy->widescreen))
     {
         f_h -= (ST_HEIGHT << crispy->hires);
     }
@@ -605,7 +605,7 @@ void AM_ReInit(void)
     f_w = SCREENWIDTH;
     f_h = SCREENHEIGHT;
     // [crispy] automap without status bar in widescreen mode
-    if (!crispy->widescreen)
+    if (!to_bool(crispy->widescreen))
     {
         f_h -= (ST_HEIGHT << crispy->hires);
     }
@@ -1416,7 +1416,7 @@ void AM_drawWalls(void)
                     AM_drawMline(&l, SECRETWALLCOLORS);
 #if defined CRISPY_HIGHLIGHT_REVEALED_SECRETS
                 // [crispy] draw revealed secret sector boundaries in green
-                else if (crispy->extautomap && crispy->secretmessage && (lines[i].frontsector->oldspecial == 9))
+                else if (crispy->extautomap && to_bool(crispy->secretmessage) && (lines[i].frontsector->oldspecial == 9))
                     AM_drawMline(&l, REVEALEDSECRETWALLCOLORS);
 #endif
                 else
@@ -1442,7 +1442,7 @@ void AM_drawWalls(void)
                 }
 #if defined CRISPY_HIGHLIGHT_REVEALED_SECRETS
                 // [crispy] draw revealed secret sector boundaries in green
-                else if (crispy->extautomap && crispy->secretmessage && (lines[i].backsector->oldspecial == 9 || lines[i].frontsector->oldspecial == 9))
+                else if (crispy->extautomap && to_bool(crispy->secretmessage) && (lines[i].backsector->oldspecial == 9 || lines[i].frontsector->oldspecial == 9))
                 {
                     AM_drawMline(&l, REVEALEDSECRETWALLCOLORS);
                 }
@@ -1624,8 +1624,7 @@ void AM_drawPlayers(void)
     }
 }
 
-void AM_drawThings(int colors,
-    int                colorrange)
+void AM_drawThings(int colors, [[maybe_unused]] int colorrange)
 {
     int        i;
     mobj_t *   t;

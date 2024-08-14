@@ -410,7 +410,7 @@ void D_BindVariables(void)
     // [crispy] bind "crispness" config variables
     M_BindIntVariable("crispy_automapoverlay", &crispy->automapoverlay);
     M_BindIntVariable("crispy_automaprotate", &crispy->automaprotate);
-    M_BindIntVariable("crispy_automapstats", &crispy->automapstats);
+    M_BindIntVariable("crispy_automapstats", to_ptr(crispy->automapstats));
     M_BindIntVariable("crispy_bobfactor", to_ptr(crispy->bobfactor));
     M_BindIntVariable("crispy_brightmaps", to_ptr(crispy->brightmaps));
     M_BindIntVariable("crispy_centerweapon", to_ptr(crispy->centerweapon));
@@ -421,36 +421,36 @@ void D_BindVariables(void)
     M_BindIntVariable("crispy_crosshairtarget", &crispy->crosshairtarget);
     M_BindIntVariable("crispy_crosshairtype", &crispy->crosshairtype);
     M_BindIntVariable("crispy_demobar", &crispy->demobar);
-    M_BindIntVariable("crispy_demotimer", &crispy->demotimer);
+    M_BindIntVariable("crispy_demotimer", to_ptr(crispy->demotimer));
     M_BindIntVariable("crispy_demotimerdir", &crispy->demotimerdir);
     M_BindIntVariable("crispy_extautomap", &crispy->extautomap);
     M_BindIntVariable("crispy_extsaveg", &crispy->extsaveg);
     M_BindIntVariable("crispy_flipcorpses", &crispy->flipcorpses);
-    M_BindIntVariable("crispy_freeaim", &crispy->freeaim);
-    M_BindIntVariable("crispy_freelook", &crispy->freelook);
+    M_BindIntVariable("crispy_freeaim", to_ptr(crispy->freeaim));
+    M_BindIntVariable("crispy_freelook", to_ptr(crispy->freelook));
     M_BindIntVariable("crispy_hires", &crispy->hires);
-    M_BindIntVariable("crispy_jump", &crispy->jump);
-    M_BindIntVariable("crispy_leveltime", &crispy->leveltime);
+    M_BindIntVariable("crispy_jump", to_ptr(crispy->jump));
+    M_BindIntVariable("crispy_leveltime", to_ptr(crispy->leveltime));
     M_BindIntVariable("crispy_mouselook", &crispy->mouselook);
     M_BindIntVariable("crispy_neghealth", &crispy->neghealth);
     M_BindIntVariable("crispy_overunder", &crispy->overunder);
     M_BindIntVariable("crispy_pitch", &crispy->pitch);
-    M_BindIntVariable("crispy_playercoords", &crispy->playercoords);
+    M_BindIntVariable("crispy_playercoords", to_ptr(crispy->playercoords));
     M_BindIntVariable("crispy_recoil", &crispy->recoil);
-    M_BindIntVariable("crispy_secretmessage", &crispy->secretmessage);
+    M_BindIntVariable("crispy_secretmessage", to_ptr(crispy->secretmessage));
     M_BindIntVariable("crispy_smoothlight", &crispy->smoothlight);
     M_BindIntVariable("crispy_smoothscaling", &crispy->smoothscaling);
     M_BindIntVariable("crispy_soundfix", &crispy->soundfix);
     M_BindIntVariable("crispy_soundfull", &crispy->soundfull);
     M_BindIntVariable("crispy_soundmono", &crispy->soundmono);
-    M_BindIntVariable("crispy_translucency", &crispy->translucency);
+    M_BindIntVariable("crispy_translucency", to_ptr(crispy->translucency));
 #ifdef CRISPY_TRUECOLOR
     M_BindIntVariable("crispy_truecolor", &crispy->truecolor);
 #endif
     M_BindIntVariable("crispy_uncapped", &crispy->uncapped);
     M_BindIntVariable("crispy_vsync", &crispy->vsync);
     M_BindIntVariable("crispy_weaponsquat", &crispy->weaponsquat);
-    M_BindIntVariable("crispy_widescreen", &crispy->widescreen);
+    M_BindIntVariable("crispy_widescreen", to_ptr(crispy->widescreen));
 }
 
 //
@@ -561,7 +561,7 @@ void D_DoomLoop(void)
     I_SetGrabMouseCallback(D_GrabMouseCallback);
     I_InitGraphics();
     // [crispy] re-init HUD widgets now just in case graphics were not initialized before
-    if (crispy->widescreen && aspect_ratio_correct)
+    if (to_int(crispy->widescreen) && aspect_ratio_correct)
     {
         extern void M_CrispyReinitHUDWidgets(void);
         M_CrispyReinitHUDWidgets();

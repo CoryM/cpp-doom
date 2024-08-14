@@ -331,7 +331,7 @@ boolean PIT_CheckThing(mobj_t *thing)
     if (tmthing->flags & MF_MISSILE)
     {
         // [crispy] mobj or actual sprite height
-        const fixed_t thingheight = (tmthing->target && tmthing->target->player && critical->freeaim == FREEAIM_DIRECT) ?
+        const fixed_t thingheight = (tmthing->target && tmthing->target->player && critical->freeaim == eFreeaim::Direct) ?
                                         thing->info->actualheight :
                                         thing->height;
         // see if it went over / under
@@ -1153,7 +1153,7 @@ boolean PTR_ShootTraverse(intercept_t *in)
     // check angles to see if the thing can be aimed at
     dist = FixedMul(attackrange, in->frac);
     // [crispy] mobj or actual sprite height
-    thingheight = (shootthing->player && critical->freeaim == FREEAIM_DIRECT) ?
+    thingheight = (shootthing->player && critical->freeaim == eFreeaim::Direct) ?
                       th->info->actualheight :
                       th->height;
     thingtopslope = FixedDiv(th->z + thingheight - shootz, dist);
@@ -1295,7 +1295,7 @@ void P_LineLaser(mobj_t *t1,
     // [crispy] set the linetarget pointer
     lslope = P_AimLineAttack(t1, angle, distance);
 
-    if (critical->freeaim == FREEAIM_DIRECT)
+    if (critical->freeaim == eFreeaim::Direct)
     {
         lslope = slope;
     }
@@ -1314,7 +1314,7 @@ void P_LineLaser(mobj_t *t1,
                 an -= 2 << 26;
                 lslope = P_AimLineAttack(t1, an, distance);
 
-                if (!linetarget && critical->freeaim == FREEAIM_BOTH)
+                if (!linetarget && critical->freeaim == eFreeaim::Both)
                 {
                     lslope = slope;
                 }
@@ -1325,7 +1325,7 @@ void P_LineLaser(mobj_t *t1,
     if ((to_int(crispy->crosshair) & ~to_int(eCrosshair::intercept)) == to_int(eCrosshair::Projected))
     {
         // [crispy] don't aim at Spectres
-        if (linetarget && !(linetarget->flags & MF_SHADOW) && (crispy->freeaim != FREEAIM_DIRECT))
+        if (linetarget && !(linetarget->flags & MF_SHADOW) && (crispy->freeaim != eFreeaim::Direct))
             P_LineAttack(t1, angle, distance, aimslope, INT_MIN);
         else
             // [crispy] double the auto aim distance

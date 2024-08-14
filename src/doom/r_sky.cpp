@@ -51,7 +51,7 @@ void R_InitSkyMap(void)
     {
         return;
     }
-    if ((crispy->stretchsky = crispy->freelook || crispy->mouselook || crispy->pitch))
+    if ((crispy->stretchsky = to_bool(crispy->freelook) || crispy->mouselook || crispy->pitch))
     {
         skytexturemid = -28 * FRACUNIT * (textureheight[skytexture] >> FRACBITS) / SKYSTRETCH_HEIGHT;
     }

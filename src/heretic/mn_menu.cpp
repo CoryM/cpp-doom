@@ -1111,7 +1111,7 @@ static boolean CrispyLevelTime(int option)
 
 static boolean CrispyPlayerCoords(int option)
 {
-    crispy->playercoords = (crispy->playercoords + 1) % (NUM_WIDGETS - 1); // [crispy] disable "always" setting
+    crispy->playercoords = wrap_next(crispy->playercoords);
     return true;
 }
 
@@ -1798,15 +1798,15 @@ static void DrawCrispnessMenu(void)
     MN_DrTextA(crispy->smoothscaling ? "ON" : "OFF", 216, 40);
 
     // Show level stats
-    MN_DrTextA(crispy->automapstats == WIDGETS_OFF ? "NEVER" :
-               crispy->automapstats == WIDGETS_AUTOMAP ? "IN AUTOMAP" :
+    MN_DrTextA(crispy->automapstats == eWidgets::Off ? "NEVER" :
+               crispy->automapstats == eWidgets::Automap ? "IN AUTOMAP" :
                                                          "ALWAYS", 190, 70);
 
     // Show level time
-    MN_DrTextA(crispy->leveltime == WIDGETS_OFF ? "NEVER" :
-               crispy->leveltime == WIDGETS_AUTOMAP ? "IN AUTOMAP" :
+    MN_DrTextA(crispy->leveltime == eWidgets::Off ? "NEVER" :
+               crispy->leveltime == eWidgets::Automap ? "IN AUTOMAP" :
                                                        "ALWAYS", 179, 80);
 
     // Show player coords
-    MN_DrTextA(crispy->playercoords == WIDGETS_OFF ? "NEVER" : "IN AUTOMAP", 211, 90);
+    MN_DrTextA(crispy->playercoords == eWidget::Off ? "NEVER" : "IN AUTOMAP", 211, 90);
 }

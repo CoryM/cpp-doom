@@ -20,11 +20,11 @@
 #ifndef __M_CRISPY__
 #define __M_CRISPY__
 
-typedef struct
+struct multiitem_t
 {
     int   value;
-    char *name;
-} multiitem_t;
+    const char *name;
+};
 
 extern multiitem_t multiitem_bobfactor[get_max<eBobFactor>()];
 extern multiitem_t multiitem_brightmaps[get_max<eBrightmaps>()];
@@ -32,16 +32,16 @@ extern multiitem_t multiitem_centerweapon[get_max<eCenterWeapon>()];
 extern multiitem_t multiitem_coloredhud[get_max<eColoredHud>()];
 extern multiitem_t multiitem_crosshair[get_max<eCrosshair>()];
 extern multiitem_t multiitem_crosshairtype[];
-extern multiitem_t multiitem_freeaim[NUM_FREEAIMS];
-extern multiitem_t multiitem_demotimer[NUM_DEMOTIMERS];
+extern multiitem_t multiitem_freeaim[get_max<eFreeaim>()];
+extern multiitem_t multiitem_demotimer[get_max<eDemoTimer>()];
 extern multiitem_t multiitem_demotimerdir[];
-extern multiitem_t multiitem_freelook[NUM_FREELOOKS];
-extern multiitem_t multiitem_jump[NUM_JUMPS];
+extern multiitem_t multiitem_freelook[get_max<eFreelook>()];
+extern multiitem_t multiitem_jump[get_max<eJump>()];
 extern multiitem_t multiitem_sndchannels[4];
-extern multiitem_t multiitem_secretmessage[NUM_SECRETMESSAGE];
-extern multiitem_t multiitem_translucency[NUM_TRANSLUCENCY];
-extern multiitem_t multiitem_widescreen[NUM_WIDESCREEN];
-extern multiitem_t multiitem_widgets[NUM_WIDGETS];
+extern multiitem_t multiitem_secretmessage[get_max<eSecretMessage>()];
+extern multiitem_t multiitem_translucency[get_max<eTranslucency>()];
+extern multiitem_t multiitem_widescreen[get_max<eWidescreen>()];
+extern multiitem_t multiitem_widgets[get_max<eWidgets>()];
 
 extern void M_CrispyToggleAutomapstats(int choice);
 extern void M_CrispyToggleBobfactor(int choice);
