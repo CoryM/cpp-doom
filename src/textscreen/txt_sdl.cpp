@@ -23,7 +23,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "doomkeys.hpp"
+#include "../doomkeys.hpp"
 
 #include "txt_main.hpp"
 #include "txt_sdl.hpp"

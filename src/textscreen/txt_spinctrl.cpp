@@ -18,7 +18,7 @@
 #include <cstring>
 #include <math.h>
 
-#include "doomkeys.hpp"
+#include "../doomkeys.hpp"
 
 #include "../utils/memory.hpp"
 #include "txt_gui.hpp"

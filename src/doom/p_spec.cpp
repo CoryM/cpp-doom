@@ -72,7 +72,7 @@ typedef struct
 //      source animation definition
 //
 // [crispy] change istexture type from int to char and
-// add PACKEDATTR for reading ANIMATED lumps from memory
+// add [[gnu::packed]] for reading ANIMATED lumps from memory
 struct [[gnu::packed]] animdef_t
     {
         signed char istexture; // if false, it is a flat

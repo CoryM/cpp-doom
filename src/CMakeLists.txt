@@ -17,7 +17,7 @@ target_sources(cpp_modules
 
 # -----------
 
-foreach(SUBDIR doom heretic hexen strife setup)
+foreach(SUBDIR doom heretic hexen opl pcsound strife setup textscreen)
     add_subdirectory("${SUBDIR}")
 endforeach()
 

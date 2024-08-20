@@ -17,7 +17,7 @@
 #include <stdarg.h>
 #include <cstring>
 
-#include "doomkeys.hpp"
+#include "../doomkeys.hpp"
 
 #include "../utils/memory.hpp"
 #include "txt_desktop.hpp"

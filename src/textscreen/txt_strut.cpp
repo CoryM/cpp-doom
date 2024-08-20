@@ -15,7 +15,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "doomkeys.hpp"
+#include "../doomkeys.hpp"
 
 #include "txt_strut.hpp"
 #include "txt_io.hpp"

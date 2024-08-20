@@ -15,7 +15,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "doomkeys.hpp"
+#include "../doomkeys.hpp"
 
 #include "txt_button.hpp"
 #include "txt_gui.hpp"

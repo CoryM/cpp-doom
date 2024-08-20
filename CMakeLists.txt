@@ -127,6 +127,6 @@ configure_file(src/setup/setup-manifest.xml.in src/setup/setup-manifest.xml)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-foreach(SUBDIR textscreen midiproc opl pcsound src)
+foreach(SUBDIR midiproc  src)
     add_subdirectory("${SUBDIR}")
 endforeach()

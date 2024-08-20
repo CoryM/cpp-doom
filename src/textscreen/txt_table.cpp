@@ -17,7 +17,7 @@
 #include <cstring>
 #include <vector>
 
-#include "doomkeys.hpp"
+#include "../doomkeys.hpp"
 
 #include "txt_desktop.hpp"
 #include "txt_gui.hpp"

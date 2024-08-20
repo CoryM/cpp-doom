@@ -24,7 +24,7 @@
 #include "txt_main.hpp"
 #include "txt_table.hpp"
 
-#include "doomkeys.hpp"
+#include "../doomkeys.hpp"
 #include "../utils/memory.hpp"
 
 #define SCROLLBAR_VERTICAL   (1 << 0)

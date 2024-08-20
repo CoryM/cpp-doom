@@ -182,7 +182,7 @@ void P_SpawnGlowingLight(sector_t *sector);
 //
 // P_SWITCH
 //
-// [crispy] add PACKEDATTR for reading SWITCHES lumps from memory
+// [crispy] add [[gnu::packed]] for reading SWITCHES lumps from memory
 struct [[gnu::packed]] switchlist_t
     {
         char  name1[9];

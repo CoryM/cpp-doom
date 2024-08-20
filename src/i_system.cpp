@@ -241,7 +241,7 @@ void I_BindVariables(void)
 // I_Quit
 //
 
-void I_Quit(void)
+[[noreturn]] void I_Quit(void)
 {
     atexit_listentry_t *entry;
 
@@ -267,7 +267,7 @@ void I_Quit(void)
 
 static boolean already_quitting = false;
 
-void I_Error(const char *error, ...)
+[[noreturn]] void I_Error(const char *error, ...)
 {
     char                msgbuf[512];
     va_list             argptr;

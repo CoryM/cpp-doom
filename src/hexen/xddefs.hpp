@@ -44,13 +44,13 @@ enum
     ML_BEHAVIOR
 };
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] mapvertex_t
 {
     short x;
     short y;
-})  mapvertex_t;
+};
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] mapsidedef_t
 {
     short textureoffset;
     short rowoffset;
@@ -58,9 +58,9 @@ typedef PACKED_STRUCT (
     char bottomtexture[8];
     char midtexture[8];
     short sector;               // on viewer's side
-}) mapsidedef_t;
+};
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] maplinedef_t
 {
     short v1;
     short v2;
@@ -72,7 +72,7 @@ typedef PACKED_STRUCT (
     byte arg4;
     byte arg5;
     short sidenum[2];           // sidenum[1] will be -1 if one sided
-}) maplinedef_t;
+};
 
 #define	ML_BLOCKING			0x0001
 #define	ML_BLOCKMONSTERS	0x0002
@@ -96,7 +96,7 @@ typedef PACKED_STRUCT (
 #define SPAC_PUSH		4       // when player/monster pushes line
 #define SPAC_PCROSS		5       // when projectile crosses line
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] mapsector_t
 {
     short floorheight;
     short ceilingheight;
@@ -105,15 +105,15 @@ typedef PACKED_STRUCT (
     short lightlevel;
     short special;
     short tag;
-}) mapsector_t;
+};
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] mapsubsector_t
 {
     short numsegs;
     short firstseg;             // segs are stored sequentially
-}) mapsubsector_t;
+};
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] mapseg_t
 {
     short v1;
     short v2;
@@ -121,15 +121,15 @@ typedef PACKED_STRUCT (
     short linedef;
     short side;
     short offset;
-}) mapseg_t;
+};
 
 #define	NF_SUBSECTOR	0x8000
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] mapnode_t
 {
     short x, y, dx, dy;         // partition line
     short bbox[2][4];           // bounding box for each child
     unsigned short children[2]; // if NF_SUBSECTOR its a subsector
-}) mapnode_t;
+};
 
 struct [[gnu::packed]] mapthing_t
 {
@@ -166,16 +166,16 @@ struct [[gnu::packed]] mapthing_t
 //
 //--------------------------------------------------------------------------
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] mappatch_t
 {
     short originx;
     short originy;
     short patch;
     short stepdir;
     short colormap;
-}) mappatch_t;
+};
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] maptexture_t
 {
     char name[8];
     boolean masked;
@@ -184,6 +184,6 @@ typedef PACKED_STRUCT (
     int obsolete;
     short patchcount;
     mappatch_t patches[1];
-}) maptexture_t;
+};
 
 #endif // __XDDEFS__

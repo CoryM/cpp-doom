@@ -52,12 +52,12 @@
 
 // TYPES -------------------------------------------------------------------
 
-typedef PACKED_STRUCT (
+struct [[gnu::packed]] acsHeader_t
 {
     int marker;
     int infoOffset;
     int code;
-}) acsHeader_t;
+};
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 
