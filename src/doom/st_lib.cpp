@@ -40,7 +40,7 @@ import i_swap;
 #include "v_trans.hpp" // [crispy] colored status bar widgets
 
 // in AM_map.c
-extern boolean automapactive;
+extern bool automapactive;
 extern int     screenblocks;
 
 
@@ -65,7 +65,7 @@ void STlib_initNum(st_number_t *n,
     int                         y,
     patch_t **                  pl,
     int *                       num,
-    boolean *                   on,
+    bool *                   on,
     int                         width)
 {
     n->x      = x;
@@ -84,7 +84,7 @@ void STlib_initNum(st_number_t *n,
 // Note: worth the trouble?
 //
 void STlib_drawNum(st_number_t *n,
-    boolean                     refresh)
+    bool                     refresh)
 {
 
     int numdigits = n->width;
@@ -151,7 +151,7 @@ void STlib_drawNum(st_number_t *n,
 
 //
 void STlib_updateNum(st_number_t *n,
-    boolean                       refresh)
+    bool                       refresh)
 {
     if (*n->on) STlib_drawNum(n, refresh);
 }
@@ -163,7 +163,7 @@ void STlib_initPercent(st_percent_t *p,
     int                              y,
     patch_t **                       pl,
     int *                            num,
-    boolean *                        on,
+    bool *                        on,
     patch_t *                        percent)
 {
     STlib_initNum(&p->n, x, y, pl, num, on, 3);
@@ -201,7 +201,7 @@ void STlib_initMultIcon(st_multicon_t *i,
     int                                y,
     patch_t **                         il,
     int *                              inum,
-    boolean *                          on)
+    bool *                          on)
 {
     i->x       = x;
     i->y       = y;
@@ -213,7 +213,7 @@ void STlib_initMultIcon(st_multicon_t *i,
 
 
 void STlib_updateMultIcon(st_multicon_t *mi,
-    boolean                              refresh)
+    bool                              refresh)
 {
     int w;
     int h;
@@ -247,8 +247,8 @@ void STlib_initBinIcon(st_binicon_t *b,
     int                              x,
     int                              y,
     patch_t *                        i,
-    boolean *                        val,
-    boolean *                        on)
+    bool *                        val,
+    bool *                        on)
 {
     b->x      = x;
     b->y      = y;
@@ -260,7 +260,7 @@ void STlib_initBinIcon(st_binicon_t *b,
 
 
 void STlib_updateBinIcon(st_binicon_t *bi,
-    boolean                            refresh)
+    bool                            refresh)
 {
     int x;
     int y;

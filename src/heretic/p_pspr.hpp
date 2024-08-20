@@ -14,8 +14,8 @@ struct pspdef_t;
 enum statenum_t;
 enum weapontype_t;
 
-#ifndef boolean
-using boolean = bool;
+#ifndef bool
+using bool = bool;
 #endif
 
 void P_OpenWeapons(void);
@@ -26,7 +26,7 @@ void P_SetPsprite(player_t * player, int position, statenum_t stnum);
 void P_ActivateBeak(player_t * player);
 void P_PostChickenWeapon(player_t * player, weapontype_t weapon);
 void P_BringUpWeapon(player_t * player);
-boolean P_CheckAmmo(player_t * player);
+bool P_CheckAmmo(player_t * player);
 void P_FireWeapon(player_t * player);
 void P_DropWeapon(player_t * player);
 void A_WeaponReady(player_t * player, pspdef_t * psp);

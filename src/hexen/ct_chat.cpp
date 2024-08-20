@@ -63,7 +63,7 @@ enum
 // Public data
 
 
-boolean chatmodeon;
+bool chatmodeon;
 
 // Private data
 
@@ -81,7 +81,7 @@ char plr_lastmsg[MAXPLAYERS][MESSAGESIZE + 9];
 int msgptr[MAXPLAYERS];
 int msglen[MAXPLAYERS];
 
-boolean cheated;
+bool cheated;
 
 static int FontABaseLump;
 
@@ -109,10 +109,10 @@ char *chat_macros[10] = {
     HUSTR_CHATMACRO9,
 };
 
-boolean altdown;
-boolean shiftdown;
+bool altdown;
+bool shiftdown;
 
-extern boolean usearti;
+extern bool usearti;
 
 //===========================================================================
 //
@@ -155,7 +155,7 @@ void CT_Stop(void)
 
 // These keys are allowed by Vanilla Heretic:
 
-static boolean ValidChatChar(char c)
+static bool ValidChatChar(char c)
 {
     return (c >= 'a' && c <= 'z')
         || (c >= 'A' && c <= 'Z')
@@ -172,7 +172,7 @@ static boolean ValidChatChar(char c)
 //
 //===========================================================================
 
-boolean CT_Responder(event_t * ev)
+bool CT_Responder(event_t * ev)
 {
     char *macro;
 

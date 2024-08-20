@@ -33,7 +33,7 @@ typedef struct
     int		readystate;
     int		atkstate;
     int		flashstate;
-    boolean     availabledemo;    // villsa [STRIFE]
+    bool     availabledemo;    // villsa [STRIFE]
 
 } weaponinfo_t;
 

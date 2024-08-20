@@ -76,7 +76,7 @@ static void P_LightningFlash(void);
 
 extern fixed_t Sky1ColumnOffset;
 extern fixed_t Sky2ColumnOffset;
-extern boolean DoubleSky;
+extern bool DoubleSky;
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -88,7 +88,7 @@ fixed_t Sky2ScrollDelta;
 static animDef_t AnimDefs[MAX_ANIM_DEFS];
 static frameDef_t FrameDefs[MAX_FRAME_DEFS];
 static int AnimDefCount;
-static boolean LevelHasLightning;
+static bool LevelHasLightning;
 static int NextLightningFlash;
 static int LightningFlash;
 static int *LightningLightLevels;
@@ -190,7 +190,7 @@ static void P_LightningFlash(void)
     int i;
     sector_t *tempSec;
     int *tempLight;
-    boolean foundSec;
+    bool foundSec;
     int flashLight;
 
     if (LightningFlash)
@@ -365,8 +365,8 @@ void P_InitFTAnims(void)
     int mod;
     int fd;
     animDef_t *ad;
-    boolean ignore;
-    boolean done;
+    bool ignore;
+    bool done;
 
     fd = 0;
     ad = AnimDefs;

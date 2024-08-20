@@ -411,7 +411,7 @@ void SN_StopSequence(mobj_t * mobj)
 void SN_UpdateActiveSequences(void)
 {
     seqnode_t *node;
-    boolean sndPlaying;
+    bool sndPlaying;
 
     if (!ActiveSequences || paused)
     {                           // No sequences currently playing/game is paused

@@ -49,7 +49,7 @@ static struct
 
 // Check that a gamemode+gamemission received over the network is valid.
 
-boolean D_ValidGameMode(int mission, int mode)
+bool D_ValidGameMode(int mission, int mode)
 {
     for (std::size_t i = 0; i < arrlen(valid_modes); ++i)
     {
@@ -62,7 +62,7 @@ boolean D_ValidGameMode(int mission, int mode)
     return false;
 }
 
-boolean D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode,
+bool D_ValidEpisodeMap(GameMission_t mission, GameMode_t mode,
     int episode, int map)
 {
 
@@ -135,7 +135,7 @@ static struct {
     { strife, exe_strife_1_31 },
 };
 
-boolean D_ValidGameVersion(GameMission_t mission, GameVersion_t version)
+bool D_ValidGameVersion(GameMission_t mission, GameVersion_t version)
 {
     // All Doom variants can use the Doom versions.
 
@@ -160,7 +160,7 @@ boolean D_ValidGameVersion(GameMission_t mission, GameVersion_t version)
 
 // Does this mission type use ExMy form, rather than MAPxy form?
 
-boolean D_IsEpisodeMap(GameMission_t mission)
+bool D_IsEpisodeMap(GameMission_t mission)
 {
     switch (mission)
     {

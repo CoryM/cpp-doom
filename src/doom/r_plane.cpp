@@ -422,7 +422,7 @@ void R_DrawPlanes(void)
 
     for (pl = visplanes; pl < lastvisplane; pl++)
     {
-        const boolean swirling = (flattranslation[pl->picnum] == -1);
+        const bool swirling = (flattranslation[pl->picnum] == -1);
 
         if (pl->minx > pl->maxx)
             continue;

@@ -1,8 +1,8 @@
 #ifndef __R_DRAW_HPP__
 #define __R_DRAW_HPP__
 
-extern boolean BorderNeedRefresh;
-extern boolean BorderTopRefresh;
+extern bool BorderNeedRefresh;
+extern bool BorderTopRefresh;
 
 void R_DrawViewBorder(void);
 

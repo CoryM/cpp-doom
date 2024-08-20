@@ -115,7 +115,7 @@ static void SCMouseSensi(int option);
 static void SCSfxVolume(int option);
 static void SCMusicVolume(int option);
 static void SCScreenSize(int option);
-static boolean SCNetCheck(int option);
+static bool SCNetCheck(int option);
 static void SCNetCheck2(int option);
 static void SCLoadGame(int option);
 static void SCSaveGame(int option);
@@ -138,15 +138,15 @@ void MN_LoadSlotText(void);
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
 extern int detailLevel;
-extern boolean gamekeydown[256];        // The NUMKEYS macro is local to g_game
+extern bool gamekeydown[256];        // The NUMKEYS macro is local to g_game
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
-boolean MenuActive;
+bool MenuActive;
 int InfoType;
 int messageson = true;
-boolean mn_SuicideConsole;
-boolean demoextend; // from h2def.h
+bool mn_SuicideConsole;
+bool demoextend; // from h2def.h
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
@@ -158,12 +158,12 @@ static Menu_t *CurrentMenu;
 static int CurrentItPos;
 static int MenuPClass;
 static int MenuTime;
-static boolean soundchanged;
+static bool soundchanged;
 
-boolean askforquit;
+bool askforquit;
 static int typeofask;
-static boolean FileMenuKeySteal;
-static boolean slottextloaded;
+static bool FileMenuKeySteal;
+static bool slottextloaded;
 static char SlotText[6][SLOTTEXTLEN + 2];
 static char oldSlotText[SLOTTEXTLEN + 2];
 static int SlotStatus[6];
@@ -692,10 +692,10 @@ static void DrawSaveMenu(void)
     DrawFileSlots(&SaveMenu);
 }
 
-static boolean ReadDescriptionForSlot(int slot, char *description)
+static bool ReadDescriptionForSlot(int slot, char *description)
 {
     FILE *fp;
-    boolean found;
+    bool found;
     char name[100];
     char versionText[HXS_VERSION_TEXT_LENGTH];
 
@@ -871,7 +871,7 @@ static void SCMessages(int option)
 //
 //===========================================================================
 
-static boolean SCNetCheck(int option)
+static bool SCNetCheck(int option)
 {
     if (!netgame)
     {
@@ -1161,13 +1161,13 @@ static void SCInfo(int option)
 //
 //---------------------------------------------------------------------------
 
-boolean MN_Responder(event_t * event)
+bool MN_Responder(event_t * event)
 {
     int key;
     int charTyped;
     int i;
     MenuItem_t *item;
-    extern boolean automapactive;
+    extern bool automapactive;
     extern void H2_StartTitle(void);
     extern void G_CheckDemoStatus(void);
     char *textBuffer;

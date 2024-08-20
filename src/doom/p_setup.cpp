@@ -113,7 +113,7 @@ byte *rejectmatrix;
 mapthing_t  deathmatchstarts[MAX_DEATHMATCH_STARTS];
 mapthing_t *deathmatch_p;
 mapthing_t  playerstarts[MAXPLAYERS];
-boolean     playerstartsingame[MAXPLAYERS];
+bool     playerstartsingame[MAXPLAYERS];
 
 // [crispy] recalculate seg offsets
 // adapted from prboom-plus/src/p_setup.c:474-482
@@ -175,7 +175,7 @@ void P_LoadVertexes(int lump)
 //
 sector_t *GetSectorAtNullAddress(void)
 {
-    static boolean  null_sector_is_initialized = false;
+    static bool  null_sector_is_initialized = false;
     static sector_t null_sector;
 
     if (!null_sector_is_initialized)
@@ -272,7 +272,7 @@ void P_LoadSegs(int lump)
 }
 
 // [crispy] fix long wall wobble
-void P_SegLengths(boolean contrast_only)
+void P_SegLengths(bool contrast_only)
 {
     int       i;
     const int rightangle = abs(finesine[(ANG60 / 2) >> ANGLETOFINESHIFT]);
@@ -464,7 +464,7 @@ void P_LoadThings(int lump)
     mapthing_t *mt;
     mapthing_t  spawnthing;
     int         numthings;
-    boolean     spawn;
+    bool     spawn;
 
     data      = cache_lump_num<byte *>(lump, PU_STATIC);
     numthings = W_LumpLength(lump) / sizeof(mapthing_t);
@@ -704,7 +704,7 @@ void P_LoadSideDefs(int lump)
 //
 // P_LoadBlockMap
 //
-boolean P_LoadBlockMap(int lump)
+bool P_LoadBlockMap(int lump)
 {
     int    i;
     int    count;
@@ -1021,7 +1021,7 @@ const char *skilltable[] = {
 };
 
 // [crispy] factor out map lump name and number finding into a separate function
-int P_GetNumForMap(int episode, int map, boolean critical)
+int P_GetNumForMap(int episode, int map, bool critical)
 {
     char lumpname[9];
     int  lumpnum;
@@ -1071,7 +1071,7 @@ void P_SetupLevel(int episode,
     int         i;
     char        lumpname[9];
     int         lumpnum;
-    boolean     crispy_validblockmap;
+    bool     crispy_validblockmap;
     mapformat_t crispy_mapformat;
 
     totalkills = totalitems = totalsecret = wminfo.maxfrags = 0;

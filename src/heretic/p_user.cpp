@@ -34,11 +34,11 @@ void P_PlayerNextArtifact(player_t * player);
 
 // Data
 
-boolean onground;
+bool onground;
 int newtorch;                   // used in the torch flicker effect.
 int newtorchdelta;
 
-boolean WeaponInShareware[] = {
+bool WeaponInShareware[] = {
     true,                       // Staff
     true,                       // Gold wand
     true,                       // Crossbow
@@ -463,7 +463,7 @@ int P_GetPlayerNum(player_t * player)
 //
 //----------------------------------------------------------------------------
 
-boolean P_UndoPlayerChicken(player_t * player)
+bool P_UndoPlayerChicken(player_t * player)
 {
     mobj_t *fog;
     mobj_t *mo;
@@ -914,7 +914,7 @@ void P_PlayerUseArtifact(player_t * player, artitype_t arti)
 //
 //----------------------------------------------------------------------------
 
-boolean P_UseArtifact(player_t * player, artitype_t arti)
+bool P_UseArtifact(player_t * player, artitype_t arti)
 {
     mobj_t *mo;
     angle_t angle;

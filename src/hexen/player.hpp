@@ -67,7 +67,7 @@ struct player_t {
 
     int     flyheight;
     int     lookdir;
-    boolean centering;
+    bool centering;
     int     health; // only used between levels, mo->health
     // is used during levels
     int armorpoints[NUMARMOR];
@@ -82,7 +82,7 @@ struct player_t {
     signed int   frags[MAXPLAYERS]; // kills of other players
     weapontype_t readyweapon;
     weapontype_t pendingweapon; // wp_nochange if not changing
-    boolean      weaponowned[NUMWEAPONS];
+    bool      weaponowned[NUMWEAPONS];
     int          mana[NUMMANA];
     int          attackdown, usedown; // true if button down last tic
     int          cheats;              // bit flags

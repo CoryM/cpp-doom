@@ -2,7 +2,7 @@
 
 // haleyjd: was WATCOMC, again preserved for historical interest as in Heretic
 #if 0
-extern boolean useexterndriver;
+extern bool useexterndriver;
 
 #define EBT_FIRE			1
 #define EBT_OPENDOOR 		2

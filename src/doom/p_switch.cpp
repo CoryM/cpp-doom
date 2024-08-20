@@ -112,7 +112,7 @@ void P_InitSwitchList(void)
 
     // [crispy] add support for SWITCHES lumps
     switchlist_t *alphSwitchList;
-    boolean       from_lump;
+    bool       from_lump;
 
     if ((from_lump = (W_CheckNumForName("SWITCHES") != -1)))
     {
@@ -258,7 +258,7 @@ void P_ChangeSwitchTexture(line_t *line,
     int     texBot;
     int     i;
     int     sound;
-    boolean playsound = false;
+    bool playsound = false;
 
     if (!useAgain)
         line->special = 0;
@@ -331,7 +331,7 @@ void P_ChangeSwitchTexture(line_t *line,
 // Called when a thing uses a special line.
 // Only the front sides of lines are usable.
 //
-boolean
+bool
     P_UseSpecialLine(mobj_t *thing,
         line_t *             line,
         int                  side)

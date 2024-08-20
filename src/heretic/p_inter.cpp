@@ -71,7 +71,7 @@ static weapontype_t GetAmmoChange[] = {
 };
 
 /*
-static boolean GetAmmoChangePL1[NUMWEAPONS][NUMAMMO] =
+static bool GetAmmoChangePL1[NUMWEAPONS][NUMAMMO] =
 {
 	// staff
 	{wp_goldwand, wp_crossbow, wp_blaster, wp_skullrod, -1, wp_mace},
@@ -93,7 +93,7 @@ static boolean GetAmmoChangePL1[NUMWEAPONS][NUMAMMO] =
 */
 
 /*
-static boolean GetAmmoChangePL2[NUMWEAPONS][NUMAMMO] =
+static bool GetAmmoChangePL2[NUMWEAPONS][NUMAMMO] =
 {
 	// staff
 	{wp_goldwand, wp_crossbow, wp_blaster, wp_skullrod, wp_phoenixrod,
@@ -121,11 +121,11 @@ static boolean GetAmmoChangePL2[NUMWEAPONS][NUMAMMO] =
 //
 //--------------------------------------------------------------------------
 
-boolean ultimatemsg;
+bool ultimatemsg;
 
-void P_SetMessage(player_t * player, const char *message, boolean ultmsg)
+void P_SetMessage(player_t * player, const char *message, bool ultmsg)
 {
-    extern boolean messageson;
+    extern bool messageson;
 
     if ((ultimatemsg || !messageson) && !ultmsg)
     {
@@ -149,7 +149,7 @@ void P_SetMessage(player_t * player, const char *message, boolean ultmsg)
 //
 //--------------------------------------------------------------------------
 
-boolean P_GiveAmmo(player_t * player, ammotype_t ammo, int count)
+bool P_GiveAmmo(player_t * player, ammotype_t ammo, int count)
 {
     int prevAmmo;
     //weapontype_t changeWeapon;
@@ -219,10 +219,10 @@ boolean P_GiveAmmo(player_t * player, ammotype_t ammo, int count)
 //
 //--------------------------------------------------------------------------
 
-boolean P_GiveWeapon(player_t * player, weapontype_t weapon)
+bool P_GiveWeapon(player_t * player, weapontype_t weapon)
 {
-    boolean gaveAmmo;
-    boolean gaveWeapon;
+    bool gaveAmmo;
+    bool gaveWeapon;
 
     if (netgame && !deathmatch)
     {                           // Cooperative net-game
@@ -266,7 +266,7 @@ boolean P_GiveWeapon(player_t * player, weapontype_t weapon)
 //
 //---------------------------------------------------------------------------
 
-boolean P_GiveBody(player_t * player, int num)
+bool P_GiveBody(player_t * player, int num)
 {
     int max;
 
@@ -296,7 +296,7 @@ boolean P_GiveBody(player_t * player, int num)
 //
 //---------------------------------------------------------------------------
 
-boolean P_GiveArmor(player_t * player, int armortype)
+bool P_GiveArmor(player_t * player, int armortype)
 {
     int hits;
 
@@ -343,7 +343,7 @@ void P_GiveKey(player_t * player, keytype_t key)
 //
 //---------------------------------------------------------------------------
 
-boolean P_GivePower(player_t * player, powertype_t power)
+bool P_GivePower(player_t * player, powertype_t power)
 {
     if (power == pw_invulnerability)
     {
@@ -426,7 +426,7 @@ boolean P_GivePower(player_t * player, powertype_t power)
 //
 //---------------------------------------------------------------------------
 
-boolean P_GiveArtifact(player_t * player, artitype_t arti, mobj_t * mo)
+bool P_GiveArtifact(player_t * player, artitype_t arti, mobj_t * mo)
 {
     int i;
 
@@ -553,7 +553,7 @@ void P_TouchSpecialThing(mobj_t * special, mobj_t * toucher)
     player_t *player;
     fixed_t delta;
     int sound;
-    boolean respawn;
+    bool respawn;
 
     delta = special->z - toucher->z;
     if (delta > toucher->height || delta < -32 * FRACUNIT)
@@ -1020,7 +1020,7 @@ void P_TouchWhirlwind(mobj_t * target)
 //
 //---------------------------------------------------------------------------
 
-boolean P_ChickenMorphPlayer(player_t * player)
+bool P_ChickenMorphPlayer(player_t * player)
 {
     mobj_t *pmo;
     mobj_t *fog;
@@ -1077,7 +1077,7 @@ boolean P_ChickenMorphPlayer(player_t * player)
 //
 //---------------------------------------------------------------------------
 
-boolean P_ChickenMorph(mobj_t * actor)
+bool P_ChickenMorph(mobj_t * actor)
 {
     mobj_t *fog;
     mobj_t *chicken;
@@ -1130,7 +1130,7 @@ boolean P_ChickenMorph(mobj_t * actor)
 //
 //---------------------------------------------------------------------------
 
-boolean P_AutoUseChaosDevice(player_t * player)
+bool P_AutoUseChaosDevice(player_t * player)
 {
     int i;
 

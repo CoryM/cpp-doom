@@ -380,32 +380,32 @@ extern GameMode_t gamemode;         // Always commercial
 
 extern gameaction_t gameaction;
 
-extern boolean paused;
+extern bool paused;
 
-extern boolean DevMaps;         // true = map development mode
+extern bool DevMaps;         // true = map development mode
 extern char *DevMapsDir;        // development maps directory
 
-extern boolean nomonsters;      // checkparm of -nomonsters
+extern bool nomonsters;      // checkparm of -nomonsters
 
-extern boolean respawnparm;     // checkparm of -respawn
+extern bool respawnparm;     // checkparm of -respawn
 
-extern boolean randomclass;     // checkparm of -randclass
+extern bool randomclass;     // checkparm of -randclass
 
-extern boolean debugmode;       // checkparm of -debug
+extern bool debugmode;       // checkparm of -debug
 
-extern boolean usergame;        // ok to save / end game
+extern bool usergame;        // ok to save / end game
 
-extern boolean ravpic;          // checkparm of -ravpic
+extern bool ravpic;          // checkparm of -ravpic
 
-extern boolean altpal;          // checkparm to use an alternate palette routine
+extern bool altpal;          // checkparm to use an alternate palette routine
 
-extern boolean cdrom;           // true if cd-rom mode active ("-cdrom")
+extern bool cdrom;           // true if cd-rom mode active ("-cdrom")
 
-extern boolean deathmatch;      // only if started as net death
+extern bool deathmatch;      // only if started as net death
 
-extern boolean netgame;         // only true if >1 player
+extern bool netgame;         // only true if >1 player
 
-extern boolean cmdfrag;         // true if a CMD_FRAG packet should be sent out every
+extern bool cmdfrag;         // true if a CMD_FRAG packet should be sent out every
                                                 // kill
 
 extern int consoleplayer;       // player taking events and displaying
@@ -414,22 +414,22 @@ extern int displayplayer;
 
 extern int viewangleoffset;     // ANG90 = left side, ANG270 = right
 
-extern boolean DebugSound;      // debug flag for displaying sound info
+extern bool DebugSound;      // debug flag for displaying sound info
 
-extern boolean demoplayback;
-extern boolean demoextend;      // allow demos to persist through exit/respawn
+extern bool demoplayback;
+extern bool demoextend;      // allow demos to persist through exit/respawn
 extern int maxzone;             // Maximum chunk allocated for zone heap
 
 // Truncate angleturn in ticcmds to nearest 256.
 // Used when recording Vanilla demos in netgames.
-extern boolean lowres_turn;
+extern bool lowres_turn;
 
 extern int Sky1Texture;
 extern int Sky2Texture;
 
 extern gamestate_t gamestate;
 extern skill_t gameskill;
-//extern        boolean         respawnmonsters;
+//extern        bool         respawnmonsters;
 extern int gameepisode;
 extern int gamemap;
 extern int prevmap;
@@ -451,19 +451,19 @@ extern int maxplayers;
 
 extern int mouseSensitivity;
 
-extern boolean precache;        // if true, load all graphics at level load
+extern bool precache;        // if true, load all graphics at level load
 
 extern byte *screen;            // off screen work buffer, from V_video.c
 
-extern boolean singledemo;      // quit after playing a demo from cmdline
+extern bool singledemo;      // quit after playing a demo from cmdline
 
 extern int bodyqueslot;
 extern skill_t startskill;
 extern int startepisode;
 extern int startmap;
-extern boolean autostart;
+extern bool autostart;
 
-extern boolean testcontrols;
+extern bool testcontrols;
 extern int testcontrols_mousespeed;
 
 extern int vanilla_savegame_limit;

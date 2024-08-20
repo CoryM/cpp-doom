@@ -7,6 +7,6 @@ void R_Init(void);
 void R_RenderPlayerView(player_t * player);
 void R_SetViewSize(int blocks, int detail);
 
-extern boolean setsizeneeded;
+extern bool setsizeneeded;
 
 #endif // __R_MAIN_HPP__

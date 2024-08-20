@@ -26,7 +26,7 @@
 #include "d_iwad.hpp"    // for D_TryFindWADByName
 #include "deh_defs.hpp"  // for deh_context_t, deh_section_t
 #include "deh_io.hpp"    // for DEH_HadError, DEH_CloseFile, DEH_ReadLine
-#include "doomtype.hpp"  // for boolean, strcasecmp, strncasecmp
+#include "doomtype.hpp"  // for bool, strcasecmp, strncasecmp
 #include "i_glob.hpp"    // for I_EndGlob, I_NextGlob, I_StartMultiGlob, GLO...
 #include "i_system.hpp"  // for I_Error
 #include "m_argv.hpp"    // for M_CheckParm, myargv, myargc
@@ -36,23 +36,23 @@
 extern deh_section_t *deh_section_types[];
 extern const char *   deh_signatures[];
 
-static boolean deh_initialized = false;
+static bool deh_initialized = false;
 
 // If true, we can parse [STRINGS] sections in BEX format.
 
-boolean deh_allow_extended_strings = true; // [crispy] always allow
+bool deh_allow_extended_strings = true; // [crispy] always allow
 
 // If true, we can do long string replacements.
 
-boolean deh_allow_long_strings = true; // [crispy] always allow
+bool deh_allow_long_strings = true; // [crispy] always allow
 
 // If true, we can do cheat replacements longer than the originals.
 
-boolean deh_allow_long_cheats = true; // [crispy] always allow
+bool deh_allow_long_cheats = true; // [crispy] always allow
 
 // If false, dehacked cheat replacements are ignored.
 
-boolean deh_apply_cheats = true;
+bool deh_apply_cheats = true;
 
 void DEH_Checksum(sha1_digest_t digest)
 {
@@ -133,7 +133,7 @@ static deh_section_t *GetSectionByName(char *name)
 
 // Is the string passed just whitespace?
 
-static boolean IsWhitespace(char *s)
+static bool IsWhitespace(char *s)
 {
     for (; *s; ++s)
     {
@@ -178,7 +178,7 @@ static char *CleanString(char *s)
 //
 // Returns true if read correctly
 
-boolean DEH_ParseAssignment(char *line, char **variable_name, char **value)
+bool DEH_ParseAssignment(char *line, char **variable_name, char **value)
 {
     char *p;
 
@@ -207,7 +207,7 @@ boolean DEH_ParseAssignment(char *line, char **variable_name, char **value)
 extern void DEH_SaveLineStart(deh_context_t *context);
 extern void DEH_RestoreLineStart(deh_context_t *context);
 
-static boolean CheckSignatures(deh_context_t *context)
+static bool CheckSignatures(deh_context_t *context)
 {
     size_t i;
     char * line;
@@ -298,7 +298,7 @@ static void DEH_ParseContext(deh_context_t *context)
     deh_section_t *prev_section    = NULL; // [crispy] remember previous line parser
     char           section_name[20];
     void *         tag = NULL;
-    boolean        extended;
+    bool        extended;
     char *         line;
 
     // Read the header and check it matches the signature
@@ -470,7 +470,7 @@ void DEH_AutoLoadPatches(const char *path)
 // Load dehacked file from WAD lump.
 // If allow_long is set, allow long strings and cheats just for this lump.
 
-int DEH_LoadLump(int lumpnum, [[maybe_unused]] boolean allow_long, boolean allow_error)
+int DEH_LoadLump(int lumpnum, [[maybe_unused]] bool allow_long, bool allow_error)
 {
     deh_context_t *context;
 
@@ -509,7 +509,7 @@ int DEH_LoadLump(int lumpnum, [[maybe_unused]] boolean allow_long, boolean allow
     return 1;
 }
 
-int DEH_LoadLumpByName(const char *name, boolean allow_long, boolean allow_error)
+int DEH_LoadLumpByName(const char *name, bool allow_long, bool allow_error)
 {
     int lumpnum;
 

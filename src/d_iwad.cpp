@@ -55,7 +55,7 @@ static const iwad_t iwads[] = {
     { "strife1.wad", strife, commercial, "Strife" },
 };
 
-boolean D_IsIWADName(const char *name)
+bool D_IsIWADName(const char *name)
 {
 
     for (size_t i = 0; i < arrlen(iwads); i++)
@@ -454,7 +454,7 @@ static void CheckDOSDefaults(void)
 // Returns true if the specified path is a path to a file
 // of the specified name.
 
-static boolean DirIsFile(const char *path, const char *filename)
+static bool DirIsFile(const char *path, const char *filename)
 {
     return strchr(path, DIR_SEPARATOR) != nullptr
            && !doomtype::strcasecmp(M_BaseName(path), filename);

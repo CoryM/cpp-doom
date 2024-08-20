@@ -64,7 +64,7 @@ import crispy;
 byte *  tinttable      = NULL;
 byte *  tranmap        = NULL;
 byte *  dp_translation = NULL;
-boolean dp_translucent = false;
+bool dp_translucent = false;
 #ifdef CRISPY_TRUECOLOR
 extern pixel_t *colormaps;
 #endif
@@ -324,7 +324,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
     }
 }
 
-void V_DrawPatchFullScreen(patch_t *patch, boolean flipped)
+void V_DrawPatchFullScreen(patch_t *patch, bool flipped)
 {
     const short width  = endian::SHORT(patch->width);
     const short height = endian::SHORT(patch->height);

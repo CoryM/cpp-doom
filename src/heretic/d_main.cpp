@@ -62,24 +62,24 @@ import i_swap; // #include "i_swap.hpp" // [crispy] SHORT()
 GameMode_t gamemode = indetermined;
 const char *gamedescription = "unknown";
 
-boolean nomonsters;             // checkparm of -nomonsters
-boolean respawnparm;            // checkparm of -respawn
-boolean debugmode;              // checkparm of -debug
-boolean ravpic;                 // checkparm of -ravpic
-boolean cdrom;                  // true if cd-rom mode active
-boolean noartiskip;             // whether shift-enter skips an artifact
+bool nomonsters;             // checkparm of -nomonsters
+bool respawnparm;            // checkparm of -respawn
+bool debugmode;              // checkparm of -debug
+bool ravpic;                 // checkparm of -ravpic
+bool cdrom;                  // true if cd-rom mode active
+bool noartiskip;             // whether shift-enter skips an artifact
 
 skill_t startskill;
 int startepisode;
 int startmap;
 int UpdateState;
 static int graphical_startup = 0;
-static boolean using_graphical_startup;
-static boolean main_loop_started = false;
-boolean autostart;
-extern boolean automapactive;
+static bool using_graphical_startup;
+static bool main_loop_started = false;
+bool autostart;
+extern bool automapactive;
 
-boolean advancedemo;
+bool advancedemo;
 
 FILE *debugfile;
 
@@ -89,7 +89,7 @@ void D_ConnectNetGame(void);
 void D_CheckNetGame(void);
 void D_PageDrawer(void);
 void D_AdvanceDemo(void);
-boolean F_Responder(event_t * ev);
+bool F_Responder(event_t * ev);
 
 //---------------------------------------------------------------------------
 //
@@ -193,11 +193,11 @@ static void CrispyDrawStats (void)
 
 void R_ExecuteSetViewSize(void);
 
-extern boolean finalestage;
+extern bool finalestage;
 
 void D_Display(void)
 {
-    extern boolean askforquit;
+    extern bool askforquit;
 
     // Change the view size if needed
     if (setsizeneeded)
@@ -269,7 +269,7 @@ void D_Display(void)
 // Called to determine whether to grab the mouse pointer
 //
 
-boolean D_GrabMouseCallback(void)
+bool D_GrabMouseCallback(void)
 {
     // when menu is active or game is paused, release the mouse
 
@@ -512,7 +512,7 @@ void wadprintf(void)
     }
 }
 
-boolean D_AddFile(char *file)
+bool D_AddFile(char *file)
 {
     wad_file_t *handle;
 

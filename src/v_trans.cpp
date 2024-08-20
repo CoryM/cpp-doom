@@ -20,7 +20,7 @@
 #include <__math/rounding_functions.h>  // for floor
 #include <limits.h>                     // for INT_MAX
 #include <math.h>                       // for floor
-#include "doomtype.hpp"                 // for byte, boolean
+#include "doomtype.hpp"                 // for byte, bool
 
 
 // [crispy] here used to be static color translation tables based on
@@ -262,7 +262,7 @@ static int I_GetPaletteIndex2(byte *palette, int r, int g, int b)
     return best;
 }
 
-byte V_Colorize(byte *playpal, int cr, byte source, boolean keepgray109)
+byte V_Colorize(byte *playpal, int cr, byte source, bool keepgray109)
 {
     vect rgb, hsv;
 

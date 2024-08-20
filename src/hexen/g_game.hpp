@@ -39,9 +39,9 @@ void G_Completed(int map, int position);
 void G_TeleportNewMap(int map, int position);
 void G_DeferedInitNew(skill_t skill, int episode, int map);
 
-boolean G_Responder(event_t * ev);
+bool G_Responder(event_t * ev);
 
-extern boolean playeringame[MAXPLAYERS];
+extern bool playeringame[MAXPLAYERS];
 extern pclass_t PlayerClass[MAXPLAYERS];
 extern player_t players[MAXPLAYERS];
 

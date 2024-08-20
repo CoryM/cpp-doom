@@ -60,7 +60,7 @@ static sound_module_t *sound_module;
 static music_module_t *music_module;
 
 // If true, the music pack module was successfully initialized.
-static boolean music_packs_active = false;
+static bool music_packs_active = false;
 
 // This is either equal to music_module or &music_pack_module,
 // depending on whether the current track is substituted.
@@ -112,7 +112,7 @@ static music_module_t *music_modules[] = {
 
 // Check if a sound device is in the given list of devices
 
-static boolean SndDeviceInList(snddevice_t device, snddevice_t *list,
+static bool SndDeviceInList(snddevice_t device, snddevice_t *list,
     int len)
 {
     int i;
@@ -131,7 +131,7 @@ static boolean SndDeviceInList(snddevice_t device, snddevice_t *list,
 // Find and initialize a sound_module_t appropriate for the setting
 // in snd_sfxdevice.
 
-static void InitSfxModule(boolean use_sfx_prefix)
+static void InitSfxModule(bool use_sfx_prefix)
 {
     int i;
 
@@ -191,9 +191,9 @@ static void InitMusicModule()
 //  allocates channel buffer, sets S_sfx lookup.
 //
 
-void I_InitSound(boolean use_sfx_prefix)
+void I_InitSound(bool use_sfx_prefix)
 {
-    boolean nosound, nosfx, nomusic, nomusicpacks;
+    bool nosound, nosfx, nomusic, nomusicpacks;
 
     //!
     // @vanilla
@@ -363,7 +363,7 @@ void I_StopSound(int channel)
     }
 }
 
-boolean I_SoundIsPlaying(int channel)
+bool I_SoundIsPlaying(int channel)
 {
     if (sound_module != NULL)
     {
@@ -453,7 +453,7 @@ void I_UnRegisterSong(void *handle)
     }
 }
 
-void I_PlaySong(void *handle, boolean looping)
+void I_PlaySong(void *handle, bool looping)
 {
     if (active_music_module != NULL)
     {
@@ -469,7 +469,7 @@ void I_StopSong(void)
     }
 }
 
-boolean I_MusicIsPlaying(void)
+bool I_MusicIsPlaying(void)
 {
     if (active_music_module != NULL)
     {

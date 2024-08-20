@@ -65,7 +65,7 @@ mobj_t *tsthing;
 int tmflags;
 fixed_t tmx, tmy;
 
-boolean floatok;                // if true, move would be ok if
+bool floatok;                // if true, move would be ok if
                                                         // within tmfloorz - tmceilingz
 
 fixed_t tmfloorz, tmceilingz, tmdropoffz;
@@ -100,7 +100,7 @@ mobj_t *BlockingMobj;
 ==================
 */
 
-boolean PIT_StompThing(mobj_t * thing)
+bool PIT_StompThing(mobj_t * thing)
 {
     fixed_t blockdist;
 
@@ -133,7 +133,7 @@ boolean PIT_StompThing(mobj_t * thing)
 ===================
 */
 
-boolean P_TeleportMove(mobj_t * thing, fixed_t x, fixed_t y)
+bool P_TeleportMove(mobj_t * thing, fixed_t x, fixed_t y)
 {
     int xl, xh, yl, yh, bx, by;
     subsector_t *newsubsec;
@@ -196,7 +196,7 @@ boolean P_TeleportMove(mobj_t * thing, fixed_t x, fixed_t y)
 }
 
 
-boolean PIT_ThrustStompThing(mobj_t * thing)
+bool PIT_ThrustStompThing(mobj_t * thing)
 {
     fixed_t blockdist;
 
@@ -262,7 +262,7 @@ void PIT_ThrustSpike(mobj_t * actor)
 ==================
 */
 
-boolean PIT_CheckLine(line_t * ld)
+bool PIT_CheckLine(line_t * ld)
 {
     if (tmbbox[BOXRIGHT] <= ld->bbox[BOXLEFT]
         || tmbbox[BOXLEFT] >= ld->bbox[BOXRIGHT]
@@ -344,10 +344,10 @@ boolean PIT_CheckLine(line_t * ld)
 //
 //---------------------------------------------------------------------------
 
-boolean PIT_CheckThing(mobj_t * thing)
+bool PIT_CheckThing(mobj_t * thing)
 {
     fixed_t blockdist;
-    boolean solid;
+    bool solid;
     int damage;
 
     if (!(thing->flags & (MF_SOLID | MF_SPECIAL | MF_SHOOTABLE)))
@@ -678,7 +678,7 @@ boolean PIT_CheckThing(mobj_t * thing)
 //
 //---------------------------------------------------------------------------
 
-boolean PIT_CheckOnmobjZ(mobj_t * thing)
+bool PIT_CheckOnmobjZ(mobj_t * thing)
 {
     fixed_t blockdist;
 
@@ -727,7 +727,7 @@ boolean PIT_CheckOnmobjZ(mobj_t * thing)
 //
 //----------------------------------------------------------------------------
 
-boolean P_TestMobjLocation(mobj_t * mobj)
+bool P_TestMobjLocation(mobj_t * mobj)
 {
     int flags;
 
@@ -775,7 +775,7 @@ blocked, or blocked by a line).
 ==================
 */
 
-boolean P_CheckPosition(mobj_t * thing, fixed_t x, fixed_t y)
+bool P_CheckPosition(mobj_t * thing, fixed_t x, fixed_t y)
 {
     int xl, xh, yl, yh, bx, by;
     subsector_t *newsubsec;
@@ -1028,7 +1028,7 @@ static void CheckForPushSpecial(line_t * line, int side, mobj_t * mobj)
 ===================
 */
 
-boolean P_TryMove(mobj_t * thing, fixed_t x, fixed_t y)
+bool P_TryMove(mobj_t * thing, fixed_t x, fixed_t y)
 {
     fixed_t oldx, oldy;
     int side, oldside;
@@ -1200,9 +1200,9 @@ boolean P_TryMove(mobj_t * thing, fixed_t x, fixed_t y)
 ==================
 */
 
-boolean P_ThingHeightClip(mobj_t * thing)
+bool P_ThingHeightClip(mobj_t * thing)
 {
-    boolean onfloor;
+    bool onfloor;
 
     onfloor = (thing->z == thing->floorz);
 
@@ -1305,7 +1305,7 @@ void P_HitSlideLine(line_t * ld)
 ==============
 */
 
-boolean PTR_SlideTraverse(intercept_t * in)
+bool PTR_SlideTraverse(intercept_t * in)
 {
     line_t *li;
 
@@ -1457,7 +1457,7 @@ void P_SlideMove(mobj_t * mo)
 //
 //============================================================================
 
-boolean PTR_BounceTraverse(intercept_t * in)
+bool PTR_BounceTraverse(intercept_t * in)
 {
     line_t *li;
 
@@ -1582,7 +1582,7 @@ extern fixed_t topslope, bottomslope;   // slopes to top and bottom of target
 ===============================================================================
 */
 
-boolean PTR_AimTraverse(intercept_t * in)
+bool PTR_AimTraverse(intercept_t * in)
 {
     line_t *li;
     mobj_t *th;
@@ -1672,7 +1672,7 @@ boolean PTR_AimTraverse(intercept_t * in)
 ==============================================================================
 */
 
-boolean PTR_ShootTraverse(intercept_t * in)
+bool PTR_ShootTraverse(intercept_t * in)
 {
     fixed_t x, y, z;
     fixed_t frac;
@@ -1891,7 +1891,7 @@ void P_LineAttack(mobj_t * t1, angle_t angle, fixed_t distance, fixed_t slope,
 
 mobj_t *usething;
 
-boolean PTR_UseTraverse(intercept_t * in)
+bool PTR_UseTraverse(intercept_t * in)
 {
     int sound;
     fixed_t pheight;
@@ -1999,9 +1999,9 @@ void P_UseLines(player_t * player)
 
 static mobj_t *PuzzleItemUser;
 static int PuzzleItemType;
-static boolean PuzzleActivated;
+static bool PuzzleActivated;
 
-boolean PTR_PuzzleItemTraverse(intercept_t * in)
+bool PTR_PuzzleItemTraverse(intercept_t * in)
 {
     mobj_t *mobj;
     byte args[3];
@@ -2084,7 +2084,7 @@ boolean PTR_PuzzleItemTraverse(intercept_t * in)
 //
 //==========================================================================
 
-boolean P_UsePuzzleItem(player_t * player, int itemType)
+bool P_UsePuzzleItem(player_t * player, int itemType)
 {
     int angle;
     fixed_t x1, y1, x2, y2;
@@ -2114,7 +2114,7 @@ mobj_t *bombsource;
 mobj_t *bombspot;
 int bombdamage;
 int bombdistance;
-boolean DamageSource;
+bool DamageSource;
 
 /*
 =================
@@ -2125,7 +2125,7 @@ boolean DamageSource;
 =================
 */
 
-boolean PIT_RadiusAttack(mobj_t * thing)
+bool PIT_RadiusAttack(mobj_t * thing)
 {
     fixed_t dx, dy, dist;
     int damage;
@@ -2180,7 +2180,7 @@ boolean PIT_RadiusAttack(mobj_t * thing)
 */
 
 void P_RadiusAttack(mobj_t * spot, mobj_t * source, int damage, int distance,
-                    boolean damageSource)
+                    bool damageSource)
 {
     int x, y, xl, xh, yl, yh;
     fixed_t dist;
@@ -2221,7 +2221,7 @@ void P_RadiusAttack(mobj_t * spot, mobj_t * source, int damage, int distance,
 */
 
 int crushchange;
-boolean nofit;
+bool nofit;
 
 /*
 ===============
@@ -2231,7 +2231,7 @@ boolean nofit;
 ===============
 */
 
-boolean PIT_ChangeSector(mobj_t * thing)
+bool PIT_ChangeSector(mobj_t * thing)
 {
     mobj_t *mo;
 
@@ -2294,7 +2294,7 @@ boolean PIT_ChangeSector(mobj_t * thing)
 ===============
 */
 
-boolean P_ChangeSector(sector_t * sector, int crunch)
+bool P_ChangeSector(sector_t * sector, int crunch)
 {
     int x, y;
 

@@ -91,7 +91,7 @@ typedef struct
 
     // If true, this config variable has been bound to a variable
     // and is being used.
-    boolean bound;
+    bool bound;
 } default_t;
 
 typedef struct
@@ -2638,7 +2638,7 @@ void M_BindStringVariable(const char *name, char **location)
 // Set the value of a particular variable; an API function for other
 // parts of the program to assign values to config variables by name.
 
-boolean M_SetVariable(const char *name, const char *value)
+bool M_SetVariable(const char *name, const char *value)
 {
     default_t *variable;
 

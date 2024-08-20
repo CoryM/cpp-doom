@@ -112,7 +112,7 @@ char*	finaleflat;
 
 void	F_StartCast (void);
 void	F_CastTicker (void);
-boolean F_CastResponder (event_t *ev);
+bool F_CastResponder (event_t *ev);
 void	F_CastDrawer (void);
 
 // [STRIFE] - Slideshow states enumeration
@@ -251,7 +251,7 @@ void F_StartFinale (void)
 //
 // [STRIFE] Verified unmodified
 //
-boolean F_Responder (event_t *event)
+bool F_Responder (event_t *event)
 {
     if (finalestage == F_STAGE_CAST)
         return F_CastResponder (event);
@@ -630,10 +630,10 @@ castinfo_t      castorder[] = {
 int		castnum;
 int		casttics;
 state_t*	caststate;
-boolean		castdeath;
+bool		castdeath;
 int		castframes;
 int		castonmelee;
-boolean		castattacking;
+bool		castattacking;
 
 //
 // F_StartCast
@@ -769,7 +769,7 @@ stopattack:
 // It was used at some point in development, however, as they made
 // numerous modifications to the cast call system.
 //
-boolean F_CastResponder (event_t* ev)
+bool F_CastResponder (event_t* ev)
 {
     if (ev->type != ev_keydown)
         return false;
@@ -859,7 +859,7 @@ void F_CastDrawer (void)
     spritedef_t*	sprdef;
     spriteframe_t*	sprframe;
     int			lump;
-    boolean		flip;
+    bool		flip;
     patch_t*		patch;
     
     // erase the entire screen to a background
@@ -871,7 +871,7 @@ void F_CastDrawer (void)
     sprdef = &sprites[caststate->sprite];
     sprframe = &sprdef->spriteframes[ caststate->frame & FF_FRAMEMASK];
     lump = sprframe->lump[0];
-    flip = (boolean)sprframe->flip[0];
+    flip = (bool)sprframe->flip[0];
 			
     patch = W_CacheLumpNum (lump+firstspritelump, PU_CACHE);
     if (flip)

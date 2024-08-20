@@ -32,8 +32,8 @@
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-static boolean ActivateThing(mobj_t * mobj);
-static boolean DeactivateThing(mobj_t * mobj);
+static bool ActivateThing(mobj_t * mobj);
+static bool DeactivateThing(mobj_t * mobj);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
@@ -161,7 +161,7 @@ mobjtype_t TranslateThingType[] = {
 //
 //==========================================================================
 
-boolean EV_ThingProjectile(byte * args, boolean gravity)
+bool EV_ThingProjectile(byte * args, bool gravity)
 {
     int tid;
     angle_t angle;
@@ -172,7 +172,7 @@ boolean EV_ThingProjectile(byte * args, boolean gravity)
     mobj_t *mobj;
     mobj_t *newMobj;
     int searcher;
-    boolean success;
+    bool success;
 
     success = false;
     searcher = -1;
@@ -218,7 +218,7 @@ boolean EV_ThingProjectile(byte * args, boolean gravity)
 //
 //==========================================================================
 
-boolean EV_ThingSpawn(byte * args, boolean fog)
+bool EV_ThingSpawn(byte * args, bool fog)
 {
     int tid;
     angle_t angle;
@@ -227,7 +227,7 @@ boolean EV_ThingSpawn(byte * args, boolean fog)
     mobj_t *fogMobj;
     mobjtype_t moType;
     int searcher;
-    boolean success;
+    bool success;
     fixed_t z;
 
     success = false;
@@ -280,11 +280,11 @@ boolean EV_ThingSpawn(byte * args, boolean fog)
 //
 //==========================================================================
 
-boolean EV_ThingActivate(int tid)
+bool EV_ThingActivate(int tid)
 {
     mobj_t *mobj;
     int searcher;
-    boolean success;
+    bool success;
 
     success = false;
     searcher = -1;
@@ -304,11 +304,11 @@ boolean EV_ThingActivate(int tid)
 //
 //==========================================================================
 
-boolean EV_ThingDeactivate(int tid)
+bool EV_ThingDeactivate(int tid)
 {
     mobj_t *mobj;
     int searcher;
-    boolean success;
+    bool success;
 
     success = false;
     searcher = -1;
@@ -328,11 +328,11 @@ boolean EV_ThingDeactivate(int tid)
 //
 //==========================================================================
 
-boolean EV_ThingRemove(int tid)
+bool EV_ThingRemove(int tid)
 {
     mobj_t *mobj;
     int searcher;
-    boolean success;
+    bool success;
 
     success = false;
     searcher = -1;
@@ -355,11 +355,11 @@ boolean EV_ThingRemove(int tid)
 //
 //==========================================================================
 
-boolean EV_ThingDestroy(int tid)
+bool EV_ThingDestroy(int tid)
 {
     mobj_t *mobj;
     int searcher;
-    boolean success;
+    bool success;
 
     success = false;
     searcher = -1;
@@ -386,7 +386,7 @@ boolean EV_ThingDestroy(int tid)
 //==========================================================================
 
 /*
-boolean EV_ThingMove(byte *args)
+bool EV_ThingMove(byte *args)
 {
 	return false;
 }
@@ -398,7 +398,7 @@ boolean EV_ThingMove(byte *args)
 //
 //==========================================================================
 
-static boolean ActivateThing(mobj_t * mobj)
+static bool ActivateThing(mobj_t * mobj)
 {
     if (mobj->flags & MF_COUNTKILL)
     {                           // Monster
@@ -480,7 +480,7 @@ static boolean ActivateThing(mobj_t * mobj)
 //
 //==========================================================================
 
-static boolean DeactivateThing(mobj_t * mobj)
+static bool DeactivateThing(mobj_t * mobj)
 {
     if (mobj->flags & MF_COUNTKILL)
     {                           // Monster

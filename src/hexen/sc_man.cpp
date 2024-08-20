@@ -51,9 +51,9 @@ static void OpenScript(const char *name, int type);
 char *sc_String;
 int sc_Number;
 int sc_Line;
-boolean sc_End;
-boolean sc_Crossed;
-boolean sc_FileScripts = false;
+bool sc_End;
+bool sc_Crossed;
+bool sc_FileScripts = false;
 const char *sc_ScriptsDir = "";
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
@@ -64,9 +64,9 @@ static char *ScriptPtr;
 static char *ScriptEndPtr;
 static char StringBuffer[MAX_STRING_SIZE];
 static int ScriptLumpNum;
-static boolean ScriptOpen = false;
+static bool ScriptOpen = false;
 static int ScriptSize;
-static boolean AlreadyGot = false;
+static bool AlreadyGot = false;
 
 // CODE --------------------------------------------------------------------
 
@@ -177,10 +177,10 @@ void SC_Close(void)
 //
 //==========================================================================
 
-boolean SC_GetString(void)
+bool SC_GetString(void)
 {
     char *text;
-    boolean foundToken;
+    bool foundToken;
 
     CheckOpen();
     if (AlreadyGot)
@@ -294,7 +294,7 @@ void SC_MustGetStringName(char *name)
 //
 //==========================================================================
 
-boolean SC_GetNumber(void)
+bool SC_GetNumber(void)
 {
     char *stopper;
 
@@ -351,7 +351,7 @@ void SC_UnGet(void)
 //==========================================================================
 
 /*
-boolean SC_Check(void)
+bool SC_Check(void)
 {
 	char *text;
 
@@ -428,7 +428,7 @@ int SC_MustMatchString(const char **strings)
 //
 //==========================================================================
 
-boolean SC_Compare(const char *text)
+bool SC_Compare(const char *text)
 {
     if (strcasecmp(text, sc_String) == 0)
     {

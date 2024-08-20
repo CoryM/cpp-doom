@@ -52,15 +52,15 @@ extern char ClusterMessage[MAX_INTRMSN_MESSAGE_SIZE]; // in in_lude.cpp
 
 static void TextWrite(void);
 static void DrawPic(void);
-static void InitializeFade(boolean fadeIn);
+static void InitializeFade(bool fadeIn);
 static void DeInitializeFade(void);
 static void FadePic(void);
 static char *GetFinaleText(int sequence);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
-extern boolean automapactive;
-extern boolean viewactive;
+extern bool automapactive;
+extern bool viewactive;
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
@@ -111,7 +111,7 @@ void F_StartFinale(void)
 //
 //===========================================================================
 
-boolean F_Responder(event_t * event)
+bool F_Responder(event_t * event)
 {
     return false;
 }
@@ -251,7 +251,7 @@ static void TextWrite(void)
 //
 //===========================================================================
 
-static void InitializeFade(boolean fadeIn)
+static void InitializeFade(bool fadeIn)
 {
     unsigned i;
 

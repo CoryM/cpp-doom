@@ -178,7 +178,7 @@ struct [[gnu::packed]] mappatch_t
 struct [[gnu::packed]] maptexture_t
 {
     char name[8];
-    boolean masked;
+    bool masked;
     short width;
     short height;
     int obsolete;

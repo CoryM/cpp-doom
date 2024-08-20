@@ -378,7 +378,7 @@ static void saveg_read_player_t(player_t *str)
     // int lookdir;
     str->lookdir = SV_ReadLong();
 
-    // boolean centering;
+    // bool centering;
     str->centering = SV_ReadLong();
 
     // int health;
@@ -409,13 +409,13 @@ static void saveg_read_player_t(player_t *str)
         str->powers[i] = SV_ReadLong();
     }
 
-    // boolean keys[NUMKEYS];
+    // bool keys[NUMKEYS];
     for (i=0; i<NUMKEYS; ++i)
     {
         str->keys[i] = SV_ReadLong();
     }
 
-    // boolean backpack;
+    // bool backpack;
     str->backpack = SV_ReadLong();
 
     // signed int frags[MAXPLAYERS];
@@ -430,7 +430,7 @@ static void saveg_read_player_t(player_t *str)
     // weapontype_t pendingweapon;
     str->pendingweapon = static_cast<weapontype_t>(SV_ReadLong());
 
-    // boolean weaponowned[NUMWEAPONS];
+    // bool weaponowned[NUMWEAPONS];
     for (i=0; i<NUMWEAPONS; ++i)
     {
         str->weaponowned[i] = SV_ReadLong();
@@ -496,7 +496,7 @@ static void saveg_read_player_t(player_t *str)
         saveg_read_pspdef_t(&str->psprites[i]);
     }
 
-    // boolean didsecret;
+    // bool didsecret;
     str->didsecret = SV_ReadLong();
 
     // int chickenTics;
@@ -547,7 +547,7 @@ static void saveg_write_player_t(player_t *str)
     // int lookdir;
     SV_WriteLong(str->lookdir);
 
-    // boolean centering;
+    // bool centering;
     SV_WriteLong(str->centering);
 
     // int health;
@@ -578,13 +578,13 @@ static void saveg_write_player_t(player_t *str)
         SV_WriteLong(str->powers[i]);
     }
 
-    // boolean keys[NUMKEYS];
+    // bool keys[NUMKEYS];
     for (i=0; i<NUMKEYS; ++i)
     {
         SV_WriteLong(str->keys[i]);
     }
 
-    // boolean backpack;
+    // bool backpack;
     SV_WriteLong(str->backpack);
 
     // signed int frags[MAXPLAYERS];
@@ -599,7 +599,7 @@ static void saveg_write_player_t(player_t *str)
     // weapontype_t pendingweapon;
     SV_WriteLong(str->pendingweapon);
 
-    // boolean weaponowned[NUMWEAPONS];
+    // bool weaponowned[NUMWEAPONS];
     for (i=0; i<NUMWEAPONS; ++i)
     {
         SV_WriteLong(str->weaponowned[i]);
@@ -663,7 +663,7 @@ static void saveg_write_player_t(player_t *str)
         saveg_write_pspdef_t(&str->psprites[i]);
     }
 
-    // boolean didsecret;
+    // bool didsecret;
     SV_WriteLong(str->didsecret);
 
     // int chickenTics;
@@ -1074,7 +1074,7 @@ static void saveg_read_ceiling_t(ceiling_t *str)
     // fixed_t speed;
     str->speed = SV_ReadLong();
 
-    // boolean crush;
+    // bool crush;
     str->crush = SV_ReadLong();
 
     // int direction;
@@ -1105,7 +1105,7 @@ static void saveg_write_ceiling_t(ceiling_t *str)
     // fixed_t speed;
     SV_WriteLong(str->speed);
 
-    // boolean crush;
+    // bool crush;
     SV_WriteLong(str->crush);
 
     // int direction;
@@ -1195,7 +1195,7 @@ static void saveg_read_floormove_t(floormove_t *str)
     // floor_e type;
     str->type = static_cast<floor_e>(SV_ReadLong());
 
-    // boolean crush;
+    // bool crush;
     str->crush = SV_ReadLong();
 
     // sector_t *sector;
@@ -1226,7 +1226,7 @@ static void saveg_write_floormove_t(floormove_t *str)
     // floor_e type;
     SV_WriteLong(str->type);
 
-    // boolean crush;
+    // bool crush;
     SV_WriteLong(str->crush);
 
     // sector_t *sector;
@@ -1285,7 +1285,7 @@ static void saveg_read_plat_t(plat_t *str)
     // plat_e oldstatus;
     str->oldstatus = static_cast<plat_e>(SV_ReadLong());
 
-    // boolean crush;
+    // bool crush;
     str->crush = SV_ReadLong();
 
     // int tag;
@@ -1324,7 +1324,7 @@ static void saveg_write_plat_t(plat_t *str)
     // plat_e oldstatus;
     SV_WriteLong(str->oldstatus);
 
-    // boolean crush;
+    // bool crush;
     SV_WriteLong(str->crush);
 
     // int tag;

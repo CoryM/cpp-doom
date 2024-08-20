@@ -21,7 +21,7 @@
 #include <stdint.h>      // for uint8_t, uint16_t, uint32_t
 #include <string_view>   // for basic_string_view
 #include "deh_io.hpp"    // for DEH_Error, DEH_Warning
-#include "doomtype.hpp"  // for boolean, strcasecmp
+#include "doomtype.hpp"  // for bool, strcasecmp
 #include "i_system.hpp"  // for I_Error
 #include "m_misc.hpp"    // for M_StringCopy
 
@@ -74,7 +74,7 @@ static void *GetStructField(void *structptr,
 // Set the value of a particular field in a structure by name
 //
 
-boolean DEH_SetMapping(deh_context_t *context, deh_mapping_t *mapping,
+bool DEH_SetMapping(deh_context_t *context, deh_mapping_t *mapping,
     void *structptr, char *name, int value)
 {
     deh_mapping_entry_t *entry;
@@ -125,7 +125,7 @@ boolean DEH_SetMapping(deh_context_t *context, deh_mapping_t *mapping,
 // Set the value of a string field in a structure by name
 //
 
-boolean DEH_SetStringMapping(deh_context_t *context, deh_mapping_t *mapping,
+bool DEH_SetStringMapping(deh_context_t *context, deh_mapping_t *mapping,
     void *structptr, char *name, char *value)
 {
     deh_mapping_entry_t *entry = GetMappingEntryByName(context, mapping, name);

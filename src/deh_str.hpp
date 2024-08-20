@@ -29,6 +29,6 @@ void        DEH_printf(const char *fmt, ...);
 void        DEH_fprintf(FILE *fstream, const char *fmt, ...);
 void        DEH_snprintf(char *buffer, size_t len, const char *fmt, ...);
 void        DEH_AddStringReplacement(const char *from_text, const char *to_text);
-boolean     DEH_HasStringReplacement(const char *s);
+bool     DEH_HasStringReplacement(const char *s);
 
 #endif /* #ifndef DEH_STR_H */

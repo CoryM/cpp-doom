@@ -37,7 +37,7 @@ void ToCurr(void);
 void M_SaveMoveMapToHere(void);
 void M_SaveMoveHereToMap(void);
 
-boolean M_SaveMisObj(const char *path);
+bool M_SaveMisObj(const char *path);
 void    M_ReadMisObj(void);
 
 // Custom Utilities for Filepath Handling

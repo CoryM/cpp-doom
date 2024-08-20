@@ -71,7 +71,7 @@ typedef struct
     // using the law of cosines in p_setup.c:P_RemoveSlimeTrails();
     fixed_t r_x;
     fixed_t r_y;
-    boolean moved;
+    bool moved;
 } vertex_t;
 
 

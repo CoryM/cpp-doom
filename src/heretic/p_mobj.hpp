@@ -11,8 +11,8 @@ struct mapthing_t;
 enum statenum_t;
 enum mobjtype_t;
 
-#ifndef boolean
-using boolean = bool;
+#ifndef bool
+using bool = bool;
 #endif 
 #ifndef fixed_t
 using fixed_t = int;
@@ -21,13 +21,13 @@ using fixed_t = int;
 using angle_t = unsigned int;
 #endif
 
-boolean P_SetMobjState(mobj_t * mobj, statenum_t state);
-boolean P_SetMobjStateNF(mobj_t * mobj, statenum_t state);
+bool P_SetMobjState(mobj_t * mobj, statenum_t state);
+bool P_SetMobjStateNF(mobj_t * mobj, statenum_t state);
 void P_ExplodeMissile(mobj_t * mo);
 void P_FloorBounceMissile(mobj_t * mo);
 void P_ThrustMobj(mobj_t * mo, angle_t angle, fixed_t move);
 int P_FaceMobj(mobj_t * source, mobj_t * target, angle_t * delta);
-boolean P_SeekerMissile(mobj_t * actor, angle_t thresh, angle_t turnMax);
+bool P_SeekerMissile(mobj_t * actor, angle_t thresh, angle_t turnMax);
 void P_XYMovement(mobj_t * mo);
 void P_ZMovement(mobj_t * mo);
 void P_NightmareRespawn(mobj_t * mobj);
@@ -42,7 +42,7 @@ void P_BloodSplatter(fixed_t x, fixed_t y, fixed_t z, mobj_t * originator);
 void P_RipperBlood(mobj_t * mo);
 int P_GetThingFloorType(mobj_t * thing);
 int P_HitFloor(mobj_t * thing);
-boolean P_CheckMissileSpawn(mobj_t * missile);
+bool P_CheckMissileSpawn(mobj_t * missile);
 mobj_t *P_SpawnMissile(mobj_t * source, mobj_t * dest, mobjtype_t type);
 mobj_t *P_SpawnMissileAngle(mobj_t * source, mobjtype_t type, angle_t angle, fixed_t momz);
 mobj_t *P_SpawnPlayerMissile(mobj_t * source, mobjtype_t type);

@@ -129,7 +129,7 @@ multiitem_t multiitem_widgets[get_max<eWidgets>()] = {
 
 extern void AM_ReInit(void);
 extern void EnableLoadingDisk(void);
-extern void P_SegLengths(boolean contrast_only);
+extern void P_SegLengths(bool contrast_only);
 extern void R_ExecuteSetViewSize(void);
 extern void R_InitLightTables(void);
 extern void I_ReInitGraphics(bReinit reinit);

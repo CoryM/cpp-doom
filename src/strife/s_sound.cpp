@@ -105,7 +105,7 @@ static int snd_VoiceVolume;
 
 // Whether songs are mus_paused
 
-static boolean mus_paused;        
+static bool mus_paused;        
 
 // Music currently being played
 
@@ -270,7 +270,7 @@ void S_StopSound(mobj_t *origin)
 // haleyjd 09/11/10: [STRIFE] Added an "isvoice" parameter for supporting
 // voice playing.
 //
-static int S_GetChannel(mobj_t *origin, sfxinfo_t *sfxinfo, boolean isvoice)
+static int S_GetChannel(mobj_t *origin, sfxinfo_t *sfxinfo, bool isvoice)
 {
     // channel number to use
     int                cnum;
@@ -801,7 +801,7 @@ void S_ChangeMusic(int musicnum, int looping)
     mus_playing = music;
 }
 
-boolean S_MusicPlaying(void)
+bool S_MusicPlaying(void)
 {
     return I_MusicIsPlaying();
 }

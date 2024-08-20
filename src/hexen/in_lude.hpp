@@ -4,7 +4,7 @@
 #include "../doomtype.hpp"
 #include "h2def.hpp"
 
-extern boolean intermission;
+extern bool intermission;
 extern char ClusterMessage[MAX_INTRMSN_MESSAGE_SIZE]; // in in_lude.cpp
 
 void IN_Start(void);
