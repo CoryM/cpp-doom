@@ -28,8 +28,8 @@
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 void ST_Init(void);
 void ST_Done(void);
-void ST_Message(const char *message, ...) PRINTF_ATTR(1, 2);
-void ST_RealMessage(const char *message, ...) PRINTF_ATTR(1, 2);
+void ST_Message(const char *message, ...);
+void ST_RealMessage(const char *message, ...);
 void ST_Progress(void);
 void ST_NetProgress(void);
 void ST_NetDone(void);
