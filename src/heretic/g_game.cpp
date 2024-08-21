@@ -19,6 +19,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+
+import i_error;
+
 #include "doomdef.hpp"
 #include "doomkeys.hpp"
 #include "deh_str.hpp"
@@ -116,13 +119,13 @@ bool lowres_turn;
 bool shortticfix;            // calculate lowres turning like doom
 bool demoplayback;
 bool demoextend;
-byte *demobuffer, *demo_p, *demoend;
+uint8_t *demobuffer, *demo_p, *demoend;
 bool singledemo;             // quit after playing a demo from cmdline
 
 bool precache = true;        // if true, load all graphics at start
 
 // TODO: Heretic uses 16-bit shorts for consistency?
-byte consistancy[MAXPLAYERS][BACKUPTICS];
+uint8_t consistancy[MAXPLAYERS][BACKUPTICS];
 char *savegamedir;
 
 bool testcontrols = false;
@@ -1041,7 +1044,7 @@ void G_Ticker(void)
                 if (gametic > BACKUPTICS
                     && consistancy[i][buf] != cmd->consistancy)
                 {
-                    I_Error("consistency failure (%i should be %i)",
+                    I_Error("consistency failure ({} should be {})",
                             cmd->consistancy, consistancy[i][buf]);
                 }
                 if (players[i].mo)
@@ -1336,7 +1339,7 @@ void G_DeathMatchSpawnPlayer(int playernum)
 
     selections = deathmatch_p - deathmatchstarts;
     if (selections < 4)
-        I_Error("Only %i deathmatch spots, 4 required", selections);
+        I_Error("Only {} deathmatch spots, 4 required", selections);
 
     for (j = 0; j < 20; j++)
     {
@@ -1733,8 +1736,8 @@ void G_ReadDemoTiccmd(ticcmd_t * cmd)
 static void IncreaseDemoBuffer(void)
 {
     int current_length;
-    byte *new_demobuffer;
-    byte *new_demop;
+    uint8_t *new_demobuffer;
+    uint8_t *new_demop;
     int new_length;
 
     // Find the current size
@@ -1744,7 +1747,7 @@ static void IncreaseDemoBuffer(void)
     // Generate a new buffer twice the size
     new_length = current_length * 2;
 
-    new_demobuffer = static_cast<byte *>(Z_Malloc(new_length, PU_STATIC, 0));
+    new_demobuffer = static_cast<uint8_t *>(Z_Malloc(new_length, PU_STATIC, 0));
     new_demop = new_demobuffer + (demo_p - demobuffer);
 
     // Copy over the old data
@@ -1762,7 +1765,7 @@ static void IncreaseDemoBuffer(void)
 
 void G_WriteDemoTiccmd(ticcmd_t * cmd)
 {
-    byte *demo_start;
+    uint8_t *demo_start;
 
     if (gamekeydown[key_demo_quit]) // press to end demo recording
         G_CheckDemoStatus();
@@ -1865,7 +1868,7 @@ void G_RecordDemo(skill_t skill, int numplayers, int episode, int map,
     i = M_CheckParmWithArgs("-maxdemo", 1);
     if (i)
         maxsize = atoi(myargv[i + 1]) * 1024;
-    demobuffer = static_cast<byte *>(Z_Malloc(maxsize, PU_STATIC, nullptr));
+    demobuffer = static_cast<uint8_t *>(Z_Malloc(maxsize, PU_STATIC, nullptr));
     demoend = demobuffer + maxsize;
 
     demo_p = demobuffer;
@@ -1924,7 +1927,7 @@ void G_DoPlayDemo(void)
 
     gameaction = ga_nothing;
     lumpnum = W_GetNumForName(defdemoname);
-    demobuffer = (byte *)W_CacheLumpNum(lumpnum, PU_STATIC);
+    demobuffer = (uint8_t *)W_CacheLumpNum(lumpnum, PU_STATIC);
     demo_p = demobuffer;
     skill = static_cast<skill_t>(*demo_p++);
     episode = *demo_p++;
@@ -1972,7 +1975,7 @@ void G_TimeDemo(char *name)
     skill_t skill;
     int episode, map, i;
 
-    demobuffer = demo_p = static_cast<byte *>(W_CacheLumpName(name, PU_STATIC));
+    demobuffer = demo_p = static_cast<uint8_t *>(W_CacheLumpName(name, PU_STATIC));
     skill = static_cast<skill_t>(*demo_p++);
     episode = *demo_p++;
     map = *demo_p++;
@@ -2019,7 +2022,7 @@ bool G_CheckDemoStatus(void)
         endtime = I_GetTime();
         realtics = endtime - starttime;
         fps = ((float) gametic * TICRATE) / realtics;
-        I_Error("timed %i gametics in %i realtics (%f fps)",
+        I_Error("timed {} gametics in {} realtics ({} fps)",
                 gametic, realtics, fps);
     }
 
@@ -2040,7 +2043,7 @@ bool G_CheckDemoStatus(void)
         M_WriteFile(demoname, demobuffer, demo_p - demobuffer);
         Z_Free(demobuffer);
         demorecording = false;
-        I_Error("Demo %s recorded", demoname);
+        I_Error("Demo {} recorded", demoname);
     }
 
     return false;

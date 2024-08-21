@@ -20,6 +20,7 @@
 #include <cstdio>
 
 import i_swap; // [crispy] SHORT()
+import i_error; // I_Error
 #include "i_system.hpp"
 #include "deh_main.hpp"
 #include "deh_str.hpp"

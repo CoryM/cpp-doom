@@ -29,6 +29,8 @@
 #include "m_misc.hpp"
 #include "m_argv.hpp" // haleyjd 20110212: warning fix
 
+import i_error;
+
 int    myargc;
 char **myargv;
 
@@ -111,7 +113,7 @@ static void LoadResponseFile(int argv_index, const char *filename)
 
         if (k < 0)
         {
-            I_Error("Failed to read full contents of '%s'", filename);
+            I_Error("Failed to read full contents of '{}'", filename);
         }
 
         i += k;
@@ -170,8 +172,7 @@ static void LoadResponseFile(int argv_index, const char *filename)
 
             if (k >= size || infile[k] == '\n')
             {
-                I_Error("Quotes unclosed in response file '%s'",
-                    filename);
+                I_Error("Quotes unclosed in response file '{}'", filename);
             }
 
             // Cut off the string at the closing quote

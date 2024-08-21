@@ -25,6 +25,8 @@
 #include "s_sound.hpp"
 #include "v_video.hpp"
 
+import i_error;
+
 // Macros
 
 #define MAX_AMBIENT_SFX 8       // Per level
@@ -285,8 +287,7 @@ void P_InitPicAnims(void)
         lastanim->numpics = lastanim->picnum - lastanim->basepic + 1;
         if (lastanim->numpics < 2)
         {
-            I_Error("P_InitPicAnims: bad cycle from %s to %s",
-                    startname, endname);
+            I_Error("P_InitPicAnims: bad cycle from {} to {}", startname, endname);
         }
         lastanim->speed = animdefs[i].speed;
         lastanim++;
@@ -953,8 +954,7 @@ void P_PlayerInSpecialSector(player_t * player)
             break;
 
         default:
-            I_Error("P_PlayerInSpecialSector: "
-                    "unknown special %i", sector->special);
+            I_Error("P_PlayerInSpecialSector: unknown special {}", sector->special);
     }
 }
 
@@ -1298,7 +1298,7 @@ void P_AmbientSound(void)
                 done = true;
                 break;
             default:
-                I_Error("P_AmbientSound: Unknown afxcmd %d", cmd);
+                I_Error("P_AmbientSound: Unknown afxcmd {}", cmd);
                 break;
         }
     }

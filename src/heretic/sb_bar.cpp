@@ -48,7 +48,7 @@ static void DrawCommonBar(void);
 static void DrawMainBar(void);
 static void DrawInventoryBar(void);
 static void DrawFullScreenStuff(void);
-static bool HandleCheats(byte key);
+static bool HandleCheats(uint8_t key);
 static void CheatGodFunc(player_t * player, Cheat_t * cheat);
 static void CheatNoClipFunc(player_t * player, Cheat_t * cheat);
 static void CheatWeaponsFunc(player_t * player, Cheat_t * cheat);
@@ -111,7 +111,7 @@ patch_t *PatchBLACKSQ;
 patch_t *PatchINVBAR;
 patch_t *PatchARMCLEAR;
 patch_t *PatchCHAINBACK;
-//byte *ShadeTables;
+//uint8_t *ShadeTables;
 int FontBNumBase;
 int spinbooklump;
 int spinflylump;
@@ -404,15 +404,15 @@ static void DrSmallNumber(int val, int x, int y)
 
 static void ShadeLine(int x, int y, int height, int shade)
 {
-    byte *dest;
-    byte *shades;
+    uint8_t *dest;
+    uint8_t *shades;
 
     x <<= crispy->hires;
     y <<= crispy->hires;
     height <<= crispy->hires;
 
     shades = colormaps + 9 * 256 + shade * 2 * 256;
-    dest = reinterpret_cast<byte *>(I_VideoBuffer + y * SCREENWIDTH + x);
+    dest = reinterpret_cast<uint8_t *>(I_VideoBuffer + y * SCREENWIDTH + x);
     while (height--)
     {
         if (crispy->hires)
@@ -686,7 +686,7 @@ void SB_PaletteFlash(void)
 {
     static int sb_palette = 0;
     int palette;
-    byte *pal;
+    uint8_t *pal;
 
     CPlayer = &players[consoleplayer];
 
@@ -715,7 +715,7 @@ void SB_PaletteFlash(void)
     if (palette != sb_palette)
     {
         sb_palette = palette;
-        pal = (byte *) W_CacheLumpNum(playpalette, PU_CACHE) + palette * 768;
+        pal = (uint8_t *) W_CacheLumpNum(playpalette, PU_CACHE) + palette * 768;
         I_SetPalette(pal);
     }
 }
@@ -1014,7 +1014,7 @@ bool SB_Responder(event_t * event)
 //
 //--------------------------------------------------------------------------
 
-static bool HandleCheats(byte key)
+static bool HandleCheats(uint8_t key)
 {
     int i;
     bool eat;

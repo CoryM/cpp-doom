@@ -38,11 +38,11 @@ struct [[gnu::packed]] patch_t
 // posts are runs of non masked source pixels
 struct [[gnu::packed]] post_t
     {
-        byte topdelta; // -1 is the last post in a column
-        byte length;   // length data bytes follows
+        uint8_t topdelta; // -1 is the last post in a column
+        uint8_t length;   // length data bytes follows
     };
 
-// column_t is a list of 0 or more post_t, (byte)-1 terminated
+// column_t is a list of 0 or more post_t, (uint8_t)-1 terminated
 typedef post_t column_t;
 
 #endif

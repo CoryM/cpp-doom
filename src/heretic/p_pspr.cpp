@@ -24,6 +24,8 @@
 
 #include "p_pspr.hpp"
 
+import i_error;
+
 // Macros
 
 #define LOWERSPEED FRACUNIT*6

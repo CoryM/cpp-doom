@@ -81,6 +81,8 @@
 #include "../../utils/memory.hpp"
 #include "d_main.hpp"
 
+import i_error;
+
 //
 // D-DoomLoop()
 // Not a globally visible function,
@@ -1056,7 +1058,7 @@ static void InitGameVersion(void)
                         gameversions[i].description);
             }
 
-            I_Error("Unknown game version '%s'", myargv[p+1]);
+            I_Error("Unknown game version '{}'", myargv[p+1]);
         }
     }
     else
@@ -1084,7 +1086,7 @@ void PrintGameVersion(void)
 
 static void D_Endoom(void)
 {
-    byte *endoom;
+    uint8_t *endoom;
 
     // Don't show ENDOOM if we have it disabled, or we're running
     // in screensaver or control test mode. Only show it once the
@@ -1224,10 +1226,10 @@ static void D_InitChocoStrife(void)
 
 static int introprogress;        // track the progress of the intro
 
-static byte *rawgfx_startup0;    // raw linear gfx for intro
-static byte *rawgfx_startp[4];
-static byte *rawgfx_startlz[2];
-static byte *rawgfx_startbot;
+static uint8_t *rawgfx_startup0;    // raw linear gfx for intro
+static uint8_t *rawgfx_startp[4];
+static uint8_t *rawgfx_startlz[2];
+static uint8_t *rawgfx_startbot;
 
 //
 // D_IntroBackground
@@ -1268,7 +1270,7 @@ static void D_IntroBackground(void)
 
 static void D_InitIntroSequence(void)
 {
-    byte *textScreen;
+    uint8_t *textScreen;
     char string[80];
 
     if (devparm || !graphical_startup || testcontrols)

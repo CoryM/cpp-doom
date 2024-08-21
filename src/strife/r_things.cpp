@@ -38,7 +38,7 @@
 // haleyjd
 #include "p_local.hpp"
 
-
+import i_error;
 
 #define MINZ				(FRACUNIT*4)
 #define BASEYCENTER			100
@@ -109,8 +109,7 @@ R_InstallSpriteLump
     int		r;
 	
     if (frame >= 29 || rotation > 8)
-	I_Error("R_InstallSpriteLump: "
-		"Bad frame characters in lump %i", lump);
+	I_Error("R_InstallSpriteLump: Bad frame characters in lump {}", lump);
 	
     if ((int)frame > maxframe)
 	maxframe = frame;
@@ -119,38 +118,33 @@ R_InstallSpriteLump
     {
 	// the lump should be used for all rotations
 	if (sprtemp[frame].rotate == false)
-	    I_Error ("R_InitSprites: Sprite %s frame %c has "
-		     "multip rot=0 lump", spritename, 'A'+frame);
+	    I_Error ("R_InitSprites: Sprite {} frame {} has multip rot=0 lump", spritename, 'A'+frame);
 
 	if (sprtemp[frame].rotate == true)
-	    I_Error ("R_InitSprites: Sprite %s frame %c has rotations "
-		     "and a rot=0 lump", spritename, 'A'+frame);
+	    I_Error ("R_InitSprites: Sprite {} frame {} has rotations and a rot=0 lump", spritename, 'A'+frame);
 			
 	sprtemp[frame].rotate = false;
 	for (r=0 ; r<8 ; r++)
 	{
 	    sprtemp[frame].lump[r] = lump - firstspritelump;
-	    sprtemp[frame].flip[r] = (byte)flipped;
+	    sprtemp[frame].flip[r] = (uint8_t)flipped;
 	}
 	return;
     }
 	
     // the lump is only used for one rotation
     if (sprtemp[frame].rotate == false)
-	I_Error ("R_InitSprites: Sprite %s frame %c has rotations "
-		 "and a rot=0 lump", spritename, 'A'+frame);
+	I_Error ("R_InitSprites: Sprite {} frame {} has rotations and a rot=0 lump", spritename, 'A'+frame);
 		
     sprtemp[frame].rotate = true;
 
     // make 0 based
     rotation--;		
     if (sprtemp[frame].lump[rotation] != -1)
-	I_Error ("R_InitSprites: Sprite %s : %c : %c "
-		 "has two lumps mapped to it",
-		 spritename, 'A'+frame, '1'+rotation);
+	I_Error ("R_InitSprites: Sprite {} : {} : {} has two lumps mapped to it", spritename, 'A'+frame, '1'+rotation);
 		
     sprtemp[frame].lump[rotation] = lump - firstspritelump;
-    sprtemp[frame].flip[rotation] = (byte)flipped;
+    sprtemp[frame].flip[rotation] = (uint8_t)flipped;
 }
 
 
@@ -247,8 +241,7 @@ void R_InitSpriteDefs (const char** namelist)
 	    {
 	      case -1:
 		// no rotations were found for that frame at all
-		I_Error ("R_InitSprites: No patches found "
-			 "for %s frame %c", spritename, frame+'A');
+		I_Error ("R_InitSprites: No patches found for {} frame {}", spritename, frame+'A');
 		break;
 		
 	      case 0:
@@ -259,9 +252,7 @@ void R_InitSpriteDefs (const char** namelist)
 		// must have all 8 frames
 		for (rotation=0 ; rotation<8 ; rotation++)
 		    if (sprtemp[frame].lump[rotation] == -1)
-			I_Error ("R_InitSprites: Sprite %s frame %c "
-				 "is missing rotations",
-				 spritename, frame+'A');
+			I_Error ("R_InitSprites: Sprite {} frame {} is missing rotations", spritename, frame+'A');
 		break;
 	    }
 	}
@@ -381,15 +372,15 @@ void R_DrawMaskedColumn (column_t *column, int baseclip)
 
         if (dc_yl <= dc_yh)
         {
-            dc_source = (byte *)column + 3;
+            dc_source = (uint8_t *)column + 3;
             dc_texturemid = basetexturemid - (column->topdelta<<FRACBITS);
-            // dc_source = (byte *)column + 3 - column->topdelta;
+            // dc_source = (uint8_t *)column + 3 - column->topdelta;
 
             // Drawn by either R_DrawColumn
             //  or (SHADOW) R_DrawFuzzColumn.
             colfunc ();	
         }
-        column = (column_t *)(  (byte *)column + column->length + 4);
+        column = (column_t *)(  (uint8_t *)column + column->length + 4);
     }
 
     dc_texturemid = basetexturemid;
@@ -483,7 +474,7 @@ R_DrawVisSprite
         if (texturecolumn < 0 || texturecolumn >= SHORT(patch->width))
             I_Error ("R_DrawSpriteRange: bad texturecolumn");
 #endif
-        column = (column_t *) ((byte *)patch +
+        column = (column_t *) ((uint8_t *)patch +
                                LONG(patch->columnofs[texturecolumn]));
         R_DrawMaskedColumn (column, clip);  // villsa [STRIFE] clip argument
     }
@@ -554,14 +545,12 @@ void R_ProjectSprite (mobj_t* thing)
     // decide which patch to use for sprite relative to player
 #ifdef RANGECHECK
     if ((unsigned int) thing->sprite >= (unsigned int) numsprites)
-	I_Error ("R_ProjectSprite: invalid sprite number %i ",
-		 thing->sprite);
+	I_Error ("R_ProjectSprite: invalid sprite number {} ", thing->sprite);
 #endif
     sprdef = &sprites[thing->sprite];
 #ifdef RANGECHECK
     if ( (thing->frame&FF_FRAMEMASK) >= sprdef->numframes )
-	I_Error ("R_ProjectSprite: invalid sprite frame %i : %i ",
-		 thing->sprite, thing->frame);
+	I_Error ("R_ProjectSprite: invalid sprite frame {} : {} ", thing->sprite, thing->frame);
 #endif
     sprframe = &sprdef->spriteframes[ thing->frame & FF_FRAMEMASK];
 
@@ -715,14 +704,12 @@ void R_DrawPSprite (pspdef_t* psp)
     // decide which patch to use
 #ifdef RANGECHECK
     if ( (unsigned)psp->state->sprite >= (unsigned int) numsprites)
-        I_Error ("R_ProjectSprite: invalid sprite number %i ",
-                 psp->state->sprite);
+        I_Error ("R_ProjectSprite: invalid sprite number {} ", psp->state->sprite);
 #endif
     sprdef = &sprites[psp->state->sprite];
 #ifdef RANGECHECK
     if ( (psp->state->frame & FF_FRAMEMASK)  >= sprdef->numframes)
-        I_Error ("R_ProjectSprite: invalid sprite frame %i : %i ",
-                 psp->state->sprite, psp->state->frame);
+        I_Error ("R_ProjectSprite: invalid sprite frame {} : {} ", psp->state->sprite, psp->state->frame);
 #endif
     sprframe = &sprdef->spriteframes[ psp->state->frame & FF_FRAMEMASK ];
 

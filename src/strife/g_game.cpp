@@ -68,6 +68,8 @@
 
 #include "g_game.hpp"
 
+import i_error;
+
 
 #define SAVEGAMESIZE	0x2c000
 
@@ -134,9 +136,9 @@ bool         longtics;               // cph's doom 1.91 longtics hack
 bool         lowres_turn;            // low resolution turning for longtics
 bool         demoplayback; 
 bool		netdemo; 
-byte*		demobuffer;
-byte*		demo_p;
-byte*		demoend; 
+uint8_t*		demobuffer;
+uint8_t*		demo_p;
+uint8_t*		demoend; 
 bool         singledemo;             // quit after playing a demo from cmdline 
  
 bool         precache = true;        // if true, load all graphics at start 
@@ -145,7 +147,7 @@ bool         testcontrols = false;    // Invoked by setup to test controls
  
 wbstartstruct_t wminfo;                 // parms for world map / intermission 
  
-byte            consistancy[MAXPLAYERS][BACKUPTICS]; 
+uint8_t            consistancy[MAXPLAYERS][BACKUPTICS]; 
  
 #define MAXPLMOVE		(forwardmove[1]) 
  
@@ -998,7 +1000,7 @@ void G_Ticker (void)
                 if (gametic > BACKUPTICS 
                     && consistancy[i][buf] != cmd->consistancy) 
                 { 
-                    I_Error ("consistency failure (%i should be %i)",
+                    I_Error ("consistency failure ({} should be {})",
                              cmd->consistancy, consistancy[i][buf]); 
                 } 
                 if (players[i].mo) 
@@ -1264,7 +1266,7 @@ void G_DeathMatchSpawnPlayer (int playernum)
 
     selections = deathmatch_p - deathmatchstarts; 
     if (selections < 4) 
-        I_Error ("Only %i deathmatch spots, at least 4 required!", selections); 
+        I_Error ("Only {} deathmatch spots, at least 4 required!", selections); 
 
     for (j=0 ; j<20 ; j++) 
     { 
@@ -1631,7 +1633,7 @@ void G_DoWorldDone2(void)
 void G_ReadCurrent(const char *path)
 {
     char *temppath = NULL;
-    byte *buffer = NULL;
+    uint8_t *buffer = NULL;
 
     temppath = M_SafeFilePath(path, "\\current");
 
@@ -1800,7 +1802,7 @@ void G_DoSaveGame (char *path)
     char *current_path;
     char *savegame_file;
     char *temp_savegame_file;
-    byte gamemapbytes[4];
+    uint8_t gamemapbytes[4];
     char gamemapstr[33];
 
     temp_savegame_file = P_TempSaveGameFile();
@@ -1814,10 +1816,10 @@ void G_DoSaveGame (char *path)
     //   the save slot is currently on.
     current_path = M_SafeFilePath(path, "current");
     // haleyjd: endian-agnostic IO
-    gamemapbytes[0] = (byte)( gamemap        & 0xff);
-    gamemapbytes[1] = (byte)((gamemap >>  8) & 0xff);
-    gamemapbytes[2] = (byte)((gamemap >> 16) & 0xff);
-    gamemapbytes[3] = (byte)((gamemap >> 24) & 0xff);
+    gamemapbytes[0] = (uint8_t)( gamemap        & 0xff);
+    gamemapbytes[1] = (uint8_t)((gamemap >>  8) & 0xff);
+    gamemapbytes[2] = (uint8_t)((gamemap >> 16) & 0xff);
+    gamemapbytes[3] = (uint8_t)((gamemap >> 24) & 0xff);
     M_WriteFile(current_path, gamemapbytes, 4);
     Z_Free(current_path);
 
@@ -2110,8 +2112,8 @@ void G_ReadDemoTiccmd (ticcmd_t* cmd)
 static void IncreaseDemoBuffer(void)
 {
     int current_length;
-    byte *new_demobuffer;
-    byte *new_demop;
+    uint8_t *new_demobuffer;
+    uint8_t *new_demop;
     int new_length;
 
     // Find the current size
@@ -2144,7 +2146,7 @@ static void IncreaseDemoBuffer(void)
 //
 void G_WriteDemoTiccmd (ticcmd_t* cmd) 
 { 
-    byte *demo_start;
+    uint8_t *demo_start;
 
     if (gamekeydown[key_demo_quit])           // press q to end demo recording 
         G_CheckDemoStatus (); 
@@ -2156,7 +2158,7 @@ void G_WriteDemoTiccmd (ticcmd_t* cmd)
     *demo_p++ = cmd->angleturn >> 8; 
     *demo_p++ = cmd->buttons; 
     *demo_p++ = cmd->buttons2;                 // [STRIFE]
-    *demo_p++ = (byte)(cmd->inventory & 0xff); // [STRIFE]
+    *demo_p++ = (uint8_t)(cmd->inventory & 0xff); // [STRIFE]
 
     // reset demo pointer back
     demo_p = demo_start;
@@ -2328,16 +2330,15 @@ void G_DoPlayDemo (void)
     else
     {
         const char *message = "Demo is from a different game version!\n"
-                              "(read %i, should be %i)\n"
+                              "(read {}, should be {})\n"
                               "\n"
                               "*** You may need to upgrade your version "
                                   "of Strife to v1.1 or later. ***\n"
                               "    See: https://www.doomworld.com/classicdoom"
                                         "/info/patches.php\n"
-                              "    This appears to be %s.";
+                              "    This appears to be {}.";
 
-        I_Error(message, demoversion, STRIFE_VERSION,
-                         DemoVersionDescription(demoversion));
+        I_Error(message, demoversion, STRIFE_VERSION, DemoVersionDescription(demoversion));
     }
     
     skill = *demo_p++; 
@@ -2429,7 +2430,7 @@ bool G_CheckDemoStatus (void)
         timingdemo = false;
         demoplayback = false;
 
-        I_Error ("timed %i gametics in %i realtics (%f fps)",
+        I_Error ("timed {} gametics in {} realtics ({} fps)",
                  gametic, realtics, fps);
     } 
 
@@ -2460,7 +2461,7 @@ bool G_CheckDemoStatus (void)
         M_WriteFile (demoname, demobuffer, demo_p - demobuffer); 
         Z_Free (demobuffer); 
         demorecording = false; 
-        I_Error ("Demo %s recorded", demoname); 
+        I_Error ("Demo {} recorded", demoname); 
     } 
 
     return false; 

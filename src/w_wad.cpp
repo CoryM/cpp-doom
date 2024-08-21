@@ -26,6 +26,7 @@
 #include "doomtype.hpp"
 
 import i_swap; 
+import i_error;          // for I_Error
 #include "i_system.hpp"
 #include "i_video.hpp"
 #include "m_misc.hpp"
@@ -167,9 +168,7 @@ wad_file_t *W_AddFile(const char *filename)
             if (strncmp(header.identification, "PWAD", 4))
             {
                 W_CloseFile(wad_file);
-                I_Error("Wad file %s doesn't have IWAD "
-                        "or PWAD id\n",
-                    filename);
+                I_Error("Wad file {} doesn't have IWAD or PWAD id\n", filename);
             }
 
             // ???modifiedgame = true;
@@ -184,8 +183,7 @@ wad_file_t *W_AddFile(const char *filename)
         {
             W_CloseFile(wad_file);
             I_Error("Error: Vanilla limit for lumps in a WAD is 4046, "
-                    "PWAD %s has %d",
-                filename, header.numlumps);
+                    "PWAD {} has {}", filename, header.numlumps);
         }
 
         header.infotableofs = endian::LONG(header.infotableofs);
@@ -310,7 +308,7 @@ lumpindex_t W_GetNumForName(const char *name)
 
     if (i < 0)
     {
-        I_Error("W_GetNumForName: %s not found!", name);
+        I_Error("W_GetNumForName: {} not found!", name);
     } 
 
     return i;
@@ -339,7 +337,7 @@ int W_LumpLength(lumpindex_t lump)
 {
     if (lump >= static_cast<int>(numlumps))
     {
-        I_Error("W_LumpLength: %i >= numlumps", lump);
+        I_Error("W_LumpLength: {} >= numlumps", lump);
     }
 
     return lumpinfo[lump]->size;
@@ -358,7 +356,7 @@ void W_ReadLump(lumpindex_t lump, void *dest)
 
     if (lump >= static_cast<int>(numlumps))
     {
-        I_Error("W_ReadLump: %i >= numlumps", lump);
+        I_Error("W_ReadLump: {} >= numlumps", lump);
     }
 
     l = lumpinfo[lump];
@@ -369,8 +367,7 @@ void W_ReadLump(lumpindex_t lump, void *dest)
 
     if (c < l->size)
     {
-        I_Error("W_ReadLump: only read %i of %i on lump %i",
-            c, l->size, lump);
+        I_Error("W_ReadLump: only read {} of {} on lump {}", c, l->size, lump);
     }
 }
 
@@ -394,7 +391,7 @@ void *W_CacheLumpNum(lumpindex_t lumpnum, int tag)
 
     if ((unsigned)lumpnum >= numlumps)
     {
-        I_Error("W_CacheLumpNum: %i >= numlumps", lumpnum);
+        I_Error("W_CacheLumpNum: {} >= numlumps", lumpnum);
     }
 
     lump = lumpinfo[lumpnum];
@@ -454,7 +451,7 @@ void W_ReleaseLumpNum(lumpindex_t lumpnum)
 
     if ((unsigned)lumpnum >= numlumps)
     {
-        I_Error("W_ReleaseLumpNum: %i >= numlumps", lumpnum);
+        I_Error("W_ReleaseLumpNum: {} >= numlumps", lumpnum);
     }
 
     lump = lumpinfo[lumpnum];
@@ -503,7 +500,7 @@ void W_Profile (void)
 	}
 	else
 	{
-	    block = (memblock_t *) ( (byte *)ptr - sizeof(memblock_t));
+	    block = (memblock_t *) ( (uint8_t *)ptr - sizeof(memblock_t));
 	    if (block->tag < PU_PURGELEVEL)
 		ch = 'S';
 	    else
@@ -644,7 +641,7 @@ int W_LumpDump(const char *lumpname)
     FILE *fp = fopen(filename.c_str(), "wb");
     if (!fp)
     {
-        I_Error("W_LumpDump: Failed writing to file '%s'!", filename.c_str());
+        I_Error("W_LumpDump: Failed writing to file '{}'!", filename.c_str());
     }
 
     std::string lump_p(lumpinfo[i]->size, 0);

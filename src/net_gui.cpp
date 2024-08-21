@@ -37,6 +37,8 @@
 
 #include "textscreen.hpp"
 
+import i_error;
+
 static txt_window_t *window;
 static int           old_max_players;
 static txt_label_t * player_labels[NET_MAXPLAYERS];
@@ -235,7 +237,7 @@ static void CheckMasterStatus(void)
     }
 }
 
-static void PrintSHA1Digest(const char *s, const byte *digest)
+static void PrintSHA1Digest(const char *s, const uint8_t *digest)
 {
     unsigned int i;
 

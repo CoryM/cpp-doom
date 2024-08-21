@@ -25,6 +25,8 @@
 #include "net_loop.hpp"
 #include "net_packet.hpp"
 
+import i_error;
+
 #define MAX_QUEUE_SIZE 16
 
 typedef struct

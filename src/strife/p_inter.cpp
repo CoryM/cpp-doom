@@ -72,7 +72,7 @@ bool P_GiveAmmo(player_t* player, ammotype_t ammo, int num)
         return false;
 
     if(ammo > NUMAMMO)
-        I_Error ("P_GiveAmmo: bad type %i", ammo);
+        I_Error ("P_GiveAmmo: bad type {}", ammo);
 
     if(player->ammo[ammo] == player->maxammo[ammo])
         return false;

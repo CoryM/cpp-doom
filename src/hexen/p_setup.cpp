@@ -36,6 +36,8 @@
 #include "p_local.hpp"
 #include "w_wad.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define MAPINFO_SCRIPT_NAME "MAPINFO"
@@ -117,7 +119,7 @@ short *blockmap;
 int bmapwidth, bmapheight;      // in mapblocks
 fixed_t bmaporgx, bmaporgy;     // origin of block map
 mobj_t **blocklinks;            // for thing chains
-byte *rejectmatrix;             // for fast sight rejection
+uint8_t *rejectmatrix;             // for fast sight rejection
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
@@ -172,7 +174,7 @@ static int cd_NonLevelTracks[6];        // Non-level specific song cd track numb
 
 void P_LoadVertexes(int lump)
 {
-    byte *data;
+    uint8_t *data;
     int i;
     mapvertex_t *ml;
     vertex_t *li;
@@ -203,7 +205,7 @@ void P_LoadVertexes(int lump)
 
 void P_LoadSegs(int lump)
 {
-    byte *data;
+    uint8_t *data;
     int i;
     mapseg_t *ml;
     seg_t *li;
@@ -250,7 +252,7 @@ void P_LoadSegs(int lump)
 
 void P_LoadSubsectors(int lump)
 {
-    byte *data;
+    uint8_t *data;
     int i;
     mapsubsector_t *ms;
     subsector_t *ss;
@@ -282,7 +284,7 @@ void P_LoadSubsectors(int lump)
 
 void P_LoadSectors(int lump)
 {
-    byte *data;
+    uint8_t *data;
     int i;
     mapsector_t *ms;
     sector_t *ss;
@@ -321,7 +323,7 @@ void P_LoadSectors(int lump)
 
 void P_LoadNodes(int lump)
 {
-    byte *data;
+    uint8_t *data;
     int i, j, k;
     mapnode_t *mn;
     node_t *no;
@@ -356,7 +358,7 @@ void P_LoadNodes(int lump)
 
 void P_LoadThings(int lump)
 {
-    byte *data;
+    uint8_t *data;
     int i;
     mapthing_t spawnthing;
     mapthing_t *mt;
@@ -403,8 +405,7 @@ void P_LoadThings(int lump)
     deathSpotsCount = deathmatch_p - deathmatchstarts;
     if (deathSpotsCount < playerCount)
     {
-        I_Error("P_LoadThings: Player count (%d) exceeds deathmatch "
-                "spots (%d)", playerCount, deathSpotsCount);
+        I_Error("P_LoadThings: Player count ({}) exceeds deathmatch spots ({})", playerCount, deathSpotsCount);
     }
 }
 
@@ -418,7 +419,7 @@ void P_LoadThings(int lump)
 
 void P_LoadLineDefs(int lump)
 {
-    byte *data;
+    uint8_t *data;
     int i;
     maplinedef_t *mld;
     line_t *ld;
@@ -509,7 +510,7 @@ void P_LoadLineDefs(int lump)
 
 void P_LoadSideDefs(int lump)
 {
-    byte *data;
+    uint8_t *data;
     int i;
     mapsidedef_t *msd;
     side_t *sd;

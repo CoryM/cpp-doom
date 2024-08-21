@@ -38,6 +38,8 @@
 
 #include "z_zone.hpp"
 
+import i_error;
+
 //
 // DEFAULTS
 //
@@ -2590,7 +2592,7 @@ static default_t *GetDefaultForName(const char *name)
 
     if (result == NULL)
     {
-        I_Error("Unknown configuration variable: '%s'", name);
+        I_Error("Unknown configuration variable: '{}'", name);
     }
 
     return result;

@@ -38,6 +38,8 @@
 
 #include "../../utils/lump.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define	TEXTSPEED 3
@@ -203,7 +205,7 @@ static void InitStats(void)
                 msgSize = W_LumpLength(msgLump);
                 if (msgSize >= MAX_INTRMSN_MESSAGE_SIZE)
                 {
-                    I_Error("Cluster message too long (%s)", msgLumpName);
+                    I_Error("Cluster message too long ({})", msgLumpName);
                 }
                 W_ReadLump(msgLump, ClusterMessage);
                 ClusterMessage[msgSize] = 0;    // Append terminator

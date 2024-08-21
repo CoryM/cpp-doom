@@ -24,6 +24,8 @@
 #include "net_packet.hpp"
 #include "net_structrw.hpp"
 
+import i_error;
+
 // String names for the enum values in net_protocol_t, which are what is
 // sent over the wire. Every enum value must have an entry in this list.
 static struct
@@ -615,9 +617,8 @@ void NET_WriteProtocol(net_packet_t *packet, net_protocol_t protocol)
 
     // If you add an entry to the net_protocol_t enum, a corresponding entry
     // must be added to the protocol_names list.
-    I_Error("NET_WriteProtocol: protocol %d missing from protocol_names "
-            "list; please add it.",
-        protocol);
+    I_Error("NET_WriteProtocol: protocol {} missing from protocol_names "
+            "list; please add it.", static_cast<int>(protocol));
 }
 
 // NET_ReadProtocolList reads a list of string-format protocol names from

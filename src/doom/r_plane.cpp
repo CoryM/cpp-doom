@@ -21,6 +21,7 @@
 #include <algorithm> // std::min, std::max, std::clamp
 #include <cstdio>
 #include <cstdlib>
+#include <format>
 
 #include "i_system.hpp"
 #include "z_zone.hpp"
@@ -33,6 +34,8 @@
 #include "r_sky.hpp"
 #include "r_bmaps.hpp" // [crispy] R_BrightmapForTexName()
 #include "r_swirl.hpp" // [crispy] R_DistortedFlat()
+
+import i_error; // I_Error
 
 
 planefunction_t floorfunc;
@@ -129,7 +132,7 @@ void R_MapPlane(int y,
         || x2 >= viewwidth
         || y > viewheight)
     {
-        I_Error("R_MapPlane: %i, %i at %i", x1, x2, y);
+        I_Error("R_MapPlane: {}, {} at {}", x1, x2, y);
     }
 #endif
 
@@ -408,16 +411,13 @@ void R_DrawPlanes(void)
 
 #ifdef RANGECHECK
     if (ds_p - drawsegs > numdrawsegs)
-        I_Error("R_DrawPlanes: drawsegs overflow (%" PRIiPTR ")",
-            ds_p - drawsegs);
+        I_Error("R_DrawPlanes: drawsegs overflow ({})", ds_p - drawsegs);
 
     if (lastvisplane - visplanes > numvisplanes)
-        I_Error("R_DrawPlanes: visplane overflow (%" PRIiPTR ")",
-            lastvisplane - visplanes);
+        I_Error("R_DrawPlanes: visplane overflow ({})", lastvisplane - visplanes);
 
     if (lastopening - openings > MAXOPENINGS)
-        I_Error("R_DrawPlanes: opening overflow (%" PRIiPTR ")",
-            lastopening - openings);
+        I_Error("R_DrawPlanes: opening overflow ({})", lastopening - openings);
 #endif
 
     for (pl = visplanes; pl < lastvisplane; pl++)
@@ -489,7 +489,7 @@ void R_DrawPlanes(void)
         lumpnum = firstflat + (swirling ? pl->picnum : flattranslation[pl->picnum]);
         // [crispy] add support for SMMU swirling flats
         ds_source =
-            static_cast<byte *>(swirling ? R_DistortedFlat(lumpnum) : W_CacheLumpNum(lumpnum, PU_STATIC));
+            static_cast<uint8_t *>(swirling ? R_DistortedFlat(lumpnum) : W_CacheLumpNum(lumpnum, PU_STATIC));
         ds_brightmap = R_BrightmapForFlatNum(lumpnum - firstflat);
 
         planeheight = abs(pl->height - viewz);

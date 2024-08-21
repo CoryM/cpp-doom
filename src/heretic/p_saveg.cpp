@@ -17,6 +17,7 @@
 // P_tick.c
 
 import i_swap; // #include "i_swap.hpp"
+import i_error;
 #include <cstdlib>
 
 #include "doomdef.hpp"
@@ -69,7 +70,7 @@ void SV_OpenRead(char *filename)
 
     if (SaveGameFP == NULL)
     {
-        I_Error("Could not load savegame %s", filename);
+        I_Error("Could not load savegame {}", filename);
     }
 }
 
@@ -104,9 +105,9 @@ void SV_Write(void *buffer, int size)
     fwrite(buffer, size, 1, SaveGameFP);
 }
 
-void SV_WriteByte(byte val)
+void SV_WriteByte(uint8_t val)
 {
-    SV_Write(&val, sizeof(byte));
+    SV_Write(&val, sizeof(uint8_t));
 }
 
 void SV_WriteWord(unsigned short val)
@@ -139,15 +140,15 @@ void SV_Read(void *buffer, int size)
     int retval = fread(buffer, 1, size, SaveGameFP);
     if (retval != size)
     {
-        I_Error("Incomplete read in SV_Read: Expected %d, got %d bytes",
+        I_Error("Incomplete read in SV_Read: Expected {}, got {} bytes",
             size, retval);
     }
 }
 
-byte SV_ReadByte(void)
+uint8_t SV_ReadByte(void)
 {
-    byte result;
-    SV_Read(&result, sizeof(byte));
+    uint8_t result;
+    SV_Read(&result, sizeof(uint8_t));
     return result;
 }
 
@@ -183,16 +184,16 @@ static void saveg_read_ticcmd_t(ticcmd_t *str)
     // short consistancy;
     str->consistancy = SV_ReadWord();
 
-    // byte chatchar;
+    // uint8_t chatchar;
     str->chatchar = SV_ReadByte();
 
-    // byte buttons;
+    // uint8_t buttons;
     str->buttons = SV_ReadByte();
 
-    // byte lookfly;
+    // uint8_t lookfly;
     str->lookfly = SV_ReadByte();
 
-    // byte arti;
+    // uint8_t arti;
     str->arti = SV_ReadByte();
 }
 
@@ -210,16 +211,16 @@ static void saveg_write_ticcmd_t(ticcmd_t *str)
     // short consistancy;
     SV_WriteWord(str->consistancy);
 
-    // byte chatchar;
+    // uint8_t chatchar;
     SV_WriteByte(str->chatchar);
 
-    // byte buttons;
+    // uint8_t buttons;
     SV_WriteByte(str->buttons);
 
-    // byte lookfly;
+    // uint8_t lookfly;
     SV_WriteByte(str->lookfly);
 
-    // byte arti;
+    // uint8_t arti;
     SV_WriteByte(str->arti);
 }
 
@@ -1685,7 +1686,7 @@ void P_ArchiveThinkers(void)
 
 void P_UnArchiveThinkers(void)
 {
-    byte tclass;
+    uint8_t tclass;
     thinker_t *currentthinker, *next;
     mobj_t *mobj;
 
@@ -1726,7 +1727,7 @@ void P_UnArchiveThinkers(void)
                 break;
 
             default:
-                I_Error("Unknown tclass %i in savegame", tclass);
+                I_Error("Unknown tclass {} in savegame", tclass);
         }
 
     }
@@ -1821,7 +1822,7 @@ void P_ArchiveSpecials(void)
 
 void P_UnArchiveSpecials(void)
 {
-    byte tclass;
+    uint8_t tclass;
     ceiling_t *ceiling;
     vldoor_t *door;
     floormove_t *floor;
@@ -1902,8 +1903,7 @@ void P_UnArchiveSpecials(void)
                 break;
 
             default:
-                I_Error("P_UnarchiveSpecials:Unknown tclass %i "
-                        "in savegame", tclass);
+                I_Error("P_UnarchiveSpecials:Unknown tclass {} in savegame", tclass);
         }
 
     }

@@ -137,7 +137,7 @@ static const int st_wforammo[NUMAMMO] = { 3,  3,  2,  3,   3,   2,   3   };
 // * Removed more faces, keyboxes, st_randomnumber
 
 // graphics are drawn to a backing screen and blitted to the real screen
-//byte                   *st_backing_screen;  - [STRIFE]: Unused.
+//uint8_t                   *st_backing_screen;  - [STRIFE]: Unused.
 
 // main player in game
 static player_t*        plyr; 
@@ -852,7 +852,7 @@ void ST_doPaletteStuff(void)
 {
 
     int		palette;
-    byte*	pal;
+    uint8_t*	pal;
     int		cnt;
     int		bzc;
 
@@ -900,7 +900,7 @@ void ST_doPaletteStuff(void)
     if (palette != st_palette)
     {
         st_palette = palette;
-        pal = (byte *) W_CacheLumpNum (lu_palette, PU_CACHE)+palette*768;
+        pal = (uint8_t *) W_CacheLumpNum (lu_palette, PU_CACHE)+palette*768;
         I_SetPalette (pal);
     }
 
@@ -962,8 +962,8 @@ void ST_drawNumFontY2(int x, int y, int num)
 //
 void ST_drawLine(int x, int y, int len, int color)
 {
-    byte putcolor = (byte)(color);
-    byte *drawpos = I_VideoBuffer + (y << crispy->hires) * SCREENWIDTH + (x << crispy->hires);
+    uint8_t putcolor = (uint8_t)(color);
+    uint8_t *drawpos = I_VideoBuffer + (y << crispy->hires) * SCREENWIDTH + (x << crispy->hires);
     int i = 0;
 
     while(i < (len << crispy->hires))
@@ -1609,6 +1609,6 @@ void ST_Init (void)
     ST_loadData();
 
     // haleyjd 20100919: This is not used by Strife. More memory for voices!
-    //st_backing_screen = (byte *) Z_Malloc(ST_WIDTH * ST_HEIGHT, PU_STATIC, 0);
+    //st_backing_screen = (uint8_t *) Z_Malloc(ST_WIDTH * ST_HEIGHT, PU_STATIC, 0);
 }
 

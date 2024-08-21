@@ -50,6 +50,8 @@
 #include "../z_zone.hpp" // Z_CheckHeap() found in z_native.cpp and z_zone.cpp
 #include "../net_defs.hpp"
 
+import i_error;
+
 #define AM_STARTKEY	9
 
 // External functions
@@ -119,13 +121,13 @@ bool lowres_turn;
 bool shortticfix;            // calculate lowres turning like doom
 bool demoplayback;
 bool demoextend;
-byte *demobuffer, *demo_p, *demoend;
+uint8_t *demobuffer, *demo_p, *demoend;
 bool singledemo;             // quit after playing a demo from cmdline
 
 bool precache = true;        // if true, load all graphics at start
 
 // TODO: Hexen uses 16-bit shorts for consistancy?
-byte consistancy[MAXPLAYERS][BACKUPTICS];
+uint8_t consistancy[MAXPLAYERS][BACKUPTICS];
 
 int mouseSensitivity = 5;
 
@@ -1045,8 +1047,7 @@ void G_Ticker(void)
                 if (gametic > BACKUPTICS
                     && consistancy[i][buf] != cmd->consistancy)
                 {
-                    I_Error("consistency failure (%i should be %i)",
-                            cmd->consistancy, consistancy[i][buf]);
+                    I_Error("consistency failure ({} should be {})", cmd->consistancy, consistancy[i][buf]);
                 }
                 if (players[i].mo)
                     consistancy[i][buf] = players[i].mo->x;
@@ -1882,8 +1883,8 @@ void G_ReadDemoTiccmd(ticcmd_t * cmd)
 static void IncreaseDemoBuffer(void)
 {
     int current_length;
-    byte *new_demobuffer;
-    byte *new_demop;
+    uint8_t *new_demobuffer;
+    uint8_t *new_demop;
     int new_length;
 
     // Find the current size
@@ -1911,7 +1912,7 @@ static void IncreaseDemoBuffer(void)
 
 void G_WriteDemoTiccmd(ticcmd_t * cmd)
 {
-    byte *demo_start;
+    uint8_t *demo_start;
 
     if (gamekeydown[key_demo_quit]) // press to end demo recording
         G_CheckDemoStatus();
@@ -2182,8 +2183,7 @@ bool G_CheckDemoStatus(void)
         endtime = I_GetTime();
         realtics = endtime - starttime;
         fps = ((float) gametic * TICRATE) / realtics;
-        I_Error("timed %i gametics in %i realtics (%f fps)",
-                gametic, realtics, fps);
+        I_Error("timed {} gametics in {} realtics ({} fps)", gametic, realtics, fps);
     }
 
     if (demoplayback)
@@ -2203,7 +2203,7 @@ bool G_CheckDemoStatus(void)
         M_WriteFile(demoname, demobuffer, demo_p - demobuffer);
         Z_Free(demobuffer);
         demorecording = false;
-        I_Error("Demo %s recorded", demoname);
+        I_Error("Demo {} recorded", demoname);
     }
 
     return false;

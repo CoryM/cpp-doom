@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+import i_error; //#include "i_error.hpp"
+
 #include "../utils/memory.hpp"
 #include "d_iwad.hpp"
 #include "deh_str.hpp"
@@ -864,7 +866,7 @@ char *D_FindIWAD(int mask, GameMission_t *mission)
 
         if (result == nullptr)
         {
-            I_Error("IWAD file '%s' not found!", iwadfile);
+            I_Error("IWAD file {} not found!", iwadfile);
         }
 
         *mission = IdentifyIWADByName(result, mask);

@@ -29,6 +29,8 @@
 #include "sounds.hpp"
 #include "../w_wad.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define ANIM_SCRIPT_NAME "ANIMDEFS"

@@ -2457,7 +2457,7 @@ void PRNG_Stop(void)
 
 static void PRNG_Generate(void)
 {
-    byte         input[16], output[16];
+    uint8_t         input[16], output[16];
     unsigned int i;
 
     // Input for the cipher is a consecutively increasing 32-bit counter.

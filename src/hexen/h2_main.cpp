@@ -65,6 +65,8 @@
 // utils/*
 #include "../../utils/lump.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define MAXWADFILES 20

@@ -4,6 +4,7 @@ target_sources(cpp_modules
     PRIVATE FILE_SET HEADERS FILES
     PUBLIC FILE_SET CXX_MODULES FILES
         crispy.cxx
+        i_error.cxx
         i_swap.cxx
         m_fixed.cxx
         net_petname.cxx
@@ -12,7 +13,7 @@ target_sources(cpp_modules
 )
 
 #target_include_directories(cpp_modules PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-#target_link_libraries(cpp_modules)
+target_link_libraries(cpp_modules SDL2::SDL2)
 
 
 # -----------

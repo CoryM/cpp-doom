@@ -22,6 +22,7 @@
 #include "p_local.hpp"
 #include "sounds.hpp"
 #include "s_sound.hpp"
+import i_error;
 
 void G_PlayerReborn(int player);
 void P_SpawnMapThing(mapthing_t * mthing);
@@ -1097,8 +1098,7 @@ void P_SpawnMapThing(mapthing_t * mthing)
             break;
 
     if (i == NUMMOBJTYPES)
-        I_Error("P_SpawnMapThing: Unknown type %i at (%i, %i)", mthing->type,
-                mthing->x, mthing->y);
+        I_Error("P_SpawnMapThing: Unknown type {} at ({}, {})", mthing->type, mthing->x, mthing->y);
 
 // don't spawn keys and players in deathmatch
     if (deathmatch && mobjinfo[i].flags & MF_NOTDMATCH)

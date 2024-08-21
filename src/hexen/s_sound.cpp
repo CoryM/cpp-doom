@@ -65,7 +65,7 @@ static int cd_track_end_time = 0;
 //int mus_song = -1;
 //int mus_lumpnum;
 //void *mus_sndptr;
-//byte *soundCurve;
+//uint8_t *soundCurve;
 
 extern sfxinfo_t S_sfx[];
 extern musicinfo_t S_music[];
@@ -74,8 +74,8 @@ static channel_t Channel[MAX_CHANNELS];
 static void *RegisteredSong;      //the current registered song.
 static bool MusicPaused;
 static int Mus_Song = -1;
-static byte *Mus_SndPtr;
-static byte *SoundCurve;
+static uint8_t *Mus_SndPtr;
+static uint8_t *SoundCurve;
 
 int snd_MaxVolume = 10;                // maximum volume for sound
 int snd_MusicVolume = 10;              // maximum volume for music
@@ -503,7 +503,7 @@ void S_StartSoundAtVolume(mobj_t * origin, int sound_id, int volume)
     // if the sfxinfo_t is marked as 'can be pitch shifted'
     if (S_sfx[sound_id].pitch)
     {
-        Channel[i].pitch = (byte) (NORM_PITCH + (M_Random() & 7) - (M_Random() & 7));
+        Channel[i].pitch = (uint8_t) (NORM_PITCH + (M_Random() & 7) - (M_Random() & 7));
     }
     else
     {

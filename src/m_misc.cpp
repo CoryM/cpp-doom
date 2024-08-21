@@ -41,6 +41,7 @@
 #include "deh_str.hpp"
 
 import i_swap; 
+import i_error;
 #include "../utils/memory.hpp"
 #include "i_system.hpp"
 #include "i_video.hpp"
@@ -203,27 +204,27 @@ bool M_WriteFile(const char *name, const void *source, int length)
 // M_ReadFile
 //
 
-int M_ReadFile(const char *name, byte **buffer)
+int M_ReadFile(const char *name, uint8_t **buffer)
 {
     FILE *handle;
     int   count, length;
-    byte *buf;
+    uint8_t *buf;
 
     handle = fopen(name, "rb");
     if (handle == NULL)
-        I_Error("Couldn't read file %s", name);
+        I_Error("Couldn't read file {}", name);
 
     // find the size of the file by seeking to the end and
     // reading the current position
 
     length = M_FileLength(handle);
 
-    buf   = zmalloc<byte *>(length + 1, PU_STATIC, NULL);
+    buf   = zmalloc<uint8_t *>(length + 1, PU_STATIC, NULL);
     count = fread(buf, 1, length, handle);
     fclose(handle);
 
     if (count < length)
-        I_Error("Couldn't read file %s", name);
+        I_Error("Couldn't read file {}", name);
 
     buf[length] = '\0';
     *buffer     = buf;
@@ -423,8 +424,7 @@ char *M_StringDuplicate(const char *orig)
 
     if (result == NULL)
     {
-        I_Error("Failed to duplicate string (length %" PRIuPTR ")\n",
-            strlen(orig));
+        I_Error("Failed to duplicate string (length {})\n", strlen(orig));
     }
 
     return result;

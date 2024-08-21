@@ -35,6 +35,8 @@
 #include "../../utils/memory.hpp"
 #include "doomstat.hpp"
 
+import i_error; // I_Error
+
 void G_PlayerReborn(int player);
 void P_SpawnMapThing(mapthing_t *mthing);
 
@@ -785,9 +787,8 @@ void P_RespawnSpecials(void)
     if (i >= NUMMOBJTYPES)
     {
         I_Error("P_RespawnSpecials: Failed to find mobj type with doomednum "
-                "%d when respawning thing. This would cause a buffer overrun "
-                "in vanilla Doom",
-            mthing->type);
+                "{} when respawning thing. This would cause a buffer overrun "
+                "in vanilla Doom", mthing->type);
     }
 
     // spawn it

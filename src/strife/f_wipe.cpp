@@ -37,9 +37,9 @@
 // when zero, stop the wipe
 static bool	go = 0;
 
-static byte*	wipe_scr_start;
-static byte*	wipe_scr_end;
-static byte*	wipe_scr;
+static uint8_t*	wipe_scr_start;
+static uint8_t*	wipe_scr_end;
+static uint8_t*	wipe_scr;
 
 
 void
@@ -88,8 +88,8 @@ wipe_doColorXForm
   int	height,
   int	ticks )
 {
-    byte *cur_screen = wipe_scr;
-    byte *end_screen = wipe_scr_end;
+    uint8_t *cur_screen = wipe_scr;
+    uint8_t *end_screen = wipe_scr_end;
     int   pix = width*height;
     int   i;
     bool changed = false;
@@ -270,7 +270,7 @@ wipe_ScreenWipe
     {
 	go = 1;
         // haleyjd 20110629 [STRIFE]: We *must* use a temp buffer here.
-	wipe_scr = (byte *) Z_Malloc(width*height, PU_STATIC, 0); // DEBUG
+	wipe_scr = (uint8_t *) Z_Malloc(width*height, PU_STATIC, 0); // DEBUG
 	//wipe_scr = I_VideoBuffer;
 	(*wipes[wipeno*3])(width, height, ticks);
     }

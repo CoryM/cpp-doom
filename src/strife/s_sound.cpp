@@ -38,6 +38,8 @@
 #include "w_wad.hpp"
 #include "z_zone.hpp"
 
+import i_error;
+
 // when to clip out sounds
 // Does not fit the large outdoor areas.
 
@@ -422,7 +424,7 @@ void S_StartSound(void *origin_p, int sfx_id)
         // code here that tried to print the sprite name of the object playing 
         // the bad sound. Because it invokes multiple undefined behaviors and 
         // is of basically no consequence, it has deliberately not been ported.
-        I_Error("Bad sfx #: %d", sfx_id);
+        I_Error("Bad sfx #: {}", sfx_id);
     }
 
     sfx = &S_sfx[sfx_id];
@@ -720,8 +722,7 @@ void S_SetMusicVolume(int volume)
 {
     if (volume < 0 || volume > 127)
     {
-        I_Error("Attempt to set music volume at %d",
-                volume);
+        I_Error("Attempt to set music volume at {}", volume);
     }    
 
     I_SetMusicVolume(volume);
@@ -731,7 +732,7 @@ void S_SetSfxVolume(int volume)
 {
     if (volume < 0 || volume > 127)
     {
-        I_Error("Attempt to set sfx volume at %d", volume);
+        I_Error("Attempt to set sfx volume at {}", volume);
     }
 
     snd_SfxVolume = volume;
@@ -747,7 +748,7 @@ void S_SetVoiceVolume(int volume)
 {
     if (volume < 0 || volume > 127)
     {
-        I_Error("Attempt to set voice volume at %d", volume);
+        I_Error("Attempt to set voice volume at {}", volume);
     }
 
     snd_VoiceVolume = volume;
@@ -770,7 +771,7 @@ void S_ChangeMusic(int musicnum, int looping)
 
     if (musicnum <= mus_None || musicnum >= NUMMUSIC)
     {
-        I_Error("Bad music number %d", musicnum);
+        I_Error("Bad music number {}", musicnum);
     }
     else
     {

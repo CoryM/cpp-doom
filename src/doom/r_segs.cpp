@@ -29,6 +29,8 @@
 #include "r_sky.hpp"
 #include "r_bmaps.hpp" // [crispy] brightmaps
 
+import i_error; // I_Error
+
 
 // OPTIMIZE: closed two sided lines as single sided
 
@@ -286,7 +288,7 @@ void R_RenderMaskedSegRange(drawseg_t *ds,
             dc_iscale = 0xffffffffu / (unsigned)spryscale;
 
             // draw the texture
-            col = (column_t *)((byte *)R_GetColumn(texnum, maskedtexturecol[dc_x], false) - 3);
+            col = (column_t *)((uint8_t *)R_GetColumn(texnum, maskedtexturecol[dc_x], false) - 3);
 
             R_DrawMaskedColumn(col);
             maskedtexturecol[dc_x] = INT_MAX; // [crispy] 32-bit integer math
@@ -544,7 +546,7 @@ void R_StoreWallRange(int start,
 
 #ifdef RANGECHECK
     if (start >= viewwidth || start > stop)
-        I_Error("Bad R_RenderWallRange: %i to %i", start, stop);
+        I_Error("Bad R_RenderWallRange: {} to {}", start, stop);
 #endif
 
     sidedef = curline->sidedef;

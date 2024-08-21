@@ -32,7 +32,7 @@ void I_Init(void);
 // Called by startup code
 // to get the ammount of memory to malloc
 // for the zone management.
-byte *I_ZoneBase(int *size);
+uint8_t *I_ZoneBase(int *size);
 
 bool I_ConsoleStdout(void);
 
@@ -52,8 +52,6 @@ ticcmd_t *I_BaseTiccmd(void);
 // Clean exit, displays sell blurb.
 [[noreturn]] void I_Quit(void);
 
-[[noreturn]] void I_Error(const char *error, ...);
-
 void I_Tactile(int on, int off, int total);
 
 void *I_Realloc(void *ptr, size_t size);
@@ -65,6 +63,16 @@ bool I_GetMemoryValue(unsigned int offset, void *value, int size);
 // is due to an error (I_Error)
 
 void I_AtExit(atexit_func_t func, bool run_if_error);
+
+// Structure for a function to be called at exit.
+struct atexit_listentry_t {
+    atexit_func_t       func;
+    bool             run_on_error;
+    atexit_listentry_t *next;
+};
+
+// Get the list of functions to be called at exit.
+[[nodiscard]] atexit_listentry_t * get_exit_funcs();
 
 // Add all system-specific config file variable bindings.
 
@@ -81,5 +89,6 @@ void I_PrintBanner(const char *text);
 // Print a dividing line for startup banners.
 
 void I_PrintDivider(void);
+
 
 #endif

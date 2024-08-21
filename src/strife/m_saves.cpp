@@ -33,6 +33,8 @@
 #include "m_saves.hpp"
 #include "p_dialog.hpp"
 
+import i_error;
+
 //
 // File Paths
 //
@@ -58,7 +60,7 @@ void ClearTmp(void)
 
     glob = I_StartGlob(savepathtemp, "*", 0);
     if (glob == NULL)
-        I_Error("ClearTmp: Couldn't open dir %s", savepathtemp);
+        I_Error("ClearTmp: Couldn't open dir {}", savepathtemp);
 
     for (;;)
     {
@@ -88,7 +90,7 @@ void ClearSlot(void)
 
     glob = I_StartGlob(savepath, "*", 0);
     if (glob == NULL)
-        I_Error("ClearSlot: Couldn't open dir %s", savepath);
+        I_Error("ClearSlot: Couldn't open dir {}", savepath);
 
     for (;;)
     {
@@ -117,11 +119,11 @@ void FromCurr(void)
     glob = I_StartGlob(savepathtemp, "*", 0);
 
     if (glob == NULL)
-        I_Error("FromCurr: Couldn't open dir %s", savepathtemp);
+        I_Error("FromCurr: Couldn't open dir {}", savepathtemp);
 
     for (;;)
     {
-        byte *filebuffer;
+        uint8_t *filebuffer;
         int filelen;
         const char *srcfilename;
         char *dstfilename;
@@ -159,11 +161,11 @@ void ToCurr(void)
     // the real original name of this function.
     glob = I_StartGlob(savepath, "*", 0);
     if (glob == NULL)
-        I_Error("ClearSlot: Couldn't open dir %s", savepath);
+        I_Error("ClearSlot: Couldn't open dir {}", savepath);
 
     for (;;)
     {
-        byte *filebuffer;
+        uint8_t *filebuffer;
         int filelen;
         const char *srcfilename;
         char *dstfilename;

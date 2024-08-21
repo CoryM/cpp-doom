@@ -24,6 +24,8 @@
 #include "net_io.hpp"
 #include "z_zone.hpp"
 
+import i_error;
+
 #define MAX_MODULES 16
 
 struct _net_context_s {

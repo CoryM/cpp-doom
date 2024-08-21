@@ -54,7 +54,7 @@ typedef enum
 
 // Structure to hold MUS file header
 struct [[gnu::packed]] musheader {
-    byte           id[4];
+    uint8_t           id[4];
     unsigned short scorelength;
     unsigned short scorestart;
     unsigned short primarychannels;
@@ -63,7 +63,7 @@ struct [[gnu::packed]] musheader {
 };
 
 // Standard MIDI type 0 header + track header
-static const byte midiheader[] = {
+static const uint8_t midiheader[] = {
     'M', 'T', 'h', 'd',     // Main header
     0x00, 0x00, 0x00, 0x06, // Header size
     0x00, 0x00,             // MIDI type (0)
@@ -74,7 +74,7 @@ static const byte midiheader[] = {
 };
 
 // Cached channel velocities
-static byte channelvelocities[] = {
+static uint8_t channelvelocities[] = {
     127, 127, 127, 127, 127, 127, 127, 127,
     127, 127, 127, 127, 127, 127, 127, 127
 };
@@ -87,7 +87,7 @@ static unsigned int queuedtime = 0;
 
 static unsigned int tracksize;
 
-static const byte controller_map[] = {
+static const uint8_t controller_map[] = {
     0x00, 0x20, 0x01, 0x07, 0x0A, 0x0B, 0x5B, 0x5D,
     0x40, 0x43, 0x78, 0x7B, 0x7E, 0x7F, 0x79
 };
@@ -99,7 +99,7 @@ static int channel_map[NUM_CHANNELS];
 static bool WriteTime(unsigned int time, MEMFILE *midioutput)
 {
     unsigned int buffer = time & 0x7F;
-    byte         writeval;
+    uint8_t         writeval;
 
     while ((time >>= 7) != 0)
     {
@@ -109,7 +109,7 @@ static bool WriteTime(unsigned int time, MEMFILE *midioutput)
 
     for (;;)
     {
-        writeval = (byte)(buffer & 0xFF);
+        writeval = (uint8_t)(buffer & 0xFF);
 
         if (mem_fwrite(&writeval, 1, 1, midioutput) != 1)
         {
@@ -134,7 +134,7 @@ static bool WriteTime(unsigned int time, MEMFILE *midioutput)
 // Write the end of track marker
 static bool WriteEndTrack(MEMFILE *midioutput)
 {
-    byte endtrack[] = { 0xFF, 0x2F, 0x00 };
+    uint8_t endtrack[] = { 0xFF, 0x2F, 0x00 };
 
     if (WriteTime(queuedtime, midioutput))
     {
@@ -151,10 +151,10 @@ static bool WriteEndTrack(MEMFILE *midioutput)
 }
 
 // Write a key press event
-static bool WritePressKey(byte channel, byte key,
-    byte velocity, MEMFILE *midioutput)
+static bool WritePressKey(uint8_t channel, uint8_t key,
+    uint8_t velocity, MEMFILE *midioutput)
 {
-    byte working = midi_presskey | channel;
+    uint8_t working = midi_presskey | channel;
 
     if (WriteTime(queuedtime, midioutput))
     {
@@ -186,10 +186,10 @@ static bool WritePressKey(byte channel, byte key,
 }
 
 // Write a key release event
-static bool WriteReleaseKey(byte channel, byte key,
+static bool WriteReleaseKey(uint8_t channel, uint8_t key,
     MEMFILE *midioutput)
 {
-    byte working = midi_releasekey | channel;
+    uint8_t working = midi_releasekey | channel;
 
     if (WriteTime(queuedtime, midioutput))
     {
@@ -221,10 +221,10 @@ static bool WriteReleaseKey(byte channel, byte key,
 }
 
 // Write a pitch wheel/bend event
-static bool WritePitchWheel(byte channel, short wheel,
+static bool WritePitchWheel(uint8_t channel, short wheel,
     MEMFILE *midioutput)
 {
-    byte working = midi_pitchwheel | channel;
+    uint8_t working = midi_pitchwheel | channel;
 
     if (WriteTime(queuedtime, midioutput))
     {
@@ -255,10 +255,10 @@ static bool WritePitchWheel(byte channel, short wheel,
 }
 
 // Write a patch change event
-static bool WriteChangePatch(byte channel, byte patch,
+static bool WriteChangePatch(uint8_t channel, uint8_t patch,
     MEMFILE *midioutput)
 {
-    byte working = midi_changepatch | channel;
+    uint8_t working = midi_changepatch | channel;
 
     if (WriteTime(queuedtime, midioutput))
     {
@@ -284,12 +284,12 @@ static bool WriteChangePatch(byte channel, byte patch,
 
 // Write a valued controller change event
 
-static bool WriteChangeController_Valued(byte channel,
-    byte                                         control,
-    byte                                         value,
+static bool WriteChangeController_Valued(uint8_t channel,
+    uint8_t                                         control,
+    uint8_t                                         value,
     MEMFILE *                                    midioutput)
 {
-    byte working = midi_changecontroller | channel;
+    uint8_t working = midi_changecontroller | channel;
 
     if (WriteTime(queuedtime, midioutput))
     {
@@ -332,8 +332,8 @@ static bool WriteChangeController_Valued(byte channel,
 }
 
 // Write a valueless controller change event
-static bool WriteChangeController_Valueless(byte channel,
-    byte                                            control,
+static bool WriteChangeController_Valueless(uint8_t channel,
+    uint8_t                                            control,
     MEMFILE *                                       midioutput)
 {
     return WriteChangeController_Valued(channel, control, 0,
@@ -412,7 +412,7 @@ static bool ReadMusHeader(MEMFILE *file, musheader *header)
 {
     bool result;
 
-    result = mem_fread(&header->id, sizeof(byte), 4, file) == 4
+    result = mem_fread(&header->id, sizeof(uint8_t), 4, file) == 4
              && mem_fread(&header->scorelength, sizeof(short), 1, file) == 1
              && mem_fread(&header->scorestart, sizeof(short), 1, file) == 1
              && mem_fread(&header->primarychannels, sizeof(short), 1, file) == 1
@@ -443,24 +443,24 @@ bool mus2mid(MEMFILE *musinput, MEMFILE *midioutput)
     musheader musfileheader;
 
     // Descriptor for the current MUS event
-    byte     eventdescriptor;
+    uint8_t     eventdescriptor;
     int      channel; // Channel number
     musevent event;
 
 
     // Bunch of vars read from MUS lump
-    byte key;
-    byte controllernumber;
-    byte controllervalue;
+    uint8_t key;
+    uint8_t controllernumber;
+    uint8_t controllervalue;
 
     // Buffer used for MIDI track size record
-    byte tracksizebuffer[4];
+    uint8_t tracksizebuffer[4];
 
     // Flag for when the score end marker is hit.
     int hitscoreend = 0;
 
-    // Temp working byte
-    byte working;
+    // Temp working uint8_t
+    uint8_t working;
     // Used in building up time delays
     unsigned int timedelay;
 
@@ -697,7 +697,7 @@ bool mus2mid(MEMFILE *musinput, MEMFILE *midioutput)
 int main(int argc, char *argv[])
 {
     MEMFILE *src, *dst;
-    byte *   infile;
+    uint8_t *   infile;
     long     infile_len;
     void *   outfile;
     size_t   outfile_len;

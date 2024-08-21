@@ -44,6 +44,8 @@
 #include "f_finale.hpp"
 #include "p_inter.hpp"
 
+import i_error;
+
 // Forward Declarations:
 void A_RandomWalk(mobj_t *);
 void A_ProgrammerAttack(mobj_t* actor);
@@ -3054,7 +3056,7 @@ void A_BossDeath (mobj_t* actor)
     default:
         // Real classy, Rogue.
         if(actor->type)
-            I_Error("Error: Unconnected BossDeath id %d", actor->type);
+            I_Error("Error: Unconnected BossDeath id {}", actor->type);
         break;
     }
 }

@@ -39,6 +39,8 @@
 
 #include "mode.hpp"
 
+import i_error;
+
 GameMission_t gamemission;
 static const iwad_t **iwads;
 
@@ -355,7 +357,7 @@ void SetupMission(GameSelectCallback callback)
 
         if (config == NULL)
         {
-            I_Error("Invalid parameter - '%s'", mission_name);
+            I_Error("Invalid parameter - '{}'", mission_name);
         }
 
         SetMission(config);

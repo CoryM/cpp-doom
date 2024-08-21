@@ -786,7 +786,7 @@ static void HU_DrawCrosshair(void)
 {
     static int      lump;
     static patch_t *patch;
-    extern byte *   R_LaserspotColor(void);
+    extern uint8_t *   R_LaserspotColor(void);
 
     if (weaponinfo[plr->readyweapon].ammo == am_noammo || plr->playerstate != PST_LIVE || automapactive || menuactive || paused || secret_on)
         return;

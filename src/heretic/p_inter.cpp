@@ -26,6 +26,8 @@
 
 #include "p_inter.hpp"
 
+import i_error;
+
 #define BONUSADD 6
 
 int WeaponValue[] = {
@@ -160,7 +162,7 @@ bool P_GiveAmmo(player_t * player, ammotype_t ammo, int count)
     }
     if ((unsigned int) ammo > NUMAMMO)
     {
-        I_Error("P_GiveAmmo: bad type %i", ammo);
+        I_Error("P_GiveAmmo: bad type {}", ammo);
     }
     if (player->ammo[ammo] == player->maxammo[ammo])
     {

@@ -21,6 +21,7 @@
 #ifndef __DOOMTYPE__
 #define __DOOMTYPE__
 
+#include <cstdint>    // uint8_t, uint32_t, int16_t, int64_t
 #include <string_view> // std::string_view
 #include <limits.h>    // INT_MAX
 
@@ -40,13 +41,7 @@ namespace doomtype {
 // pre-standardisation version).  inttypes.h is also in the C99
 // standard and defined to include stdint.h, so include this.
 
-#include <inttypes.h>
 
-// Use builtin bool type with C++.
-
-typedef bool boolean;
-
-typedef uint8_t byte;
 #ifndef CRISPY_TRUECOLOR
 typedef uint8_t pixel_t;
 typedef int16_t dpixel_t;

@@ -145,7 +145,7 @@ fixed_t*		textureheight;
 int*			texturecompositesize;
 short**			texturecolumnlump;
 unsigned short**	texturecolumnofs;
-byte**			texturecomposite;
+uint8_t**			texturecomposite;
 
 // for global animation
 int*		flattranslation;
@@ -181,17 +181,17 @@ lighttable_t	*colormaps;
 void
 R_DrawColumnInCache
 ( column_t*	patch,
-  byte*		cache,
+  uint8_t*		cache,
   int		originy,
   int		cacheheight )
 {
     int		count;
     int		position;
-    byte*	source;
+    uint8_t*	source;
 
     while (patch->topdelta != 0xff)
     {
-	source = (byte *)patch + 3;
+	source = (uint8_t *)patch + 3;
 	count = patch->length;
 	position = originy + patch->topdelta;
 
@@ -207,7 +207,7 @@ R_DrawColumnInCache
 	if (count > 0)
 	    memcpy (cache + position, source, count);
 		
-	patch = (column_t *)(  (byte *)patch + patch->length + 4); 
+	patch = (column_t *)(  (uint8_t *)patch + patch->length + 4); 
     }
 }
 
@@ -221,7 +221,7 @@ R_DrawColumnInCache
 //
 void R_GenerateComposite (int texnum)
 {
-    byte*		block;
+    uint8_t*		block;
     texture_t*		texture;
     texpatch_t*		patch;	
     patch_t*		realpatch;
@@ -267,7 +267,7 @@ void R_GenerateComposite (int texnum)
 	    if (collump[x] >= 0)
 		continue;
 	    
-	    patchcol = (column_t *)((byte *)realpatch
+	    patchcol = (column_t *)((uint8_t *)realpatch
 				    + LONG(realpatch->columnofs[x-x1]));
 	    R_DrawColumnInCache (patchcol,
 				 block + colofs[x],
@@ -290,7 +290,7 @@ void R_GenerateComposite (int texnum)
 void R_GenerateLookup (int texnum)
 {
     texture_t*		texture;
-    byte*		patchcount;	// patchcount[texture->width]
+    uint8_t*		patchcount;	// patchcount[texture->width]
     texpatch_t*		patch;	
     patch_t*		realpatch;
     int			x;
@@ -313,7 +313,7 @@ void R_GenerateLookup (int texnum)
     //  that are covered by more than one patch.
     // Fill in the lump / offset, so columns
     //  with only a single patch are all done.
-    patchcount = (byte *) Z_Malloc(texture->width, PU_STATIC, &patchcount);
+    patchcount = (uint8_t *) Z_Malloc(texture->width, PU_STATIC, &patchcount);
     memset (patchcount, 0, texture->width);
     patch = texture->patches;
 
@@ -358,8 +358,7 @@ void R_GenerateLookup (int texnum)
 	    
 	    if (texturecompositesize[texnum] > 0x10000-texture->height)
 	    {
-		I_Error ("R_GenerateLookup: texture %i is >64k",
-			 texnum);
+		I_Error ("R_GenerateLookup: texture {} is >64k", texnum);
 	    }
 	    
 	    texturecompositesize[texnum] += texture->height;
@@ -375,7 +374,7 @@ void R_GenerateLookup (int texnum)
 //
 // R_GetColumn
 //
-byte*
+uint8_t*
 R_GetColumn
 ( int		tex,
   int		col )
@@ -388,7 +387,7 @@ R_GetColumn
     ofs = texturecolumnofs[tex][col];
     
     if (lump > 0)
-	return (byte *)W_CacheLumpNum(lump,PU_CACHE)+ofs;
+	return (uint8_t *)W_CacheLumpNum(lump,PU_CACHE)+ofs;
 
     if (!texturecomposite[tex])
 	R_GenerateComposite (tex);
@@ -568,7 +567,7 @@ void R_InitTextures (void)
         if (offset > maxoff)
             I_Error ("R_InitTextures: bad texture directory");
 
-        mtexture = (maptexture_t *) ( (byte *)maptex + offset);
+        mtexture = (maptexture_t *) ( (uint8_t *)maptex + offset);
 
         texture = textures[i] =
             Z_Malloc (sizeof(texture_t)
@@ -590,8 +589,7 @@ void R_InitTextures (void)
             patch->patch = patchlookup[SHORT(mpatch->patch)];
             if (patch->patch == -1)
             {
-                I_Error ("R_InitTextures: Missing patch in texture %s",
-                         texture->name);
+                I_Error ("R_InitTextures: Missing patch in texture {}", texture->name);
             }
         }		
         texturecolumnlump[i] = Z_Malloc (texture->width*sizeof(**texturecolumnlump), PU_STATIC,0);
@@ -752,7 +750,7 @@ int R_FlatNumForName(const char *name)
     {
 	namet[8] = 0;
 	memcpy (namet, name,8);
-	I_Error ("R_FlatNumForName: %s not found",namet);
+	I_Error ("R_FlatNumForName: {} not found", namet);
     }
     return i - firstflat;
 }
@@ -804,8 +802,7 @@ int	R_TextureNumForName (const char* name)
 
     if (i==-1)
     {
-	I_Error ("R_TextureNumForName: %s not found",
-		 name);
+	I_Error ("R_TextureNumForName: {} not found", name);
     }
     return i;
 }

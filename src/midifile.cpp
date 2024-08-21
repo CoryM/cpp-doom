@@ -36,7 +36,7 @@ import i_swap;
 #endif
 
 struct [[gnu::packed]] chunk_header_t {
-    byte         chunk_id[4];
+    uint8_t         chunk_id[4];
     unsigned int chunk_size;
 };
 
@@ -77,7 +77,7 @@ struct midi_file_s {
     unsigned int  num_tracks;
 
     // Data buffer used to store data read for SysEx or meta events:
-    byte        *buffer;
+    uint8_t        *buffer;
     unsigned int buffer_size;
 };
 
@@ -104,7 +104,7 @@ static bool CheckChunkHeader(chunk_header_t *chunk,
 
 // Read a single byte.  Returns false on error.
 
-static bool ReadByte(byte *result, FILE *stream)
+static bool ReadByte(uint8_t *result, FILE *stream)
 {
     int c;
 
@@ -117,7 +117,7 @@ static bool ReadByte(byte *result, FILE *stream)
     }
     else
     {
-        *result = (byte)c;
+        *result = (uint8_t)c;
 
         return true;
     }
@@ -128,7 +128,7 @@ static bool ReadByte(byte *result, FILE *stream)
 static bool ReadVariableLength(unsigned int *result, FILE *stream)
 {
     int  i;
-    byte b = 0;
+    uint8_t b = 0;
 
     *result = 0;
 
@@ -161,15 +161,15 @@ static bool ReadVariableLength(unsigned int *result, FILE *stream)
 
 // Read a byte sequence into the data buffer.
 
-static byte *ReadByteSequence(unsigned int num_bytes, FILE *stream)
+static uint8_t *ReadByteSequence(unsigned int num_bytes, FILE *stream)
 {
     unsigned int i;
-    byte        *result;
+    uint8_t        *result;
 
     // Allocate a buffer. Allocate one extra byte, as malloc(0) is
     // non-portable.
 
-    result = static_cast<byte *>(malloc(num_bytes + 1));
+    result = static_cast<uint8_t *>(malloc(num_bytes + 1));
 
     if (result == NULL)
     {
@@ -198,10 +198,10 @@ static byte *ReadByteSequence(unsigned int num_bytes, FILE *stream)
 // (three byte) otherwise it is single parameter (two byte)
 
 static bool ReadChannelEvent(midi_event_t *event,
-    byte event_type, bool two_param,
+    uint8_t event_type, bool two_param,
     FILE *stream)
 {
-    byte b = 0;
+    uint8_t b = 0;
 
     // Set basics:
 
@@ -267,7 +267,7 @@ static bool ReadSysExEvent(midi_event_t *event, int event_type,
 
 static bool ReadMetaEvent(midi_event_t *event, FILE *stream)
 {
-    byte b = 0;
+    uint8_t b = 0;
 
     event->event_type = MIDI_EVENT_META;
 
@@ -306,7 +306,7 @@ static bool ReadMetaEvent(midi_event_t *event, FILE *stream)
 static bool ReadEvent(midi_event_t *event, unsigned int *last_event_type,
     FILE *stream)
 {
-    byte event_type = 0;
+    uint8_t event_type = 0;
 
     if (!ReadVariableLength(&event->delta_time, stream))
     {

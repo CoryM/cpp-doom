@@ -35,6 +35,8 @@
 
 #include "s_musinfo.hpp"
 
+import i_error; 
+
 // MACROS ------------------------------------------------------------------
 
 #define MAX_STRING_SIZE  64
@@ -112,7 +114,7 @@ static void OpenScript(char *name, int type)
     else if (type == FILE_ZONE_SCRIPT)
     { // File script - zone
         ScriptLumpNum = -1;
-        ScriptSize    = M_ReadFile(name, (byte **)&ScriptBuffer);
+        ScriptSize    = M_ReadFile(name, (uint8_t **)&ScriptBuffer);
         M_ExtractFileBase(name, ScriptName);
     }
     ScriptPtr    = ScriptBuffer;

@@ -37,6 +37,8 @@
 #include "p_dialog.hpp"
 #include "i_system.hpp"
 
+import i_error;
+
 
 //
 // VERTICAL DOORS

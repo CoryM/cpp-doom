@@ -38,6 +38,8 @@
 // Data.
 #include "sounds.hpp"
 
+import i_error; // I_Error
+
 
 typedef enum
 {

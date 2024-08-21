@@ -173,8 +173,7 @@ size_t W_Win32_Read(wad_file_t *wad, unsigned int offset,
 
     if (result == INVALID_SET_FILE_POINTER)
     {
-        I_Error("W_Win32_Read: Failed to set file pointer to %i",
-            offset);
+        I_Error("W_Win32_Read: Failed to set file pointer to {}", offset);
     }
 
     // Read into the buffer.

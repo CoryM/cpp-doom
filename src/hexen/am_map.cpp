@@ -52,7 +52,7 @@ static int finit_height;// = SCREENHEIGHT - SBARHEIGHT - (3 << crispy->hires);
 static int f_x, f_y;            // location of window on screen
 static int f_w, f_h;            // size of window on screen
 static int lightlev;            // used for funky strobing effect
-static byte *fb;                // pseudo-frame buffer
+static uint8_t *fb;                // pseudo-frame buffer
 static int amclock;
 
 static mpoint_t m_paninc;       // how far the window pans each tic (map coords)
@@ -98,28 +98,28 @@ static unsigned ShowKillsCount = 0;
 
 extern bool viewactive;
 
-static byte antialias[NUMALIAS][8] = {
+static uint8_t antialias[NUMALIAS][8] = {
     {83, 84, 85, 86, 87, 88, 89, 90},
     {96, 96, 95, 94, 93, 92, 91, 90},
     {107, 108, 109, 110, 111, 112, 89, 90}
 };
 
 /*
-static byte *aliasmax[NUMALIAS] = {
+static uint8_t *aliasmax[NUMALIAS] = {
 	&antialias[0][7], &antialias[1][7], &antialias[2][7]
 };*/
 
-static byte *maplump;           // pointer to the raw data for the automap background.
+static uint8_t *maplump;           // pointer to the raw data for the automap background.
 static short mapystart = 0;     // y-value for the start of the map bitmap...used in
                                                                                 //the parallax stuff.
 static short mapxstart = 0;     //x-value for the bitmap.
 
-//byte screens[][SCREENWIDTH*SCREENHEIGHT];
+//uint8_t screens[][SCREENWIDTH*SCREENHEIGHT];
 //void V_MarkRect (int x, int y, int width, int height);
 
 // Functions
 
-void DrawWuLine(int X0, int Y0, int X1, int Y1, byte * BaseColor,
+void DrawWuLine(int X0, int Y0, int X1, int Y1, uint8_t * BaseColor,
                 int NumLevels, unsigned short IntensityBits);
 
 void AM_DrawDeathmatchStats(void);
@@ -289,7 +289,7 @@ void AM_initVariables(void)
     //static event_t st_notify = { ev_keyup, AM_MSGENTERED };
 
     automapactive = true;
-    fb = reinterpret_cast<byte *>(I_VideoBuffer);
+    fb = reinterpret_cast<uint8_t *>(I_VideoBuffer);
 
     f_oldloc.x = INT_MAX;
     amclock = 0;
@@ -341,7 +341,7 @@ void AM_initVariables(void)
 
 void AM_loadPics(void)
 {
-    maplump = cache_lump_name<byte *>("AUTOPAGE", PU_STATIC);
+    maplump = cache_lump_name<uint8_t *>("AUTOPAGE", PU_STATIC);
 }
 
 
@@ -954,11 +954,11 @@ void AM_drawFline(fline_t * fl, int color)
  * IntensityBits = log base 2 of NumLevels; the # of bits used to describe
  *          the intensity of the drawing color. 2**IntensityBits==NumLevels
  */
-void PUTDOT(short xx, short yy, byte * cc, byte * cm)
+void PUTDOT(short xx, short yy, uint8_t * cc, uint8_t * cm)
 {
     static int oldyy;
     static int oldyyshifted;
-    byte *oldcc = cc;
+    uint8_t *oldcc = cc;
 
     if (xx < 32)
         cc += 7 - (xx >> 2);
@@ -998,7 +998,7 @@ void PUTDOT(short xx, short yy, byte * cc, byte * cm)
 //      fb[(yy)*f_w+(xx)]=*(cc);
 }
 
-void DrawWuLine(int X0, int Y0, int X1, int Y1, byte * BaseColor,
+void DrawWuLine(int X0, int Y0, int X1, int Y1, uint8_t * BaseColor,
                 int NumLevels, unsigned short IntensityBits)
 {
     unsigned short IntensityShift, ErrorAdj, ErrorAcc;

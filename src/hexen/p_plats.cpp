@@ -23,6 +23,8 @@
 
 #include "../z_zone.hpp"
 
+import i_error;
+
 plat_t *activeplats[MAXPLATS];
 
 //==================================================================
@@ -103,7 +105,7 @@ void T_PlatRaise(plat_t * plat)
 //      "amount" is only used for SOME platforms.
 //
 //==================================================================
-int EV_DoPlat(line_t * line, byte * args, plattype_e type, int amount)
+int EV_DoPlat(line_t * line, uint8_t * args, plattype_e type, int amount)
 {
     plat_t *plat;
     int secnum;
@@ -215,7 +217,7 @@ void P_ActivateInStasis(int tag)
 }
 #endif
 
-void EV_StopPlat(line_t * line, byte * args)
+void EV_StopPlat(line_t * line, uint8_t * args)
 {
     int i;
 

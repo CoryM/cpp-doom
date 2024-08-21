@@ -44,6 +44,7 @@
 #include "i_video.hpp"
 
 #include "i_system.hpp"
+import i_error;
 
 #include "../utils/memory.hpp"
 #include "w_wad.hpp"
@@ -52,16 +53,12 @@
 #define DEFAULT_RAM 16 * 2 /* MiB [crispy] */
 #define MIN_RAM     4 * 4  /* MiB [crispy] */
 
+static atexit_listentry_t *exit_funcs = nullptr;
+[[nodiscard]] atexit_listentry_t * get_exit_funcs()
+{
+    return exit_funcs;
+}
 
-typedef struct atexit_listentry_s atexit_listentry_t;
-
-struct atexit_listentry_s {
-    atexit_func_t       func;
-    bool             run_on_error;
-    atexit_listentry_t *next;
-};
-
-static atexit_listentry_t *exit_funcs = NULL;
 
 void I_AtExit(atexit_func_t func, bool run_on_error)
 {
@@ -83,9 +80,9 @@ void I_Tactile([[maybe_unused]] int on, [[maybe_unused]] int off, [[maybe_unused
 // by trying progressively smaller zone sizes until one is found that
 // works.
 
-static byte *AutoAllocMemory(int *size, int default_ram, int min_ram)
+static uint8_t *AutoAllocMemory(int *size, int default_ram, int min_ram)
 {
-    byte *zonemem;
+    uint8_t *zonemem;
 
     // Allocate the zone memory.  This loop tries progressively smaller
     // zone sizes until a size is found that can be allocated.
@@ -100,14 +97,14 @@ static byte *AutoAllocMemory(int *size, int default_ram, int min_ram)
 
         if (default_ram < min_ram)
         {
-            I_Error("Unable to allocate %i MiB of RAM for zone", default_ram);
+            I_Error("Unable to allocate {} MiB of RAM for zone", default_ram);
         }
 
         // Try to allocate the zone memory.
 
         *size = default_ram * 1024 * 1024;
 
-        zonemem = static_cast<byte *>(malloc(*size));
+        zonemem = static_cast<uint8_t *>(malloc(*size));
 
         // Failed to allocate?  Reduce zone size until we reach a size
         // that is acceptable.
@@ -121,9 +118,9 @@ static byte *AutoAllocMemory(int *size, int default_ram, int min_ram)
     return zonemem;
 }
 
-byte *I_ZoneBase(int *size)
+uint8_t *I_ZoneBase(int *size)
 {
-    byte *     zonemem;
+    uint8_t *     zonemem;
     int        min_ram, default_ram;
     int        p;
     static int i = 1;
@@ -262,81 +259,6 @@ void I_BindVariables(void)
 
 
 //
-// I_Error
-//
-
-static bool already_quitting = false;
-
-[[noreturn]] void I_Error(const char *error, ...)
-{
-    char                msgbuf[512];
-    va_list             argptr;
-    atexit_listentry_t *entry;
-    bool             exit_gui_popup;
-
-    if (already_quitting)
-    {
-        fprintf(stderr, "Warning: recursive call to I_Error detected.\n");
-        exit(-1);
-    }
-    else
-    {
-        already_quitting = true;
-    }
-
-    // Message first.
-    va_start(argptr, error);
-    //fprintf(stderr, "\nError: ");
-    vfprintf(stderr, error, argptr);
-    fprintf(stderr, "\n\n");
-    va_end(argptr);
-    fflush(stderr);
-
-    // Write a copy of the message into buffer.
-    va_start(argptr, error);
-    memset(msgbuf, 0, sizeof(msgbuf));
-    M_vsnprintf(msgbuf, sizeof(msgbuf), error, argptr);
-    va_end(argptr);
-
-    // Shutdown. Here might be other errors.
-
-    entry = exit_funcs;
-
-    while (entry != NULL)
-    {
-        if (entry->run_on_error)
-        {
-            entry->func();
-        }
-
-        entry = entry->next;
-    }
-
-    //!
-    // @category obscure
-    //
-    // If specified, don't show a GUI window for error messages when the
-    // game exits with an error.
-    //
-    exit_gui_popup = !M_ParmExists("-nogui");
-
-    // Pop up a GUI dialog box to show the error message, if the
-    // game was not run from the console (and the user will
-    // therefore be unable to otherwise see the message).
-    if (exit_gui_popup && !I_ConsoleStdout())
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
-            PACKAGE_STRING, msgbuf, NULL);
-    }
-
-    // abort();
-
-    SDL_Quit();
-
-    exit(-1);
-}
-
-//
 // I_Realloc
 //
 
@@ -348,7 +270,7 @@ void *I_Realloc(void *ptr, size_t size)
 
     if (size != 0 && new_ptr == NULL)
     {
-        I_Error("I_Realloc: failed on reallocation of %" PRIuPTR " bytes", size);
+        I_Error("I_Realloc: failed on reallocation of {} bytes", size);
     }
 
     return new_ptr;

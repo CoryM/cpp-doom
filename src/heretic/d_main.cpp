@@ -22,6 +22,8 @@ import i_swap; // #include "i_swap.hpp" // [crispy] SHORT()
 #include <cstdio>
 #include <cstdlib>
 
+import i_error;
+
 #include "txt_main.hpp"
 #include "txt_io.hpp"
 
@@ -621,8 +623,8 @@ void DrawThermo(void)
 
 void initStartup(void)
 {
-    byte *textScreen;
-    byte *loading;
+    uint8_t *textScreen;
+    uint8_t *loading;
 
     if (!graphical_startup || debugmode || testcontrols)
     {
@@ -766,7 +768,7 @@ void D_BindVariables(void)
 
 static void D_Endoom(void)
 {
-    byte *endoom_data;
+    uint8_t *endoom_data;
 
     // Disable ENDOOM?
 

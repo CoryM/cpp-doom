@@ -32,6 +32,7 @@
 #endif
 
 import i_swap; 
+import i_error;
 #include "deh_str.hpp"
 #include "i_sound.hpp"
 #include "i_system.hpp"
@@ -66,7 +67,7 @@ static Uint16  mixer_format;
 static int     mixer_channels;
 static bool use_sfx_prefix;
 static bool (*ExpandSoundData)(sfxinfo_t *sfxinfo,
-    byte *                                   data,
+    uint8_t *                                   data,
     int                                      samplerate,
     int                                      bits,
     int                                      length) = NULL;
@@ -227,7 +228,7 @@ static allocated_sound_t *AllocateSound(sfxinfo_t *sfxinfo, size_t len)
 
     // Skip past the chunk structure for the audio buffer
 
-    snd->chunk.abuf      = (byte *)(snd + 1);
+    snd->chunk.abuf      = (uint8_t *)(snd + 1);
     snd->chunk.alen      = len;
     snd->chunk.allocated = 1;
     snd->chunk.volume    = MIX_MAX_VOLUME;
@@ -402,7 +403,7 @@ static int SRC_ConversionMode(void)
 // DWF 2008-02-10 with cleanups by Simon Howard.
 
 static bool ExpandSoundData_SRC(sfxinfo_t *sfxinfo,
-    byte *                                    data,
+    uint8_t *                                    data,
     int                                       samplerate,
     int                                       bits,
     int                                       length)
@@ -560,7 +561,7 @@ static bool ConvertibleRatio(int freq1, int freq2)
 
 // Debug code to dump resampled sound effects to WAV files for analysis.
 
-static void WriteWAV(char *filename, byte *data,
+static void WriteWAV(char *filename, uint8_t *data,
     uint32_t length, int samplerate)
 {
     FILE *         wav;
@@ -610,7 +611,7 @@ static void WriteWAV(char *filename, byte *data,
 // Returns number of clipped samples (always 0).
 
 static bool ExpandSoundData_SDL(sfxinfo_t *sfxinfo,
-    byte *                                    data,
+    uint8_t *                                    data,
     int                                       samplerate,
     int                                       bits,
     int                                       length)
@@ -747,7 +748,7 @@ static bool CacheSFX(sfxinfo_t *sfxinfo)
     // need to load the sound
 
     lumpnum    = sfxinfo->lumpnum;
-    auto *data = cache_lump_num<byte *>(lumpnum, PU_STATIC);
+    auto *data = cache_lump_num<uint8_t *>(lumpnum, PU_STATIC);
     lumplen    = W_LumpLength(lumpnum);
 
     // [crispy] Check if this is a valid RIFF wav file
@@ -1186,8 +1187,7 @@ static bool I_SDL_InitSound(bool _use_sfx_prefix)
     {
         if (SRC_ConversionMode() < 0)
         {
-            I_Error("I_SDL_InitSound: Invalid value for use_libsamplerate: %i",
-                use_libsamplerate);
+            I_Error("I_SDL_InitSound: Invalid value for use_libsamplerate: {}", use_libsamplerate);
         }
 
         ExpandSoundData = ExpandSoundData_SRC;

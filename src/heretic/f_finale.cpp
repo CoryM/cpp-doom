@@ -156,7 +156,7 @@ void F_Ticker(void)
 
 void F_TextWrite(void)
 {
-    byte *src, *dest;
+    uint8_t *src, *dest;
     int x, y;
     int count;
     const char *ch;
@@ -167,7 +167,7 @@ void F_TextWrite(void)
 //
 // erase the entire screen to a tiled background
 //
-    src =  static_cast<byte *>(W_CacheLumpName(finaleflat, PU_CACHE));
+    src =  static_cast<uint8_t *>(W_CacheLumpName(finaleflat, PU_CACHE));
     dest = reinterpret_cast<decltype(dest)>(I_VideoBuffer);
     for (y = 0; y < SCREENHEIGHT; y++)
     {
@@ -227,17 +227,17 @@ void F_TextWrite(void)
 void F_DrawPatchCol(int x, patch_t * patch, int col)
 {
     column_t *column;
-    byte *source, *dest, *desttop;
+    uint8_t *source, *dest, *desttop;
     int count;
 
-    column = (column_t *) ((byte *) patch + endian::LONG(patch->columnofs[col]));
+    column = (column_t *) ((uint8_t *) patch + endian::LONG(patch->columnofs[col]));
     desttop = reinterpret_cast<decltype(desttop)>(I_VideoBuffer + x);
 
 // step through the posts in a column
 
     while (column->topdelta != 0xff)
     {
-        source = (byte *) column + 3;
+        source = (uint8_t *) column + 3;
         dest = desttop + column->topdelta * SCREENWIDTH;
         count = column->length;
 
@@ -246,7 +246,7 @@ void F_DrawPatchCol(int x, patch_t * patch, int col)
             *dest = *source++;
             dest += SCREENWIDTH;
         }
-        column = (column_t *) ((byte *) column + column->length + 4);
+        column = (column_t *) ((uint8_t *) column + column->length + 4);
     }
 }
 
@@ -260,7 +260,7 @@ void F_DrawPatchCol(int x, patch_t * patch, int col)
 
 void F_DemonScroll(void)
 {
-    byte *p1, *p2;
+    uint8_t *p1, *p2;
     static int yval = 0;
     static int nextscroll = 0;
 
@@ -268,8 +268,8 @@ void F_DemonScroll(void)
     {
         return;
     }
-    p1 = cache_lump_name<byte *>(DEH_String("FINAL1"), PU_LEVEL);
-    p2 = cache_lump_name<byte *>(DEH_String("FINAL2"), PU_LEVEL);
+    p1 = cache_lump_name<uint8_t *>(DEH_String("FINAL1"), PU_LEVEL);
+    p2 = cache_lump_name<uint8_t *>(DEH_String("FINAL2"), PU_LEVEL);
     if (finalecount < 70)
     {
         V_CopyScaledBuffer(I_VideoBuffer, reinterpret_cast<pixel_t *>(p1), ORIGHEIGHT * ORIGWIDTH);
@@ -302,7 +302,7 @@ void F_DrawUnderwater(void)
     static bool underwawa = false;
     extern bool askforquit;
     const char *lumpname;
-    byte *palette;
+    uint8_t *palette;
 
     // The underwater screen has its own palette, which is rather annoying.
     // The palette doesn't correspond to the normal palette. Because of
@@ -317,7 +317,7 @@ void F_DrawUnderwater(void)
                 underwawa = true;
                 V_DrawFilledBox(0, 0, SCREENWIDTH, SCREENHEIGHT, 0);
                 lumpname = DEH_String("E2PAL");
-                palette = static_cast<byte *>(W_CacheLumpName(lumpname, PU_STATIC));
+                palette = static_cast<uint8_t *>(W_CacheLumpName(lumpname, PU_STATIC));
                 I_SetPalette(palette);
                 W_ReleaseLumpName(lumpname);
                 V_DrawRawScreen(cache_lump_name<pixel_t *>(DEH_String("E2END"), PU_CACHE));
@@ -331,7 +331,7 @@ void F_DrawUnderwater(void)
             if (underwawa)
             {
                 lumpname = DEH_String("PLAYPAL");
-                palette = static_cast<byte *>(W_CacheLumpName(lumpname, PU_STATIC));
+                palette = static_cast<uint8_t *>(W_CacheLumpName(lumpname, PU_STATIC));
                 I_SetPalette(palette);
                 W_ReleaseLumpName(lumpname);
                 underwawa = false;

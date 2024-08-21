@@ -20,6 +20,7 @@
 #include "deh_str.hpp"
 #include "i_system.hpp"
 #include "r_local.hpp"
+import i_error;
 
 planefunction_t floorfunc, ceilingfunc;
 
@@ -130,7 +131,7 @@ void R_MapPlane(int y, int x1, int x2)
 
 #ifdef RANGECHECK
     if (x2 < x1 || x1 < 0 || x2 >= viewwidth || (unsigned) y > viewheight)
-        I_Error("R_MapPlane: %i, %i at %i", x1, x2, y);
+        I_Error("R_MapPlane: {} to {} at {}", x1, x2, y);
 #endif
 
     if (planeheight != cachedheight[y])
@@ -398,25 +399,22 @@ void R_DrawPlanes(void)
     int x, stop;
     int lumpnum;
     int angle;
-    byte *tempSource;
+    uint8_t *tempSource;
 
-    byte *dest;
+    uint8_t *dest;
     int count;
     fixed_t frac, fracstep;
 
-    extern byte *ylookup[MAXHEIGHT];
+    extern uint8_t *ylookup[MAXHEIGHT];
     extern int columnofs[MAXWIDTH];
 
 #ifdef RANGECHECK
     if (ds_p - drawsegs > numdrawsegs)
-        I_Error("R_DrawPlanes: drawsegs overflow (%" PRIiPTR ")",
-                ds_p - drawsegs);
+        I_Error("R_DrawPlanes: drawsegs overflow ({})", ds_p - drawsegs);
     if (lastvisplane - visplanes > numvisplanes)
-        I_Error("R_DrawPlanes: visplane overflow (%" PRIiPTR ")",
-                lastvisplane - visplanes);
+        I_Error("R_DrawPlanes: visplane overflow ({})", lastvisplane - visplanes);
     if (lastopening - openings > MAXOPENINGS)
-        I_Error("R_DrawPlanes: opening overflow (%" PRIiPTR ")",
-                lastopening - openings);
+        I_Error("R_DrawPlanes: opening overflow ({})", lastopening - openings);
 #endif
 
     for (pl = visplanes; pl < lastvisplane; pl++)
@@ -449,8 +447,7 @@ void R_DrawPlanes(void)
 #ifdef RANGECHECK
                     if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0
                         || dc_yh >= SCREENHEIGHT)
-                        I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh,
-                                dc_x);
+                        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
 #endif
 
                     dest = ylookup[dc_yl] + columnofs[dc_x];
@@ -476,7 +473,7 @@ void R_DrawPlanes(void)
         //
         lumpnum = firstflat + flattranslation[pl->picnum];
 
-        tempSource = static_cast<byte *>(W_CacheLumpNum(lumpnum, PU_STATIC));
+        tempSource = static_cast<uint8_t *>(W_CacheLumpNum(lumpnum, PU_STATIC));
 
         switch (pl->special)
         {

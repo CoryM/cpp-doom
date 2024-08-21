@@ -31,6 +31,8 @@
 #include "../i_swap.hpp"
 #include "../z_zone.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define MAX_TARGET_PLAYERS 512
@@ -132,12 +134,12 @@ static void SV_OpenRead(char *fileName);
 static void SV_OpenWrite(char *fileName);
 static void SV_Close(void);
 static void SV_Read(void *buffer, int size);
-static byte SV_ReadByte(void);
+static uint8_t SV_ReadByte(void);
 static uint16_t SV_ReadWord(void);
 static uint32_t SV_ReadLong(void);
 static void *SV_ReadPtr(void);
 static void SV_Write(const void *buffer, int size);
-static void SV_WriteByte(byte val);
+static void SV_WriteByte(uint8_t val);
 static void SV_WriteWord(unsigned short val);
 static void SV_WriteLong(unsigned int val);
 static void SV_WritePtr(void *ptr);
@@ -2879,8 +2881,7 @@ static void UnarchiveThinkers(void)
         }
         if (info->tClass == TC_NULL)
         {
-            I_Error("UnarchiveThinkers: Unknown tClass %d in "
-                    "savegame", tClass);
+            I_Error("UnarchiveThinkers: Unknown tClass {} in savegame", tClass);
         }
     }
 }
@@ -3063,8 +3064,8 @@ static void ArchiveSounds(void)
         if (i == po_NumPolyobjs)
         {                       // Sound is attached to a sector, not a polyobj
             sec = R_PointInSubsector(node->mobj->x, node->mobj->y)->sector;
-            difference = (int) ((byte *) sec
-                                - (byte *) & sectors[0]) / sizeof(sector_t);
+            difference = (int) ((uint8_t *) sec
+                                - (uint8_t *) & sectors[0]) / sizeof(sector_t);
             SV_WriteLong(0);   // 0 -- sector sound origin
         }
         else
@@ -3185,8 +3186,7 @@ static void AssertSegment(gameArchiveSegment_t segType)
 {
     if (SV_ReadLong() != segType)
     {
-        I_Error("Corrupt save game: Segment [%d] failed alignment check",
-                segType);
+        I_Error("Corrupt save game: Segment [{}] failed alignment check", segType);
     }
 }
 
@@ -3248,7 +3248,7 @@ static void CopySaveSlot(int sourceSlot, int destSlot)
     }
     else
     {
-        I_Error("Could not load savegame %s", sourceName);
+        I_Error("Could not load savegame {}", sourceName);
     }
 }
 
@@ -3265,7 +3265,7 @@ static void CopyFile(char *source_name, char *dest_name)
 {
     const int BUFFER_CHUNK_SIZE = 0x10000;
 
-    byte *buffer;
+    uint8_t *buffer;
     int file_length, file_remaining;
     FILE *read_handle, *write_handle;
     int buf_count, read_count, write_count;
@@ -3273,7 +3273,7 @@ static void CopyFile(char *source_name, char *dest_name)
     read_handle = fopen(source_name, "rb");
     if (read_handle == NULL)
     {
-        I_Error ("Couldn't read file %s", source_name);
+        I_Error ("Couldn't read file {}", source_name);
     }
     file_length = file_remaining = M_FileLength(read_handle);
 
@@ -3292,7 +3292,7 @@ static void CopyFile(char *source_name, char *dest_name)
     write_handle = fopen(dest_name, "wb");
     if (write_handle == NULL)
     {
-        I_Error ("Couldn't read file %s", dest_name);
+        I_Error ("Couldn't read file {}", dest_name);
     }
 
     buffer = Z_Malloc (BUFFER_CHUNK_SIZE, PU_STATIC, NULL);
@@ -3308,13 +3308,13 @@ static void CopyFile(char *source_name, char *dest_name)
         read_count = fread(buffer, 1, buf_count, read_handle);
         if (read_count < buf_count)
         {
-            I_Error ("Couldn't read file %s", source_name);
+            I_Error ("Couldn't read file {}", source_name);
         }
 
         write_count = fwrite(buffer, 1, buf_count, write_handle);
         if (write_count < buf_count)
         {
-            I_Error ("Couldn't write to file %s", dest_name);
+            I_Error ("Couldn't write to file {}", dest_name);
         }
 
         file_remaining -= buf_count;
@@ -3359,7 +3359,7 @@ static void SV_OpenRead(char *fileName)
     // Should never happen, only if hex6.hxs cannot ever be created.
     if (SavingFP == NULL)
     {
-        I_Error("Could not load savegame %s", fileName);
+        I_Error("Could not load savegame {}", fileName);
     }
 }
 
@@ -3393,15 +3393,14 @@ static void SV_Read(void *buffer, int size)
     int retval = fread(buffer, 1, size, SavingFP);
     if (retval != size)
     {
-        I_Error("Incomplete read in SV_Read: Expected %d, got %d bytes",
-            size, retval);
+        I_Error("Incomplete read in SV_Read: Expected {}, got {} bytes", size, retval);
     }
 }
 
-static byte SV_ReadByte(void)
+static uint8_t SV_ReadByte(void)
 {
-    byte result;
-    SV_Read(&result, sizeof(byte));
+    uint8_t result;
+    SV_Read(&result, sizeof(uint8_t));
     return result;
 }
 
@@ -3435,9 +3434,9 @@ static void SV_Write(const void *buffer, int size)
     fwrite(buffer, size, 1, SavingFP);
 }
 
-static void SV_WriteByte(byte val)
+static void SV_WriteByte(uint8_t val)
 {
-    fwrite(&val, sizeof(byte), 1, SavingFP);
+    fwrite(&val, sizeof(uint8_t), 1, SavingFP);
 }
 
 static void SV_WriteWord(unsigned short val)

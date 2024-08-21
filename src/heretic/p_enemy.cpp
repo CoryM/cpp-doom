@@ -27,6 +27,8 @@
 
 #include "../../utils/lump.hpp"
 
+import i_error;
+
 // Macros
 
 #define MAX_BOSS_SPOTS 8

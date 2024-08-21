@@ -32,6 +32,8 @@
 #include "m_argv.hpp"    // for M_CheckParm, myargv, myargc
 #include "w_wad.hpp"     // for W_CheckNumForName
 
+import i_error; //#include "i_error.hpp"
+
 
 extern deh_section_t *deh_section_types[];
 extern const char *   deh_signatures[];

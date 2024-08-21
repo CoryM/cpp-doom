@@ -26,6 +26,7 @@
 #include "doomdef.hpp"
 
 import i_swap; 
+import i_error; // I_Error
 #include "i_system.hpp"
 #include "z_zone.hpp"
 #include "w_wad.hpp"
@@ -117,9 +118,7 @@ void R_InstallSpriteLump(int lump,
     unsigned rotation = (rot >= 'A') ? rot - 'A' + 10 : (rot >= '0') ? rot - '0' : 17;
 
     if (frame >= 29 || rotation > 16) // [crispy] support 16 sprite rotations
-        I_Error("R_InstallSpriteLump: "
-                "Bad frame characters in lump %i",
-            lump);
+        I_Error("R_InstallSpriteLump: Bad frame characters in lump {}", lump);
 
     if ((int)frame > maxframe)
         maxframe = frame;
@@ -147,7 +146,7 @@ void R_InstallSpriteLump(int lump,
             if (sprtemp[frame].lump[r] == -1)
             {
                 sprtemp[frame].lump[r] = lump - firstspritelump;
-                sprtemp[frame].flip[r] = (byte)flipped;
+                sprtemp[frame].flip[r] = (uint8_t)flipped;
                 // [crispy] ... here
                 sprtemp[frame].rotate = false;
             }
@@ -177,7 +176,7 @@ void R_InstallSpriteLump(int lump,
     }
 
     sprtemp[frame].lump[rotation] = lump - firstspritelump;
-    sprtemp[frame].flip[rotation] = (byte)flipped;
+    sprtemp[frame].flip[rotation] = (uint8_t)flipped;
     // [crispy] ... here
     sprtemp[frame].rotate = true;
 }
@@ -288,9 +287,7 @@ void R_InitSpriteDefs(const char **namelist)
                 // must have all 8 frames
                 for (rotation = 0; rotation < 8; rotation++)
                     if (sprtemp[frame].lump[rotation] == -1)
-                        I_Error("R_InitSprites: Sprite %s frame %c "
-                                "is missing rotations",
-                            spritename, frame + 'A');
+                        I_Error("R_InitSprites: Sprite {} frame {} is missing rotations", spritename, frame + 'A');
 
                 // [crispy] support 16 sprite rotations
                 sprtemp[frame].rotate = 2;
@@ -435,15 +432,15 @@ void R_DrawMaskedColumn(column_t *column)
 
         if (dc_yl <= dc_yh)
         {
-            dc_source     = (byte *)column + 3;
+            dc_source     = (uint8_t *)column + 3;
             dc_texturemid = basetexturemid - (top << FRACBITS);
-            // dc_source = (byte *)column + 3 - top;
+            // dc_source = (uint8_t *)column + 3 - top;
 
             // Drawn by either R_DrawColumn
             //  or (SHADOW) R_DrawFuzzColumn.
             colfunc();
         }
-        column = (column_t *)((byte *)column + column->length + 4);
+        column = (column_t *)((uint8_t *)column + column->length + 4);
     }
 
     dc_texturemid = basetexturemid;
@@ -521,7 +518,7 @@ void R_DrawVisSprite(vissprite_t *vis,
             continue;
         }
 #endif
-        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[texturecolumn]));
+        column = (column_t *)((uint8_t *)patch + endian::LONG(patch->columnofs[texturecolumn]));
         R_DrawMaskedColumn(column);
     }
 
@@ -621,8 +618,7 @@ void R_ProjectSprite(mobj_t *thing)
         // decide which patch to use for sprite relative to player
 #ifdef RANGECHECK
     if ((unsigned int)thing->sprite >= (unsigned int)numsprites)
-        I_Error("R_ProjectSprite: invalid sprite number %i ",
-            thing->sprite);
+        I_Error("R_ProjectSprite: invalid sprite number {} ", static_cast<int>(thing->sprite));
 #endif
     sprdef = &sprites[thing->sprite];
     // [crispy] the TNT1 sprite is not supposed to be rendered anyway
@@ -632,8 +628,7 @@ void R_ProjectSprite(mobj_t *thing)
     }
 #ifdef RANGECHECK
     if ((thing->frame & FF_FRAMEMASK) >= sprdef->numframes)
-        I_Error("R_ProjectSprite: invalid sprite frame %i : %i ",
-            thing->sprite, thing->frame);
+        I_Error("R_ProjectSprite: invalid sprite frame {} : {} ", static_cast<int>(thing->sprite), thing->frame);
 #endif
     sprframe = &sprdef->spriteframes[thing->frame & FF_FRAMEMASK];
 
@@ -800,7 +795,7 @@ void R_ProjectSprite(mobj_t *thing)
 
 extern void P_LineLaser(mobj_t *t1, angle_t angle, fixed_t distance, fixed_t slope);
 
-byte *R_LaserspotColor(void)
+uint8_t *R_LaserspotColor(void)
 {
     if (crispy->crosshairtarget)
     {
@@ -954,8 +949,7 @@ void R_DrawPSprite(pspdef_t *psp, psprnum_t psprnum) // [crispy] differentiate g
     // decide which patch to use
 #ifdef RANGECHECK
     if ((unsigned)psp->state->sprite >= (unsigned int)numsprites)
-        I_Error("R_ProjectSprite: invalid sprite number %i ",
-            psp->state->sprite);
+        I_Error("R_ProjectSprite: invalid sprite number {} ", static_cast<int>(psp->state->sprite));
 #endif
     sprdef = &sprites[psp->state->sprite];
     // [crispy] the TNT1 sprite is not supposed to be rendered anyway
@@ -965,8 +959,7 @@ void R_DrawPSprite(pspdef_t *psp, psprnum_t psprnum) // [crispy] differentiate g
     }
 #ifdef RANGECHECK
     if ((psp->state->frame & FF_FRAMEMASK) >= sprdef->numframes)
-        I_Error("R_ProjectSprite: invalid sprite frame %i : %i ",
-            psp->state->sprite, psp->state->frame);
+        I_Error("R_ProjectSprite: invalid sprite frame {} : {} ", static_cast<int>(psp->state->sprite), psp->state->frame);
 #endif
     sprframe = &sprdef->spriteframes[psp->state->frame & FF_FRAMEMASK];
 

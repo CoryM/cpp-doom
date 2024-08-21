@@ -35,6 +35,8 @@
 #include "sn_sonix.hpp"
 #include "sounds.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define MAX_SCRIPT_ARGS 3
@@ -68,7 +70,7 @@ struct [[gnu::packed]] acsHeader_t
 static void StartOpenACS(int number, int infoIndex, int offset);
 static void ScriptFinished(int number);
 static bool TagBusy(int tag);
-static bool AddToACSStore(int map, int number, byte * args);
+static bool AddToACSStore(int map, int number, uint8_t * args);
 static int GetACSIndex(int number);
 static void Push(int value);
 static int Pop(void);
@@ -185,7 +187,7 @@ static void ThingCount(int type, int tid);
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
 int ACScriptCount;
-byte *ActionCodeBase;
+uint8_t *ActionCodeBase;
 static int ActionCodeSize;
 acsInfo_t *ACSInfo;
 int MapVars[MAX_ACS_MAP_VARS];
@@ -197,7 +199,7 @@ acsstore_t ACSStore[MAX_ACS_STORE + 1]; // +1 for termination marker
 static char EvalContext[64];
 static acs_t *ACScript;
 static unsigned int PCodeOffset;
-static byte SpecArgs[8];
+static uint8_t SpecArgs[8];
 static int ACStringCount;
 static char **ACStrings;
 static char PrintBuffer[PRINT_BUFFER_SIZE];
@@ -333,7 +335,7 @@ static void ACSAssert(int condition, const char *fmt, ...)
     va_start(args, fmt);
     M_vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
-    I_Error("ACS assertion failure: in %s: %s", EvalContext, buf);
+    I_Error("ACS assertion failure: in {}: {}", EvalContext, buf);
 }
 
 //==========================================================================
@@ -584,7 +586,7 @@ void P_CheckACSStore(void)
 
 static char ErrorMsg[128];
 
-bool P_StartACS(int number, int map, byte * args, mobj_t * activator,
+bool P_StartACS(int number, int map, uint8_t * args, mobj_t * activator,
                    line_t * line, int side)
 {
     int i;
@@ -640,7 +642,7 @@ bool P_StartACS(int number, int map, byte * args, mobj_t * activator,
 //
 //==========================================================================
 
-static bool AddToACSStore(int map, int number, byte * args)
+static bool AddToACSStore(int map, int number, uint8_t * args)
 {
     int i;
     int index;
@@ -661,8 +663,7 @@ static bool AddToACSStore(int map, int number, byte * args)
     {                           // Append required
         if (i == MAX_ACS_STORE)
         {
-            I_Error("AddToACSStore: MAX_ACS_STORE (%d) exceeded.",
-                    MAX_ACS_STORE);
+            I_Error("AddToACSStore: MAX_ACS_STORE ({}) exceeded.", MAX_ACS_STORE);
         }
         index = i;
         ACSStore[index + 1].map = 0;
@@ -680,11 +681,11 @@ static bool AddToACSStore(int map, int number, byte * args)
 //==========================================================================
 
 
-bool P_StartLockedACS(line_t * line, byte * args, mobj_t * mo, int side)
+bool P_StartLockedACS(line_t * line, uint8_t * args, mobj_t * mo, int side)
 {
     int i;
     int lock;
-    byte newArgs[5];
+    uint8_t newArgs[5];
     char LockedBuffer[80];
 
     extern char *TextKeyMessages[11];
@@ -954,7 +955,7 @@ void CheckACSPresent(int number)
 {
     if (GetACSIndex(number) == -1)
     {
-        I_Error("Required ACS script %d not initialized", number);
+        I_Error("Required ACS script {} not initialized", number);
     }
 }
 

@@ -21,6 +21,8 @@
 #include "s_sound.hpp"
 #include "v_video.hpp"
 
+import i_error;
+
 //==================================================================
 //
 //      CHANGE THE TEXTURE OF A WALL SWITCH TO ITS OPPOSITE

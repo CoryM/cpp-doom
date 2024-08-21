@@ -42,6 +42,8 @@
 #include "doomstat.hpp"
 #include "r_state.hpp"
 
+import i_error;
+
 //
 // CHANGE THE TEXTURE OF A WALL SWITCH TO ITS OPPOSITE
 //

@@ -37,6 +37,8 @@
 #include "../../utils/memory.hpp"
 #include "doomstat.hpp"
 
+import i_error; // I_Error
+
 // ?
 //#define MAXWIDTH			1120
 //#define MAXHEIGHT			832
@@ -54,7 +56,7 @@
 //
 
 
-byte *   viewimage;
+uint8_t *   viewimage;
 int      viewwidth;
 int      scaledviewwidth;
 int      viewheight;
@@ -67,7 +69,7 @@ int      columnofs[MAXWIDTH];
 //  translate a limited part to another
 //  (color ramps used for  suit colors).
 //
-byte translations[3][256];
+uint8_t translations[3][256];
 
 // Backing buffer containing the bezel drawn around the screen and
 // surrounding background.
@@ -88,7 +90,7 @@ fixed_t       dc_texturemid;
 int           dc_texheight; // [crispy] Tutti-Frutti fix
 
 // first pixel in a column (possibly virtual)
-byte *dc_source;
+uint8_t *dc_source;
 
 // just for profiling
 int dccount;
@@ -121,7 +123,7 @@ void R_DrawColumn(void)
     if ((unsigned)dc_x >= SCREENWIDTH
         || dc_yl < 0
         || dc_yh >= SCREENHEIGHT)
-        I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
 #endif
 
     // Framebuffer destination address.
@@ -154,7 +156,7 @@ void R_DrawColumn(void)
         do
         {
             // [crispy] brightmaps
-            const byte source = dc_source[frac >> FRACBITS];
+            const uint8_t source = dc_source[frac >> FRACBITS];
             *dest             = dc_colormap[dc_brightmap[source]][source];
 
             dest += SCREENWIDTH;
@@ -169,7 +171,7 @@ void R_DrawColumn(void)
             // Re-map color indices from wall texture column
             //  using a lighting/special effects LUT.
             // [crispy] brightmaps
-            const byte source = dc_source[(frac >> FRACBITS) & heightmask];
+            const uint8_t source = dc_source[(frac >> FRACBITS) & heightmask];
             *dest             = dc_colormap[dc_brightmap[source]][source];
 
             dest += SCREENWIDTH;
@@ -186,9 +188,9 @@ void R_DrawColumn(void)
 void R_DrawColumn (void) 
 { 
     int			count; 
-    byte*		source;
-    byte*		dest;
-    byte*		colormap;
+    uint8_t*		source;
+    uint8_t*		dest;
+    uint8_t*		colormap;
     
     unsigned		frac;
     unsigned		fracstep;
@@ -261,7 +263,7 @@ void R_DrawColumnLow(void)
         || dc_yh >= SCREENHEIGHT)
     {
 
-        I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
     }
     //	dccount++;
 #endif
@@ -290,7 +292,7 @@ void R_DrawColumnLow(void)
         do
         {
             // [crispy] brightmaps
-            const byte source = dc_source[frac >> FRACBITS];
+            const uint8_t source = dc_source[frac >> FRACBITS];
             *dest2 = *dest = dc_colormap[dc_brightmap[source]][source];
 
             dest += SCREENWIDTH;
@@ -306,7 +308,7 @@ void R_DrawColumnLow(void)
         {
             // Hack. Does not work corretly.
             // [crispy] brightmaps
-            const byte source = dc_source[(frac >> FRACBITS) & heightmask];
+            const uint8_t source = dc_source[(frac >> FRACBITS) & heightmask];
             *dest2 = *dest = dc_colormap[dc_brightmap[source]][source];
             dest += SCREENWIDTH;
             dest2 += SCREENWIDTH;
@@ -390,8 +392,7 @@ void R_DrawFuzzColumn(void)
     if ((unsigned)dc_x >= SCREENWIDTH
         || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
     {
-        I_Error("R_DrawFuzzColumn: %i to %i at %i",
-            dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawFuzzColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
     }
 #endif
 
@@ -474,8 +475,7 @@ void R_DrawFuzzColumnLow(void)
     if ((unsigned)x >= SCREENWIDTH
         || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
     {
-        I_Error("R_DrawFuzzColumn: %i to %i at %i",
-            dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawFuzzColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
     }
 #endif
 
@@ -537,8 +537,8 @@ void R_DrawFuzzColumnLow(void)
 //  of the BaronOfHell, the HellKnight, uses
 //  identical sprites, kinda brightened up.
 //
-byte *dc_translation;
-byte *translationtables;
+uint8_t *dc_translation;
+uint8_t *translationtables;
 
 void R_DrawTranslatedColumn(void)
 {
@@ -556,8 +556,7 @@ void R_DrawTranslatedColumn(void)
         || dc_yl < 0
         || dc_yh >= SCREENHEIGHT)
     {
-        I_Error("R_DrawColumn: %i to %i at %i",
-            dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
     }
 
 #endif
@@ -605,8 +604,7 @@ void R_DrawTranslatedColumnLow(void)
         || dc_yl < 0
         || dc_yh >= SCREENHEIGHT)
     {
-        I_Error("R_DrawColumn: %i to %i at %i",
-            dc_yl, dc_yh, x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, x);
     }
 
 #endif
@@ -652,8 +650,7 @@ void R_DrawTLColumn(void)
         || dc_yl < 0
         || dc_yh >= SCREENHEIGHT)
     {
-        I_Error("R_DrawColumn: %i to %i at %i",
-            dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
     }
 #endif
 
@@ -698,8 +695,7 @@ void R_DrawTLColumnLow(void)
         || dc_yl < 0
         || dc_yh >= SCREENHEIGHT)
     {
-        I_Error("R_DrawColumn: %i to %i at %i",
-            dc_yl, dc_yh, x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, x);
     }
 #endif
 
@@ -775,7 +771,7 @@ int ds_x1;
 int ds_x2;
 
 lighttable_t *ds_colormap[2];
-byte *        ds_brightmap;
+uint8_t *        ds_brightmap;
 
 fixed_t ds_xfrac;
 fixed_t ds_yfrac;
@@ -783,7 +779,7 @@ fixed_t ds_xstep;
 fixed_t ds_ystep;
 
 // start of a 64*64 tile image
-byte *ds_source;
+uint8_t *ds_source;
 
 // just for profiling
 int dscount;
@@ -805,8 +801,7 @@ void R_DrawSpan(void)
         || ds_x2 >= SCREENWIDTH
         || (unsigned)ds_y > SCREENHEIGHT)
     {
-        I_Error("R_DrawSpan: %i to %i at %i",
-            ds_x1, ds_x2, ds_y);
+        I_Error("R_DrawSpan: {} to {} at {}", ds_x1, ds_x2, ds_y);
     }
 //	dscount++;
 #endif
@@ -830,7 +825,7 @@ void R_DrawSpan(void)
 
     do
     {
-        byte source;
+        uint8_t source;
         // Calculate current texture index in u,v.
         // [crispy] fix flats getting more distorted the closer they are to the right
         ytemp = (ds_yfrac >> 10) & 0x0fc0;
@@ -858,8 +853,8 @@ void R_DrawSpan (void)
 { 
     unsigned	position, step;
 
-    byte*	source;
-    byte*	colormap;
+    uint8_t*	source;
+    uint8_t*	colormap;
     pixel_t*	dest;
     
     unsigned	count;
@@ -941,8 +936,7 @@ void R_DrawSpanLow(void)
         || ds_x2 >= SCREENWIDTH
         || (unsigned)ds_y > SCREENHEIGHT)
     {
-        I_Error("R_DrawSpan: %i to %i at %i",
-            ds_x1, ds_x2, ds_y);
+        I_Error("R_DrawSpan: {} to {} at {}", ds_x1, ds_x2, ds_y);
     }
 //	dscount++;
 #endif
@@ -964,7 +958,7 @@ void R_DrawSpanLow(void)
 
     do
     {
-        byte source;
+        uint8_t source;
         // Calculate current texture index in u,v.
         // [crispy] fix flats getting more distorted the closer they are to the right
         ytemp = (ds_yfrac >> 10) & 0x0fc0;
@@ -1028,7 +1022,7 @@ void R_InitBuffer(int width,
 //
 void R_FillBackScreen(void)
 {
-    byte *   src;
+    uint8_t *   src;
     pixel_t *dest;
     int      x;
     int      y;
@@ -1069,7 +1063,7 @@ void R_FillBackScreen(void)
     else
         name = name1;
 
-    src  = cache_lump_name<byte *>(name, PU_CACHE);
+    src  = cache_lump_name<uint8_t *>(name, PU_CACHE);
     dest = background_buffer;
 
     for (y = 0; y < SCREENHEIGHT - SBARHEIGHT; y++)

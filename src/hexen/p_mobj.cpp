@@ -30,6 +30,8 @@
 #include "sounds.hpp"
 #include "w_wad.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define MAX_TID_COUNT 200
@@ -1530,8 +1532,7 @@ void P_SpawnMapThing(mapthing_t * mthing)
 
     if (i == NUMMOBJTYPES)
     {                           // Can't find thing type
-        I_Error("P_SpawnMapThing: Unknown type %i at (%i, %i)",
-                mthing->type, mthing->x, mthing->y);
+        I_Error("P_SpawnMapThing: Unknown type {} at ({}, {})", mthing->type, mthing->x, mthing->y);
     }
 
     // Don't spawn keys and players in deathmatch
@@ -1650,8 +1651,7 @@ void P_CreateTIDList(void)
         {                       // Add to list
             if (i == MAX_TID_COUNT)
             {
-                I_Error("P_CreateTIDList: MAX_TID_COUNT (%d) exceeded.",
-                        MAX_TID_COUNT);
+                I_Error("P_CreateTIDList: MAX_TID_COUNT ({}) exceeded.", MAX_TID_COUNT);
             }
             TIDList[i] = mobj->tid;
             TIDMobj[i++] = mobj;
@@ -1685,8 +1685,7 @@ void P_InsertMobjIntoTIDList(mobj_t * mobj, int tid)
     {                           // Append required
         if (i == MAX_TID_COUNT)
         {
-            I_Error("P_InsertMobjIntoTIDList: MAX_TID_COUNT (%d)"
-                    "exceeded.", MAX_TID_COUNT);
+            I_Error("P_InsertMobjIntoTIDList: MAX_TID_COUNT ({}) exceeded.", MAX_TID_COUNT);
         }
         index = i;
         TIDList[index + 1] = 0;

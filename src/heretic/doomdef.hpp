@@ -610,7 +610,7 @@ void D_DoomLoop(void);
 //---------
 //SYSTEM IO
 //---------
-byte *I_AllocLow(int length);
+uint8_t *I_AllocLow(int length);
 // allocates from low memory under dos, just mallocs under unix
 
 // haleyjd: was WATCOMC, preserved for historical interest.
@@ -674,11 +674,11 @@ void SV_Open(char *fileName);
 void SV_OpenRead(char *fileName);
 void SV_Close(char *fileName);
 void SV_Write(void *buffer, int size);
-void SV_WriteByte(byte val);
+void SV_WriteByte(uint8_t val);
 void SV_WriteWord(unsigned short val);
 void SV_WriteLong(unsigned int val);
 void SV_Read(void *buffer, int size);
-byte SV_ReadByte(void);
+uint8_t SV_ReadByte(void);
 uint16_t SV_ReadWord(void);
 uint32_t SV_ReadLong(void);
 

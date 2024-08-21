@@ -27,6 +27,8 @@
 
 #include "../w_wad.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define MAX_TAGGED_LINES 64
@@ -39,7 +41,7 @@
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-static bool CheckedLockedDoor(mobj_t * mo, byte lock);
+static bool CheckedLockedDoor(mobj_t * mo, uint8_t lock);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
@@ -385,7 +387,7 @@ int     P_FindMinSurroundingLight(sector_t *sector,int max)
 //
 //=========================================================================
 
-bool EV_SectorSoundChange(byte * args)
+bool EV_SectorSoundChange(uint8_t * args)
 {
     int secNum;
     bool rtn;
@@ -410,7 +412,7 @@ bool EV_SectorSoundChange(byte * args)
 //
 //============================================================================
 
-static bool CheckedLockedDoor(mobj_t * mo, byte lock)
+static bool CheckedLockedDoor(mobj_t * mo, uint8_t lock)
 {
     extern char *TextKeyMessages[11];
     char LockedBuffer[80];
@@ -441,7 +443,7 @@ static bool CheckedLockedDoor(mobj_t * mo, byte lock)
 //
 //==========================================================================
 
-bool EV_LineSearchForPuzzleItem(line_t * line, byte * args, mobj_t * mo)
+bool EV_LineSearchForPuzzleItem(line_t * line, uint8_t * args, mobj_t * mo)
 {
     player_t *player;
     int i;
@@ -507,7 +509,7 @@ Events are operations triggered by using, crossing, or shooting special lines, o
 //
 //============================================================================
 
-bool P_ExecuteLineSpecial(int special, byte * args, line_t * line,
+bool P_ExecuteLineSpecial(int special, uint8_t * args, line_t * line,
                              int side, mobj_t * mo)
 {
     bool buttonSuccess;
@@ -849,7 +851,7 @@ bool P_ExecuteLineSpecial(int special, byte * args, line_t * line,
 bool P_ActivateLine(line_t * line, mobj_t * mo, int side,
                        int activationType)
 {
-    byte args[5];
+    uint8_t args[5];
     int lineActivation;
     bool repeat;
     bool buttonSuccess;
@@ -987,8 +989,7 @@ void P_PlayerInSpecialSector(player_t * player)
             // Used in (R_plane):R_Drawplanes
             break;
         default:
-            I_Error("P_PlayerInSpecialSector: "
-                    "unknown special %i", sector->special);
+            I_Error("P_PlayerInSpecialSector: unknown special {}", sector->special);
     }
 }
 
@@ -1160,8 +1161,7 @@ void P_SpawnSpecials(void)
                 {
                     if (TaggedLineCount == MAX_TAGGED_LINES)
                     {
-                        I_Error("P_SpawnSpecials: MAX_TAGGED_LINES "
-                                "(%d) exceeded.", MAX_TAGGED_LINES);
+                        I_Error("P_SpawnSpecials: MAX_TAGGED_LINES ({}) exceeded.", MAX_TAGGED_LINES);
                     }
                     TaggedLines[TaggedLineCount].line = &lines[i];
                     TaggedLines[TaggedLineCount++].lineTag = lines[i].arg1;

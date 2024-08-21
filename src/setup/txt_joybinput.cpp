@@ -33,6 +33,8 @@
 #include "txt_utf8.hpp"
 #include "txt_window.hpp"
 
+import i_error;
+
 #define JOYSTICK_INPUT_WIDTH 10
 
 extern int joystick_physical_buttons[NUM_VIRTUAL_BUTTONS];

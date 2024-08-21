@@ -29,6 +29,8 @@
 #include "net_sdl.hpp"
 #include "net_server.hpp"
 
+import i_error;
+
 //
 // People can become confused about how dedicated servers work.  Game
 // options are specified to the controlling player who is the first to
@@ -74,7 +76,7 @@ static void CheckForClientOptions(void)
     {
         if (M_CheckParm(not_dedicated_options[i]) > 0)
         {
-            I_Error("The command line parameter '%s' was specified to a "
+            I_Error("The command line parameter '{}' was specified to a "
                     "dedicated server.\nGame parameters should be specified "
                     "to the first player to join a server, \nnot to the "
                     "server itself. ",

@@ -27,6 +27,7 @@
 #include "doomstat.hpp"
 
 import i_swap;  // [crispy] LONG()
+import i_error; // I_Error
 #include "deh_main.hpp"
 #include "deh_str.hpp"
 #include "i_system.hpp"
@@ -213,8 +214,7 @@ void P_InitPicAnims(void)
             init_swirl = true;
         }
         else if (lastanim->numpics < 2)
-            I_Error("P_InitPicAnims: bad cycle from %s to %s",
-                startname, endname);
+            I_Error("P_InitPicAnims: bad cycle from {} to {}", startname, endname);
 
         lastanim++;
     }
@@ -1630,9 +1630,7 @@ void P_SpawnSpecials(void)
         case 85: // [crispy] [JN] (Boom) Scroll Texture Right
             if (numlinespecials >= MAXLINEANIMS)
             {
-                I_Error("Too many scrolling wall linedefs (%d)! "
-                        "(Vanilla limit is 64)",
-                    NumScrollers());
+                I_Error("Too many scrolling wall linedefs ({})! (Vanilla limit is 64)", NumScrollers());
             }
             // EFFECT FIRSTCOL SCROLL+
             linespeciallist[numlinespecials] = &lines[i];

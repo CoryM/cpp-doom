@@ -31,7 +31,7 @@ extern fixed_t		dc_iscale;
 extern fixed_t		dc_texturemid;
 
 // first pixel in a column
-extern byte*		dc_source;		
+extern uint8_t*		dc_source;		
 
 
 // The span blitting interface.
@@ -72,11 +72,11 @@ extern fixed_t		ds_xstep;
 extern fixed_t		ds_ystep;
 
 // start of a 64*64 tile image
-extern byte*		ds_source;		
+extern uint8_t*		ds_source;		
 
-extern byte*		translationtables;
-extern byte*		dc_translation;
-extern byte*		xlatab;            // haleyjd 08/26/10: [STRIFE]
+extern uint8_t*		translationtables;
+extern uint8_t*		dc_translation;
+extern uint8_t*		xlatab;            // haleyjd 08/26/10: [STRIFE]
 
 extern char *back_flat; // haleyjd 08/29/10: [STRIFE]
 

@@ -90,12 +90,12 @@ struct [[gnu::packed]] maplinedef_hexen_t {
     short v1;
     short v2;
     short flags;
-    byte  special;
-    byte  arg1;
-    byte  arg2;
-    byte  arg3;
-    byte  arg4;
-    byte  arg5;
+    uint8_t  special;
+    uint8_t  arg1;
+    uint8_t  arg2;
+    uint8_t  arg3;
+    uint8_t  arg4;
+    uint8_t  arg5;
     short sidenum[2];
 };
 
@@ -267,12 +267,12 @@ struct [[gnu::packed]] mapthing_hexen_t {
     short angle;
     short type;
     short options;
-    byte  special;
-    byte  arg1;
-    byte  arg2;
-    byte  arg3;
-    byte  arg4;
-    byte  arg5;
+    uint8_t  special;
+    uint8_t  arg1;
+    uint8_t  arg2;
+    uint8_t  arg3;
+    uint8_t  arg4;
+    uint8_t  arg5;
 };
 
 

@@ -79,6 +79,8 @@
 #include "../../utils/memory.hpp"
 #include "d_main.hpp"
 
+import i_error; //#include "i_error.hpp"
+
 //
 // D-DoomLoop()
 // Not a globally visible function,
@@ -260,7 +262,7 @@ bool D_Display(void)
     // clean up border stuff
     if (gamestate != oldgamestate && gamestate != GS_LEVEL)
 #ifndef CRISPY_TRUECOLOR
-        I_SetPalette(cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
+        I_SetPalette(cache_lump_name<uint8_t *>(DEH_String("PLAYPAL"), PU_CACHE));
 #else
         I_SetPalette(0);
 #endif
@@ -850,7 +852,7 @@ static void SetMissionForPackName(const char *pack_name)
         printf("\t%s\n", pack.name);
     }
 
-    I_Error("Unknown mission pack name: %s", pack_name);
+    I_Error("Unknown mission pack name: {}", pack_name);
 }
 
 //
@@ -1088,7 +1090,7 @@ static constexpr struct
 
 static void InitGameVersion(void)
 {
-    byte *  demolump;
+    uint8_t *  demolump;
     char    demolumpname[6];
     int     demoversion;
     int     p;
@@ -1127,7 +1129,7 @@ static void InitGameVersion(void)
                     gameversions[i].description);
             }
 
-            I_Error("Unknown game version '%s'", myargv[p + 1]);
+            I_Error("Unknown game version '{}'", myargv[p + 1]);
         }
     }
     else
@@ -1158,7 +1160,7 @@ static void InitGameVersion(void)
                 M_snprintf(demolumpname, 6, "demo%i", i);
                 if (W_CheckNumForName(demolumpname) > 0)
                 {
-                    demolump    = cache_lump_name<byte *>(demolumpname, PU_STATIC);
+                    demolump    = cache_lump_name<uint8_t *>(demolumpname, PU_STATIC);
                     demoversion = demolump[0];
                     W_ReleaseLumpName(demolumpname);
                     status = true;
@@ -1252,7 +1254,7 @@ void PrintGameVersion(void)
 
 static void D_Endoom(void)
 {
-    byte *endoom;
+    uint8_t *endoom;
 
     // Don't show ENDOOM if we have it disabled, or we're running
     // in screensaver or control test mode. Only show it once the
@@ -1264,7 +1266,7 @@ static void D_Endoom(void)
         return;
     }
 
-    endoom = cache_lump_name<byte *>(DEH_String("ENDOOM"), PU_STATIC);
+    endoom = cache_lump_name<uint8_t *>(DEH_String("ENDOOM"), PU_STATIC);
 
     I_Endoom(endoom);
 }
@@ -1931,7 +1933,7 @@ void D_DoomMain(void)
             }
 
             merged = W_MergeDump(file);
-            I_Error("W_MergeDump: Merged %d lumps into file '%s'.", merged, file);
+            I_Error("W_MergeDump: Merged {} lumps into file '{}'.", merged, file);
         }
         else
         {
@@ -1962,11 +1964,11 @@ void D_DoomMain(void)
 
             if (dumped < 0)
             {
-                I_Error("W_LumpDump: Failed to write lump '%s'.", file);
+                I_Error("W_LumpDump: Failed to write lump '{}'.", file);
             }
             else
             {
-                I_Error("W_LumpDump: Dumped lump into file '%s.lmp'.", file);
+                I_Error("W_LumpDump: Dumped lump into file '{}.lmp'.", file);
             }
         }
         else

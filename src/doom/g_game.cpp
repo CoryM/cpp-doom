@@ -31,7 +31,9 @@
 #include "deh_bexpars.hpp" // bex_pars[]
 #include "deh_str.hpp"     // DEH_String()
 
-import i_swap;
+import i_swap; // [crispy] swap
+import i_error; //#include "i_error.hpp"
+
 #include "tables.hpp"
 #include "z_zone.hpp"
 #include "f_finale.hpp"
@@ -144,9 +146,9 @@ bool longtics;    // cph's doom 1.91 longtics hack
 bool lowres_turn; // low resolution turning for longtics
 bool demoplayback;
 bool netdemo;
-byte *  demobuffer;
-byte *  demo_p;
-byte *  demoend;
+uint8_t *  demobuffer;
+uint8_t *  demo_p;
+uint8_t *  demoend;
 bool singledemo; // quit after playing a demo from cmdline
 
 bool precache = true; // if true, load all graphics at start
@@ -157,7 +159,7 @@ int     testcontrols_mousespeed;
 
 wbstartstruct_t wminfo; // parms for world map / intermission
 
-byte consistancy[MAXPLAYERS][BACKUPTICS];
+uint8_t consistancy[MAXPLAYERS][BACKUPTICS];
 
 #define MAXPLMOVE (forwardmove[1])
 
@@ -1186,8 +1188,7 @@ void G_Ticker(void)
                 if (gametic > BACKUPTICS
                     && consistancy[i][buf] != cmd->consistancy)
                 {
-                    I_Error("consistency failure (%i should be %i)",
-                        cmd->consistancy, consistancy[i][buf]);
+                    I_Error("consistency failure ({} should be {})", cmd->consistancy, consistancy[i][buf]);
                 }
                 if (players[i].mo)
                     consistancy[i][buf] = players[i].mo->x;
@@ -1457,7 +1458,7 @@ bool
             ya = finesine[an];
             break;
         default:
-            I_Error("G_CheckSpot: unexpected angle %d\n", an);
+            I_Error("G_CheckSpot: unexpected angle {}\n", an);
             xa = ya = 0;
             break;
         }
@@ -1484,7 +1485,7 @@ void G_DeathMatchSpawnPlayer(int playernum)
 
     selections = deathmatch_p - deathmatchstarts;
     if (selections < 4)
-        I_Error("Only %i deathmatch spots, 4 required", selections);
+        I_Error("Only {} deathmatch spots, 4 required", selections);
 
     for (j = 0; j < 20; j++)
     {
@@ -1957,7 +1958,7 @@ void G_DoLoadGame(void)
 
     if (save_stream == NULL)
     {
-        I_Error("Could not load savegame %s", savename);
+        I_Error("Could not load savegame {}", savename);
     }
 
     // [crispy] read extended savegame data
@@ -2078,7 +2079,7 @@ void G_DoSaveGame(void)
         save_stream            = fopen(recovery_savegame_file, "wb");
         if (save_stream == NULL)
         {
-            I_Error("Failed to open either '%s' or '%s' to write savegame.",
+            I_Error("Failed to open either '{}' or '{}' to write savegame.",
                 temp_savegame_file, recovery_savegame_file);
         }
     }
@@ -2131,8 +2132,8 @@ void G_DoSaveGame(void)
         // We failed to save to the normal location, but we wrote a
         // recovery file to the temp directory. Now we can bomb out
         // with an error.
-        I_Error("Failed to open savegame file '%s' for writing.\n"
-                "But your game has been saved to '%s' for recovery.",
+        I_Error("Failed to open savegame file '{}' for writing.\n"
+                "But your game has been saved to '{}' for recovery.",
             temp_savegame_file, recovery_savegame_file);
     }
 
@@ -2420,7 +2421,7 @@ void G_ReadDemoTiccmd(ticcmd_t *cmd)
     // continue recording the demo under a different name
     if (gamekeydown[key_demo_quit] && singledemo && !netgame)
     {
-        byte *actualbuffer = demobuffer;
+        uint8_t *actualbuffer = demobuffer;
         char *actualname   = M_StringDuplicate(defdemoname);
 
         gamekeydown[key_demo_quit] = false;
@@ -2466,8 +2467,8 @@ void G_ReadDemoTiccmd(ticcmd_t *cmd)
 static void IncreaseDemoBuffer(void)
 {
     int   current_length;
-    byte *new_demobuffer;
-    byte *new_demop;
+    uint8_t *new_demobuffer;
+    uint8_t *new_demop;
     int   new_length;
 
     // Find the current size
@@ -2495,7 +2496,7 @@ static void IncreaseDemoBuffer(void)
 
 void G_WriteDemoTiccmd(ticcmd_t *cmd)
 {
-    byte *demo_start;
+    uint8_t *demo_start;
 
     if (gamekeydown[key_demo_quit]) // press q to end demo recording
         G_CheckDemoStatus();
@@ -2734,7 +2735,7 @@ void G_DoPlayDemo(void)
 
     lumpnum    = W_GetNumForName(defdemoname);
     gameaction = ga_nothing;
-    demobuffer = cache_lump_num<byte *>(lumpnum, PU_STATIC);
+    demobuffer = cache_lump_num<uint8_t *>(lumpnum, PU_STATIC);
     demo_p     = demobuffer;
 
     // [crispy] ignore empty demo lumps
@@ -2766,13 +2767,13 @@ void G_DoPlayDemo(void)
     else if (demoversion != G_VanillaVersionCode() && !(gameversion <= exe_doom_1_2 && olddemo))
     {
         const char *message = "Demo is from a different game version!\n"
-                              "(read %i, should be %i)\n"
+                              "(read {}, should be {})\n"
                               "\n"
                               "*** You may need to upgrade your version "
                               "of Doom to v1.9. ***\n"
                               "    See: https://www.doomworld.com/classicdoom"
                               "/info/patches.php\n"
-                              "    This appears to be %s.";
+                              "    This appears to be {}.";
 
         if (singledemo)
             I_Error(message, demoversion, G_VanillaVersionCode(),
@@ -2846,7 +2847,7 @@ void G_DoPlayDemo(void)
     // [crispy] demo progress bar
     {
         int   i, numplayersingame = 0;
-        byte *demo_ptr = demo_p;
+        uint8_t *demo_ptr = demo_p;
 
         for (i = 0; i < MAXPLAYERS; i++)
         {
@@ -2915,7 +2916,7 @@ bool G_CheckDemoStatus(void)
         timingdemo   = false;
         demoplayback = false;
 
-        I_Error("timed %i gametics in %i realtics (%f fps)",
+        I_Error("timed {} gametics in {} realtics ({} fps)",
             gametic, realtics, fps);
     }
 
@@ -2972,11 +2973,11 @@ bool G_CheckDemoStatus(void)
         // [crispy] if a new game is started during demo recording, start a new demo
         if (gameaction != ga_newgame)
         {
-            I_Error("Demo %s recorded", demoname);
+            I_Error("Demo {} recorded", demoname);
         }
         else
         {
-            fprintf(stderr, "Demo %s recorded\n", demoname);
+            fprintf(stderr, "Demo {} recorded\n", demoname);
         }
     }
 

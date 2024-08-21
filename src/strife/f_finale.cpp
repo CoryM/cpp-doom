@@ -526,8 +526,8 @@ extern	patch_t *hu_font[HU_FONTSIZE];
 //
 void F_TextWrite (void)
 {
-    byte*	src;
-    byte*	dest;
+    uint8_t*	src;
+    uint8_t*	dest;
     
     int		x,y,w;
     signed int	count;
@@ -895,18 +895,18 @@ F_DrawPatchCol
   int		col )
 {
     column_t*	column;
-    byte*	source;
-    byte*	dest;
-    byte*	desttop;
+    uint8_t*	source;
+    uint8_t*	dest;
+    uint8_t*	desttop;
     int		count;
 	
-    column = (column_t *)((byte *)patch + LONG(patch->columnofs[col]));
+    column = (column_t *)((uint8_t *)patch + LONG(patch->columnofs[col]));
     desttop = I_VideoBuffer + x;
 
     // step through the posts in a column
     while (column->topdelta != 0xff )
     {
-	source = (byte *)column + 3;
+	source = (uint8_t *)column + 3;
 	dest = desttop + column->topdelta*SCREENWIDTH;
 	count = column->length;
 		
@@ -915,7 +915,7 @@ F_DrawPatchCol
 	    *dest = *source++;
 	    dest += SCREENWIDTH;
 	}
-	column = (column_t *)(  (byte *)column + column->length + 4 );
+	column = (column_t *)(  (uint8_t *)column + column->length + 4 );
     }
 }
 #endif

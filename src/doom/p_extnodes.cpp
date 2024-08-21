@@ -20,6 +20,7 @@
 
 import i_swap; 
 import m_bbox; // #include "m_bbox.hpp"
+import i_error; // I_Error
 
 #include "p_local.hpp"
 #include "i_system.hpp"
@@ -45,7 +46,7 @@ sector_t *GetSectorAtNullAddress(void);
 mapformat_t P_CheckMapFormat(int lumpnum)
 {
     mapformat_t format = mapformat_t::MFMT_DOOMBSP;
-    byte *      nodes  = NULL;
+    uint8_t *      nodes  = NULL;
     int         b;
 
     if ((b = lumpnum + ML_BLOCKMAP + 1) < numlumps && !doomtype::strncasecmp(lumpinfo[b]->name, "BEHAVIOR", 8))
@@ -56,7 +57,7 @@ mapformat_t P_CheckMapFormat(int lumpnum)
     else
         fprintf(stderr, "Doom (");
 
-    if (!((b = lumpnum + ML_NODES) < numlumps && (nodes = cache_lump_num<byte *>(b, PU_CACHE)) && W_LumpLength(b) > 0))
+    if (!((b = lumpnum + ML_NODES) < numlumps && (nodes = cache_lump_num<uint8_t *>(b, PU_CACHE)) && W_LumpLength(b) > 0))
         fprintf(stderr, "no nodes");
     else if (!memcmp(nodes, "xNd4\0\0\0\0", 8))
     {
@@ -114,7 +115,7 @@ void P_LoadSegs_DeePBSP(int lump)
         // e6y: check for wrong indexes
         if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
         {
-            I_Error("P_LoadSegs: linedef %d for seg %d references a non-existent sidedef %d",
+            I_Error("P_LoadSegs: linedef {} for seg {} references a non-existent sidedef {}",
                 linedef, i, (unsigned)ldef->sidenum[side]);
         }
 
@@ -177,7 +178,7 @@ void P_LoadNodes_DeePBSP(int lump)
 
     numnodes   = (W_LumpLength(lump) - 8) / sizeof(mapnode_deepbsp_t);
     nodes      = zmalloc<decltype(nodes)>(numnodes * sizeof(node_t), PU_LEVEL, 0);
-    auto *data = cache_lump_num<const byte *>(lump, PU_STATIC);
+    auto *data = cache_lump_num<const uint8_t *>(lump, PU_STATIC);
 
     // [crispy] warn about missing nodes
     if (!data || !numnodes)
@@ -227,7 +228,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
 {
     unsigned int i;
 #ifdef HAVE_LIBZ
-    byte *output;
+    uint8_t *output;
 #endif
 
     unsigned int orgVerts, newVerts;
@@ -236,7 +237,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
     unsigned int numNodes;
     vertex_t *   newvertarray = NULL;
 
-    auto *data = cache_lump_num<byte *>(lump, PU_LEVEL);
+    auto *data = cache_lump_num<uint8_t *>(lump, PU_LEVEL);
 
     // 0. Uncompress nodes lump (or simply skip header)
 
@@ -395,7 +396,7 @@ void P_LoadNodes_ZDBSP(int lump, bool compressed)
         // e6y: check for wrong indexes
         if ((unsigned)ldef->sidenum[side] >= (unsigned)numsides)
         {
-            I_Error("P_LoadSegs: linedef %d for seg %d references a non-existent sidedef %d",
+            I_Error("P_LoadSegs: linedef {} for seg {} references a non-existent sidedef {}",
                 linedef, i, (unsigned)ldef->sidenum[side]);
         }
 
@@ -473,7 +474,7 @@ void P_LoadThings_Hexen(int lump)
     mapthing_hexen_t *mt;
     int               numthings;
 
-    auto *data = cache_lump_num<byte *>(lump, PU_STATIC);
+    auto *data = cache_lump_num<uint8_t *>(lump, PU_STATIC);
     numthings  = W_LumpLength(lump) / sizeof(mapthing_hexen_t);
 
     mt = (mapthing_hexen_t *)data;
@@ -513,7 +514,7 @@ void P_LoadLineDefs_Hexen(int lump)
     numlines = W_LumpLength(lump) / sizeof(maplinedef_hexen_t);
     lines    = zmalloc<decltype(lines)>(numlines * sizeof(line_t), PU_LEVEL, 0);
     memset(lines, 0, numlines * sizeof(line_t));
-    auto *data = cache_lump_num<byte *>(lump, PU_STATIC);
+    auto *data = cache_lump_num<uint8_t *>(lump, PU_STATIC);
 
     mld  = (maplinedef_hexen_t *)data;
     ld   = lines;

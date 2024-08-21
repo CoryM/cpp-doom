@@ -32,6 +32,7 @@
 #include "icon.cpp"
 
 import crispy;
+import i_error;
 
 #include "../utils/lump.hpp"
 #include "config.h"
@@ -567,8 +568,7 @@ static void LimitTextureSize(int *w_upscale, int *h_upscale)
     // Query renderer and limit to maximum texture dimensions of hardware:
     if (SDL_GetRendererInfo(renderer, &rinfo) != 0)
     {
-        I_Error("CreateUpscaledTexture: SDL_GetRendererInfo() call failed: %s",
-            SDL_GetError());
+        I_Error("CreateUpscaledTexture: SDL_GetRendererInfo() call failed: {}", SDL_GetError());
     }
 
     if (rinfo.max_texture_width == 0 || rinfo.max_texture_height == 0)
@@ -590,8 +590,7 @@ static void LimitTextureSize(int *w_upscale, int *h_upscale)
     if ((*w_upscale < 1 && rinfo.max_texture_width > 0) || (*h_upscale < 1 && rinfo.max_texture_height > 0))
     {
         I_Error("CreateUpscaledTexture: Can't create a texture big enough for "
-                "the whole screen! Maximum texture size %dx%d",
-            rinfo.max_texture_width, rinfo.max_texture_height);
+                "the whole screen! Maximum texture size {}x{}", rinfo.max_texture_width, rinfo.max_texture_height);
     }
 
     // We limit the amount of texture memory used for the intermediate buffer,
@@ -603,7 +602,7 @@ static void LimitTextureSize(int *w_upscale, int *h_upscale)
     if (max_scaling_buffer_pixels < SCREENWIDTH * SCREENHEIGHT)
     {
         I_Error("CreateUpscaledTexture: max_scaling_buffer_pixels too small "
-                "to create a texture buffer: %d < %d",
+                "to create a texture buffer: {} < {}",
             max_scaling_buffer_pixels, SCREENWIDTH * SCREENHEIGHT);
     }
 
@@ -643,7 +642,7 @@ static void CreateUpscaledTexture(bool force)
     // window size (because of highdpi).
     if (SDL_GetRendererOutputSize(renderer, &w, &h) != 0)
     {
-        I_Error("Failed to get renderer output size: %s", SDL_GetError());
+        I_Error("Failed to get renderer output size: {}", SDL_GetError());
     }
 
     // When the screen or window dimensions do not match the aspect ratio
@@ -901,17 +900,17 @@ void I_ReadScreen(pixel_t *scr)
 // I_SetPalette
 //
 // [crispy] intermediate gamma levels
-byte **gamma2table = NULL;
+uint8_t **gamma2table = NULL;
 void   I_SetGammaTable(void)
 {
     int i;
 
-    gamma2table = static_cast<byte **>(malloc(9 * sizeof(*gamma2table)));
+    gamma2table = static_cast<uint8_t **>(malloc(9 * sizeof(*gamma2table)));
 
     // [crispy] 5 original gamma levels
     for (i = 0; i < 5; i++)
     {
-        gamma2table[2 * i] = (byte *)gammatable[i];
+        gamma2table[2 * i] = (uint8_t *)gammatable[i];
     }
 
     // [crispy] 4 intermediate gamma levels
@@ -919,7 +918,7 @@ void   I_SetGammaTable(void)
     {
         int j;
 
-        gamma2table[2 * i + 1] = static_cast<byte *>(malloc(256 * sizeof(**gamma2table)));
+        gamma2table[2 * i + 1] = static_cast<uint8_t *>(malloc(256 * sizeof(**gamma2table)));
 
         for (j = 0; j < 256; j++)
         {
@@ -929,7 +928,7 @@ void   I_SetGammaTable(void)
 }
 
 #ifndef CRISPY_TRUECOLOR
-void I_SetPalette(byte *doompalette)
+void I_SetPalette(uint8_t *doompalette)
 {
     int i;
 
@@ -1014,7 +1013,7 @@ void I_SetPalette(int palette)
         pane_alpha = 0xff * 125 / 1000;
         break;
     default:
-        I_Error("Unknown palette: %d!\n", palette);
+        I_Error("Unknown palette: {}!\n", palette);
         break;
     }
 }
@@ -1362,8 +1361,7 @@ static void SetVideoMode(void)
 
         if (screen == NULL)
         {
-            I_Error("Error creating window for video startup: %s",
-                SDL_GetError());
+            I_Error("Error creating window for video startup: {}", SDL_GetError());
         }
 
         pixel_format = SDL_GetWindowPixelFormat(screen);
@@ -1380,8 +1378,7 @@ static void SetVideoMode(void)
 
     if (SDL_GetCurrentDisplayMode(video_display, &mode) != 0)
     {
-        I_Error("Could not get display mode for video display #%d: %s",
-            video_display, SDL_GetError());
+        I_Error("Could not get display mode for video display #{}: {}", video_display, SDL_GetError());
     }
 
     // Turn on vsync if we aren't in a -timedemo
@@ -1429,8 +1426,7 @@ static void SetVideoMode(void)
 
     if (renderer == NULL)
     {
-        I_Error("Error creating renderer for screen window: %s",
-            SDL_GetError());
+        I_Error("Error creating renderer for screen window: {}", SDL_GetError());
     }
 
     // Important: Set the "logical size" of the rendering context. At the same
@@ -1573,7 +1569,7 @@ void I_InitGraphics(void)
 {
     SDL_Event dummy;
 #ifndef CRISPY_TRUECOLOR
-    byte *doompal;
+    uint8_t *doompal;
 #endif
     char *env;
 
@@ -1598,7 +1594,7 @@ void I_InitGraphics(void)
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        I_Error("Failed to initialize video: %s", SDL_GetError());
+        I_Error("Failed to initialize video: {}", SDL_GetError());
     }
 
     // When in screensaver mode, run full screen and auto detect
@@ -1641,7 +1637,7 @@ void I_InitGraphics(void)
 
     // Set the palette
 
-    doompal = cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE);
+    doompal = cache_lump_name<uint8_t *>(DEH_String("PLAYPAL"), PU_CACHE);
     I_SetPalette(doompal);
     SDL_SetPaletteColors(screenbuffer->format->palette, palette, 0, 256);
 #endif
@@ -1806,13 +1802,13 @@ void I_ReInitGraphics(bReinit reinit)
 
 // [crispy] take screenshot of the rendered image
 
-void I_RenderReadPixels(byte **data, int *w, int *h, int *p)
+void I_RenderReadPixels(uint8_t **data, int *w, int *h, int *p)
 {
     SDL_Rect         rect;
     SDL_PixelFormat *format;
     int              temp;
     uint32_t         png_format;
-    byte *           pixels;
+    uint8_t *           pixels;
 
     // [crispy] adjust cropping rectangle if necessary
     rect.x = rect.y = 0;
@@ -1874,7 +1870,7 @@ void I_RenderReadPixels(byte **data, int *w, int *h, int *p)
     }
 
     // [crispy] allocate memory for screenshot image
-    pixels = static_cast<byte *>(malloc(rect.h * temp));
+    pixels = static_cast<uint8_t *>(malloc(rect.h * temp));
     SDL_RenderReadPixels(renderer, &rect, format->format, pixels, temp);
 
     *data = pixels;

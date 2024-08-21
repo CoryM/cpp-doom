@@ -35,6 +35,8 @@
 #include "../z_zone.hpp"
 #include "../../utils/lump.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define	TEXTSPEED	3
@@ -75,7 +77,7 @@ static char *FinaleText;
 
 static fixed_t *Palette;
 static fixed_t *PaletteDelta;
-static byte *RealPalette;
+static uint8_t *RealPalette;
 
 // CODE --------------------------------------------------------------------
 
@@ -257,15 +259,15 @@ static void InitializeFade(bool fadeIn)
 
     Palette = Z_Malloc(768 * sizeof(fixed_t), PU_STATIC, 0);
     PaletteDelta = Z_Malloc(768 * sizeof(fixed_t), PU_STATIC, 0);
-    RealPalette = Z_Malloc(768 * sizeof(byte), PU_STATIC, 0);
+    RealPalette = Z_Malloc(768 * sizeof(uint8_t), PU_STATIC, 0);
 
     if (fadeIn)
     {
-        memset(RealPalette, 0, 768 * sizeof(byte));
+        memset(RealPalette, 0, 768 * sizeof(uint8_t));
         for (i = 0; i < 768; i++)
         {
             Palette[i] = 0;
-            PaletteDelta[i] = FixedDiv((*((byte *) cache_lump_name<patch_t *>("playpal",
+            PaletteDelta[i] = FixedDiv((*((uint8_t *) cache_lump_name<patch_t *>("playpal",
                                                                    PU_CACHE) +
                                           i)) << FRACBITS, 70 * FRACUNIT);
         }
@@ -275,7 +277,7 @@ static void InitializeFade(bool fadeIn)
         for (i = 0; i < 768; i++)
         {
             RealPalette[i] =
-                *((byte *) cache_lump_name<patch_t *>("playpal", PU_CACHE) + i);
+                *((uint8_t *) cache_lump_name<patch_t *>("playpal", PU_CACHE) + i);
             Palette[i] = RealPalette[i] << FRACBITS;
             PaletteDelta[i] = FixedDiv(Palette[i], -70 * FRACUNIT);
         }
@@ -391,7 +393,7 @@ static char *GetFinaleText(int sequence)
     msgSize = W_LumpLength(msgLump);
     if (msgSize >= MAX_INTRMSN_MESSAGE_SIZE)
     {
-        I_Error("Finale message too long (%s)", msgLumpName);
+        I_Error("Finale message too long ({})", msgLumpName);
     }
     W_ReadLump(msgLump, ClusterMessage);
     ClusterMessage[msgSize] = 0;        // Append terminator

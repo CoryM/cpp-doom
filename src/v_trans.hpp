@@ -51,13 +51,13 @@ enum
 
 #define CR_GREY CR_GRAY
 
-extern byte * cr[CRMAX];
+extern uint8_t * cr[CRMAX];
 extern char **crstr;
 
 #define cr_esc '~'
 
 #ifndef CRISPY_TRUECOLOR
-extern byte *tranmap;
+extern uint8_t *tranmap;
 #endif
 
 #endif // __V_TRANS__

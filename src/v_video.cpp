@@ -30,6 +30,7 @@ import i_swap;
 import m_fixed; // #include "m_fixed.hpp"
 import m_bbox; // #include "m_bbox.hpp"
 import crispy;
+import i_error;
 
 
 #include "i_system.hpp"
@@ -61,16 +62,16 @@ import crispy;
 // Blending table used for fuzzpatch, etc.
 // Only used in Heretic/Hexen
 
-byte *  tinttable      = NULL;
-byte *  tranmap        = NULL;
-byte *  dp_translation = NULL;
+uint8_t *  tinttable      = NULL;
+uint8_t *  tranmap        = NULL;
+uint8_t *  dp_translation = NULL;
 bool dp_translucent = false;
 #ifdef CRISPY_TRUECOLOR
 extern pixel_t *colormaps;
 #endif
 
 // villsa [STRIFE] Blending table used for Strife
-byte *xlatab = NULL;
+uint8_t *xlatab = NULL;
 
 // The screen buffer that the v_video.c code draws to.
 
@@ -227,7 +228,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
     column_t *column;
     pixel_t * desttop;
     pixel_t * dest;
-    byte *    source;
+    uint8_t *    source;
     int       w;
 
     // [crispy] four different rendering functions
@@ -277,7 +278,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
             break;
         }
 
-        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((uint8_t *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
         while (column->topdelta != 0xff)
@@ -293,7 +294,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
                 topdelta = column->topdelta;
             }
             top    = ((y + topdelta) * dy) >> FRACBITS;
-            source = (byte *)column + 3;
+            source = (uint8_t *)column + 3;
             dest   = desttop + ((topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count  = (column->length * dy) >> FRACBITS;
 
@@ -319,7 +320,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
                 srccol += dyi;
                 dest += SCREENWIDTH;
             }
-            column = (column_t *)((byte *)column + column->length + 4);
+            column = (column_t *)((uint8_t *)column + column->length + 4);
         }
     }
 }
@@ -371,7 +372,7 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
     column_t *column;
     pixel_t * desttop;
     pixel_t * dest;
-    byte *    source;
+    uint8_t *    source;
     int       w;
 
     y -= endian::SHORT(patch->topoffset);
@@ -418,7 +419,7 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
             break;
         }
 
-        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[w - 1 - (col >> FRACBITS)]));
+        column = (column_t *)((uint8_t *)patch + endian::LONG(patch->columnofs[w - 1 - (col >> FRACBITS)]));
 
         // step through the posts in a column
         while (column->topdelta != 0xff)
@@ -434,7 +435,7 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
                 topdelta = column->topdelta;
             }
             top    = ((y + topdelta) * dy) >> FRACBITS;
-            source = (byte *)column + 3;
+            source = (uint8_t *)column + 3;
             dest   = desttop + ((topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count  = (column->length * dy) >> FRACBITS;
 
@@ -464,7 +465,7 @@ void V_DrawPatchFlipped(int x, int y, patch_t *patch)
                 srccol += dyi;
                 dest += SCREENWIDTH;
             }
-            column = (column_t *)((byte *)column + column->length + 4);
+            column = (column_t *)((uint8_t *)column + column->length + 4);
         }
     }
 }
@@ -491,7 +492,7 @@ void V_DrawTLPatch(int x, int y, patch_t *patch)
     int       count, col;
     column_t *column;
     pixel_t * desttop, *dest;
-    byte *    source;
+    uint8_t *    source;
     int       w;
 
     y -= endian::SHORT(patch->topoffset);
@@ -511,14 +512,14 @@ void V_DrawTLPatch(int x, int y, patch_t *patch)
     w = endian::SHORT(patch->width);
     for (; col < w << FRACBITS; x++, col += dxi, desttop++)
     {
-        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((uint8_t *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
 
         while (column->topdelta != 0xff)
         {
             int srccol = 0;
-            source     = (byte *)column + 3;
+            source     = (uint8_t *)column + 3;
             dest       = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count      = (column->length * dy) >> FRACBITS;
 
@@ -528,7 +529,7 @@ void V_DrawTLPatch(int x, int y, patch_t *patch)
                 srccol += dyi;
                 dest += SCREENWIDTH;
             }
-            column = (column_t *)((byte *)column + column->length + 4);
+            column = (column_t *)((uint8_t *)column + column->length + 4);
         }
     }
 }
@@ -544,7 +545,7 @@ void V_DrawXlaPatch(int x, int y, patch_t *patch)
     int       count, col;
     column_t *column;
     pixel_t * desttop, *dest;
-    byte *    source;
+    uint8_t *    source;
     int       w;
 
     y -= endian::SHORT(patch->topoffset);
@@ -562,14 +563,14 @@ void V_DrawXlaPatch(int x, int y, patch_t *patch)
     w = endian::SHORT(patch->width);
     for (; col < w << FRACBITS; x++, col += dxi, desttop++)
     {
-        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((uint8_t *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
 
         while (column->topdelta != 0xff)
         {
             int srccol = 0;
-            source     = (byte *)column + 3;
+            source     = (uint8_t *)column + 3;
             dest       = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count      = (column->length * dy) >> FRACBITS;
 
@@ -579,7 +580,7 @@ void V_DrawXlaPatch(int x, int y, patch_t *patch)
                 srccol += dyi;
                 dest += SCREENWIDTH;
             }
-            column = (column_t *)((byte *)column + column->length + 4);
+            column = (column_t *)((uint8_t *)column + column->length + 4);
         }
     }
 }
@@ -595,7 +596,7 @@ void V_DrawAltTLPatch(int x, int y, patch_t *patch)
     int       count, col;
     column_t *column;
     pixel_t * desttop, *dest;
-    byte *    source;
+    uint8_t *    source;
     int       w;
 
     y -= endian::SHORT(patch->topoffset);
@@ -615,14 +616,14 @@ void V_DrawAltTLPatch(int x, int y, patch_t *patch)
     w = endian::SHORT(patch->width);
     for (; col < w << FRACBITS; x++, col += dxi, desttop++)
     {
-        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((uint8_t *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
 
         while (column->topdelta != 0xff)
         {
             int srccol = 0;
-            source     = (byte *)column + 3;
+            source     = (uint8_t *)column + 3;
             dest       = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count      = (column->length * dy) >> FRACBITS;
 
@@ -632,7 +633,7 @@ void V_DrawAltTLPatch(int x, int y, patch_t *patch)
                 srccol += dyi;
                 dest += SCREENWIDTH;
             }
-            column = (column_t *)((byte *)column + column->length + 4);
+            column = (column_t *)((uint8_t *)column + column->length + 4);
         }
     }
 }
@@ -648,7 +649,7 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
     int       count, col;
     column_t *column;
     pixel_t * desttop, *dest;
-    byte *    source;
+    uint8_t *    source;
     pixel_t * desttop2, *dest2;
     int       w;
 
@@ -670,14 +671,14 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
     w = endian::SHORT(patch->width);
     for (; col < w << FRACBITS; x++, col += dxi, desttop++, desttop2++)
     {
-        column = (column_t *)((byte *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
+        column = (column_t *)((uint8_t *)patch + endian::LONG(patch->columnofs[col >> FRACBITS]));
 
         // step through the posts in a column
 
         while (column->topdelta != 0xff)
         {
             int srccol = 0;
-            source     = (byte *)column + 3;
+            source     = (uint8_t *)column + 3;
             dest       = desttop + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             dest2      = desttop2 + ((column->topdelta * dy) >> FRACBITS) * SCREENWIDTH;
             count      = (column->length * dy) >> FRACBITS;
@@ -690,7 +691,7 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
                 srccol += dyi;
                 dest += SCREENWIDTH;
             }
-            column = (column_t *)((byte *)column + column->length + 4);
+            column = (column_t *)((uint8_t *)column + column->length + 4);
         }
     }
 }
@@ -701,7 +702,7 @@ void V_DrawShadowedPatch(int x, int y, patch_t *patch)
 
 void V_LoadTintTable(void)
 {
-    tinttable = cache_lump_name<byte *>("TINTTAB", PU_STATIC);
+    tinttable = cache_lump_name<uint8_t *>("TINTTAB", PU_STATIC);
 }
 
 //
@@ -712,7 +713,7 @@ void V_LoadTintTable(void)
 
 void V_LoadXlaTable(void)
 {
-    xlatab = cache_lump_name<byte *>("XLATAB", PU_STATIC);
+    xlatab = cache_lump_name<uint8_t *>("XLATAB", PU_STATIC);
 }
 
 //
@@ -935,12 +936,12 @@ struct [[gnu::packed]] pcx_t
 
 void WritePCXfile(char *filename, pixel_t *data,
     int width, int height,
-    byte *palette)
+    uint8_t *palette)
 {
     int    i;
     int    length;
     pcx_t *pcx;
-    byte * pack;
+    uint8_t * pack;
 
     pcx = zmalloc<decltype(pcx)>(width * height * 2 + 1000, PU_STATIC, NULL);
 
@@ -981,7 +982,7 @@ void WritePCXfile(char *filename, pixel_t *data,
         *pack++ = *palette++;
 
     // write output file
-    length = pack - (byte *)pcx;
+    length = pack - (uint8_t *)pcx;
     M_WriteFile(filename, pcx, length);
 
     Z_Free(pcx);
@@ -1004,7 +1005,7 @@ static void warning_fn([[maybe_unused]] png_structp p, png_const_charp s)
 
 void WritePNGfile(char *filename, [[maybe_unused]] pixel_t *data,
     int width, int height,
-    byte *palette)
+    uint8_t *palette)
 {
     png_structp ppng;
     png_infop   pinfo;
@@ -1012,9 +1013,9 @@ void WritePNGfile(char *filename, [[maybe_unused]] pixel_t *data,
     FILE *handle;
     int   i, j;
     //  int w_factor, h_factor;
-    byte *rowbuf;
+    uint8_t *rowbuf;
 
-    extern void I_RenderReadPixels(byte * *data, int *w, int *h, int *p);
+    extern void I_RenderReadPixels(uint8_t * *data, int *w, int *h, int *p);
 
     /*
     if (aspect_ratio_correct == 1)
@@ -1183,7 +1184,7 @@ void V_ScreenShot(const char *format)
     {
         WritePNGfile(lbmname, I_VideoBuffer,
             SCREENWIDTH, SCREENHEIGHT,
-            cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
+            cache_lump_name<uint8_t *>(DEH_String("PLAYPAL"), PU_CACHE));
     }
     else
 #endif
@@ -1191,7 +1192,7 @@ void V_ScreenShot(const char *format)
         // save the pcx file
         WritePCXfile(lbmname, I_VideoBuffer,
             SCREENWIDTH, SCREENHEIGHT,
-            cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
+            cache_lump_name<uint8_t *>(DEH_String("PLAYPAL"), PU_CACHE));
     }
 }
 

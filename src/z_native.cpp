@@ -137,7 +137,7 @@ void Z_Free(void *ptr)
 {
     memblock_t *block;
 
-    block = (memblock_t *)((byte *)ptr - sizeof(memblock_t));
+    block = (memblock_t *)((uint8_t *)ptr - sizeof(memblock_t));
 
     if (block->id != ZONEID)
     {
@@ -235,9 +235,7 @@ void *Z_Malloc(int size, int tag, void *user)
 
     if (tag < 0 || tag >= PU_NUM_TAGS || tag == PU_FREE)
     {
-        I_Error("Z_Malloc: attempted to allocate a block with an invalid "
-                "tag: %i",
-            tag);
+        I_Error("Z_Malloc: attempted to allocate a block with an invalid tag: {}", tag);
     }
 
     if (user == NULL && tag >= PU_PURGELEVEL)
@@ -257,7 +255,7 @@ void *Z_Malloc(int size, int tag, void *user)
         {
             if (!ClearCache(sizeof(memblock_t) + size))
             {
-                I_Error("Z_Malloc: failed on allocation of %i bytes", size);
+                I_Error("Z_Malloc: failed on allocation of {} bytes", size);
             }
         }
     }
@@ -352,7 +350,7 @@ void Z_DumpHeap(int lowtag, int hightag)
 	    break;
 	}
 	
-	if ( (byte *)block + block->size != (byte *)block->next)
+	if ( (uint8_t *)block + block->size != (uint8_t *)block->next)
 	    printf ("ERROR: block size does not touch the next block\n");
 
 	if ( block->next->prev != block)
@@ -387,7 +385,7 @@ void Z_FileDumpHeap(FILE *f)
 	    break;
 	}
 	
-	if ( (byte *)block + block->size != (byte *)block->next)
+	if ( (uint8_t *)block + block->size != (uint8_t *)block->next)
 	    fprintf (f,"ERROR: block size does not touch the next block\n");
 
 	if ( block->next->prev != block)
@@ -441,16 +439,13 @@ void Z_ChangeTag2(void *ptr, int tag, const char *file, int line)
 {
     memblock_t *block;
 
-    block = (memblock_t *)((byte *)ptr - sizeof(memblock_t));
+    block = (memblock_t *)((uint8_t *)ptr - sizeof(memblock_t));
 
     if (block->id != ZONEID)
-        I_Error("%s:%i: Z_ChangeTag: block without a ZONEID!",
-            file, line);
+        I_Error("{}:{}: Z_ChangeTag: block without a ZONEID!", file, line);
 
-    if (tag >= PU_PURGELEVEL && block->user == NULL)
-        I_Error("%s:%i: Z_ChangeTag: an owner is required "
-                "for purgable blocks",
-            file, line);
+    if (tag >= PU_PURGELEVEL && block->user == nullptr)
+        I_Error("{}:{}: Z_ChangeTag: an owner is required for purgable blocks", file, line);
 
     // Remove the block from its current list, and rehook it into
     // its new list.
@@ -464,7 +459,7 @@ void Z_ChangeUser(void *ptr, void **user)
 {
     memblock_t *block;
 
-    block = (memblock_t *)((byte *)ptr - sizeof(memblock_t));
+    block = (memblock_t *)((uint8_t *)ptr - sizeof(memblock_t));
 
     if (block->id != ZONEID)
     {

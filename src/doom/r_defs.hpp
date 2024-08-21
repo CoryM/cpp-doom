@@ -305,8 +305,8 @@ typedef struct
 
 // PC direct to screen pointers
 //B UNUSED - keep till detailshift in r_draw.c resolved
-//extern byte*	destview;
-//extern byte*	destscreen;
+//extern uint8_t*	destview;
+//extern uint8_t*	destscreen;
 
 
 //
@@ -385,11 +385,11 @@ typedef struct vissprite_s {
     //  maxbright frames as well
     // [crispy] brightmaps for select sprites
     lighttable_t *colormap[2];
-    byte *        brightmap;
+    uint8_t *        brightmap;
 
     int mobjflags;
     // [crispy] color translation table for blood colored by monster class
-    byte *translation;
+    uint8_t *translation;
 #ifdef CRISPY_TRUECOLOR
     pixel_t (*blendfunc)(const pixel_t fg, const pixel_t bg);
 #endif
@@ -423,7 +423,7 @@ typedef struct
     short lump[16]; // [crispy] support 16 sprite rotations
 
     // Flip bit (1 = flip) to use for view angles 0-7.
-    byte flip[16]; // [crispy] support 16 sprite rotations
+    uint8_t flip[16]; // [crispy] support 16 sprite rotations
 
 } spriteframe_t;
 

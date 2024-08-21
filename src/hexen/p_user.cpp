@@ -24,6 +24,7 @@
 #include "s_sound.hpp"
 #include "sounds.hpp"
 #include "sb_bar.hpp" // inv_ptr
+import i_error;
 
 void P_PlayerNextArtifact(player_t * player);
 
@@ -422,7 +423,7 @@ void P_DeathThink(player_t * player)
     {
         if (player == &players[consoleplayer])
         {
-            I_SetPalette((byte *) cache_lump_name<patch_t *>("PLAYPAL", PU_CACHE));
+            I_SetPalette((uint8_t *) cache_lump_name<patch_t *>("PLAYPAL", PU_CACHE));
             inv_ptr = 0;
             curpos = 0;
             newtorch = 0;
@@ -538,8 +539,7 @@ bool P_UndoPlayerMorph(player_t * player)
             mo = P_SpawnMobj(x, y, z, MT_PLAYER_MAGE);
             break;
         default:
-            I_Error("P_UndoPlayerMorph:  Unknown player class %d\n",
-                    player->class);
+            I_Error("P_UndoPlayerMorph:  Unknown player class {}\n", player->class);
             return false;
     }
     if (P_TestMobjLocation(mo) == false)

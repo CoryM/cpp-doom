@@ -24,6 +24,8 @@
 #include "deh_misc.hpp"
 
 import m_bbox; // #include "m_bbox.hpp"
+import i_error; // I_Error
+
 #include "m_random.hpp"
 #include "i_system.hpp"
 

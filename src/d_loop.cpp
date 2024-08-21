@@ -29,6 +29,7 @@
 
 #include "m_argv.hpp"
 import m_fixed; //#include "m_fixed.hpp"
+import i_error; //#include "i_error.hpp"
 
 #include "net_client.hpp"
 #include "net_gui.hpp"
@@ -492,7 +493,7 @@ bool D_InitNetGame(net_connect_data_t *connect_data)
 
             if (addr == nullptr)
             {
-                I_Error("Unable to resolve '%s'\n", myargv[i + 1]);
+                I_Error("Unable to resolve '{}'\n", myargv[i + 1]);
             }
         }
     }
@@ -506,8 +507,7 @@ bool D_InitNetGame(net_connect_data_t *connect_data)
 
         if (!NET_CL_Connect(addr, connect_data))
         {
-            I_Error("D_InitNetGame: Failed to connect to %s:\n%s\n",
-                NET_AddrToString(addr), net_client_reject_reason);
+            I_Error("D_InitNetGame: Failed to connect to {}:\n{}\n", NET_AddrToString(addr), net_client_reject_reason);
         }
 
         printf("D_InitNetGame: Connected to %s\n", NET_AddrToString(addr));

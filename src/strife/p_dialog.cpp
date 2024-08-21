@@ -392,11 +392,11 @@ static const char *dialogtext;
 // dialogs from the dialog lump rather than reading them raw from the lump 
 // pointer. This avoids problems with structure packing.
 //
-static void P_ParseDialogLump(byte *lump, mapdialog_t **dialogs, 
+static void P_ParseDialogLump(uint8_t *lump, mapdialog_t **dialogs, 
                               int numdialogs, int tag)
 {
     int i;
-    byte *rover = lump;
+    uint8_t *rover = lump;
 
     *dialogs = Z_Malloc(numdialogs * sizeof(mapdialog_t), tag, NULL);
 
@@ -454,7 +454,7 @@ void P_DialogLoad(void)
         numleveldialogs = 0;
     else
     {
-        byte *leveldialogptr = W_CacheLumpNum(lumpnum, PU_STATIC);
+        uint8_t *leveldialogptr = W_CacheLumpNum(lumpnum, PU_STATIC);
         numleveldialogs = W_LumpLength(lumpnum) / ORIG_MAPDIALOG_SIZE;
         P_ParseDialogLump(leveldialogptr, &leveldialogs, numleveldialogs, 
                           PU_LEVEL);
@@ -464,7 +464,7 @@ void P_DialogLoad(void)
     // also load SCRIPT00 if it has not been loaded yet
     if(!script0loaded)
     {
-        byte *script0ptr;
+        uint8_t *script0ptr;
 
         script0loaded = true; 
         // BUG: Rogue should have used W_GetNumForName here...
@@ -1202,7 +1202,7 @@ void P_DialogDoChoice(int choice)
         // store next dialog into the talking actor
         nextdialog = currentchoice->next;
         if(nextdialog != 0)
-            dialogtalker->miscdata = (byte)(abs(nextdialog));
+            dialogtalker->miscdata = (uint8_t)(abs(nextdialog));
     }
     else
     {

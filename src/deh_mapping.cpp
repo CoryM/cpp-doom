@@ -25,6 +25,8 @@
 #include "i_system.hpp"  // for I_Error
 #include "m_misc.hpp"    // for M_StringCopy
 
+import i_error; //#include "i_error.hpp"
+
 
 static deh_mapping_entry_t *GetMappingEntryByName(deh_context_t *context,
     deh_mapping_t *                                              mapping,
@@ -187,8 +189,7 @@ void DEH_StructSHA1Sum(sha1_context_t *context, deh_mapping_t *mapping,
             SHA1_UpdateInt32(context, *((uint32_t *)location));
             break;
         default:
-            I_Error("Unknown dehacked mapping field type for '%s' (BUG)",
-                entry->name);
+            I_Error("Unknown dehacked mapping field type for '{}' (BUG)", entry->name);
             break;
         }
     }

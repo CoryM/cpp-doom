@@ -59,8 +59,8 @@ static void DrawKeyBar(void);
 static void DrawWeaponPieces(void);
 static void DrawFullScreenStuff(void);
 static void DrawAnimatedIcons(void);
-static bool HandleCheats(byte key);
-static bool CheatAddKey(Cheat_t * cheat, byte key, bool * eat);
+static bool HandleCheats(uint8_t key);
+static bool CheatAddKey(Cheat_t * cheat, uint8_t key, bool * eat);
 static void CheatGodFunc(player_t * player, Cheat_t * cheat);
 static void CheatNoClipFunc(player_t * player, Cheat_t * cheat);
 static void CheatWeaponsFunc(player_t * player, Cheat_t * cheat);
@@ -596,8 +596,8 @@ static void DrSmallNumber(int val, int x, int y)
 
 static void ShadeLine(int x, int y, int height, int shade)
 {
-	byte *dest;
-	byte *shades;
+	uint8_t *dest;
+	uint8_t *shades;
 
 	shades = colormaps+9*256+shade*2*256;
 	dest = I_VideoBuffer+y*SCREENWIDTH+x;
@@ -920,7 +920,7 @@ void SB_PaletteFlash(bool forceChange)
 {
     static int sb_palette = 0;
     int palette;
-    byte *pal;
+    uint8_t *pal;
 
     if (forceChange)
     {
@@ -973,7 +973,7 @@ void SB_PaletteFlash(bool forceChange)
     if (palette != sb_palette)
     {
         sb_palette = palette;
-        pal = (byte *) W_CacheLumpNum(PlayPalette, PU_CACHE) + palette * 768;
+        pal = (uint8_t *) W_CacheLumpNum(PlayPalette, PU_CACHE) + palette * 768;
         I_SetPalette(pal);
     }
 }
@@ -1529,7 +1529,7 @@ bool SB_Responder(event_t * event)
 //
 //==========================================================================
 
-static bool HandleCheats(byte key)
+static bool HandleCheats(uint8_t key)
 {
     int i;
     bool eat;
@@ -1580,7 +1580,7 @@ static bool HandleCheats(byte key)
 //
 //==========================================================================
 
-static bool CheatAddKey(Cheat_t * cheat, byte key, bool * eat)
+static bool CheatAddKey(Cheat_t * cheat, uint8_t key, bool * eat)
 {
 /*
     if (!cheat->pos)
@@ -1918,7 +1918,7 @@ static void CheatScriptFunc2(player_t * player, Cheat_t * cheat)
 static void CheatScriptFunc3(player_t * player, Cheat_t * cheat)
 {
     int script;
-    byte script_args[3];
+    uint8_t script_args[3];
     int tens, ones;
     char textBuffer[40];
     char args[2];

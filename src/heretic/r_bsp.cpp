@@ -16,6 +16,7 @@
 // R_bsp.c
 
 import m_bbox; // #include "m_bbox.hpp"
+import i_error;
 #include "doomdef.hpp"
 #include "i_system.hpp"
 #include "i_system.hpp"
@@ -417,7 +418,7 @@ void R_Subsector(int num)
 
 #ifdef RANGECHECK
     if (num >= numsubsectors)
-        I_Error("R_Subsector: ss %i with numss = %i", num, numsubsectors);
+        I_Error("R_Subsector: ss {} with numss = {}", num, numsubsectors);
 #endif
 
     sscount++;

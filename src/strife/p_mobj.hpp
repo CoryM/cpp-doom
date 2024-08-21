@@ -320,7 +320,7 @@ typedef struct mobj_s
     // [STRIFE] haleyjd 09/05/10: 
     // * In multiplayer this stores allegiance, for friends and teleport beacons
     // * In single-player this tracks dialog state.
-    byte                miscdata;
+    uint8_t                miscdata;
     
 } mobj_t;
 

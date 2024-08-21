@@ -21,6 +21,8 @@
 #include "r_data.hpp"
 #include "s_sound.hpp"
 
+import i_error;
+
 //==================================================================
 //
 //      CHANGE THE TEXTURE OF A WALL SWITCH TO ITS OPPOSITE

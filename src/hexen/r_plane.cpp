@@ -23,6 +23,8 @@
 #include "r_local.hpp"
 #include "r_data.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 // TYPES -------------------------------------------------------------------
@@ -144,7 +146,7 @@ void R_MapPlane(int y, int x1, int x2)
 #ifdef RANGECHECK
     if (x2 < x1 || x1 < 0 || x2 >= viewwidth || (unsigned) y > viewheight)
     {
-        I_Error("R_MapPlane: %i, %i at %i", x1, x2, y);
+        I_Error("R_MapPlane: {} to {} at {}", x1, x2, y);
     }
 #endif
 
@@ -375,10 +377,10 @@ void R_DrawPlanes(void)
     int light;
     int x, stop;
     int angle;
-    byte *tempSource;
-    byte *source;
-    byte *source2;
-    byte *dest;
+    uint8_t *tempSource;
+    uint8_t *source;
+    uint8_t *source2;
+    uint8_t *dest;
     int count;
     int offset;
     int skyTexture;
@@ -388,24 +390,21 @@ void R_DrawPlanes(void)
     int frac;
     int fracstep = FRACUNIT >> crispy->hires;
 
-    extern byte *ylookup[MAXHEIGHT];
+    extern uint8_t *ylookup[MAXHEIGHT];
     extern int columnofs[MAXWIDTH];
 
 #ifdef RANGECHECK
     if (ds_p - drawsegs > MAXDRAWSEGS)
     {
-        I_Error("R_DrawPlanes: drawsegs overflow (%" PRIiPTR ")",
-                ds_p - drawsegs);
+        I_Error("R_DrawPlanes: drawsegs overflow ({})", ds_p - drawsegs);
     }
     if (lastvisplane - visplanes > MAXVISPLANES)
     {
-        I_Error("R_DrawPlanes: visplane overflow (%" PRIiPTR ")",
-                lastvisplane - visplanes);
+        I_Error("R_DrawPlanes: visplane overflow ({})", lastvisplane - visplanes);
     }
     if (lastopening - openings > MAXOPENINGS)
     {
-        I_Error("R_DrawPlanes: opening overflow (%" PRIiPTR ")",
-                lastopening - openings);
+        I_Error("R_DrawPlanes: opening overflow ({})", lastopening - openings);
     }
 #endif
 

@@ -20,6 +20,8 @@
 #include "m_bbox.hpp"
 #include "r_local.hpp"
 
+import i_error;
+
 seg_t *curline;
 side_t *sidedef;
 line_t *linedef;
@@ -417,7 +419,7 @@ void R_Subsector(int num)
 
 #ifdef RANGECHECK
     if (num >= numsubsectors)
-        I_Error("R_Subsector: ss %i with numss = %i", num, numsubsectors);
+        I_Error("R_Subsector: ss {} with numss = {}", num, numsubsectors);
 #endif
 
     sscount++;

@@ -35,6 +35,7 @@
 #include "st_lib.hpp"
 #include "r_local.hpp"
 
+import i_error;
 
 // in AM_map.c
 extern bool		automapactive; 

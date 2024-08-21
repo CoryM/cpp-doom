@@ -453,7 +453,7 @@ extern int mouseSensitivity;
 
 extern bool precache;        // if true, load all graphics at level load
 
-extern byte *screen;            // off screen work buffer, from V_video.c
+extern uint8_t *screen;            // off screen work buffer, from V_video.c
 
 extern bool singledemo;      // quit after playing a demo from cmdline
 

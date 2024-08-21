@@ -32,6 +32,8 @@
 #include "net_structrw.hpp"
 #include "net_sdl.hpp"
 
+import i_error;
+
 // DNS address of the Internet master server.
 
 #define MASTER_SERVER_ADDRESS "master.chocolate-doom.org:2342"
@@ -819,7 +821,7 @@ void NET_QueryAddress(char *addr_str)
 
     if (addr == NULL)
     {
-        I_Error("NET_QueryAddress: Host '%s' not found!", addr_str);
+        I_Error("NET_QueryAddress: Host '{}' not found!", addr_str);
     }
 
     // Add the address to the list of targets.
@@ -842,7 +844,7 @@ void NET_QueryAddress(char *addr_str)
     }
     else
     {
-        I_Error("No response from '%s'", addr_str);
+        I_Error("No response from '{}'", addr_str);
     }
 }
 

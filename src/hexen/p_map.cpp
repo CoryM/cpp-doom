@@ -23,6 +23,8 @@
 #include "s_sound.hpp"
 #include "sounds.hpp"
 
+import i_error;
+
 static void CheckForPushSpecial(line_t * line, int side, mobj_t * mobj);
 
 /*
@@ -2004,7 +2006,7 @@ static bool PuzzleActivated;
 bool PTR_PuzzleItemTraverse(intercept_t * in)
 {
     mobj_t *mobj;
-    byte args[3];
+    uint8_t args[3];
     int sound;
 
     if (in->isaline)

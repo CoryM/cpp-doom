@@ -30,6 +30,8 @@
 #include "net_packet.hpp"       // for NET_NewPacket
 #include "z_zone.hpp"           // for Z_Free, PU_STATIC
 
+import i_error;
+
 
 //
 // NETWORKING
@@ -212,7 +214,7 @@ static bool NET_SDL_InitServer(void)
 
     if (udpsocket == NULL)
     {
-        I_Error("NET_SDL_InitServer: Unable to bind to port %i", port);
+        I_Error("NET_SDL_InitServer: Unable to bind to port {}", port);
     }
 
     recvpacket = SDLNet_AllocPacket(1500);
@@ -268,8 +270,7 @@ static void NET_SDL_SendPacket(net_addr_t *addr, net_packet_t *packet)
 
     if (!SDLNet_UDP_Send(udpsocket, -1, &sdl_packet))
     {
-        I_Error("NET_SDL_SendPacket: Error transmitting packet: %s",
-            SDLNet_GetError());
+        I_Error("NET_SDL_SendPacket: Error transmitting packet: {}", SDLNet_GetError());
     }
 }
 
@@ -281,8 +282,7 @@ static bool NET_SDL_RecvPacket(net_addr_t **addr, net_packet_t **packet)
 
     if (result < 0)
     {
-        I_Error("NET_SDL_RecvPacket: Error receiving packet: %s",
-            SDLNet_GetError());
+        I_Error("NET_SDL_RecvPacket: Error receiving packet: {}", SDLNet_GetError());
     }
 
     // no packets received

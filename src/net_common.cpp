@@ -31,6 +31,8 @@
 #include "net_packet.hpp"
 #include "net_structrw.hpp"
 
+import i_error;
+
 // connections time out after 30 seconds
 
 #define CONNECTION_TIMEOUT_LEN 30
@@ -472,7 +474,7 @@ void NET_OpenLog(void)
         net_debug = fopen(myargv[p + 1], "w");
         if (net_debug == NULL)
         {
-            I_Error("Failed to open %s to write debug log.", myargv[p + 1]);
+            I_Error("Failed to open {} to write debug log.", myargv[p + 1]);
         }
         I_AtExit(CloseLog, true);
     }

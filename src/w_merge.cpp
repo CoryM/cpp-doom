@@ -24,6 +24,7 @@
 #include <cctype>
 
 import i_swap; 
+import i_error;          // for I_Error
 #include "../utils/memory.hpp"
 #include "doomtype.hpp"
 #include "i_system.hpp"
@@ -741,7 +742,7 @@ int W_MergeDump(const char *file)
     fp = fopen(file, "wb");
     if (!fp)
     {
-        I_Error("W_MergeDump: Failed writing to file '%s'!", file);
+        I_Error("W_MergeDump: Failed writing to file '{}'!", file);
     }
 
     // [crispy] prepare directory

@@ -39,6 +39,8 @@
 #include "net_sdl.hpp"
 #include "net_structrw.hpp"
 
+import i_error;
+
 // How often to refresh our registration with the master server.
 #define MASTER_REFRESH_PERIOD 30 /* twice per minute */
 
@@ -1306,7 +1308,7 @@ static void NET_SV_SendTics(net_client_t *client,
 
         if (i != cmd->seq)
         {
-            I_Error("Wanted to send %i, but %i is in its place", i, cmd->seq);
+            I_Error("Wanted to send {}, but {} is in its place", i, cmd->seq);
         }
 
         // Add command

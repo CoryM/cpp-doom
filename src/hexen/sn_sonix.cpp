@@ -27,6 +27,8 @@
 #include "s_sound.hpp"
 #include "sc_man.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define SS_MAX_SCRIPTS	64
@@ -147,7 +149,7 @@ static void VerifySequencePtr(int *base, int *ptr)
 {
     if (ptr - base > SS_TEMPBUFFER_SIZE)
     {
-        I_Error("VerifySequencePtr:  tempPtr >= %d\n", SS_TEMPBUFFER_SIZE);
+        I_Error("VerifySequencePtr:  tempPtr >= {}\n", SS_TEMPBUFFER_SIZE);
     }
 }
 

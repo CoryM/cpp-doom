@@ -25,6 +25,8 @@
 #include "m_misc.hpp"
 #include "w_wad.hpp"
 
+import i_error;
+
 // MACROS ------------------------------------------------------------------
 
 #define MAX_STRING_SIZE 64
@@ -137,7 +139,7 @@ static void OpenScript(const char *name, int type)
     else if (type == FILE_ZONE_SCRIPT)
     {                           // File script - zone
         ScriptLumpNum = -1;
-        ScriptSize = M_ReadFile(name, (byte **) & ScriptBuffer);
+        ScriptSize = M_ReadFile(name, (uint8_t **) & ScriptBuffer);
         M_ExtractFileBase(name, ScriptName);
     }
     ScriptPtr = ScriptBuffer;
@@ -304,8 +306,7 @@ bool SC_GetNumber(void)
         sc_Number = strtol(sc_String, &stopper, 0);
         if (*stopper != 0)
         {
-            I_Error("SC_GetNumber: Bad numeric constant \"%s\".\n"
-                    "Script %s, Line %d", sc_String, ScriptName, sc_Line);
+            I_Error("SC_GetNumber: Bad numeric constant \"{}\".\nScript {}, Line {}", sc_String, ScriptName, sc_Line);
         }
         return true;
     }
@@ -449,7 +450,7 @@ void SC_ScriptError(const char *message)
     {
         message = "Bad syntax.";
     }
-    I_Error("Script error, \"%s\" line %d: %s", ScriptName, sc_Line, message);
+    I_Error("Script error, \"{}\" line {}: {}", ScriptName, sc_Line, message);
 }
 
 //==========================================================================

@@ -30,6 +30,8 @@
 #include "doomstat.hpp"
 #include "d_main.hpp"     // villsa [STRIFE]
 
+import i_error;
+
 extern line_t *spechit[];  // haleyjd:
 extern int     numspechit; // [STRIFE] - needed in P_XYMovement
 
@@ -785,7 +787,7 @@ void P_RespawnSpecials (void)
     if (i >= NUMMOBJTYPES)
     {
         I_Error("P_RespawnSpecials: Failed to find mobj type with doomednum "
-                "%d when respawning thing. This would cause a buffer overrun "
+                "{} when respawning thing. This would cause a buffer overrun "
                 "in vanilla Strife.", mthing->type);
     }
 
@@ -966,9 +968,7 @@ void P_SpawnMapThing (mapthing_t* mthing)
             break;
 
     if (i==NUMMOBJTYPES)
-        I_Error ("P_SpawnMapThing: Unknown type %i at (%i, %i)",
-                 mthing->type,
-                 mthing->x, mthing->y);
+        I_Error ("P_SpawnMapThing: Unknown type {} at ({}, {})", mthing->type, mthing->x, mthing->y);
 
     // don't spawn keycards and players in deathmatch
     if (deathmatch && mobjinfo[i].flags & MF_NOTDMATCH)

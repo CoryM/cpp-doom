@@ -30,6 +30,8 @@
 #include "g_game.hpp" // players[]
 #include "d_net.hpp" // NET_SendFrags()
 
+import i_error;
+
 #define BONUSADD 6
 
 int ArmorIncrement[NUMCLASSES][NUMARMOR] = {
@@ -165,7 +167,7 @@ bool P_GiveMana(player_t * player, manatype_t mana, int count)
     }
     if ((unsigned int) mana > NUMMANA)
     {
-        I_Error("P_GiveMana: bad type %i", mana);
+        I_Error("P_GiveMana: bad type {}", mana);
     }
     if (player->mana[mana] == MAX_MANA)
     {
@@ -1294,7 +1296,7 @@ mobj_t *ActiveMinotaur(player_t * master)
 
 void P_KillMobj(mobj_t * source, mobj_t * target)
 {
-    byte dummyArgs[3] = {0, 0, 0};
+    uint8_t dummyArgs[3] = {0, 0, 0};
     mobj_t *master;
 
     target->flags &= ~(MF_SHOOTABLE | MF_FLOAT | MF_SKULLFLY | MF_NOGRAVITY);

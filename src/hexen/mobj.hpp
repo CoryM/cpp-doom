@@ -76,8 +76,8 @@ struct mobj_t
     fixed_t floorclip;          // value to use for floor clipping
     int archiveNum;             // Identity during archive
     short tid;                  // thing identifier
-    byte special;               // special
-    byte args[5];               // special arguments
+    uint8_t special;               // special
+    uint8_t args[5];               // special arguments
 };
 
 #endif // __MOBJ_HPP__

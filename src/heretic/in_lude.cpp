@@ -21,6 +21,7 @@
 ========================
 */
 import i_swap; // #include "i_swap.hpp"
+import i_error;
 
 #include "doomdef.hpp"
 #include "deh_str.hpp"
@@ -164,7 +165,7 @@ extern void AM_Stop(void);
 
 void IN_Start(void)
 {
-    I_SetPalette(cache_lump_name<byte *>(DEH_String("PLAYPAL"), PU_CACHE));
+    I_SetPalette(cache_lump_name<uint8_t *>(DEH_String("PLAYPAL"), PU_CACHE));
     IN_LoadPics();
     IN_InitStats();
     intermission = true;
@@ -580,11 +581,11 @@ void IN_DrawStatBack(void)
     int x;
     int y;
 
-    byte *src;
-    byte *dest;
+    uint8_t *src;
+    uint8_t *dest;
 
-    src = cache_lump_name<byte *>(DEH_String("FLOOR16"), PU_CACHE);
-    dest = reinterpret_cast<byte *>(I_VideoBuffer);
+    src = cache_lump_name<uint8_t *>(DEH_String("FLOOR16"), PU_CACHE);
+    dest = reinterpret_cast<uint8_t *>(I_VideoBuffer);
 
     for (y = 0; y < SCREENHEIGHT; y++)
     {

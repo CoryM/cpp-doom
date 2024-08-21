@@ -22,6 +22,7 @@
 #include "v_video.hpp"
 
 #include "../../utils/lump.hpp"
+import i_error;
 
 /*
 
@@ -30,11 +31,11 @@ files only know about ccordinates, not the architecture of the frame buffer.
 
 */
 
-byte *viewimage;
+uint8_t *viewimage;
 int viewwidth, scaledviewwidth, viewheight, viewwindowx, viewwindowy;
-byte *ylookup[MAXHEIGHT];
+uint8_t *ylookup[MAXHEIGHT];
 int columnofs[MAXWIDTH];
-byte translations[3][256];      // color tables for different players
+uint8_t translations[3][256];      // color tables for different players
 
 /*
 ==================
@@ -53,14 +54,14 @@ int dc_yh;
 fixed_t dc_iscale;
 fixed_t dc_texturemid;
 int dc_texheight;
-byte *dc_source;                // first pixel in a column (possibly virtual)
+uint8_t *dc_source;                // first pixel in a column (possibly virtual)
 
 int dccount;                    // just for profiling
 
 void R_DrawColumn(void)
 {
     int count;
-    byte *dest;
+    uint8_t *dest;
     fixed_t frac, fracstep;
     int heightmask = dc_texheight - 1;
 
@@ -70,7 +71,7 @@ void R_DrawColumn(void)
 
 #ifdef RANGECHECK
     if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
-        I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
 #endif
 
     dest = ylookup[dc_yl] + columnofs[dc_x];
@@ -112,7 +113,7 @@ void R_DrawColumn(void)
 void R_DrawColumnLow(void)
 {
     int count;
-    byte *dest;
+    uint8_t *dest;
     fixed_t frac, fracstep;
 
     count = dc_yh - dc_yl;
@@ -121,7 +122,7 @@ void R_DrawColumnLow(void)
 
 #ifdef RANGECHECK
     if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
-        I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
 //      dccount++;
 #endif
 
@@ -144,7 +145,7 @@ void R_DrawColumnLow(void)
 void R_DrawTLColumn(void)
 {
     int count;
-    byte *dest;
+    uint8_t *dest;
     fixed_t frac, fracstep;
 
     if (!dc_yl)
@@ -158,7 +159,7 @@ void R_DrawTLColumn(void)
 
 #ifdef RANGECHECK
     if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
-        I_Error("R_DrawTLColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawTLColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
 #endif
 
     dest = ylookup[dc_yl] + columnofs[dc_x];
@@ -186,13 +187,13 @@ void R_DrawTLColumn(void)
 ========================
 */
 
-byte *dc_translation;
-byte *translationtables;
+uint8_t *dc_translation;
+uint8_t *translationtables;
 
 void R_DrawTranslatedColumn(void)
 {
     int count;
-    byte *dest;
+    uint8_t *dest;
     fixed_t frac, fracstep;
 
     count = dc_yh - dc_yl;
@@ -201,7 +202,7 @@ void R_DrawTranslatedColumn(void)
 
 #ifdef RANGECHECK
     if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
-        I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
 #endif
 
     dest = ylookup[dc_yl] + columnofs[dc_x];
@@ -221,7 +222,7 @@ void R_DrawTranslatedColumn(void)
 void R_DrawTranslatedTLColumn(void)
 {
     int count;
-    byte *dest;
+    uint8_t *dest;
     fixed_t frac, fracstep;
 
     count = dc_yh - dc_yl;
@@ -230,7 +231,7 @@ void R_DrawTranslatedTLColumn(void)
 
 #ifdef RANGECHECK
     if ((unsigned) dc_x >= SCREENWIDTH || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
-        I_Error("R_DrawColumn: %i to %i at %i", dc_yl, dc_yh, dc_x);
+        I_Error("R_DrawColumn: {} to {} at {}", dc_yl, dc_yh, dc_x);
 #endif
 
     dest = ylookup[dc_yl] + columnofs[dc_x];
@@ -263,7 +264,7 @@ void R_InitTranslationTables(void)
     V_LoadTintTable();
 
     // Allocate translation tables
-    translationtables = static_cast<byte *>(Z_Malloc(256 * 3, PU_STATIC, nullptr));
+    translationtables = static_cast<uint8_t *>(Z_Malloc(256 * 3, PU_STATIC, nullptr));
 
     // Fill out the translation tables
     for (i = 0; i < 256; i++)
@@ -298,20 +299,20 @@ fixed_t ds_xfrac;
 fixed_t ds_yfrac;
 fixed_t ds_xstep;
 fixed_t ds_ystep;
-byte *ds_source;                // start of a 64*64 tile image
+uint8_t *ds_source;                // start of a 64*64 tile image
 
 int dscount;                    // just for profiling
 
 void R_DrawSpan(void)
 {
     fixed_t xfrac, yfrac;
-    byte *dest;
+    uint8_t *dest;
     int count, spot;
 
 #ifdef RANGECHECK
     if (ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH
         || (unsigned) ds_y > SCREENHEIGHT)
-        I_Error("R_DrawSpan: %i to %i at %i", ds_x1, ds_x2, ds_y);
+        I_Error("R_DrawSpan: {} to {} at {}", ds_x1, ds_x2, ds_y);
 //      dscount++;
 #endif
 
@@ -333,13 +334,13 @@ void R_DrawSpan(void)
 void R_DrawSpanLow(void)
 {
     fixed_t xfrac, yfrac;
-    byte *dest;
+    uint8_t *dest;
     int count, spot;
 
 #ifdef RANGECHECK
     if (ds_x2 < ds_x1 || ds_x1 < 0 || ds_x2 >= SCREENWIDTH
         || (unsigned) ds_y > SCREENHEIGHT)
-        I_Error("R_DrawSpan: %i to %i at %i", ds_x1, ds_x2, ds_y);
+        I_Error("R_DrawSpan: {} to {} at {}", ds_x1, ds_x2, ds_y);
 //      dscount++;
 #endif
 
@@ -380,7 +381,7 @@ void R_InitBuffer(int width, int height)
     else
         viewwindowy = (SCREENHEIGHT - SBARHEIGHT - height) >> 1;
     for (i = 0; i < height; i++)
-        ylookup[i] = reinterpret_cast<byte *>(I_VideoBuffer + (i + viewwindowy) * SCREENWIDTH);
+        ylookup[i] = reinterpret_cast<uint8_t *>(I_VideoBuffer + (i + viewwindowy) * SCREENWIDTH);
 }
 
 
@@ -397,7 +398,7 @@ bool BorderNeedRefresh;
 
 void R_DrawViewBorder(void)
 {
-    byte *src, *dest;
+    uint8_t *src, *dest;
     int x, y;
 
     if (scaledviewwidth == SCREENWIDTH)
@@ -405,13 +406,13 @@ void R_DrawViewBorder(void)
 
     if (gamemode == shareware)
     {
-        src = cache_lump_name<byte *>(DEH_String("FLOOR04"), PU_CACHE);
+        src = cache_lump_name<uint8_t *>(DEH_String("FLOOR04"), PU_CACHE);
     }
     else
     {
-        src = cache_lump_name<byte *>(DEH_String("FLAT513"), PU_CACHE);
+        src = cache_lump_name<uint8_t *>(DEH_String("FLAT513"), PU_CACHE);
     }
-    dest = reinterpret_cast<byte *>(I_VideoBuffer);
+    dest = reinterpret_cast<uint8_t *>(I_VideoBuffer);
 
     for (y = 0; y < SCREENHEIGHT - SBARHEIGHT; y++)
     {
@@ -463,7 +464,7 @@ bool BorderTopRefresh;
 
 void R_DrawTopBorder(void)
 {
-    byte *src, *dest;
+    uint8_t *src, *dest;
     int x, y;
 
     if (scaledviewwidth == SCREENWIDTH)
@@ -471,13 +472,13 @@ void R_DrawTopBorder(void)
 
     if (gamemode == shareware)
     {
-        src = cache_lump_name<byte *>(DEH_String("FLOOR04"), PU_CACHE);
+        src = cache_lump_name<uint8_t *>(DEH_String("FLOOR04"), PU_CACHE);
     }
     else
     {
-        src = cache_lump_name<byte *>(DEH_String("FLAT513"), PU_CACHE);
+        src = cache_lump_name<uint8_t *>(DEH_String("FLAT513"), PU_CACHE);
     }
-    dest = reinterpret_cast<byte *>(I_VideoBuffer);
+    dest = reinterpret_cast<uint8_t *>(I_VideoBuffer);
 
     for (y = 0; y < 30; y++)
     {

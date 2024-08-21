@@ -21,6 +21,7 @@
 #include <cstdlib>
 
 import m_fixed;
+import i_error; // I_Error
 
 #include "dstrings.hpp"
 #include "deh_main.hpp"
@@ -80,9 +81,9 @@ char *P_SaveGameFile(int slot)
 
 // Endian-safe integer read/write functions
 
-static byte saveg_read8(void)
+static uint8_t saveg_read8(void)
 {
-    byte result = -1;
+    uint8_t result = -1;
 
     if (fread(&result, 1, 1, save_stream) < 1)
     {
@@ -98,7 +99,7 @@ static byte saveg_read8(void)
     return result;
 }
 
-static void saveg_write8(byte value)
+static void saveg_write8(uint8_t value)
 {
     if (fwrite(&value, 1, 1, save_stream) < 1)
     {
@@ -606,10 +607,10 @@ static void saveg_read_ticcmd_t(ticcmd_t *str)
     // short consistancy;
     str->consistancy = saveg_read16();
 
-    // byte chatchar;
+    // uint8_t chatchar;
     str->chatchar = saveg_read8();
 
-    // byte buttons;
+    // uint8_t buttons;
     str->buttons = saveg_read8();
 }
 
@@ -628,10 +629,10 @@ static void saveg_write_ticcmd_t(ticcmd_t *str)
     // short consistancy;
     saveg_write16(str->consistancy);
 
-    // byte chatchar;
+    // uint8_t chatchar;
     saveg_write8(str->chatchar);
 
-    // byte buttons;
+    // uint8_t buttons;
     saveg_write8(str->buttons);
 }
 
@@ -1441,7 +1442,7 @@ void P_WriteSaveGameHeader(char *description)
 bool P_ReadSaveGameHeader(void)
 {
     int  i;
-    byte a, b, c;
+    uint8_t a, b, c;
     char vcheck[VERSIONSIZE];
     char read_vcheck[VERSIONSIZE];
 
@@ -1687,7 +1688,7 @@ void P_ArchiveThinkers(void)
 //
 void P_UnArchiveThinkers(void)
 {
-    byte       tclass;
+    uint8_t       tclass;
     thinker_t *currentthinker;
     thinker_t *next;
     mobj_t *   mobj;
@@ -1734,7 +1735,7 @@ void P_UnArchiveThinkers(void)
             break;
 
         default:
-            I_Error("Unknown tclass %i in savegame", tclass);
+            I_Error("Unknown tclass {} in savegame", tclass);
         }
     }
 }
@@ -1892,7 +1893,7 @@ void P_ArchiveSpecials(void)
 //
 void P_UnArchiveSpecials(void)
 {
-    byte          tclass;
+    uint8_t          tclass;
     ceiling_t *   ceiling;
     vldoor_t *    door;
     floormove_t * floor;
@@ -1981,9 +1982,7 @@ void P_UnArchiveSpecials(void)
             break;
 
         default:
-            I_Error("P_UnarchiveSpecials:Unknown tclass %i "
-                    "in savegame",
-                tclass);
+            I_Error("P_UnarchiveSpecials:Unknown tclass {} in savegame", tclass);
         }
     }
 }

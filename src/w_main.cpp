@@ -26,6 +26,7 @@
 #include "m_argv.hpp"    // for M_CheckParmWithArgs, myargv, myargc
 #include "w_merge.hpp"   // for W_MergeFile, W_NWTMergeFile, W_NWTDashMerge
 #include "w_wad.hpp"     // for W_CheckNumForName, lumpindex_t
+import i_error;          // for I_Error
 
 
 // Parse the command line, merging WAD files that are sppecified.
@@ -250,14 +251,11 @@ void W_CheckCorrectIWAD(GameMission_t mission)
 
             if (lumpnum >= 0)
             {
-                I_Error("\nYou are trying to use a %s IWAD file with "
-                        "the %s%s binary.\nThis isn't going to work.\n"
-                        "You probably want to use the %s%s binary.",
-                    D_SuggestGameName(unique_lumps[i].mission,
-                        indetermined),
-                    PROGRAM_PREFIX,
-                    D_GameMissionString(mission),
-                    PROGRAM_PREFIX,
+                I_Error("\nYou are trying to use a {} IWAD file with "
+                        "the {}{} binary.\nThis isn't going to work.\n"
+                        "You probably want to use the {}{} binary.",
+                    D_SuggestGameName(unique_lumps[i].mission, indetermined), PROGRAM_PREFIX,
+                    D_GameMissionString(mission), PROGRAM_PREFIX,
                     D_GameMissionString(unique_lumps[i].mission));
             }
         }

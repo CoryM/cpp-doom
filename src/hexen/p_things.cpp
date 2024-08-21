@@ -161,7 +161,7 @@ mobjtype_t TranslateThingType[] = {
 //
 //==========================================================================
 
-bool EV_ThingProjectile(byte * args, bool gravity)
+bool EV_ThingProjectile(uint8_t * args, bool gravity)
 {
     int tid;
     angle_t angle;
@@ -218,7 +218,7 @@ bool EV_ThingProjectile(byte * args, bool gravity)
 //
 //==========================================================================
 
-bool EV_ThingSpawn(byte * args, bool fog)
+bool EV_ThingSpawn(uint8_t * args, bool fog)
 {
     int tid;
     angle_t angle;
@@ -386,7 +386,7 @@ bool EV_ThingDestroy(int tid)
 //==========================================================================
 
 /*
-bool EV_ThingMove(byte *args)
+bool EV_ThingMove(uint8_t *args)
 {
 	return false;
 }

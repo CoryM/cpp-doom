@@ -38,6 +38,8 @@
 
 #include "p_inter.hpp"
 
+import i_error; // I_Error
+
 
 #define BONUSADD 6
 
@@ -71,7 +73,7 @@ bool
         return false;
 
     if (ammo > NUMAMMO)
-        I_Error("P_GiveAmmo: bad type %i", ammo);
+        I_Error("P_GiveAmmo: bad type {}", static_cast<int>(ammo));
 
     if (player->ammo[ammo] == player->maxammo[ammo])
         return false;

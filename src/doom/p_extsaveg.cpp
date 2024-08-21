@@ -491,7 +491,7 @@ lumpinfo_t *savemaplumpinfo = NULL;
 void P_ReadExtendedSaveGameData(int pass)
 {
     long p, curpos, endpos;
-    byte episode, map;
+    uint8_t episode, map;
     int  lumpnum = -1;
 
     line   = static_cast<char *>(malloc(MAX_LINE_LEN));
@@ -533,7 +533,7 @@ void P_ReadExtendedSaveGameData(int pass)
 
     for (p = endpos - 1; p > 0; p--)
     {
-        byte curbyte;
+        uint8_t curbyte;
 
         fseek(save_stream, p, SEEK_SET);
 
