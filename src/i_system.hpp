@@ -24,11 +24,6 @@
 #include "d_event.hpp"
 
 
-typedef void (*atexit_func_t)(void);
-
-// Called by DoomMain.
-void I_Init(void);
-
 // Called by startup code
 // to get the ammount of memory to malloc
 // for the zone management.
@@ -47,47 +42,22 @@ bool I_ConsoleStdout(void);
 // for normal input.
 ticcmd_t *I_BaseTiccmd(void);
 
-
-// Called by M_Responder when quit is selected.
-// Clean exit, displays sell blurb.
-[[noreturn]] void I_Quit(void);
-
 void I_Tactile(int on, int off, int total);
 
 void *I_Realloc(void *ptr, size_t size);
 
 bool I_GetMemoryValue(unsigned int offset, void *value, int size);
 
-// Schedule a function to be called when the program exits.
-// If run_if_error is true, the function is called if the exit
-// is due to an error (I_Error)
-
-void I_AtExit(atexit_func_t func, bool run_if_error);
-
-// Structure for a function to be called at exit.
-struct atexit_listentry_t {
-    atexit_func_t       func;
-    bool             run_on_error;
-    atexit_listentry_t *next;
-};
-
-// Get the list of functions to be called at exit.
-[[nodiscard]] atexit_listentry_t * get_exit_funcs();
-
 // Add all system-specific config file variable bindings.
-
 void I_BindVariables(void);
 
 // Print startup banner copyright message.
-
 void I_PrintStartupBanner(const char *gamedescription);
 
 // Print a centered text banner displaying the given string.
-
 void I_PrintBanner(const char *text);
 
 // Print a dividing line for startup banners.
-
 void I_PrintDivider(void);
 
 

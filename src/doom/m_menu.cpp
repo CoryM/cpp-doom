@@ -31,6 +31,7 @@
 #include "deh_str.hpp"
 
 import i_swap;
+import i_error;
 #include "i_input.hpp"
 #include "i_system.hpp"
 #include "i_timer.hpp"

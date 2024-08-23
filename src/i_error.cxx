@@ -17,21 +17,59 @@ module;
 //
 
 #include <format>
+#include <ranges>
 #include <string_view>
+#include <vector>
 
 #include "SDL.h"
 #include "config.h"
 
 #include "m_argv.hpp"
 #include "i_system.hpp"
+#include "../utils/memory.hpp"
 
 export module i_error;
 
+export using atexit_func_t = void (*)();
+
+// Structure for a function to be called at exit.
+struct atexit_listentry_t {
+    atexit_func_t       func;
+    bool             run_on_error;
+};
+
+// List of functions to be called at exit.
+// Still has "side effects" but is not exported.
+std::vector<atexit_listentry_t> exit_funcs;
+
+// Schedule a function to be called when the program exits.
+// If run_if_error is true, the function is called if the exit
+// is due to an error (I_Error)
+export void I_AtExit(atexit_func_t func, bool run_on_error)
+{
+    exit_funcs.emplace_back(func, run_on_error);
+}
+
+// Called by M_Responder when quit is selected.
+// Clean exit, displays sell blurb.
+export [[noreturn]] void I_Quit(void)
+{
+    // Run through all exit functions
+    for (auto &entry : exit_funcs)
+    {
+        entry.func();
+    }
+
+    SDL_Quit();
+
+    exit(0);
+}
+
+
 //
-// I_Error
+// I_Error_Impl
 //
-export template<typename... Args>
-[[noreturn]] void I_Error(std::string_view rt_fmt_str, Args&&... args)
+[[noreturn]] void I_Error_Impl(std::string msg)
 {
     static bool already_quitting = false;
 
@@ -43,22 +81,6 @@ export template<typename... Args>
     else
     {
         already_quitting = true;
-    }
-
-    // Message first.
-    auto msgbuff =  std::vformat(rt_fmt_str, std::make_format_args(args...));
-
-    // Shutdown. Here might be other errors.
-    atexit_listentry_t *entry = get_exit_funcs();
-
-    while (entry != nullptr)
-    {
-        if (entry->run_on_error)
-        {
-            entry->func();
-        }
-
-        entry = entry->next;
     }
 
     //!
@@ -75,10 +97,28 @@ export template<typename... Args>
     if (exit_gui_popup && !I_ConsoleStdout())
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
-            PACKAGE_STRING, msgbuff.c_str(), nullptr);
+            PACKAGE_STRING, msg.c_str(), nullptr);
     }
+
+    // Shutdown. Here might be other errors.
+    auto only_run_on_error = std::views::filter([](atexit_listentry_t i) { 
+        return i.run_on_error && i.func != nullptr; 
+    });
+
+    for (auto &r : exit_funcs | only_run_on_error) {
+        r.func();
+    };
 
     SDL_Quit();
 
     exit(-1);
+};
+
+
+// Print error message and exit.
+export template<typename... Args>
+[[noreturn]] void I_Error(std::string_view rt_fmt_str, Args&&... args)
+{
+    auto msg =  std::vformat(rt_fmt_str, std::make_format_args(args...));
+    I_Error_Impl(msg); // Does not return
 };

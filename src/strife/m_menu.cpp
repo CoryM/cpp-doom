@@ -61,6 +61,8 @@
 #include "m_menu.hpp"
 #include "p_dialog.hpp"
 
+import i_error;
+
 
 extern void M_QuitStrife(int);
 

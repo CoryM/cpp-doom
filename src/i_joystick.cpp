@@ -27,6 +27,7 @@
 #include "d_event.hpp"
 #include "i_joystick.hpp"
 #include "i_system.hpp"
+import i_error;
 
 #include "m_config.hpp"
 #include "m_misc.hpp"

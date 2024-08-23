@@ -16,6 +16,7 @@
 
 // MN_menu.c
 import i_swap; // #include "i_swap.hpp"
+import i_error;
 
 #include <cstdlib>
 #include <cctype>

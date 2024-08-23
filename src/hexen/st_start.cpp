@@ -30,6 +30,8 @@
 #include "st_start.hpp"
 #include "w_wad.hpp"
 
+import i_error;
+
 
 // MACROS ------------------------------------------------------------------
 #define ST_MAX_NOTCHES		32

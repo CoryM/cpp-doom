@@ -53,23 +53,6 @@ import i_error;
 #define DEFAULT_RAM 16 * 2 /* MiB [crispy] */
 #define MIN_RAM     4 * 4  /* MiB [crispy] */
 
-static atexit_listentry_t *exit_funcs = nullptr;
-[[nodiscard]] atexit_listentry_t * get_exit_funcs()
-{
-    return exit_funcs;
-}
-
-
-void I_AtExit(atexit_func_t func, bool run_on_error)
-{
-    auto *entry = create_struct<atexit_listentry_t>();
-
-    entry->func         = func;
-    entry->run_on_error = run_on_error;
-    entry->next         = exit_funcs;
-    exit_funcs          = entry;
-}
-
 // Tactile feedback function, probably used for the Logitech Cyberman
 
 void I_Tactile([[maybe_unused]] int on, [[maybe_unused]] int off, [[maybe_unused]] int total)
@@ -214,47 +197,6 @@ bool I_ConsoleStdout(void)
 #else
     return isatty(fileno(stdout));
 #endif
-}
-
-//
-// I_Init
-//
-/*
-void I_Init (void)
-{
-    I_CheckIsScreensaver();
-    I_InitTimer();
-    I_InitJoystick();
-}
-void I_BindVariables(void)
-{
-    I_BindVideoVariables();
-    I_BindJoystickVariables();
-    I_BindSoundVariables();
-}
-*/
-
-//
-// I_Quit
-//
-
-[[noreturn]] void I_Quit(void)
-{
-    atexit_listentry_t *entry;
-
-    // Run through all exit functions
-
-    entry = exit_funcs;
-
-    while (entry != NULL)
-    {
-        entry->func();
-        entry = entry->next;
-    }
-
-    SDL_Quit();
-
-    exit(0);
 }
 
 
