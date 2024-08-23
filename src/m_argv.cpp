@@ -29,7 +29,7 @@
 #include "m_misc.hpp"
 #include "m_argv.hpp" // haleyjd 20110212: warning fix
 
-import i_error;
+import i_exit;
 
 int    myargc;
 char **myargv;

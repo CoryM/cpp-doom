@@ -35,7 +35,7 @@
 #include "../../utils/memory.hpp"
 #include "sounds.hpp"
 
-import i_error; // I_Error
+import i_exit; // I_Error
 
 plat_t *activeplats[MAXPLATS];
 

@@ -41,7 +41,7 @@
 #include "deh_str.hpp"
 
 import i_swap; 
-import i_error;
+import i_exit;
 #include "../utils/memory.hpp"
 #include "i_system.hpp"
 #include "i_video.hpp"

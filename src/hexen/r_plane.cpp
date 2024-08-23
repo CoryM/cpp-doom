@@ -23,7 +23,7 @@
 #include "r_local.hpp"
 #include "r_data.hpp"
 
-import i_error;
+import i_exit;
 
 // MACROS ------------------------------------------------------------------
 

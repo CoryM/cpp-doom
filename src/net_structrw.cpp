@@ -24,7 +24,7 @@
 #include "net_packet.hpp"
 #include "net_structrw.hpp"
 
-import i_error;
+import i_exit;
 
 // String names for the enum values in net_protocol_t, which are what is
 // sent over the wire. Every enum value must have an entry in this list.

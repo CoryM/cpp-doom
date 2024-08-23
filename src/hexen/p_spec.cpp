@@ -27,7 +27,7 @@
 
 #include "../w_wad.hpp"
 
-import i_error;
+import i_exit;
 
 // MACROS ------------------------------------------------------------------
 

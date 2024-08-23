@@ -27,7 +27,7 @@
 #include "doomstat.hpp"
 
 import i_swap;  // [crispy] LONG()
-import i_error; // I_Error
+import i_exit; // I_Error
 #include "deh_main.hpp"
 #include "deh_str.hpp"
 #include "i_system.hpp"

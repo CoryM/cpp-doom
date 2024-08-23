@@ -26,7 +26,7 @@
 // State.
 #include "r_state.hpp"
 
-import i_error; // I_Errors
+import i_exit; // I_Errors
 
 //
 // P_CheckSight

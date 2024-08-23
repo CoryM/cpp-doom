@@ -32,7 +32,7 @@
 #include "icon.cpp"
 
 import crispy;
-import i_error;
+import i_exit;
 
 #include "../utils/lump.hpp"
 #include "config.h"

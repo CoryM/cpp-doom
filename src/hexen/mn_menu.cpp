@@ -19,7 +19,7 @@
 
 #include <cctype>
 import i_swap; //#include "i_swap.hpp"
-import i_error;
+import i_exit;
 
 #include "ct_chat.hpp"
 #include "h2_main.hpp" // UpdateState

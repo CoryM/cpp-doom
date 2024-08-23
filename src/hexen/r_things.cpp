@@ -23,7 +23,7 @@
 #include "r_local.hpp"
 #include "g_game.hpp" // players[]
 
-import i_error;
+import i_exit;
 
 //void R_DrawTranslatedAltTLColumn(void);
 

@@ -22,7 +22,7 @@
 #include "p_local.hpp"
 #include "sounds.hpp"
 #include "s_sound.hpp"
-import i_error;
+import i_exit;
 
 void G_PlayerReborn(int player);
 void P_SpawnMapThing(mapthing_t * mthing);

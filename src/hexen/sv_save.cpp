@@ -31,7 +31,7 @@
 #include "../i_swap.hpp"
 #include "../z_zone.hpp"
 
-import i_error;
+import i_exit;
 
 // MACROS ------------------------------------------------------------------
 

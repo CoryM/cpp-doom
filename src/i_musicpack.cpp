@@ -35,7 +35,7 @@
 #include "mus2mid.hpp"
 
 import i_swap; 
-import i_error;
+import i_exit;
 #include "deh_str.hpp"
 #include "gusconf.hpp"
 #include "i_sound.hpp"

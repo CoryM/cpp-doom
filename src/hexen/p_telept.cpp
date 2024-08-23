@@ -24,7 +24,7 @@
 #include "s_sound.hpp"
 #include "sounds.hpp"
 
-import i_error;
+import i_exit;
 
 // MACROS ------------------------------------------------------------------
 

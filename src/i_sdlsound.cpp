@@ -32,7 +32,7 @@
 #endif
 
 import i_swap; 
-import i_error;
+import i_exit;
 #include "deh_str.hpp"
 #include "i_sound.hpp"
 #include "i_system.hpp"

@@ -71,22 +71,38 @@ else()
 endif()
 #add_compile_definitions( -DCRISPY_TRUECOLOR )
 
+#----------------
+# Find threading library
+#----------------
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
+#----------------
+# Find SDL2, SDL2_mixer, and SDL2_net
+#----------------
 find_package(SDL2 2.0.1 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 find_package(SDL2_net   REQUIRED)
 
-# Check for libsamplerate.
+#----------------
+# Find libsamplerate.
+#----------------
 find_package(samplerate)
 if(SAMPLERATE_FOUND)
     set(HAVE_LIBSAMPLERATE TRUE)
 endif()
 
-# Check for libpng.
+#----------------
+# Find libpng.
+#----------------
 find_package(PNG)
 if(PNG_FOUND)
     set(HAVE_LIBPNG TRUE)
 endif()
 
+#----------------
+# Find m
+#----------------
 find_package(m)
 
 #include(CheckSymbolExists) # Bugs out on c++ module support
@@ -105,7 +121,7 @@ FetchContent_Declare(
   URL https://github.com/google/googletest/archive/refs/tags/v1.15.0.zip
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 
@@ -119,14 +135,23 @@ string(TOLOWER "${PACKAGE_SHORTNAME}" PROGRAM_SPREFIX)
 # With a hyphen, used almost everywhere else.
 set(PROGRAM_PREFIX "${PROGRAM_SPREFIX}-")
 
+#----------------
+# Generate config.h
+#----------------
 configure_file(cmake/config.h.cin config.h)
 
+#----------------
+# Generate resource.rc and setup-res.rc
+#----------------
 configure_file(src/resource.rc.in src/resource.rc)
 configure_file(src/setup-res.rc.in src/setup-res.rc)
 configure_file(src/setup/setup-manifest.xml.in src/setup/setup-manifest.xml)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-foreach(SUBDIR midiproc  src)
+#----------------
+# Add internal libraries
+#----------------
+foreach(SUBDIR midiproc src)
     add_subdirectory("${SUBDIR}")
 endforeach()

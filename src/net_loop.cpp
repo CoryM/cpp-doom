@@ -25,7 +25,7 @@
 #include "net_loop.hpp"
 #include "net_packet.hpp"
 
-import i_error;
+import i_exit;
 
 #define MAX_QUEUE_SIZE 16
 

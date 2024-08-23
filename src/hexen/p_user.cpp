@@ -24,7 +24,7 @@
 #include "s_sound.hpp"
 #include "sounds.hpp"
 #include "sb_bar.hpp" // inv_ptr
-import i_error;
+import i_exit;
 
 void P_PlayerNextArtifact(player_t * player);
 

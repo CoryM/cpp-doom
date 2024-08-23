@@ -24,7 +24,7 @@
 
 #include "p_pspr.hpp"
 
-import i_error;
+import i_exit;
 
 // Macros
 

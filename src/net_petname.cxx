@@ -26,7 +26,7 @@ module;
 #include <string_view> // std::string_view
 
 #include "i_system.hpp" // I_Error
-import i_error; //#include "i_error.hpp"
+import i_exit; //#include "i_error.hpp"
 
 export module net_petname;
 

@@ -32,7 +32,7 @@
 #include "deh_str.hpp"     // DEH_String()
 
 import i_swap; // [crispy] swap
-import i_error; //#include "i_error.hpp"
+import i_exit; //#include "i_error.hpp"
 
 #include "tables.hpp"
 #include "z_zone.hpp"

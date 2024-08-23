@@ -22,7 +22,7 @@
 #include "p_local.hpp"
 #include "s_sound.hpp"
 #include "v_video.hpp"
-import i_error;
+import i_exit;
 
 plat_t *activeplats[MAXPLATS];
 

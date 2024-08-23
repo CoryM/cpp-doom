@@ -38,7 +38,7 @@
 #include "w_wad.hpp"
 #include "z_zone.hpp"
 
-import i_error;
+import i_exit;
 
 // when to clip out sounds
 // Does not fit the large outdoor areas.

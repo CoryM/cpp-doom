@@ -39,7 +39,7 @@
 
 #include "mode.hpp"
 
-import i_error;
+import i_exit;
 
 GameMission_t gamemission;
 static const iwad_t **iwads;

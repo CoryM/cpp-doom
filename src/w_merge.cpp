@@ -24,7 +24,7 @@
 #include <cctype>
 
 import i_swap; 
-import i_error;          // for I_Error
+import i_exit;          // for I_Error
 #include "../utils/memory.hpp"
 #include "doomtype.hpp"
 #include "i_system.hpp"

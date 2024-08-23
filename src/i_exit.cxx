@@ -28,7 +28,7 @@ module;
 #include "i_system.hpp"
 #include "../utils/memory.hpp"
 
-export module i_error;
+export module i_exit;
 
 export using atexit_func_t = void (*)();
 

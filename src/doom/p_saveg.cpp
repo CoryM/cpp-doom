@@ -21,7 +21,7 @@
 #include <cstdlib>
 
 import m_fixed;
-import i_error; // I_Error
+import i_exit; // I_Error
 
 #include "dstrings.hpp"
 #include "deh_main.hpp"

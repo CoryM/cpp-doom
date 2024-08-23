@@ -33,7 +33,7 @@
 #include "txt_utf8.hpp"
 #include "txt_window.hpp"
 
-import i_error;
+import i_exit;
 
 #define JOYSTICK_INPUT_WIDTH 10
 

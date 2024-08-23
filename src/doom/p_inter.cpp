@@ -38,7 +38,7 @@
 
 #include "p_inter.hpp"
 
-import i_error; // I_Error
+import i_exit; // I_Error
 
 
 #define BONUSADD 6

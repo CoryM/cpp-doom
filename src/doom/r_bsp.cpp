@@ -20,7 +20,7 @@
 #include "doomdef.hpp"
 
 import m_bbox; // #include "m_bbox.hpp"
-import i_error; // I_Error
+import i_exit; // I_Error
 
 #include "i_system.hpp"
 

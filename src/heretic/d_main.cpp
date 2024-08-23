@@ -22,7 +22,7 @@ import i_swap; // #include "i_swap.hpp" // [crispy] SHORT()
 #include <cstdio>
 #include <cstdlib>
 
-import i_error;
+import i_exit;
 
 #include "txt_main.hpp"
 #include "txt_io.hpp"

@@ -21,7 +21,7 @@
 #include "r_data.hpp"
 #include "s_sound.hpp"
 
-import i_error;
+import i_exit;
 
 //==================================================================
 //

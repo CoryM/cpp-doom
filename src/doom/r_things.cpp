@@ -26,7 +26,7 @@
 #include "doomdef.hpp"
 
 import i_swap; 
-import i_error; // I_Error
+import i_exit; // I_Error
 #include "i_system.hpp"
 #include "z_zone.hpp"
 #include "w_wad.hpp"

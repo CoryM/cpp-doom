@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-import i_error; //#include "i_error.hpp"
+import i_exit; //#include "i_error.hpp"
 
 #include "../utils/memory.hpp"
 #include "d_iwad.hpp"

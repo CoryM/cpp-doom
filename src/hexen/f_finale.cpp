@@ -35,7 +35,7 @@
 #include "../z_zone.hpp"
 #include "../../utils/lump.hpp"
 
-import i_error;
+import i_exit;
 
 // MACROS ------------------------------------------------------------------
 

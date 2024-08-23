@@ -23,7 +23,7 @@
 #include "m_argv.hpp"
 
 #include "z_zone.hpp"
-import i_error;          // for I_Error
+import i_exit;          // for I_Error
 
 
 //

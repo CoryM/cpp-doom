@@ -23,7 +23,7 @@
 #include "s_sound.hpp"
 #include "sounds.hpp"
 
-import i_error;
+import i_exit;
 
 static void CheckForPushSpecial(line_t * line, int side, mobj_t * mobj);
 

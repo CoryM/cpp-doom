@@ -32,7 +32,7 @@
 #include "net_structrw.hpp"
 #include "net_sdl.hpp"
 
-import i_error;
+import i_exit;
 
 // DNS address of the Internet master server.
 

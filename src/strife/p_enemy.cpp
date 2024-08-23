@@ -44,7 +44,7 @@
 #include "f_finale.hpp"
 #include "p_inter.hpp"
 
-import i_error;
+import i_exit;
 
 // Forward Declarations:
 void A_RandomWalk(mobj_t *);

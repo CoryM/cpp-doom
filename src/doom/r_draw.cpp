@@ -37,7 +37,7 @@
 #include "../../utils/memory.hpp"
 #include "doomstat.hpp"
 
-import i_error; // I_Error
+import i_exit; // I_Error
 
 // ?
 //#define MAXWIDTH			1120

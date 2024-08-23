@@ -35,7 +35,7 @@
 #include "sn_sonix.hpp"
 #include "sounds.hpp"
 
-import i_error;
+import i_exit;
 
 // MACROS ------------------------------------------------------------------
 

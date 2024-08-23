@@ -35,7 +35,7 @@
 #include "../../utils/memory.hpp"
 #include "doomstat.hpp"
 
-import i_error; // I_Error
+import i_exit; // I_Error
 
 void G_PlayerReborn(int player);
 void P_SpawnMapThing(mapthing_t *mthing);

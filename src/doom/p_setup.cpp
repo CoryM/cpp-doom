@@ -24,7 +24,7 @@
 
 import i_swap; 
 import m_bbox; // #include "m_bbox.hpp"
-import i_error; // I_Error
+import i_exit; // I_Error
 
 #include "deh_main.hpp"
 #include "deh_str.hpp"

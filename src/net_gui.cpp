@@ -37,7 +37,7 @@
 
 #include "textscreen.hpp"
 
-import i_error;
+import i_exit;
 
 static txt_window_t *window;
 static int           old_max_players;

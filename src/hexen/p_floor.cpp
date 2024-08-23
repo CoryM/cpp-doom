@@ -22,7 +22,7 @@
 
 #include "../z_zone.hpp"
 
-import i_error;
+import i_exit;
 
 extern fixed_t FloatBobOffsets[64];
 

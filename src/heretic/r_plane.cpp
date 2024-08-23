@@ -20,7 +20,7 @@
 #include "deh_str.hpp"
 #include "i_system.hpp"
 #include "r_local.hpp"
-import i_error;
+import i_exit;
 
 planefunction_t floorfunc, ceilingfunc;
 

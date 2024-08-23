@@ -35,7 +35,7 @@
 
 #include "s_musinfo.hpp"
 
-import i_error; 
+import i_exit; 
 
 // MACROS ------------------------------------------------------------------
 

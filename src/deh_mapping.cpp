@@ -25,7 +25,7 @@
 #include "i_system.hpp"  // for I_Error
 #include "m_misc.hpp"    // for M_StringCopy
 
-import i_error; //#include "i_error.hpp"
+import i_exit; //#include "i_error.hpp"
 
 
 static deh_mapping_entry_t *GetMappingEntryByName(deh_context_t *context,

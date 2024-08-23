@@ -44,7 +44,7 @@
 #include "i_video.hpp"
 
 #include "i_system.hpp"
-import i_error;
+import i_exit;
 
 #include "../utils/memory.hpp"
 #include "w_wad.hpp"

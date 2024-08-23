@@ -30,7 +30,7 @@
 #include "doomstat.hpp"
 #include "d_main.hpp"     // villsa [STRIFE]
 
-import i_error;
+import i_exit;
 
 extern line_t *spechit[];  // haleyjd:
 extern int     numspechit; // [STRIFE] - needed in P_XYMovement

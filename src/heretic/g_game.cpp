@@ -20,7 +20,7 @@
 #include <cstdlib>
 #include <cstring>
 
-import i_error;
+import i_exit;
 
 #include "doomdef.hpp"
 #include "doomkeys.hpp"

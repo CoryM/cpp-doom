@@ -38,7 +38,7 @@
 // haleyjd
 #include "p_local.hpp"
 
-import i_error;
+import i_exit;
 
 #define MINZ				(FRACUNIT*4)
 #define BASEYCENTER			100

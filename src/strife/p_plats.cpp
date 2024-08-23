@@ -34,7 +34,7 @@
 // Data.
 #include "sounds.hpp"
 
-import i_error;
+import i_exit;
 
 
 plat_t* activeplats[MAXPLATS];

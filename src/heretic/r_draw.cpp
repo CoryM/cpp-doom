@@ -22,7 +22,7 @@
 #include "v_video.hpp"
 
 #include "../../utils/lump.hpp"
-import i_error;
+import i_exit;
 
 /*
 

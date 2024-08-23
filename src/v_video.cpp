@@ -30,7 +30,7 @@ import i_swap;
 import m_fixed; // #include "m_fixed.hpp"
 import m_bbox; // #include "m_bbox.hpp"
 import crispy;
-import i_error;
+import i_exit;
 
 
 #include "i_system.hpp"

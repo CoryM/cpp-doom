@@ -26,7 +26,7 @@
 #include "doomtype.hpp"
 
 import i_swap; 
-import i_error;          // for I_Error
+import i_exit;          // for I_Error
 #include "i_system.hpp"
 #include "i_video.hpp"
 #include "m_misc.hpp"

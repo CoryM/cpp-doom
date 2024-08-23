@@ -28,7 +28,7 @@
 #include "v_video.hpp"
 
 import i_swap; 
-import i_error;
+import i_exit;
 #include "i_system.hpp"
 
 #include "w_wad.hpp"

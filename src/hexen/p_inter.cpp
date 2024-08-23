@@ -30,7 +30,7 @@
 #include "g_game.hpp" // players[]
 #include "d_net.hpp" // NET_SendFrags()
 
-import i_error;
+import i_exit;
 
 #define BONUSADD 6
 

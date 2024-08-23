@@ -36,7 +36,7 @@
 // State.
 #include "doomstat.hpp"
 
-import i_error;
+import i_exit;
 
 
 // ?

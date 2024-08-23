@@ -31,7 +31,7 @@
 #include "net_packet.hpp"
 #include "net_structrw.hpp"
 
-import i_error;
+import i_exit;
 
 // connections time out after 30 seconds
 

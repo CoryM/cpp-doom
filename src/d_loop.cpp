@@ -29,7 +29,7 @@
 
 #include "m_argv.hpp"
 import m_fixed; //#include "m_fixed.hpp"
-import i_error; //#include "i_error.hpp"
+import i_exit; //#include "i_error.hpp"
 
 #include "net_client.hpp"
 #include "net_gui.hpp"

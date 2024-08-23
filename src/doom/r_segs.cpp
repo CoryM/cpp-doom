@@ -29,7 +29,7 @@
 #include "r_sky.hpp"
 #include "r_bmaps.hpp" // [crispy] brightmaps
 
-import i_error; // I_Error
+import i_exit; // I_Error
 
 
 // OPTIMIZE: closed two sided lines as single sided

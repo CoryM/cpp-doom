@@ -68,7 +68,7 @@
 
 #include "g_game.hpp"
 
-import i_error;
+import i_exit;
 
 
 #define SAVEGAMESIZE	0x2c000

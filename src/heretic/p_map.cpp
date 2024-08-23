@@ -18,7 +18,7 @@
 #include <cstdlib>
 
 import m_bbox; // #include "m_bbox.hpp"
-import i_error;
+import i_exit;
 
 #include "doomdef.hpp"
 #include "i_system.hpp"

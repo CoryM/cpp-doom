@@ -50,7 +50,7 @@
 #include "../z_zone.hpp" // Z_CheckHeap() found in z_native.cpp and z_zone.cpp
 #include "../net_defs.hpp"
 
-import i_error;
+import i_exit;
 
 #define AM_STARTKEY	9
 

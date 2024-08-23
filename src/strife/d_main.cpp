@@ -81,7 +81,7 @@
 #include "../../utils/memory.hpp"
 #include "d_main.hpp"
 
-import i_error;
+import i_exit;
 
 //
 // D-DoomLoop()

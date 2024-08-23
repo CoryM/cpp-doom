@@ -19,7 +19,7 @@
 #include "i_system.hpp"
 #include "r_local.hpp"
 
-import i_error;
+import i_exit;
 
 // OPTIMIZE: closed two sided lines as single sided
 

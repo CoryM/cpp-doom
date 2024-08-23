@@ -35,7 +35,7 @@
 #include "r_bmaps.hpp" // [crispy] R_BrightmapForTexName()
 #include "r_swirl.hpp" // [crispy] R_DistortedFlat()
 
-import i_error; // I_Error
+import i_exit; // I_Error
 
 
 planefunction_t floorfunc;

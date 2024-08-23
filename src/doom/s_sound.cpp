@@ -19,7 +19,7 @@
 #include <cstdlib>
 
 import m_fixed;
-import i_error;
+import i_exit;
 
 #include "i_sound.hpp"
 #include "i_system.hpp"

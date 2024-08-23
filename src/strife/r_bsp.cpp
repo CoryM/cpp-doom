@@ -33,7 +33,7 @@
 #include "doomstat.hpp"
 #include "r_state.hpp"
 
-import i_error;
+import i_exit;
 
 //#include "r_local.hpp"
 

@@ -33,7 +33,7 @@
 #include "m_saves.hpp"
 #include "p_dialog.hpp"
 
-import i_error;
+import i_exit;
 
 //
 // File Paths

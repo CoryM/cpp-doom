@@ -24,7 +24,7 @@
 #include "net_io.hpp"
 #include "z_zone.hpp"
 
-import i_error;
+import i_exit;
 
 #define MAX_MODULES 16
 

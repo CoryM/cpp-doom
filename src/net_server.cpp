@@ -39,7 +39,7 @@
 #include "net_sdl.hpp"
 #include "net_structrw.hpp"
 
-import i_error;
+import i_exit;
 
 // How often to refresh our registration with the master server.
 #define MASTER_REFRESH_PERIOD 30 /* twice per minute */

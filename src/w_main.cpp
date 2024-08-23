@@ -26,7 +26,7 @@
 #include "m_argv.hpp"    // for M_CheckParmWithArgs, myargv, myargc
 #include "w_merge.hpp"   // for W_MergeFile, W_NWTMergeFile, W_NWTDashMerge
 #include "w_wad.hpp"     // for W_CheckNumForName, lumpindex_t
-import i_error;          // for I_Error
+import i_exit;          // for I_Error
 
 
 // Parse the command line, merging WAD files that are sppecified.

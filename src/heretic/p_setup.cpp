@@ -18,7 +18,7 @@
 
 import i_swap; // #include "i_swap.hpp"
 import m_bbox; // #include "m_bbox.hpp"
-import i_error;
+import i_exit;
 
 #include <math.h>
 #include <cstdlib>

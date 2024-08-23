@@ -23,7 +23,7 @@
 
 #include "../z_zone.hpp"
 
-import i_error;
+import i_exit;
 
 plat_t *activeplats[MAXPLATS];
 

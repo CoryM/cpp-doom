@@ -30,7 +30,7 @@
 #include "net_packet.hpp"       // for NET_NewPacket
 #include "z_zone.hpp"           // for Z_Free, PU_STATIC
 
-import i_error;
+import i_exit;
 
 
 //

@@ -20,7 +20,7 @@
 #include "m_bbox.hpp"
 #include "r_local.hpp"
 
-import i_error;
+import i_exit;
 
 seg_t *curline;
 side_t *sidedef;

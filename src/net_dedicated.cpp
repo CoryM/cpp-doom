@@ -29,7 +29,7 @@
 #include "net_sdl.hpp"
 #include "net_server.hpp"
 
-import i_error;
+import i_exit;
 
 //
 // People can become confused about how dedicated servers work.  Game
